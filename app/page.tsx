@@ -11,11 +11,13 @@ export default async function Home() {
       <ul style={{ display: "grid", gap: 12, padding: 0, listStyle: "none" }}>
         {emails.map((e) => (
           <li key={e.id} style={{ border: "1px solid #ddd", padding: 12, borderRadius: 8 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-              <strong>{e.subject}</strong>
-              <span style={{ color: "#666" }}>{e.brand}</span>
-            </div>
-            <div style={{ color: "#666", marginTop: 6 }}>{e.preview}</div>
+            <a href={`/email/${e.id}`} style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                <strong>{e.subject}</strong>
+                <span style={{ color: "#666" }}>{e.brand}</span>
+              </div>
+              <div style={{ color: "#666", marginTop: 6 }}>{e.preview}</div>
+            </a>
           </li>
         ))}
       </ul>
