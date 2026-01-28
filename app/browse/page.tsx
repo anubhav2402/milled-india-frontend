@@ -5,6 +5,8 @@ type Email = {
   subject: string;
   brand?: string;
   preview?: string;
+  type?: string;
+  category?: string;
   received_at: string;
 };
 
@@ -152,84 +154,187 @@ export default async function BrowsePage({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
               gap: 24,
             }}
           >
-            {emails.map((e) => (
-              <a
-                key={e.id}
-                href={`/email/${e.id}`}
-                style={{
-                  backgroundColor: "#fff",
-                  borderRadius: 12,
-                  border: "1px solid #e5e5e5",
-                  padding: 20,
-                  textDecoration: "none",
-                  color: "inherit",
-                  display: "block",
-                  transition: "all 0.2s",
-                  cursor: "pointer",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
-                  {e.brand && (
-                    <span
+            {emails.map((e) => {
+              // Get brand initial for logo
+              const brandInitial = e.brand ? e.brand.charAt(0).toUpperCase() : "?";
+              // Format date with time
+              const receivedDate = new Date(e.received_at);
+              const formattedDate = receivedDate.toLocaleDateString("en-IN", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              });
+              const formattedTime = receivedDate.toLocaleTimeString("en-IN", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+
+              return (
+                <a
+                  key={e.id}
+                  href={`/email/${e.id}`}
+                  style={{
+                    backgroundColor: "#fff",
+                    borderRadius: 16,
+                    border: "2px solid #e2e8f0",
+                    padding: 24,
+                    textDecoration: "none",
+                    color: "inherit",
+                    display: "block",
+                    transition: "all 0.2s",
+                    cursor: "pointer",
+                  }}
+                  className="hover-button"
+                >
+                  {/* Top Section: Brand Logo, Name, and Badges */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "start",
+                      marginBottom: 16,
+                    }}
+                  >
+                    {e.brand && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <div
+                          style={{
+                            width: 40,
+                            height: 40,
+                            background: "#f0fdfa",
+                            borderRadius: 8,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: 700,
+                            color: "#14b8a6",
+                            fontSize: 18,
+                          }}
+                        >
+                          {brandInitial}
+                        </div>
+                        <div>
+                          <div
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 700,
+                              color: "#1a1a1a",
+                              textTransform: "uppercase",
+                              marginBottom: 4,
+                            }}
+                          >
+                            {e.brand}
+                          </div>
+                          {(e.type || e.category) && (
+                            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                              {e.type && (
+                                <span
+                                  style={{
+                                    padding: "4px 10px",
+                                    background: "#f0fdfa",
+                                    border: "1px solid #14b8a6",
+                                    borderRadius: 6,
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    color: "#14b8a6",
+                                    textTransform: "uppercase",
+                                  }}
+                                >
+                                  {e.type}
+                                </span>
+                              )}
+                              {e.category && (
+                                <span
+                                  style={{
+                                    padding: "4px 10px",
+                                    background: "#f0fdfa",
+                                    border: "1px solid #14b8a6",
+                                    borderRadius: 6,
+                                    fontSize: 11,
+                                    fontWeight: 600,
+                                    color: "#14b8a6",
+                                    textTransform: "uppercase",
+                                  }}
+                                >
+                                  {e.category}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Subject Line */}
+                  <h2
+                    style={{
+                      margin: "0 0 12px 0",
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: "#1a1a1a",
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {e.subject}
+                  </h2>
+
+                  {/* Preview Text */}
+                  {e.preview && (
+                    <p
                       style={{
-                        padding: "4px 10px",
-                        backgroundColor: "#f0f0f0",
-                        borderRadius: 12,
-                        fontSize: 11,
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.5px",
-                        color: "#666",
+                        margin: "0 0 16px 0",
+                        fontSize: 15,
+                        color: "#4a5568",
+                        lineHeight: 1.6,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
                       }}
                     >
-                      {e.brand}
-                    </span>
+                      {e.preview}
+                    </p>
                   )}
-                  <time
+
+                  {/* Footer: Date and View Button */}
+                  <div
                     style={{
-                      fontSize: 12,
-                      color: "#999",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      paddingTop: 16,
+                      borderTop: "1px solid #e5e5e5",
                     }}
                   >
-                    {new Date(e.received_at).toLocaleDateString("en-IN", {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </time>
-                </div>
-                <h2
-                  style={{
-                    margin: "0 0 12px 0",
-                    fontSize: 18,
-                    fontWeight: 600,
-                    color: "#1a1a1a",
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {e.subject}
-                </h2>
-                {e.preview && (
-                  <p
-                    style={{
-                      margin: 0,
-                      fontSize: 14,
-                      color: "#666",
-                      lineHeight: 1.5,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {e.preview}
-                  </p>
-                )}
-              </a>
-            ))}
+                    <time
+                      style={{
+                        fontSize: 13,
+                        color: "#999",
+                      }}
+                    >
+                      {formattedDate} • {formattedTime}
+                    </time>
+                    <span
+                      style={{
+                        padding: "8px 20px",
+                        background: "#14b8a6",
+                        color: "#fff",
+                        borderRadius: 8,
+                        fontSize: 14,
+                        fontWeight: 600,
+                      }}
+                    >
+                      View Email →
+                    </span>
+                  </div>
+                </a>
+              );
+            })}
           </div>
         )}
       </main>
