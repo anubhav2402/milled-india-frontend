@@ -246,8 +246,7 @@ export default async function EmailPage({
               display: "inline-block",
               transition: "background-color 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#0d9488")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#14b8a6")}
+            className="hover-button"
           >
             Browse More Emails
           </a>
