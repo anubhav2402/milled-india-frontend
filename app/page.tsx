@@ -47,7 +47,7 @@ export default function Home() {
               fontSize: 14,
             }}
           >
-            Browse Emails
+            Explore Database
           </a>
         </div>
       </nav>
@@ -70,7 +70,7 @@ export default function Home() {
               lineHeight: 1.2,
             }}
           >
-            Discover India's Best Brand Emails & Deals
+            The Complete Database of Brand Emails Sent to Indian Consumers
           </h1>
           <p
             style={{
@@ -80,7 +80,7 @@ export default function Home() {
               lineHeight: 1.6,
             }}
           >
-            Search through thousands of promotional emails from top Indian brands. Find deals, track campaigns, and stay updated—all in one place.
+            Access thousands of real brand emails sent to customers. Analyze competitor campaigns, study email strategies, and discover what actually works—all in one searchable archive.
           </p>
           
           {/* Search Bar */}
@@ -90,7 +90,7 @@ export default function Home() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search brands, deals, or keywords..."
+                placeholder="Search by brand, campaign type, or keyword..."
                 style={{
                   flex: 1,
                   padding: "16px 20px",
@@ -122,7 +122,7 @@ export default function Home() {
                 Search
               </button>
             </div>
-            <p style={{ fontSize: 14, color: "#999", margin: 0 }}>No credit card required • Free to search</p>
+            <p style={{ fontSize: 14, color: "#999", margin: 0 }}>Free access • No sign-up required • Updated daily</p>
           </form>
 
           {/* CTA Buttons */}
@@ -168,7 +168,7 @@ export default function Home() {
                 e.currentTarget.style.borderColor = "#14b8a6";
               }}
             >
-              Browse Archive
+              Explore Database
             </a>
           </div>
         </div>
@@ -177,9 +177,12 @@ export default function Home() {
       {/* Value Proposition / Features */}
       <section style={{ padding: "80px 24px", backgroundColor: "#fafafa" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <h2 style={{ textAlign: "center", fontSize: 40, fontWeight: 700, marginBottom: 60, color: "#1a1a1a" }}>
-            Why Choose MailMuse?
+          <h2 style={{ textAlign: "center", fontSize: 40, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+            Why Marketing Teams Choose MailMuse
           </h2>
+          <p style={{ textAlign: "center", fontSize: 18, color: "#666", marginBottom: 60 }}>
+            The only database that gives you direct access to what brands actually send their customers
+          </p>
           <div
             style={{
               display: "grid",
@@ -190,23 +193,23 @@ export default function Home() {
             {[
               {
                 icon: "🔍",
-                title: "Fast Search",
-                description: "Instantly search through thousands of emails with our powerful search engine. Find exactly what you're looking for in seconds.",
+                title: "Instant Competitive Intelligence",
+                description: "See exactly what your competitors are sending. Search thousands of real emails in seconds—no guessing, no assumptions.",
               },
               {
-                icon: "📦",
-                title: "Largest Archive",
-                description: "Access the most comprehensive collection of Indian brand emails. New campaigns added daily from top brands across the country.",
+                icon: "📊",
+                title: "Complete Campaign Archive",
+                description: "Every email sent by top Indian brands is here. Welcome sequences, promotional campaigns, newsletters—all indexed and searchable.",
               },
               {
                 icon: "🎯",
-                title: "Smart Filters",
-                description: "Filter by brand, date, category, or keyword. Find deals, welcome emails, sales, and more with precision.",
+                title: "Precise Filtering",
+                description: "Filter by brand, campaign type, date, or content. Find specific email types—welcome emails, product launches, re-engagement campaigns.",
               },
               {
                 icon: "💡",
-                title: "Stay Updated",
-                description: "Never miss a deal or campaign. Track your favorite brands and get insights into their marketing strategies.",
+                title: "Strategy Insights",
+                description: "Understand what messaging works. Study subject lines, CTAs, and campaign timing from brands that actually convert.",
               },
             ].map((feature, idx) => (
               <div
@@ -244,25 +247,28 @@ export default function Home() {
       {/* How It Works */}
       <section style={{ padding: "80px 24px", backgroundColor: "#fff" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <h2 style={{ textAlign: "center", fontSize: 40, fontWeight: 700, marginBottom: 60, color: "#1a1a1a" }}>
-            How It Works
+          <h2 style={{ textAlign: "center", fontSize: 40, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+            How Marketing Teams Use MailMuse
           </h2>
+          <p style={{ textAlign: "center", fontSize: 18, color: "#666", marginBottom: 60 }}>
+            Get competitive intelligence in 3 simple steps
+          </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 40 }}>
             {[
               {
                 step: "1",
-                title: "Search",
-                description: "Search through our large database of newsletters and deals from top Indian brands.",
+                title: "Search Brand Emails",
+                description: "Enter any brand name or keyword. Instantly access their complete email archive—every campaign they've sent to customers.",
               },
               {
                 step: "2",
-                title: "Filter",
-                description: "Filter results in real-time by brand, category, date, or keyword to find exactly what you need.",
+                title: "Analyze Campaigns",
+                description: "Filter by campaign type, date, or content. Study subject lines, messaging, CTAs, and timing to understand what works.",
               },
               {
                 step: "3",
-                title: "Access & Save",
-                description: "Access full email content, save favorites, and get insights into brand marketing strategies.",
+                title: "Apply Insights",
+                description: "Copy winning strategies. See full email HTML, track campaign patterns, and discover messaging that actually converts.",
               },
             ].map((item, idx) => (
               <div
@@ -312,10 +318,10 @@ export default function Home() {
       <section style={{ padding: "80px 24px", backgroundColor: "#fafafa" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
           <h2 style={{ fontSize: 32, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
-            Trusted by marketers and brands across India
+            Trusted by Marketing Teams Across India
           </h2>
           <p style={{ fontSize: 18, color: "#666", marginBottom: 40 }}>
-            Join marketers, researchers, and deal hunters who use MailMuse to stay ahead.
+            Join marketers, researchers, and strategists who use MailMuse to stay ahead of the competition.
           </p>
           
           {/* Placeholder logos */}
@@ -342,14 +348,14 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
             {[
               {
-                quote: "MailMuse has become an essential tool for tracking competitor campaigns. The search is incredibly fast and accurate.",
+                quote: "MailMuse has become essential for our competitive research. Instead of guessing what competitors are doing, we see exactly what they send customers. Game changer.",
                 author: "Priya Sharma",
-                role: "Marketing Director",
+                role: "Marketing Director, E-commerce Brand",
               },
               {
-                quote: "I love how easy it is to find deals and track my favorite brands. The archive is comprehensive and always up-to-date.",
+                quote: "The best part? Seeing real emails brands actually send. Not templates or examples—actual campaigns. This is the competitive intelligence tool we've been missing.",
                 author: "Rahul Mehta",
-                role: "Deal Hunter",
+                role: "Email Marketing Strategist",
               },
             ].map((testimonial, idx) => (
               <div
@@ -383,13 +389,13 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))", gap: 60, alignItems: "center", marginBottom: 60 }}>
             <div>
               <h2 style={{ fontSize: 36, fontWeight: 700, marginBottom: 24, color: "#1a1a1a" }}>
-                Full Archive Search
+                Search Every Email Brands Send
               </h2>
               <p style={{ fontSize: 18, color: "#666", lineHeight: 1.7, marginBottom: 24 }}>
-                Search through our complete archive of brand emails. Every campaign, deal, and newsletter is indexed and searchable.
+                Our database contains every email sent by top Indian brands to their customers. Welcome sequences, promotional campaigns, newsletters—all searchable, all accessible.
               </p>
               <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {["Advanced keyword search", "Filter by brand and category", "Date range filtering", "Save and organize favorites"].map((item, idx) => (
+                {["Search by brand name or keyword", "Filter by campaign type and date", "View complete email HTML", "Track campaign patterns over time"].map((item, idx) => (
                   <li key={idx} style={{ padding: "12px 0", fontSize: 16, color: "#666", display: "flex", alignItems: "center", gap: 12 }}>
                     <span style={{ color: "#14b8a6", fontSize: 20 }}>✓</span>
                     {item}
@@ -411,7 +417,7 @@ export default function Home() {
                 fontWeight: 600,
               }}
             >
-              Search Interface Preview
+              Email Database Preview
             </div>
           </div>
 
@@ -431,17 +437,17 @@ export default function Home() {
                 order: 2,
               }}
             >
-              Filter Interface Preview
+              Campaign Analysis Preview
             </div>
             <div style={{ order: 1 }}>
               <h2 style={{ fontSize: 36, fontWeight: 700, marginBottom: 24, color: "#1a1a1a" }}>
-                Smart Filters & Organization
+                Analyze Campaigns Like a Pro
               </h2>
               <p style={{ fontSize: 18, color: "#666", lineHeight: 1.7, marginBottom: 24 }}>
-                Organize and filter emails exactly how you need. Create custom lists, track brands, and never miss important campaigns.
+                Filter by brand, campaign type, or date range. Study subject lines, messaging patterns, and CTAs. See what works—then apply it to your campaigns.
               </p>
               <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {["Brand-based filtering", "Category organization", "Custom saved lists", "Real-time updates"].map((item, idx) => (
+                {["Filter by brand and campaign type", "Study subject line patterns", "Analyze email design and layout", "Track campaign frequency and timing"].map((item, idx) => (
                   <li key={idx} style={{ padding: "12px 0", fontSize: 16, color: "#666", display: "flex", alignItems: "center", gap: 12 }}>
                     <span style={{ color: "#14b8a6", fontSize: 20 }}>✓</span>
                     {item}
@@ -464,10 +470,10 @@ export default function Home() {
       >
         <div style={{ maxWidth: 700, margin: "0 auto" }}>
           <h2 style={{ fontSize: 40, fontWeight: 700, marginBottom: 24, color: "#fff" }}>
-            Join Free and Start Searching Now
+            Start Analyzing Competitor Emails Today
           </h2>
           <p style={{ fontSize: 20, marginBottom: 40, opacity: 0.95 }}>
-            Access thousands of brand emails, track campaigns, and discover the best deals—all free.
+            Free access to thousands of real brand emails. See what your competitors send, understand what works, and improve your campaigns—no credit card required.
           </p>
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
             <a
@@ -505,7 +511,7 @@ export default function Home() {
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")}
               onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
-              Browse Archive
+              Explore Database
             </a>
           </div>
         </div>
@@ -521,7 +527,7 @@ export default function Home() {
               <span style={{ fontSize: 24, fontWeight: 700 }}>MailMuse</span>
             </div>
               <p style={{ fontSize: 14, color: "#999", lineHeight: 1.6 }}>
-                Your gateway to India's best brand emails and deals.
+                The complete database of brand emails sent to Indian consumers. Competitive intelligence for marketing teams.
               </p>
             </div>
             <div>
