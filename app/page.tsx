@@ -73,7 +73,7 @@ export default function Home() {
               letterSpacing: "-0.02em",
             }}
           >
-            See Every Email Brands Send Their Customers
+            India's Largest Search Engine for Marketing Emails
           </h1>
           <p
             style={{
@@ -194,33 +194,59 @@ export default function Home() {
             <p style={{ fontSize: 14, color: "#718096", marginBottom: 24, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em" }}>
               Trusted by India's Top Brands
             </p>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 32, flexWrap: "wrap", opacity: 0.8 }}>
-              {["Nykaa", "Myntra", "Zomato", "Swiggy", "Meesho", "Mamaearth"].map((brand, idx) => (
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 40, flexWrap: "wrap", opacity: 0.9 }}>
+              {[
+                { name: "Nykaa", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Nykaa_New_Logo.svg" },
+                { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
+                { name: "Zomato", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Zomato_Logo.svg" },
+                { name: "Swiggy", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" },
+                { name: "Meesho", logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Meesho_logo.png" },
+                { name: "Mamaearth", logo: "https://mamaearth.com/cdn/shop/files/mama.svg" },
+              ].map((brand, idx) => (
                 <div
                   key={idx}
                   style={{
-                    padding: "16px 28px",
+                    padding: "20px 32px",
                     backgroundColor: "#fff",
                     borderRadius: 12,
                     border: "1px solid #e2e8f0",
-                    fontSize: 18,
-                    fontWeight: 700,
-                    color: "#4a5568",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                     transition: "all 0.2s",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 60,
+                    minWidth: 120,
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.1)";
                     e.currentTarget.style.opacity = "1";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
                     e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)";
-                    e.currentTarget.style.opacity = "0.8";
+                    e.currentTarget.style.opacity = "0.9";
                   }}
                 >
-                  {brand}
+                  <img
+                    src={brand.logo}
+                    alt={brand.name}
+                    style={{
+                      maxHeight: "40px",
+                      maxWidth: "120px",
+                      objectFit: "contain",
+                      filter: "grayscale(0%)",
+                    }}
+                    onError={(e) => {
+                      // Fallback to text if image fails to load
+                      e.currentTarget.style.display = "none";
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `<span style="font-size: 16px; font-weight: 700; color: #4a5568;">${brand.name}</span>`;
+                      }
+                    }}
+                  />
                 </div>
               ))}
             </div>
@@ -382,37 +408,58 @@ export default function Home() {
           </p>
           
           {/* Indian D2C Brand Logos */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap", marginBottom: 60 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 32, flexWrap: "wrap", marginBottom: 60 }}>
             {[
-              { name: "Nykaa", color: "#E91E63" },
-              { name: "Myntra", color: "#FF6B35" },
-              { name: "Zomato", color: "#FF6B6B" },
-              { name: "Swiggy", color: "#FF6B9D" },
-              { name: "Meesho", color: "#FF6B35" },
-              { name: "Mamaearth", color: "#10B981" },
+              { name: "Nykaa", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Nykaa_New_Logo.svg" },
+              { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
+              { name: "Zomato", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Zomato_Logo.svg" },
+              { name: "Swiggy", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" },
+              { name: "Meesho", logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Meesho_logo.png" },
+              { name: "Mamaearth", logo: "https://mamaearth.com/cdn/shop/files/mama.svg" },
             ].map((brand, idx) => (
               <div
                 key={idx}
                 style={{
-                  padding: "20px 32px",
-                  backgroundColor: brand.color,
-                  borderRadius: 12,
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: "#fff",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                  padding: "24px 36px",
+                  backgroundColor: "#fff",
+                  borderRadius: 16,
+                  border: "2px solid #e2e8f0",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                   transition: "all 0.2s",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: 70,
+                  minWidth: 140,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-4px)";
-                  e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
+                  e.currentTarget.style.transform = "translateY(-6px)";
+                  e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.12)";
+                  e.currentTarget.style.borderColor = "#14b8a6";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
+                  e.currentTarget.style.borderColor = "#e2e8f0";
                 }}
               >
-                {brand.name}
+                <img
+                  src={brand.logo}
+                  alt={brand.name}
+                  style={{
+                    maxHeight: "50px",
+                    maxWidth: "140px",
+                    objectFit: "contain",
+                  }}
+                  onError={(e) => {
+                    // Fallback to text if image fails to load
+                    e.currentTarget.style.display = "none";
+                    const parent = e.currentTarget.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<span style="font-size: 18px; font-weight: 700; color: #1a1a1a;">${brand.name}</span>`;
+                    }
+                  }}
+                />
               </div>
             ))}
           </div>
