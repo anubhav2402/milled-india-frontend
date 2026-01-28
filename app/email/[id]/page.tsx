@@ -23,29 +23,48 @@ export default async function EmailPage({
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#fafafa" }}>
-      {/* Header */}
+      {/* Sticky Header */}
       <header
         style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
           backgroundColor: "#fff",
           borderBottom: "1px solid #e5e5e5",
-          padding: "20px 0",
+          padding: "16px 0",
         }}
       >
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
-          <a
-            href="/"
-            style={{
-              color: "#1a1a1a",
-              textDecoration: "none",
-              fontSize: 14,
-              fontWeight: 500,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            ← Back to feed
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>Milled India</div>
           </a>
+          <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+            <a
+              href="/browse"
+              style={{
+                color: "#666",
+                textDecoration: "none",
+                fontSize: 14,
+                fontWeight: 500,
+              }}
+            >
+              ← Back to Browse
+            </a>
+            <a
+              href="/browse"
+              style={{
+                padding: "10px 24px",
+                backgroundColor: "#14b8a6",
+                color: "#fff",
+                textDecoration: "none",
+                borderRadius: 8,
+                fontWeight: 500,
+                fontSize: 14,
+              }}
+            >
+              Browse More
+            </a>
+          </div>
         </div>
       </header>
 
@@ -54,25 +73,27 @@ export default async function EmailPage({
         <div
           style={{
             backgroundColor: "#fff",
-            borderRadius: 12,
+            borderRadius: 16,
             border: "1px solid #e5e5e5",
-            padding: 32,
+            padding: 40,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
           }}
         >
           {/* Email header */}
-          <div style={{ marginBottom: 24, paddingBottom: 24, borderBottom: "1px solid #e5e5e5" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
+          <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: "2px solid #f0fdfa" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 16, flexWrap: "wrap", gap: 12 }}>
               {email.brand && (
                 <span
                   style={{
-                    padding: "6px 12px",
-                    backgroundColor: "#f0f0f0",
-                    borderRadius: 12,
-                    fontSize: 12,
+                    padding: "8px 16px",
+                    backgroundColor: "#f0fdfa",
+                    borderRadius: 20,
+                    fontSize: 13,
                     fontWeight: 600,
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
-                    color: "#666",
+                    color: "#14b8a6",
+                    border: "1px solid #ccfbf1",
                   }}
                 >
                   {email.brand}
@@ -82,6 +103,7 @@ export default async function EmailPage({
                 style={{
                   fontSize: 14,
                   color: "#999",
+                  fontWeight: 500,
                 }}
               >
                 {new Date(email.received_at).toLocaleString("en-IN", {
@@ -96,7 +118,7 @@ export default async function EmailPage({
             <h1
               style={{
                 margin: 0,
-                fontSize: 28,
+                fontSize: 32,
                 fontWeight: 700,
                 color: "#1a1a1a",
                 lineHeight: 1.3,
@@ -110,11 +132,33 @@ export default async function EmailPage({
           <article
             style={{
               fontSize: 16,
-              lineHeight: 1.6,
+              lineHeight: 1.7,
               color: "#333",
             }}
             dangerouslySetInnerHTML={{ __html: email.html }}
           />
+        </div>
+
+        {/* Bottom CTA */}
+        <div style={{ marginTop: 40, textAlign: "center" }}>
+          <a
+            href="/browse"
+            style={{
+              padding: "14px 28px",
+              backgroundColor: "#14b8a6",
+              color: "#fff",
+              textDecoration: "none",
+              borderRadius: 12,
+              fontWeight: 600,
+              fontSize: 16,
+              display: "inline-block",
+              transition: "background-color 0.2s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#0d9488")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#14b8a6")}
+          >
+            Browse More Emails
+          </a>
         </div>
       </main>
     </div>
