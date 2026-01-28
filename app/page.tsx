@@ -16,6 +16,7 @@ async function fetchEmails(q?: string, brand?: string): Promise<Email[]> {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (brand) params.set("brand", brand);
+    params.set("limit", "200"); // Fetch more emails per page
     const res = await fetch(`${base}/emails?${params.toString()}`, {
       cache: "no-store",
     });
