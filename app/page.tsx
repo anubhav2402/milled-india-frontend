@@ -55,146 +55,289 @@ export default function Home() {
       {/* Hero Section */}
       <section
         style={{
-          padding: "100px 24px",
-          textAlign: "center",
-          background: "linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 50%, #ffffff 100%)",
+          padding: "120px 24px",
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)",
           position: "relative",
           overflow: "hidden",
+          minHeight: "90vh",
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <h1
-            style={{
-              fontSize: "clamp(40px, 5vw, 64px)",
-              fontWeight: 800,
-              color: "#1a1a1a",
-              marginBottom: 24,
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            India's Largest Search Engine for Marketing Emails
-          </h1>
-          <p
-            style={{
-              fontSize: 22,
-              color: "#4a5568",
-              marginBottom: 40,
-              lineHeight: 1.6,
-              fontWeight: 400,
-            }}
-          >
-            From Nykaa to Myntra, Zomato to Swiggy—access thousands of real emails sent by India's top D2C brands. Copy winning campaigns, steal subject lines, and see what actually converts.
-          </p>
-          
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} style={{ maxWidth: 600, margin: "0 auto 32px" }}>
-            <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by brand, campaign type, or keyword..."
-                style={{
-                  flex: 1,
-                  padding: "16px 20px",
-                  border: "2px solid #e5e5e5",
-                  borderRadius: 12,
-                  fontSize: 16,
-                  outline: "none",
-                  transition: "border-color 0.2s",
-                  color: "#1a1a1a",
-                  backgroundColor: "#fff",
-                }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = "#14b8a6")}
-                onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e5e5")}
-              />
-              <button
-                type="submit"
-                style={{
-                  padding: "16px 32px",
-                  backgroundColor: "#14b8a6",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 12,
-                  fontSize: 16,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  transition: "background-color 0.2s",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#0d9488")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#14b8a6")}
-              >
-                Search
-              </button>
-            </div>
-            <p style={{ fontSize: 14, color: "#999", margin: 0 }}>Free access • No sign-up required • Updated daily</p>
-          </form>
+        {/* Decorative background elements */}
+        <div
+          style={{
+            position: "absolute",
+            top: "-50%",
+            right: "-20%",
+            width: "800px",
+            height: "800px",
+            background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
+            borderRadius: "50%",
+            filter: "blur(60px)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-30%",
+            left: "-10%",
+            width: "600px",
+            height: "600px",
+            background: "radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)",
+            borderRadius: "50%",
+            filter: "blur(50px)",
+          }}
+        />
 
-          {/* CTA Buttons */}
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-            <a
-              href="/browse"
+        <div style={{ maxWidth: 1400, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
+              gap: 80,
+              alignItems: "center",
+            }}
+          >
+            {/* Left Side: Content */}
+            <div>
+              <h1
+                style={{
+                  fontSize: "clamp(48px, 6vw, 72px)",
+                  fontWeight: 800,
+                  color: "#ffffff",
+                  marginBottom: 32,
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.03em",
+                  textShadow: "0 2px 20px rgba(0,0,0,0.1)",
+                }}
+              >
+                India's Largest Search Engine for Marketing Emails
+              </h1>
+              <p
+                style={{
+                  fontSize: "clamp(18px, 2vw, 24px)",
+                  color: "rgba(255,255,255,0.95)",
+                  marginBottom: 48,
+                  lineHeight: 1.6,
+                  fontWeight: 400,
+                  textShadow: "0 1px 10px rgba(0,0,0,0.1)",
+                }}
+              >
+                From Nykaa to Myntra, Zomato to Swiggy—access thousands of real emails sent by India's top D2C brands. Copy winning campaigns, steal subject lines, and see what actually converts.
+              </p>
+
+              {/* Search Bar */}
+              <form onSubmit={handleSearch} style={{ marginBottom: 32 }}>
+                <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by brand, campaign type, or keyword..."
+                    style={{
+                      flex: 1,
+                      padding: "18px 24px",
+                      border: "none",
+                      borderRadius: 14,
+                      fontSize: 16,
+                      outline: "none",
+                      transition: "all 0.2s",
+                      color: "#1a1a1a",
+                      backgroundColor: "#ffffff",
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.2)";
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    style={{
+                      padding: "18px 36px",
+                      backgroundColor: "#ffffff",
+                      color: "#667eea",
+                      border: "none",
+                      borderRadius: 14,
+                      fontSize: 16,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#f8f9fa";
+                      e.currentTarget.style.transform = "translateY(-2px)";
+                      e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.2)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "#ffffff";
+                      e.currentTarget.style.transform = "translateY(0)";
+                      e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
+                    }}
+                  >
+                    Search
+                  </button>
+                </div>
+                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.9)", margin: 0 }}>
+                  Free access • No sign-up required • Updated daily
+                </p>
+              </form>
+
+              {/* CTA Buttons */}
+              <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+                <a
+                  href="/browse"
+                  style={{
+                    padding: "18px 36px",
+                    backgroundColor: "#ffffff",
+                    color: "#667eea",
+                    textDecoration: "none",
+                    borderRadius: 14,
+                    fontWeight: 700,
+                    fontSize: 17,
+                    transition: "all 0.2s",
+                    display: "inline-block",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#f8f9fa";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "#ffffff";
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.2)";
+                  }}
+                >
+                  Start Exploring Now →
+                </a>
+                <a
+                  href="/browse"
+                  style={{
+                    padding: "18px 36px",
+                    backgroundColor: "transparent",
+                    color: "#ffffff",
+                    textDecoration: "none",
+                    borderRadius: 14,
+                    fontWeight: 700,
+                    fontSize: 17,
+                    border: "2px solid rgba(255,255,255,0.3)",
+                    transition: "all 0.2s",
+                    display: "inline-block",
+                    backdropFilter: "blur(10px)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                    e.currentTarget.style.transform = "translateY(0)";
+                  }}
+                >
+                  Browse All Emails
+                </a>
+              </div>
+            </div>
+
+            {/* Right Side: Image */}
+            <div
               style={{
-                padding: "18px 36px",
-                backgroundColor: "#14b8a6",
-                color: "#fff",
-                textDecoration: "none",
-                borderRadius: 12,
-                fontWeight: 700,
-                fontSize: 17,
-                transition: "all 0.2s",
-                display: "inline-block",
-                boxShadow: "0 4px 12px rgba(20, 184, 166, 0.3)",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#0d9488";
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 6px 16px rgba(20, 184, 166, 0.4)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#14b8a6";
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(20, 184, 166, 0.3)";
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
               }}
             >
-              Start Exploring Now →
-            </a>
-            <a
-              href="/browse"
-              style={{
-                padding: "18px 36px",
-                backgroundColor: "#fff",
-                color: "#14b8a6",
-                textDecoration: "none",
-                borderRadius: 12,
-                fontWeight: 700,
-                fontSize: 17,
-                border: "2px solid #14b8a6",
-                transition: "all 0.2s",
-                display: "inline-block",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f0fdfa";
-                e.currentTarget.style.borderColor = "#0d9488";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#fff";
-                e.currentTarget.style.borderColor = "#14b8a6";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              Browse All Emails
-            </a>
+              <div
+                style={{
+                  width: "100%",
+                  maxWidth: "600px",
+                  height: "500px",
+                  borderRadius: 24,
+                  overflow: "hidden",
+                  boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative",
+                }}
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&q=80"
+                  alt="Email marketing and design"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: 24,
+                  }}
+                  onError={(e) => {
+                    // Fallback if image fails
+                    e.currentTarget.style.display = "none";
+                    const parent = e.currentTarget.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `
+                        <div style="padding: 60px; text-align: center; color: rgba(255,255,255,0.9);">
+                          <div style="font-size: 80px; margin-bottom: 24px;">📧</div>
+                          <div style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Email Marketing</div>
+                          <div style="font-size: 18px; opacity: 0.8;">Design & Campaign Analysis</div>
+                        </div>
+                      `;
+                    }
+                  }}
+                />
+                {/* Decorative overlay */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: "linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%)",
+                    pointerEvents: "none",
+                  }}
+                />
+              </div>
+            </div>
           </div>
-          
-          {/* Brand Logos */}
-          <div style={{ marginTop: 60 }}>
-            <p style={{ fontSize: 14, color: "#718096", marginBottom: 24, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+
+          {/* Brand Logos - Moved below */}
+          <div style={{ marginTop: 80, textAlign: "center" }}>
+            <p
+              style={{
+                fontSize: 14,
+                color: "rgba(255,255,255,0.9)",
+                marginBottom: 32,
+                fontWeight: 500,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
               Trusted by India's Top Brands
             </p>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 40, flexWrap: "wrap", opacity: 0.9 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 32,
+                flexWrap: "wrap",
+              }}
+            >
               {[
                 { name: "Nykaa", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Nykaa_New_Logo.svg" },
                 { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
@@ -206,44 +349,43 @@ export default function Home() {
                 <div
                   key={idx}
                   style={{
-                    padding: "20px 32px",
-                    backgroundColor: "#fff",
+                    padding: "16px 28px",
+                    backgroundColor: "rgba(255,255,255,0.15)",
                     borderRadius: 12,
-                    border: "1px solid #e2e8f0",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255,255,255,0.2)",
                     transition: "all 0.2s",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: 60,
-                    minWidth: 120,
+                    height: 56,
+                    minWidth: 110,
                   }}
                   onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.25)";
                     e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.1)";
-                    e.currentTarget.style.opacity = "1";
+                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)";
                     e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)";
-                    e.currentTarget.style.opacity = "0.9";
+                    e.currentTarget.style.boxShadow = "none";
                   }}
                 >
                   <img
                     src={brand.logo}
                     alt={brand.name}
                     style={{
-                      maxHeight: "40px",
-                      maxWidth: "120px",
+                      maxHeight: "36px",
+                      maxWidth: "110px",
                       objectFit: "contain",
-                      filter: "grayscale(0%)",
+                      filter: "brightness(0) invert(1)",
                     }}
                     onError={(e) => {
-                      // Fallback to text if image fails to load
                       e.currentTarget.style.display = "none";
                       const parent = e.currentTarget.parentElement;
                       if (parent) {
-                        parent.innerHTML = `<span style="font-size: 16px; font-weight: 700; color: #4a5568;">${brand.name}</span>`;
+                        parent.innerHTML = `<span style="font-size: 14px; font-weight: 700; color: #ffffff;">${brand.name}</span>`;
                       }
                     }}
                   />
