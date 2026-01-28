@@ -18,30 +18,30 @@ export default function Home() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "transparent" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
       {/* Sticky Navbar */}
       <nav
         style={{
           position: "sticky",
           top: 0,
           zIndex: 1000,
-          background: "linear-gradient(135deg, rgba(102,126,234,0.95) 0%, rgba(118,75,162,0.95) 25%, rgba(240,147,251,0.95) 50%, rgba(79,172,254,0.95) 75%, rgba(0,242,254,0.95) 100%)",
-          backdropFilter: "blur(10px)",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          backgroundColor: "#ffffff",
+          borderBottom: "1px solid #e5e5e5",
           padding: "16px 0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
             <Logo size={32} />
-            <span style={{ fontSize: 24, fontWeight: 700, color: "#ffffff" }}>MailMuse</span>
+            <span style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>MailMuse</span>
           </a>
           <a
             href="/browse"
             style={{
               padding: "10px 24px",
-              backgroundColor: "#ffffff",
-              color: "#667eea",
+              backgroundColor: "#14b8a6",
+              color: "#ffffff",
               textDecoration: "none",
               borderRadius: 8,
               fontWeight: 600,
@@ -49,11 +49,11 @@ export default function Home() {
               transition: "all 0.2s",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f8f9fa";
+              e.currentTarget.style.backgroundColor = "#0d9488";
               e.currentTarget.style.transform = "translateY(-1px)";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.backgroundColor = "#14b8a6";
               e.currentTarget.style.transform = "translateY(0)";
             }}
           >
@@ -66,40 +66,14 @@ export default function Home() {
       <section
         style={{
           padding: "120px 24px",
-          background: "linear-gradient(135deg, rgba(200,220,255,0.9) 0%, rgba(220,200,255,0.9) 25%, rgba(255,200,250,0.9) 50%, rgba(200,230,255,0.9) 75%, rgba(200,250,255,0.9) 100%)",
+          backgroundColor: "#ffffff",
           position: "relative",
           overflow: "hidden",
           minHeight: "90vh",
           display: "flex",
           alignItems: "center",
-          marginTop: 0,
         }}
       >
-        {/* Decorative background elements */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-50%",
-            right: "-20%",
-            width: "800px",
-            height: "800px",
-            background: "radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)",
-            borderRadius: "50%",
-            filter: "blur(60px)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "-30%",
-            left: "-10%",
-            width: "600px",
-            height: "600px",
-            background: "radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)",
-            borderRadius: "50%",
-            filter: "blur(50px)",
-          }}
-        />
 
         <div style={{ maxWidth: 1400, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
           <div
@@ -169,25 +143,25 @@ export default function Home() {
                     type="submit"
                     style={{
                       padding: "18px 36px",
-                      backgroundColor: "#ffffff",
-                      color: "#667eea",
+                      backgroundColor: "#14b8a6",
+                      color: "#ffffff",
                       border: "none",
                       borderRadius: 14,
                       fontSize: 16,
                       fontWeight: 700,
                       cursor: "pointer",
                       transition: "all 0.2s",
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                      boxShadow: "0 4px 12px rgba(20, 184, 166, 0.3)",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#f8f9fa";
+                      e.currentTarget.style.backgroundColor = "#0d9488";
                       e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.2)";
+                      e.currentTarget.style.boxShadow = "0 6px 16px rgba(20, 184, 166, 0.4)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#ffffff";
+                      e.currentTarget.style.backgroundColor = "#14b8a6";
                       e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
+                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(20, 184, 166, 0.3)";
                     }}
                   >
                     Search
@@ -204,25 +178,25 @@ export default function Home() {
                   href="/browse"
                   style={{
                     padding: "18px 36px",
-                    backgroundColor: "#ffffff",
-                    color: "#667eea",
+                    backgroundColor: "#14b8a6",
+                    color: "#ffffff",
                     textDecoration: "none",
                     borderRadius: 14,
                     fontWeight: 700,
                     fontSize: 17,
                     transition: "all 0.2s",
                     display: "inline-block",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                    boxShadow: "0 4px 12px rgba(20, 184, 166, 0.3)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f8f9fa";
+                    e.currentTarget.style.backgroundColor = "#0d9488";
                     e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.2)";
+                    e.currentTarget.style.boxShadow = "0 6px 16px rgba(20, 184, 166, 0.4)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#ffffff";
+                    e.currentTarget.style.backgroundColor = "#14b8a6";
                     e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(20, 184, 166, 0.3)";
                   }}
                 >
                   Start Exploring Now →
@@ -232,27 +206,24 @@ export default function Home() {
                   style={{
                     padding: "18px 36px",
                     backgroundColor: "#ffffff",
-                    color: "#667eea",
+                    color: "#14b8a6",
                     textDecoration: "none",
                     borderRadius: 14,
                     fontWeight: 700,
                     fontSize: 17,
-                    border: "2px solid #ffffff",
+                    border: "2px solid #14b8a6",
                     transition: "all 0.2s",
                     display: "inline-block",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f8f9fa";
-                    e.currentTarget.style.borderColor = "#e5e5e5";
+                    e.currentTarget.style.backgroundColor = "#f0fdfa";
+                    e.currentTarget.style.borderColor = "#0d9488";
                     e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.15)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "#ffffff";
-                    e.currentTarget.style.borderColor = "#ffffff";
+                    e.currentTarget.style.borderColor = "#14b8a6";
                     e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.1)";
                   }}
                 >
                   Browse All Emails
@@ -269,23 +240,22 @@ export default function Home() {
                 position: "relative",
               }}
             >
-              <div
-                style={{
-                  width: "100%",
-                  maxWidth: "600px",
-                  height: "500px",
-                  borderRadius: 24,
-                  overflow: "hidden",
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-                  background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-                  backdropFilter: "blur(20px)",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative",
-                }}
-              >
+                <div
+                  style={{
+                    width: "100%",
+                    maxWidth: "600px",
+                    height: "500px",
+                    borderRadius: 24,
+                    overflow: "hidden",
+                    boxShadow: "0 20px 60px rgba(0,0,0,0.1)",
+                    backgroundColor: "#f8fafc",
+                    border: "1px solid #e5e5e5",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    position: "relative",
+                  }}
+                >
                 <img
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
                   alt="Marketing person working on email campaign"
@@ -308,18 +278,6 @@ export default function Home() {
                         </div>
                       `;
                     }
-                  }}
-                />
-                {/* Decorative overlay */}
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: "linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%)",
-                    pointerEvents: "none",
                   }}
                 />
               </div>
