@@ -40,9 +40,9 @@ export default async function Home({
 }: {
   searchParams?: Promise<{ q?: string; brand?: string }>;
 }) {
-  const params = await (searchParams || Promise.resolve({}));
-  const q = params.q;
-  const brand = params.brand;
+  const resolvedParams = searchParams ? await searchParams : { q: undefined, brand: undefined };
+  const q = resolvedParams.q;
+  const brand = resolvedParams.brand;
   const emails = await fetchEmails(q, brand);
   const allBrands = getBrands(emails);
 
