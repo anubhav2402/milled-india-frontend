@@ -9,10 +9,27 @@ type Email = {
 };
 
 async function fetchEmail(id: string): Promise<Email> {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL!;
-  const res = await fetch(`${base}/emails/${id}`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch email");
-  return res.json();
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!base) {
+    throw new Error("API URL not configured");
+  }
+  try {
+    const res = await fetch(`${base}/emails/${id}`, { cache: "no-store" });
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Failed to fetch email: ${res.status} ${errorText}`);
+    }
+    const data = await res.json();
+    // Ensure html field exists, use empty string as fallback
+    if (!data.html) {
+      console.warn("Email HTML not found in response, using empty string");
+      data.html = "";
+    }
+    return data as Email;
+  } catch (error) {
+    console.error("Error fetching email:", error);
+    throw error;
+  }
 }
 
 export default async function EmailPage({
@@ -20,8 +37,80 @@ export default async function EmailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const email = await fetchEmail(id);
+  let id: string;
+  let email: Email;
+  
+  try {
+    const resolvedParams = await params;
+    id = resolvedParams.id;
+    
+    if (!id || isNaN(Number(id))) {
+      throw new Error("Invalid email ID");
+    }
+    
+    email = await fetchEmail(id);
+  } catch (error) {
+    console.error("Email page error:", error);
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: "#fafafa" }}>
+        <header
+          style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 100,
+            backgroundColor: "#fff",
+            borderBottom: "1px solid #e5e5e5",
+            padding: "16px 0",
+          }}
+        >
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center", gap: 8 }}>
+              <Logo size={32} />
+              <span style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>MailMuse</span>
+            </a>
+            <a
+              href="/browse"
+              style={{
+                padding: "10px 24px",
+                backgroundColor: "#14b8a6",
+                color: "#fff",
+                textDecoration: "none",
+                borderRadius: 8,
+                fontWeight: 500,
+                fontSize: 14,
+              }}
+            >
+              Back to Browse
+            </a>
+          </div>
+        </header>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", padding: "40px" }}>
+          <div style={{ textAlign: "center" }}>
+            <h1 style={{ fontSize: 24, fontWeight: 600, marginBottom: 16, color: "#1a1a1a" }}>
+              Unable to Load Email
+            </h1>
+            <p style={{ fontSize: 16, color: "#666", marginBottom: 24 }}>
+              {error instanceof Error ? error.message : "There was an error loading this email."}
+            </p>
+            <a
+              href="/browse"
+              style={{
+                padding: "12px 24px",
+                backgroundColor: "#14b8a6",
+                color: "#fff",
+                textDecoration: "none",
+                borderRadius: 8,
+                fontWeight: 500,
+                display: "inline-block",
+              }}
+            >
+              Back to Browse
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#fafafa" }}>
