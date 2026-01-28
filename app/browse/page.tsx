@@ -82,6 +82,8 @@ export default async function BrowsePage({
                     border: "1px solid #ddd",
                     borderRadius: 8,
                     fontSize: 14,
+                    color: "#1a1a1a",
+                    backgroundColor: "#fff",
                   }}
                 />
                 <button
