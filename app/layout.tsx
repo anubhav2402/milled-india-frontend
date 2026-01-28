@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Milled India - Discover India's Best Brand Emails & Deals",
+  title: "MailMuse - Discover India's Best Brand Emails & Deals",
   description: "Search through thousands of promotional emails from top Indian brands. Find deals, track campaigns, and stay updated—all in one place.",
 };
 

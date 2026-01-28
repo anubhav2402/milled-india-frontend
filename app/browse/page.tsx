@@ -1,3 +1,5 @@
+import Logo from "../components/Logo";
+
 type Email = {
   id: number;
   subject: string;
@@ -61,9 +63,10 @@ export default async function BrowsePage({
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 24, marginBottom: 16 }}>
-            <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center", gap: 8 }}>
+              <Logo size={32} />
               <h1 style={{ margin: 0, fontSize: 28, fontWeight: 700, color: "#1a1a1a" }}>
-                Milled India
+                MailMuse
               </h1>
             </a>
             <div style={{ flex: 1, maxWidth: 400 }}>

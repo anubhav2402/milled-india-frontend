@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Logo from "./components/Logo";
 
 export default function Home() {
   const router = useRouter();
@@ -30,8 +31,9 @@ export default function Home() {
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <div style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>Milled India</div>
+          <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
+            <Logo size={32} />
+            <span style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>MailMuse</span>
           </a>
           <a
             href="/browse"
@@ -176,7 +178,7 @@ export default function Home() {
       <section style={{ padding: "80px 24px", backgroundColor: "#fafafa" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <h2 style={{ textAlign: "center", fontSize: 40, fontWeight: 700, marginBottom: 60, color: "#1a1a1a" }}>
-            Why Choose Milled India?
+            Why Choose MailMuse?
           </h2>
           <div
             style={{
@@ -310,10 +312,10 @@ export default function Home() {
       <section style={{ padding: "80px 24px", backgroundColor: "#fafafa" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
           <h2 style={{ fontSize: 32, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
-            Trusted by thousands of marketers and top brands
+            Trusted by marketers and brands across India
           </h2>
           <p style={{ fontSize: 18, color: "#666", marginBottom: 40 }}>
-            Join marketers, researchers, and deal hunters who use Milled India to stay ahead.
+            Join marketers, researchers, and deal hunters who use MailMuse to stay ahead.
           </p>
           
           {/* Placeholder logos */}
@@ -340,7 +342,7 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
             {[
               {
-                quote: "Milled India has become an essential tool for tracking competitor campaigns. The search is incredibly fast and accurate.",
+                quote: "MailMuse has become an essential tool for tracking competitor campaigns. The search is incredibly fast and accurate.",
                 author: "Priya Sharma",
                 role: "Marketing Director",
               },
@@ -514,7 +516,10 @@ export default function Home() {
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 40, marginBottom: 40 }}>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>Milled India</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+              <Logo size={40} />
+              <span style={{ fontSize: 24, fontWeight: 700 }}>MailMuse</span>
+            </div>
               <p style={{ fontSize: 14, color: "#999", lineHeight: 1.6 }}>
                 Your gateway to India's best brand emails and deals.
               </p>
@@ -545,7 +550,7 @@ export default function Home() {
             </div>
           </div>
           <div style={{ borderTop: "1px solid #333", paddingTop: 40, textAlign: "center", color: "#999", fontSize: 14 }}>
-            © 2026 Milled India. All rights reserved.
+            © 2026 MailMuse. All rights reserved.
           </div>
         </div>
       </footer>

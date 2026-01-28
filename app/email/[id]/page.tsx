@@ -1,3 +1,5 @@
+import Logo from "../../components/Logo";
+
 type Email = {
   id: number;
   subject: string;
@@ -35,8 +37,9 @@ export default async function EmailPage({
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
-            <div style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>Milled India</div>
+          <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center", gap: 8 }}>
+            <Logo size={32} />
+            <span style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>MailMuse</span>
           </a>
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
             <a
