@@ -7,14 +7,27 @@ type Email = {
 };
 
 async function fetchEmails(q?: string, brand?: string): Promise<Email[]> {
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL!;
-  const params = new URLSearchParams();
-  if (q) params.set("q", q);
-  if (brand) params.set("brand", brand);
-  const res = await fetch(`${base}/emails?${params.toString()}`, {
-    cache: "no-store",
-  });
-  return res.json();
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (!base) {
+    console.error("NEXT_PUBLIC_API_BASE_URL is not set");
+    return [];
+  }
+  try {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (brand) params.set("brand", brand);
+    const res = await fetch(`${base}/emails?${params.toString()}`, {
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      console.error(`API error: ${res.status}`);
+      return [];
+    }
+    return res.json();
+  } catch (error) {
+    console.error("Failed to fetch emails:", error);
+    return [];
+  }
 }
 
 function getBrands(emails: Email[]): string[] {
@@ -25,10 +38,11 @@ function getBrands(emails: Email[]): string[] {
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: { q?: string; brand?: string };
+  searchParams?: Promise<{ q?: string; brand?: string }>;
 }) {
-  const q = searchParams?.q;
-  const brand = searchParams?.brand;
+  const params = await (searchParams || Promise.resolve({}));
+  const q = params.q;
+  const brand = params.brand;
   const emails = await fetchEmails(q, brand);
   const allBrands = getBrands(emails);
 
@@ -149,14 +163,6 @@ export default async function Home({
                   display: "block",
                   transition: "all 0.2s",
                   cursor: "pointer",
-                }}
-                onMouseEnter={(ev) => {
-                  ev.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
-                  ev.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(ev) => {
-                  ev.currentTarget.style.boxShadow = "none";
-                  ev.currentTarget.style.transform = "translateY(0)";
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: 12 }}>
