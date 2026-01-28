@@ -22,5 +22,24 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Email content styling */
+article img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+article table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
+article a {
+  color: #0066cc;
+  text-decoration: underline;
 }
