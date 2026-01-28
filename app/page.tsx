@@ -18,33 +18,43 @@ export default function Home() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#ffffff" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "transparent" }}>
       {/* Sticky Navbar */}
       <nav
         style={{
           position: "sticky",
           top: 0,
           zIndex: 1000,
-          backgroundColor: "#fff",
-          borderBottom: "1px solid #e5e5e5",
+          background: "linear-gradient(135deg, rgba(102,126,234,0.95) 0%, rgba(118,75,162,0.95) 25%, rgba(240,147,251,0.95) 50%, rgba(79,172,254,0.95) 75%, rgba(0,242,254,0.95) 100%)",
+          backdropFilter: "blur(10px)",
+          borderBottom: "1px solid rgba(255,255,255,0.1)",
           padding: "16px 0",
         }}
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
             <Logo size={32} />
-            <span style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>MailMuse</span>
+            <span style={{ fontSize: 24, fontWeight: 700, color: "#ffffff" }}>MailMuse</span>
           </a>
           <a
             href="/browse"
             style={{
               padding: "10px 24px",
-              backgroundColor: "#14b8a6",
-              color: "#fff",
+              backgroundColor: "#ffffff",
+              color: "#667eea",
               textDecoration: "none",
               borderRadius: 8,
-              fontWeight: 500,
+              fontWeight: 600,
               fontSize: 14,
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f8f9fa";
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#ffffff";
+              e.currentTarget.style.transform = "translateY(0)";
             }}
           >
             Explore Database
@@ -56,12 +66,13 @@ export default function Home() {
       <section
         style={{
           padding: "120px 24px",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%)",
+          background: "linear-gradient(135deg, rgba(200,220,255,0.9) 0%, rgba(220,200,255,0.9) 25%, rgba(255,200,250,0.9) 50%, rgba(200,230,255,0.9) 75%, rgba(200,250,255,0.9) 100%)",
           position: "relative",
           overflow: "hidden",
           minHeight: "90vh",
           display: "flex",
           alignItems: "center",
+          marginTop: 0,
         }}
       >
         {/* Decorative background elements */}
@@ -105,11 +116,10 @@ export default function Home() {
                 style={{
                   fontSize: "clamp(48px, 6vw, 72px)",
                   fontWeight: 800,
-                  color: "#ffffff",
+                  color: "#1a1a1a",
                   marginBottom: 32,
                   lineHeight: 1.1,
                   letterSpacing: "-0.03em",
-                  textShadow: "0 2px 20px rgba(0,0,0,0.1)",
                 }}
               >
                 India's Largest Search Engine for Marketing Emails
@@ -117,11 +127,10 @@ export default function Home() {
               <p
                 style={{
                   fontSize: "clamp(18px, 2vw, 24px)",
-                  color: "rgba(255,255,255,0.95)",
+                  color: "#4a5568",
                   marginBottom: 48,
                   lineHeight: 1.6,
                   fontWeight: 400,
-                  textShadow: "0 1px 10px rgba(0,0,0,0.1)",
                 }}
               >
                 From Nykaa to Myntra, Zomato to Swiggy—access thousands of real emails sent by India's top D2C brands. Copy winning campaigns, steal subject lines, and see what actually converts.
@@ -184,7 +193,7 @@ export default function Home() {
                     Search
                   </button>
                 </div>
-                <p style={{ fontSize: 14, color: "rgba(255,255,255,0.9)", margin: 0 }}>
+                <p style={{ fontSize: 14, color: "#666", margin: 0 }}>
                   Free access • No sign-up required • Updated daily
                 </p>
               </form>
@@ -203,17 +212,17 @@ export default function Home() {
                     fontSize: 17,
                     transition: "all 0.2s",
                     display: "inline-block",
-                    boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = "#f8f9fa";
                     e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.25)";
+                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.2)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = "#ffffff";
                     e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.2)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.15)";
                   }}
                 >
                   Start Exploring Now →
@@ -222,26 +231,28 @@ export default function Home() {
                   href="/browse"
                   style={{
                     padding: "18px 36px",
-                    backgroundColor: "transparent",
-                    color: "#ffffff",
+                    backgroundColor: "#ffffff",
+                    color: "#667eea",
                     textDecoration: "none",
                     borderRadius: 14,
                     fontWeight: 700,
                     fontSize: 17,
-                    border: "2px solid rgba(255,255,255,0.3)",
+                    border: "2px solid #ffffff",
                     transition: "all 0.2s",
                     display: "inline-block",
-                    backdropFilter: "blur(10px)",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)";
+                    e.currentTarget.style.backgroundColor = "#f8f9fa";
+                    e.currentTarget.style.borderColor = "#e5e5e5";
                     e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.15)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                    e.currentTarget.style.backgroundColor = "#ffffff";
+                    e.currentTarget.style.borderColor = "#ffffff";
                     e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0,0,0,0.1)";
                   }}
                 >
                   Browse All Emails
@@ -276,8 +287,8 @@ export default function Home() {
                 }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&q=80"
-                  alt="Email marketing and design"
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
+                  alt="Marketing person working on email campaign"
                   style={{
                     width: "100%",
                     height: "100%",
@@ -290,10 +301,10 @@ export default function Home() {
                     const parent = e.currentTarget.parentElement;
                     if (parent) {
                       parent.innerHTML = `
-                        <div style="padding: 60px; text-align: center; color: rgba(255,255,255,0.9);">
-                          <div style="font-size: 80px; margin-bottom: 24px;">📧</div>
-                          <div style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Email Marketing</div>
-                          <div style="font-size: 18px; opacity: 0.8;">Design & Campaign Analysis</div>
+                        <div style="padding: 60px; text-align: center; color: rgba(102,126,234,0.9);">
+                          <div style="font-size: 80px; margin-bottom: 24px;">👨‍💼</div>
+                          <div style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Marketing Professional</div>
+                          <div style="font-size: 18px; opacity: 0.8;">Working on Email Campaign</div>
                         </div>
                       `;
                     }
@@ -320,7 +331,7 @@ export default function Home() {
             <p
               style={{
                 fontSize: 14,
-                color: "rgba(255,255,255,0.9)",
+                color: "#666",
                 marginBottom: 32,
                 fontWeight: 500,
                 textTransform: "uppercase",
@@ -350,26 +361,26 @@ export default function Home() {
                   key={idx}
                   style={{
                     padding: "16px 28px",
-                    backgroundColor: "rgba(255,255,255,0.15)",
+                    backgroundColor: "#ffffff",
                     borderRadius: 12,
-                    backdropFilter: "blur(10px)",
-                    border: "1px solid rgba(255,255,255,0.2)",
+                    border: "1px solid #e2e8f0",
                     transition: "all 0.2s",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     height: 56,
                     minWidth: 110,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.25)";
+                    e.currentTarget.style.backgroundColor = "#f8f9fa";
                     e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.2)";
+                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.12)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.15)";
+                    e.currentTarget.style.backgroundColor = "#ffffff";
                     e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
                   }}
                 >
                   <img
@@ -379,13 +390,12 @@ export default function Home() {
                       maxHeight: "36px",
                       maxWidth: "110px",
                       objectFit: "contain",
-                      filter: "brightness(0) invert(1)",
                     }}
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                       const parent = e.currentTarget.parentElement;
                       if (parent) {
-                        parent.innerHTML = `<span style="font-size: 14px; font-weight: 700; color: #ffffff;">${brand.name}</span>`;
+                        parent.innerHTML = `<span style="font-size: 14px; font-weight: 700; color: #1a1a1a;">${brand.name}</span>`;
                       }
                     }}
                   />
@@ -408,7 +418,7 @@ export default function Home() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
               gap: 40,
             }}
           >
@@ -427,11 +437,6 @@ export default function Home() {
                 icon: "⚡",
                 title: "Find What Works Fast",
                 description: "Search by brand, campaign type, or keyword. See what messaging converts, what subject lines get opens, and what CTAs drive clicks.",
-              },
-              {
-                icon: "🚀",
-                title: "Copy & Convert",
-                description: "Don't reinvent the wheel. Study proven campaigns from brands doing millions in revenue, then adapt their strategies to your brand.",
               },
             ].map((feature, idx) => (
               <div
@@ -641,84 +646,6 @@ export default function Home() {
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Details */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#f8fafc" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))", gap: 60, alignItems: "center", marginBottom: 60 }}>
-            <div>
-              <h2 style={{ fontSize: 40, fontWeight: 800, marginBottom: 24, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
-                See Every Email Nykaa, Myntra & Zomato Send
-              </h2>
-              <p style={{ fontSize: 19, color: "#4a5568", lineHeight: 1.7, marginBottom: 24, fontWeight: 400 }}>
-                Our database has every email sent by India's top D2C brands. Welcome sequences, flash sales, cart abandonment, re-engagement—everything is searchable and accessible.
-              </p>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {["Search by brand (Nykaa, Myntra, Zomato, etc.)", "Filter by campaign type (sales, welcome, cart abandonment)", "View full email HTML with images and design", "Track what campaigns brands send and when"].map((item, idx) => (
-                  <li key={idx} style={{ padding: "14px 0", fontSize: 17, color: "#4a5568", display: "flex", alignItems: "center", gap: 12, fontWeight: 400 }}>
-                    <span style={{ color: "#14b8a6", fontSize: 22, fontWeight: 700 }}>✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div
-              style={{
-                height: 350,
-                background: "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)",
-                borderRadius: 20,
-                border: "3px solid #14b8a6",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#14b8a6",
-                fontSize: 20,
-                fontWeight: 700,
-                boxShadow: "0 8px 24px rgba(20, 184, 166, 0.2)",
-              }}
-            >
-              📧 Email Database Preview
-            </div>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))", gap: 60, alignItems: "center" }}>
-            <div
-              style={{
-                height: 350,
-                background: "linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)",
-                borderRadius: 20,
-                border: "3px solid #f59e0b",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#92400e",
-                fontSize: 20,
-                fontWeight: 700,
-                boxShadow: "0 8px 24px rgba(245, 158, 11, 0.2)",
-                order: 2,
-              }}
-            >
-              📊 Campaign Analysis Preview
-            </div>
-            <div style={{ order: 1 }}>
-              <h2 style={{ fontSize: 40, fontWeight: 800, marginBottom: 24, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
-                Copy Winning Campaigns in Minutes
-              </h2>
-              <p style={{ fontSize: 19, color: "#4a5568", lineHeight: 1.7, marginBottom: 24, fontWeight: 400 }}>
-                Filter by brand, campaign type, or date. Study subject lines that get opens, CTAs that drive clicks, and messaging that converts. Then steal the best parts.
-              </p>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {["Filter by brand and campaign type", "Study subject lines that get 30%+ opens", "Copy CTAs that drive conversions", "See campaign timing and frequency"].map((item, idx) => (
-                  <li key={idx} style={{ padding: "14px 0", fontSize: 17, color: "#4a5568", display: "flex", alignItems: "center", gap: 12, fontWeight: 400 }}>
-                    <span style={{ color: "#14b8a6", fontSize: 22, fontWeight: 700 }}>✓</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </div>
       </section>
