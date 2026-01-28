@@ -17,14 +17,20 @@ async function fetchEmails(q?: string, brand?: string): Promise<Email[]> {
     if (q) params.set("q", q);
     if (brand) params.set("brand", brand);
     params.set("limit", "200"); // Fetch more emails per page
-    const res = await fetch(`${base}/emails?${params.toString()}`, {
+    const url = `${base}/emails?${params.toString()}`;
+    console.log("Fetching from:", url); // Debug log
+    const res = await fetch(url, {
       cache: "no-store",
     });
     if (!res.ok) {
-      console.error(`API error: ${res.status}`);
+      console.error(`API error: ${res.status} ${res.statusText}`);
+      const text = await res.text();
+      console.error("Response:", text);
       return [];
     }
-    return res.json();
+    const data = await res.json();
+    console.log(`Fetched ${data.length} emails`); // Debug log
+    return data;
   } catch (error) {
     console.error("Failed to fetch emails:", error);
     return [];
@@ -140,7 +146,25 @@ export default async function Home({
       <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
         {emails.length === 0 ? (
           <div style={{ textAlign: "center", padding: "60px 20px", color: "#999" }}>
-            <p style={{ fontSize: 16 }}>No emails found.</p>
+            <p style={{ fontSize: 16, marginBottom: 12 }}>No emails found.</p>
+            <div style={{ fontSize: 12, color: "#666", textAlign: "left", maxWidth: 600, margin: "0 auto" }}>
+              <p>Debugging info:</p>
+              <ul style={{ listStyle: "none", padding: 0 }}>
+                <li>API URL: {process.env.NEXT_PUBLIC_API_BASE_URL || "❌ Not set"}</li>
+                <li>Query: {q || "(none)"}</li>
+                <li>Brand filter: {brand || "(none)"}</li>
+              </ul>
+              <p style={{ marginTop: 16 }}>
+                Try checking:{" "}
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_BASE_URL}/emails`}
+                  target="_blank"
+                  style={{ color: "#0066cc" }}
+                >
+                  {process.env.NEXT_PUBLIC_API_BASE_URL}/emails
+                </a>
+              </p>
+            </div>
           </div>
         ) : (
           <div
