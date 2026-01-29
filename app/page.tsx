@@ -254,25 +254,10 @@ export default function Home() {
         }}
       >
         <div className="navbar-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 48px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
-            <Logo size={44} />
-            <span className="navbar-logo-text" style={{ fontSize: 26, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.02em" }}>MailMuse</span>
-          </a>
-          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <a
-              href="/browse"
-              className="navbar-link"
-              style={{
-                fontSize: 14,
-                fontWeight: 500,
-                color: "#64748b",
-                textDecoration: "none",
-                transition: "color 0.2s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#14b8a6")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#64748b")}
-            >
-              Browse Emails
+          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+            <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
+              <Logo size={44} />
+              <span className="navbar-logo-text" style={{ fontSize: 26, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.02em" }}>MailMuse</span>
             </a>
             <a
               href="/brands"
@@ -289,31 +274,31 @@ export default function Home() {
             >
               Browse Brands
             </a>
-            <a
-              href="/browse"
-              className="navbar-cta"
-              style={{
-                padding: "10px 24px",
-                backgroundColor: "#14b8a6",
-                color: "#ffffff",
-                textDecoration: "none",
-                borderRadius: 8,
-                fontWeight: 600,
-                fontSize: 14,
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#0d9488";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#14b8a6";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
-            >
-              Explore Database
-            </a>
           </div>
+          <a
+            href="/browse"
+            className="navbar-cta"
+            style={{
+              padding: "10px 24px",
+              backgroundColor: "#14b8a6",
+              color: "#ffffff",
+              textDecoration: "none",
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: 14,
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#0d9488";
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#14b8a6";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            Explore Database
+          </a>
         </div>
       </nav>
 
@@ -433,65 +418,6 @@ export default function Home() {
                 </p>
               </form>
 
-              {/* CTA Buttons */}
-              <div className="cta-buttons" style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                <a
-                  href="/browse"
-                  className="cta-button"
-                  style={{
-                    padding: "14px 28px",
-                    backgroundColor: "#14b8a6",
-                    color: "#ffffff",
-                    textDecoration: "none",
-                    borderRadius: 10,
-                    fontWeight: 600,
-                    fontSize: 16,
-                    transition: "all 0.2s",
-                    display: "inline-block",
-                    boxShadow: "0 4px 12px rgba(20, 184, 166, 0.3)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#0d9488";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 6px 16px rgba(20, 184, 166, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#14b8a6";
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(20, 184, 166, 0.3)";
-                  }}
-                >
-                  Start Exploring Now →
-                </a>
-                <a
-                  href="/browse"
-                  className="cta-button"
-                  style={{
-                    padding: "14px 28px",
-                    backgroundColor: "#ffffff",
-                    color: "#14b8a6",
-                    textDecoration: "none",
-                    borderRadius: 10,
-                    fontWeight: 600,
-                    fontSize: 16,
-                    border: "2px solid #14b8a6",
-                    transition: "all 0.2s",
-                    display: "inline-block",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f0fdfa";
-                    e.currentTarget.style.borderColor = "#0d9488";
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#ffffff";
-                    e.currentTarget.style.borderColor = "#14b8a6";
-                    e.currentTarget.style.transform = "translateY(0)";
-                  }}
-                >
-                  Browse All Emails
-                </a>
-              </div>
             </div>
 
             {/* Right Side: Image */}
@@ -1239,47 +1165,25 @@ export default function Home() {
           <p className="final-cta-subtitle" style={{ fontSize: 17, marginBottom: 32, opacity: 0.95, fontWeight: 400, lineHeight: 1.7 }}>
             Free access to thousands of real emails from India's top D2C brands. Copy what works, boost your conversions, and grow your email revenue—no credit card required.
           </p>
-          <div className="final-cta-buttons" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-            <a
-              href="/browse"
-              className="final-cta-button"
-              style={{
-                padding: "14px 28px",
-                backgroundColor: "#fff",
-                color: "#14b8a6",
-                textDecoration: "none",
-                borderRadius: 10,
-                fontWeight: 600,
-                fontSize: 15,
-                transition: "transform 0.2s",
-                display: "inline-block",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            >
-              Start Exploring Now →
-            </a>
-            <a
-              href="/browse"
-              className="final-cta-button"
-              style={{
-                padding: "14px 28px",
-                backgroundColor: "transparent",
-                color: "#fff",
-                textDecoration: "none",
-                borderRadius: 10,
-                fontWeight: 600,
-                fontSize: 15,
-                border: "2px solid #fff",
-                transition: "background-color 0.2s",
-                display: "inline-block",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-            >
-              Explore Database
-            </a>
-          </div>
+          <a
+            href="/browse"
+            className="final-cta-button"
+            style={{
+              padding: "16px 32px",
+              backgroundColor: "#fff",
+              color: "#14b8a6",
+              textDecoration: "none",
+              borderRadius: 10,
+              fontWeight: 600,
+              fontSize: 16,
+              transition: "transform 0.2s",
+              display: "inline-block",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          >
+            Explore Database
+          </a>
         </div>
       </section>
 

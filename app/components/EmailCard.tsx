@@ -17,16 +17,7 @@ export default function EmailCard({ id, subject, brand, preview, industry, recei
   const [html, setHtml] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLAnchorElement>(null);
-
-  const copySubject = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    navigator.clipboard.writeText(subject);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   const brandInitial = brand ? brand.charAt(0).toUpperCase() : "?";
   const receivedDate = new Date(received_at);
@@ -122,38 +113,6 @@ export default function EmailCard({ id, subject, brand, preview, industry, recei
           {campaignType}
         </div>
       )}
-
-      {/* Copy Button - positioned absolutely */}
-      <button
-        onClick={copySubject}
-        title="Copy subject line"
-        style={{
-          position: "absolute",
-          top: 12,
-          right: 12,
-          background: copied ? "#14b8a6" : "rgba(255, 255, 255, 0.95)",
-          border: "none",
-          borderRadius: 8,
-          padding: "8px 10px",
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "all 0.2s",
-          zIndex: 10,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        }}
-      >
-        {copied ? (
-          <svg width="14" height="14" fill="none" stroke="#fff" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        ) : (
-          <svg width="14" height="14" fill="none" stroke="#64748b" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
-        )}
-      </button>
 
       {/* Email Preview - Scaled iframe */}
       <div
