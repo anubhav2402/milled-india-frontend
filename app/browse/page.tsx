@@ -43,9 +43,17 @@ const DATE_FILTERS = [
 const ITEMS_PER_PAGE = 24;
 const FETCH_BATCH_SIZE = 100; // Fetch 100 emails at a time from server
 
+type BrandStats = {
+  [brand: string]: {
+    email_count: number;
+    send_frequency: string;
+  };
+};
+
 export default function BrowsePage() {
   const [emails, setEmails] = useState<Email[]>([]);
   const [allBrands, setAllBrands] = useState<string[]>([]);
+  const [brandStats, setBrandStats] = useState<BrandStats>({});
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -117,11 +125,30 @@ export default function BrowsePage() {
     }
   }, []);
 
+  // Fetch brand stats (send frequency)
+  const fetchBrandStats = useCallback(async () => {
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+    if (!base) return;
+    
+    try {
+      const res = await fetch(`${base}/brands/stats`, {
+        cache: "force-cache",
+        next: { revalidate: 300 },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setBrandStats(data);
+      }
+    } catch {
+      console.log("Brand stats endpoint not available");
+    }
+  }, []);
+
   // Initial load
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      await Promise.all([fetchEmails(), fetchBrands()]);
+      await Promise.all([fetchEmails(), fetchBrands(), fetchBrandStats()]);
       setLoading(false);
       setInitialLoadDone(true);
     };
@@ -555,6 +582,8 @@ export default function BrowsePage() {
                   preview={e.preview}
                   industry={e.industry}
                   received_at={e.received_at}
+                  campaignType={e.type}
+                  sendFrequency={e.brand ? brandStats[e.brand]?.send_frequency : undefined}
                 />
               ))}
             </div>

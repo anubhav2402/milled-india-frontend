@@ -34,36 +34,54 @@ type Email = {
   category?: string;
 };
 
+type BrandStats = {
+  [brand: string]: {
+    email_count: number;
+    send_frequency: string;
+  };
+};
+
 function BrowseSection() {
   const [selectedIndustry, setSelectedIndustry] = useState("All");
   const [emails, setEmails] = useState<Email[]>([]);
+  const [brandStats, setBrandStats] = useState<BrandStats>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchEmails = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
         const base = process.env.NEXT_PUBLIC_API_BASE_URL;
         if (!base) return;
         
+        // Fetch emails
         let url = `${base}/emails?limit=12`;
         if (selectedIndustry !== "All") {
           url += `&industry=${encodeURIComponent(selectedIndustry)}`;
         }
         
-        const res = await fetch(url);
-        if (res.ok) {
-          const data = await res.json();
+        const [emailsRes, statsRes] = await Promise.all([
+          fetch(url),
+          fetch(`${base}/brands/stats`)
+        ]);
+        
+        if (emailsRes.ok) {
+          const data = await emailsRes.json();
           setEmails(data);
         }
+        
+        if (statsRes.ok) {
+          const stats = await statsRes.json();
+          setBrandStats(stats);
+        }
       } catch (err) {
-        console.error("Failed to fetch emails:", err);
+        console.error("Failed to fetch data:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEmails();
+    fetchData();
   }, [selectedIndustry]);
 
   return (
@@ -169,6 +187,8 @@ function BrowseSection() {
                 preview={email.preview}
                 industry={email.industry}
                 received_at={email.received_at}
+                campaignType={email.type}
+                sendFrequency={email.brand ? brandStats[email.brand]?.send_frequency : undefined}
               />
             ))}
           </div>
@@ -302,7 +322,7 @@ export default function Home() {
                   letterSpacing: "-0.03em",
                 }}
               >
-                India's Largest Search Engine for Marketing Emails
+                See Every Email Your Competitors Send
               </h1>
               <p
                 className="hero-subtitle"
@@ -314,7 +334,7 @@ export default function Home() {
                   fontWeight: 400,
                 }}
               >
-                Access thousands of real emails sent by India's top D2C brands and marketplaces. Copy winning campaigns, steal subject lines, and see what actually converts.
+                Track 3,000+ email campaigns from India's top brands. Steal winning subject lines, copy campaign strategies, and outperform your competition—all for free.
               </p>
 
               {/* Search Bar */}
@@ -600,10 +620,10 @@ export default function Home() {
             </span>
           </div>
           <h2 className="section-title" style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
-            Why Ecommerce Brands Love MailMuse
+            Your Competitive Intelligence Advantage
           </h2>
           <p className="section-subtitle" style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 640, margin: "0 auto 48px" }}>
-            Stop guessing. See exactly what top brands send their customers—then copy what works.
+            Stop guessing what works. See exactly what your competitors send—before their customers do.
           </p>
           <div
             className="cards-grid"
@@ -615,21 +635,21 @@ export default function Home() {
           >
             {[
               {
-                icon: "🎯",
-                title: "Steal Winning Campaigns",
-                description: "See every email top D2C brands send. Copy their subject lines, CTAs, and messaging—then watch your conversions soar.",
+                icon: "🔍",
+                title: "Track Any Competitor",
+                description: "Monitor every email from top D2C brands. Know when they launch sales, what subject lines they test, and how often they email.",
                 color: "#14b8a6",
               },
               {
-                icon: "📧",
-                title: "Complete Email Archive",
-                description: "Welcome emails, flash sales, cart abandonment, re-engagement—every campaign from India's top D2C brands, all in one place.",
+                icon: "📋",
+                title: "One-Click Copy",
+                description: "Found a winning subject line? Copy it instantly. Browse campaigns by type—welcome, sale, abandoned cart, re-engagement, and more.",
                 color: "#6366f1",
               },
               {
-                icon: "⚡",
-                title: "Find What Works Fast",
-                description: "Search by brand, campaign type, or keyword. See what messaging converts, what subject lines get opens, and what CTAs drive clicks.",
+                icon: "📊",
+                title: "See Send Frequency",
+                description: "Know how often each brand emails. See patterns in timing, campaign types, and messaging strategies that drive results.",
                 color: "#f59e0b",
               },
             ].map((feature, idx) => (
