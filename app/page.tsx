@@ -369,11 +369,11 @@ export default function Home() {
       {/* Hero Section */}
       <section
         style={{
-          padding: "120px 24px",
+          padding: "60px 24px 100px",
           backgroundColor: "#ffffff",
           position: "relative",
           overflow: "hidden",
-          minHeight: "90vh",
+          minHeight: "85vh",
           display: "flex",
           alignItems: "center",
         }}
