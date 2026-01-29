@@ -77,25 +77,25 @@ function BrowseSection() {
         <div style={{ 
           display: "flex", 
           justifyContent: "center", 
-          marginBottom: 24 
+          marginBottom: 20 
         }}>
           <span style={{
-            padding: "8px 20px",
-            backgroundColor: "#fef3c7",
-            color: "#d97706",
-            fontSize: 13,
+            padding: "6px 16px",
+            backgroundColor: "#fff7ed",
+            color: "#ea580c",
+            fontSize: 12,
             fontWeight: 600,
-            borderRadius: 50,
+            borderRadius: 6,
             textTransform: "uppercase",
-            letterSpacing: "0.1em",
+            letterSpacing: "0.08em",
           }}>
             Explore
           </span>
         </div>
-        <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+        <h2 style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
           Browse by Industry
         </h2>
-        <p style={{ textAlign: "center", fontSize: 20, color: "#4a5568", marginBottom: 40, fontWeight: 400 }}>
+        <p style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 40, fontWeight: 400, maxWidth: 600, margin: "0 auto 40px" }}>
           Explore email campaigns from India's top brands across industries
         </p>
 
@@ -687,25 +687,25 @@ export default function Home() {
           <div style={{ 
             display: "flex", 
             justifyContent: "center", 
-            marginBottom: 24 
+            marginBottom: 20 
           }}>
             <span style={{
-              padding: "8px 20px",
+              padding: "6px 16px",
               backgroundColor: "#f0fdfa",
               color: "#14b8a6",
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 600,
-              borderRadius: 50,
+              borderRadius: 6,
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
+              letterSpacing: "0.08em",
             }}>
               Why MailMuse
             </span>
           </div>
-          <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+          <h2 style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
             Why Ecommerce Brands Love MailMuse
           </h2>
-          <p style={{ textAlign: "center", fontSize: 20, color: "#4a5568", marginBottom: 60, fontWeight: 400 }}>
+          <p style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 640, margin: "0 auto 48px" }}>
             Stop guessing. See exactly what Nykaa, Myntra, and other top brands send their customers—then copy what works.
           </p>
           <div
@@ -767,14 +767,13 @@ export default function Home() {
                   backgroundColor: feature.color,
                 }} />
                 <div style={{ 
-                  fontSize: 56, 
-                  marginBottom: 24,
-                  filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.1))",
+                  fontSize: 48, 
+                  marginBottom: 20,
                 }}>{feature.icon}</div>
-                <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+                <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 12, color: "#1a1a1a" }}>
                   {feature.title}
                 </h3>
-                <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.7, margin: 0 }}>
                   {feature.description}
                 </p>
               </div>
@@ -806,25 +805,25 @@ export default function Home() {
           <div style={{ 
             display: "flex", 
             justifyContent: "center", 
-            marginBottom: 24 
+            marginBottom: 20 
           }}>
             <span style={{
-              padding: "8px 20px",
+              padding: "6px 16px",
               backgroundColor: "#14b8a6",
               color: "#fff",
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 600,
-              borderRadius: 50,
+              borderRadius: 6,
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
+              letterSpacing: "0.08em",
             }}>
               Perfect For
             </span>
           </div>
-          <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+          <h2 style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
             Who Is This For?
           </h2>
-          <p style={{ textAlign: "center", fontSize: 20, color: "#4a5568", marginBottom: 60, fontWeight: 400 }}>
+          <p style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 500, margin: "0 auto 48px" }}>
             Built for teams who want to win at email marketing
           </p>
           <div
@@ -865,20 +864,20 @@ export default function Home() {
                 background: "linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%)",
               }} />
               <div style={{ 
-                width: 72,
-                height: 72,
-                borderRadius: 20,
+                width: 56,
+                height: 56,
+                borderRadius: 14,
                 backgroundColor: "#f0fdfa",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 36,
-                marginBottom: 24,
+                fontSize: 28,
+                marginBottom: 20,
               }}>🏢</div>
-              <h3 style={{ fontSize: 26, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+              <h3 style={{ fontSize: 22, fontWeight: 600, marginBottom: 12, color: "#1a1a1a" }}>
                 Brand Marketing Teams
               </h3>
-              <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.7, marginBottom: 24 }}>
+              <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.7, marginBottom: 20 }}>
                 D2C brands, ecommerce platforms, and retail companies who want to spy on competitor campaigns and steal winning strategies.
               </p>
               <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
@@ -939,20 +938,20 @@ export default function Home() {
                 background: "linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%)",
               }} />
               <div style={{ 
-                width: 72,
-                height: 72,
-                borderRadius: 20,
+                width: 56,
+                height: 56,
+                borderRadius: 14,
                 backgroundColor: "#eef2ff",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 36,
-                marginBottom: 24,
+                fontSize: 28,
+                marginBottom: 20,
               }}>🚀</div>
-              <h3 style={{ fontSize: 26, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+              <h3 style={{ fontSize: 22, fontWeight: 600, marginBottom: 12, color: "#1a1a1a" }}>
                 Marketing Agencies
               </h3>
-              <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.7, marginBottom: 24 }}>
+              <p style={{ fontSize: 15, color: "#64748b", lineHeight: 1.7, marginBottom: 20 }}>
                 Digital agencies, email marketing consultants, and freelancers who need to deliver winning campaigns for clients.
               </p>
               <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
@@ -1022,26 +1021,26 @@ export default function Home() {
           <div style={{ 
             display: "flex", 
             justifyContent: "center", 
-            marginBottom: 24 
+            marginBottom: 20 
           }}>
             <span style={{
-              padding: "8px 20px",
+              padding: "6px 16px",
               backgroundColor: "rgba(255, 255, 255, 0.1)",
               color: "#5eead4",
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 600,
-              borderRadius: 50,
+              borderRadius: 6,
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              border: "1px solid rgba(94, 234, 212, 0.3)",
+              letterSpacing: "0.08em",
+              border: "1px solid rgba(94, 234, 212, 0.2)",
             }}>
               How It Works
             </span>
           </div>
-          <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#fff", letterSpacing: "-0.02em" }}>
+          <h2 style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#fff", letterSpacing: "-0.02em" }}>
             How Top Brands Use MailMuse
           </h2>
-          <p style={{ textAlign: "center", fontSize: 20, color: "#94a3b8", marginBottom: 60, fontWeight: 400 }}>
+          <p style={{ textAlign: "center", fontSize: 18, color: "#94a3b8", marginBottom: 48, fontWeight: 400, maxWidth: 480, margin: "0 auto 48px" }}>
             Three steps to steal winning email campaigns
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
@@ -1085,23 +1084,23 @@ export default function Home() {
               >
                 <div
                   style={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: 16,
+                    width: 52,
+                    height: 52,
+                    borderRadius: 14,
                     background: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)",
                     color: "#fff",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 28,
+                    fontSize: 22,
                     fontWeight: 700,
-                    margin: "0 auto 24px",
+                    margin: "0 auto 20px",
                     boxShadow: "0 8px 24px rgba(20, 184, 166, 0.3)",
                   }}
                 >
                   {item.step}
                 </div>
-                <h3 style={{ fontSize: 22, fontWeight: 600, marginBottom: 14, color: "#fff" }}>
+                <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 10, color: "#fff" }}>
                   {item.title}
                 </h3>
                 <p style={{ fontSize: 15, color: "#94a3b8", lineHeight: 1.7, margin: 0 }}>
@@ -1136,25 +1135,25 @@ export default function Home() {
           <div style={{ 
             display: "flex", 
             justifyContent: "center", 
-            marginBottom: 24 
+            marginBottom: 20 
           }}>
             <span style={{
-              padding: "8px 20px",
+              padding: "6px 16px",
               backgroundColor: "#8b5cf6",
               color: "#fff",
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 600,
-              borderRadius: 50,
+              borderRadius: 6,
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
+              letterSpacing: "0.08em",
             }}>
               Trusted
             </span>
           </div>
-          <h2 style={{ fontSize: 40, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
-            Used by India's Fastest-Growing Ecommerce Brands
+          <h2 style={{ fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+            Used by India's Fastest-Growing Brands
           </h2>
-          <p style={{ fontSize: 20, color: "#4a5568", marginBottom: 50, fontWeight: 400 }}>
+          <p style={{ fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 560, margin: "0 auto 48px" }}>
             Join D2C brands and marketing teams who use MailMuse to outsmart competitors and boost email revenue.
           </p>
           
@@ -1291,11 +1290,11 @@ export default function Home() {
           overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 800, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <h2 style={{ fontSize: 48, fontWeight: 800, marginBottom: 24, color: "#fff", letterSpacing: "-0.02em" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", position: "relative", zIndex: 1 }}>
+          <h2 style={{ fontSize: 36, fontWeight: 700, marginBottom: 16, color: "#fff", letterSpacing: "-0.02em" }}>
             Start Stealing Winning Campaigns Today
           </h2>
-          <p style={{ fontSize: 22, marginBottom: 50, opacity: 0.95, fontWeight: 400, lineHeight: 1.6 }}>
+          <p style={{ fontSize: 18, marginBottom: 40, opacity: 0.95, fontWeight: 400, lineHeight: 1.7 }}>
             Free access to thousands of real emails from Nykaa, Myntra, Zomato, and more. Copy what works, boost your conversions, and grow your email revenue—no credit card required.
           </p>
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
