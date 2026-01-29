@@ -95,7 +95,6 @@ export default function SignupPage() {
     e.preventDefault();
     setError("");
 
-    // Validation
     if (password.length < 6) {
       setError("Password must be at least 6 characters");
       return;
@@ -116,7 +115,7 @@ export default function SignupPage() {
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f8fafc" }}>
         <div style={{ width: 40, height: 40, border: "3px solid #e2e8f0", borderTopColor: "#14b8a6", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -124,33 +123,144 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
       {/* Header */}
-      <header style={{ padding: "20px 24px", borderBottom: "1px solid #e2e8f0", backgroundColor: "#fff" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center" }}>
+      <header style={{ padding: "20px 24px", backgroundColor: "#fff", borderBottom: "1px solid #e2e8f0" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
             <Logo size={36} />
             <span style={{ fontSize: 22, fontWeight: 700, color: "#0f172a" }}>MailMuse</span>
           </Link>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <span style={{ fontSize: 14, color: "#64748b" }}>Already have an account?</span>
+            <Link
+              href="/login"
+              style={{
+                padding: "10px 20px",
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#14b8a6",
+                border: "1px solid #14b8a6",
+                textDecoration: "none",
+                borderRadius: 8,
+              }}
+            >
+              Sign In
+            </Link>
+          </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
+      {/* Main Content - Split Layout */}
+      <main style={{ maxWidth: 1200, margin: "0 auto", padding: "60px 24px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+        
+        {/* Left Side - Value Proposition */}
+        <div>
+          <div style={{ marginBottom: 32 }}>
+            <span style={{
+              display: "inline-block",
+              padding: "6px 12px",
+              backgroundColor: "#f0fdfa",
+              color: "#14b8a6",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 20,
+              marginBottom: 16,
+            }}>
+              100% FREE - No Credit Card Required
+            </span>
+            <h1 style={{ fontSize: 42, fontWeight: 700, color: "#0f172a", lineHeight: 1.2, margin: "0 0 16px 0" }}>
+              Unlock the secrets behind India's best email campaigns
+            </h1>
+            <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.6, margin: 0 }}>
+              Join 500+ marketers who use MailMuse to spy on competitors, steal winning strategies, and 10x their email performance.
+            </p>
+          </div>
+
+          {/* Benefits */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 20, marginBottom: 40 }}>
+            {[
+              {
+                icon: "📊",
+                title: "See Hidden Brand Stats",
+                description: "Unlock email frequency, send patterns, and campaign insights for 200+ brands"
+              },
+              {
+                icon: "🔔",
+                title: "Follow Your Competitors",
+                description: "Get notified when your competitors launch new campaigns"
+              },
+              {
+                icon: "📋",
+                title: "Copy Winning Formulas",
+                description: "Access 3,000+ real emails with subject lines that convert"
+              },
+            ].map((benefit, i) => (
+              <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                <div style={{
+                  width: 48,
+                  height: 48,
+                  backgroundColor: "#f0fdfa",
+                  borderRadius: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 24,
+                  flexShrink: 0,
+                }}>
+                  {benefit.icon}
+                </div>
+                <div>
+                  <h3 style={{ margin: "0 0 4px 0", fontSize: 16, fontWeight: 600, color: "#0f172a" }}>
+                    {benefit.title}
+                  </h3>
+                  <p style={{ margin: 0, fontSize: 14, color: "#64748b", lineHeight: 1.5 }}>
+                    {benefit.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Social Proof */}
+          <div style={{
+            padding: "20px 24px",
+            backgroundColor: "#fff",
+            borderRadius: 12,
+            border: "1px solid #e2e8f0",
+          }}>
+            <div style={{ display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
+              <div>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "#14b8a6" }}>3,000+</div>
+                <div style={{ fontSize: 13, color: "#64748b" }}>Emails Tracked</div>
+              </div>
+              <div style={{ width: 1, height: 40, backgroundColor: "#e2e8f0" }} />
+              <div>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "#14b8a6" }}>200+</div>
+                <div style={{ fontSize: 13, color: "#64748b" }}>Brands Monitored</div>
+              </div>
+              <div style={{ width: 1, height: 40, backgroundColor: "#e2e8f0" }} />
+              <div>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "#14b8a6" }}>Daily</div>
+                <div style={{ fontSize: 13, color: "#64748b" }}>Updates</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side - Signup Form */}
         <div style={{
           backgroundColor: "#fff",
-          borderRadius: 16,
+          borderRadius: 20,
           border: "1px solid #e2e8f0",
           padding: "40px",
-          width: "100%",
-          maxWidth: 400,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
         }}>
-          <h1 style={{ fontSize: 28, fontWeight: 700, color: "#0f172a", marginBottom: 8, textAlign: "center" }}>
-            Create an account
-          </h1>
-          <p style={{ fontSize: 14, color: "#64748b", marginBottom: 32, textAlign: "center" }}>
-            Sign up to unlock brand stats and follow your favorite brands
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", marginBottom: 8, textAlign: "center" }}>
+            Create your free account
+          </h2>
+          <p style={{ fontSize: 14, color: "#64748b", marginBottom: 28, textAlign: "center" }}>
+            Takes less than 30 seconds
           </p>
 
           {/* Error Message */}
@@ -182,7 +292,7 @@ export default function SignupPage() {
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: "block", fontSize: 14, fontWeight: 500, color: "#374151", marginBottom: 6 }}>
-                Name <span style={{ color: "#94a3b8", fontWeight: 400 }}>(optional)</span>
+                Name
               </label>
               <input
                 type="text"
@@ -190,22 +300,22 @@ export default function SignupPage() {
                 onChange={(e) => setName(e.target.value)}
                 style={{
                   width: "100%",
-                  padding: "12px 14px",
-                  fontSize: 14,
+                  padding: "14px 16px",
+                  fontSize: 15,
                   border: "1px solid #e2e8f0",
-                  borderRadius: 8,
+                  borderRadius: 10,
                   outline: "none",
                   transition: "border-color 0.2s",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
-                placeholder="Your name"
+                placeholder="John Doe"
               />
             </div>
 
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: "block", fontSize: 14, fontWeight: 500, color: "#374151", marginBottom: 6 }}>
-                Email
+                Work Email
               </label>
               <input
                 type="email"
@@ -214,16 +324,16 @@ export default function SignupPage() {
                 required
                 style={{
                   width: "100%",
-                  padding: "12px 14px",
-                  fontSize: 14,
+                  padding: "14px 16px",
+                  fontSize: 15,
                   border: "1px solid #e2e8f0",
-                  borderRadius: 8,
+                  borderRadius: 10,
                   outline: "none",
                   transition: "border-color 0.2s",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
-                placeholder="you@example.com"
+                placeholder="you@company.com"
               />
             </div>
 
@@ -239,16 +349,16 @@ export default function SignupPage() {
                 minLength={6}
                 style={{
                   width: "100%",
-                  padding: "12px 14px",
-                  fontSize: 14,
+                  padding: "14px 16px",
+                  fontSize: 15,
                   border: "1px solid #e2e8f0",
-                  borderRadius: 8,
+                  borderRadius: 10,
                   outline: "none",
                   transition: "border-color 0.2s",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
-                placeholder="At least 6 characters"
+                placeholder="Min. 6 characters"
               />
             </div>
 
@@ -257,32 +367,72 @@ export default function SignupPage() {
               disabled={submitting}
               style={{
                 width: "100%",
-                padding: "14px",
+                padding: "16px",
                 backgroundColor: submitting ? "#94a3b8" : "#14b8a6",
                 color: "#fff",
-                fontSize: 15,
+                fontSize: 16,
                 fontWeight: 600,
                 border: "none",
-                borderRadius: 8,
+                borderRadius: 10,
                 cursor: submitting ? "not-allowed" : "pointer",
-                transition: "background-color 0.2s",
+                transition: "all 0.2s",
+                marginBottom: 16,
               }}
               onMouseEnter={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#0d9488")}
               onMouseLeave={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#14b8a6")}
             >
-              {submitting ? "Creating account..." : "Create Account"}
+              {submitting ? "Creating account..." : "Create Free Account"}
             </button>
+
+            {/* Trust Signals */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b" }}>
+                <svg width="14" height="14" fill="#14b8a6" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+                Free forever
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b" }}>
+                <svg width="14" height="14" fill="#14b8a6" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+                No credit card
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b" }}>
+                <svg width="14" height="14" fill="#14b8a6" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                </svg>
+                Instant access
+              </div>
+            </div>
           </form>
 
-          {/* Sign In Link */}
-          <p style={{ marginTop: 24, textAlign: "center", fontSize: 14, color: "#64748b" }}>
-            Already have an account?{" "}
-            <Link href="/login" style={{ color: "#14b8a6", fontWeight: 500, textDecoration: "none" }}>
-              Sign in
-            </Link>
+          {/* Terms */}
+          <p style={{ marginTop: 24, textAlign: "center", fontSize: 12, color: "#94a3b8", lineHeight: 1.6 }}>
+            By creating an account, you agree to our{" "}
+            <a href="#" style={{ color: "#64748b", textDecoration: "underline" }}>Terms of Service</a>
+            {" "}and{" "}
+            <a href="#" style={{ color: "#64748b", textDecoration: "underline" }}>Privacy Policy</a>
           </p>
         </div>
       </main>
+
+      {/* Mobile Styles */}
+      <style>{`
+        @media (max-width: 900px) {
+          main {
+            grid-template-columns: 1fr !important;
+            gap: 40px !important;
+            padding: 40px 20px !important;
+          }
+        }
+        @media (max-width: 600px) {
+          header > div {
+            flex-direction: column !important;
+            gap: 16px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
