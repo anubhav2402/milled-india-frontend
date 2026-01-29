@@ -65,7 +65,7 @@ export default function BrowsePage() {
     
     try {
       const params = new URLSearchParams();
-      params.set("limit", "200");
+        params.set("limit", "50");
       if (industry) params.set("industry", industry);
       if (brand) params.set("brand", brand);
       if (search) params.set("q", search);
