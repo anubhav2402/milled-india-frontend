@@ -65,14 +65,14 @@ export default function BrowsePage() {
     
     try {
       const params = new URLSearchParams();
-        params.set("limit", "500");
+      // No limit - fetch all emails so filters work on complete dataset
+      // Backend will return all emails sorted by newest first
       if (industry) params.set("industry", industry);
       if (brand) params.set("brand", brand);
       if (search) params.set("q", search);
       
       const res = await fetch(`${base}/emails?${params.toString()}`, {
-        cache: "force-cache",
-        next: { revalidate: 60 },
+        cache: "no-store", // Always get fresh data
       });
       if (res.ok) {
         const data: Email[] = await res.json();
