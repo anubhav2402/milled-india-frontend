@@ -258,30 +258,62 @@ export default function Home() {
             <Logo size={44} />
             <span className="navbar-logo-text" style={{ fontSize: 26, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.02em" }}>MailMuse</span>
           </a>
-          <a
-            href="/browse"
-            className="navbar-cta"
-            style={{
-              padding: "10px 24px",
-              backgroundColor: "#14b8a6",
-              color: "#ffffff",
-              textDecoration: "none",
-              borderRadius: 8,
-              fontWeight: 600,
-              fontSize: 14,
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#0d9488";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#14b8a6";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            Explore Database
-          </a>
+          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+            <a
+              href="/browse"
+              className="navbar-link"
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: "#64748b",
+                textDecoration: "none",
+                transition: "color 0.2s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#14b8a6")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#64748b")}
+            >
+              Browse Emails
+            </a>
+            <a
+              href="/brands"
+              className="navbar-link"
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: "#64748b",
+                textDecoration: "none",
+                transition: "color 0.2s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#14b8a6")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#64748b")}
+            >
+              Browse Brands
+            </a>
+            <a
+              href="/browse"
+              className="navbar-cta"
+              style={{
+                padding: "10px 24px",
+                backgroundColor: "#14b8a6",
+                color: "#ffffff",
+                textDecoration: "none",
+                borderRadius: 8,
+                fontWeight: 600,
+                fontSize: 14,
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#0d9488";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#14b8a6";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              Explore Database
+            </a>
+          </div>
         </div>
       </nav>
 

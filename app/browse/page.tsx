@@ -2,7 +2,9 @@
 
 import Logo from "../components/Logo";
 import EmailCard from "../components/EmailCard";
+import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 
 type Email = {
   id: number;
@@ -51,6 +53,9 @@ type BrandStats = {
 };
 
 export default function BrowsePage() {
+  const searchParams = useSearchParams();
+  const brandFromUrl = searchParams.get("brand");
+  
   const [emails, setEmails] = useState<Email[]>([]);
   const [allBrands, setAllBrands] = useState<string[]>([]);
   const [brandStats, setBrandStats] = useState<BrandStats>({});
@@ -60,8 +65,10 @@ export default function BrowsePage() {
   const [hasMoreOnServer, setHasMoreOnServer] = useState(true);
   const [initialLoadDone, setInitialLoadDone] = useState(false);
   
-  // Filter states
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  // Filter states - initialize with brand from URL if present
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(
+    brandFromUrl ? [brandFromUrl] : []
+  );
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedDate, setSelectedDate] = useState("all");
   
@@ -148,13 +155,18 @@ export default function BrowsePage() {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      await Promise.all([fetchEmails(), fetchBrands(), fetchBrandStats()]);
+      // Use brand from URL for initial fetch if present
+      await Promise.all([
+        fetchEmails(undefined, brandFromUrl || undefined, undefined, 0, false),
+        fetchBrands(),
+        fetchBrandStats()
+      ]);
       setLoading(false);
       setInitialLoadDone(true);
     };
     init();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [brandFromUrl]);
 
   // Refetch when filters change (only after initial load)
   useEffect(() => {
@@ -271,6 +283,32 @@ export default function BrowsePage() {
                 </svg>
               </div>
             </div>
+            
+            {/* Navigation Links */}
+            <nav style={{ display: "flex", gap: 20, alignItems: "center" }} className="browse-nav">
+              <Link
+                href="/browse"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#14b8a6",
+                  textDecoration: "none",
+                }}
+              >
+                Browse Emails
+              </Link>
+              <Link
+                href="/brands"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#64748b",
+                  textDecoration: "none",
+                }}
+              >
+                Browse Brands
+              </Link>
+            </nav>
             
             {/* Mobile filter toggle */}
             <button

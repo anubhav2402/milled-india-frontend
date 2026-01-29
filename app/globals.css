@@ -272,3 +272,14 @@ article a {
     flex: 0 0 calc(33% - 8px) !important;
   }
 }
+
+/* Hide navbar links on mobile */
+@media (max-width: 768px) {
+  .navbar-link {
+    display: none !important;
+  }
+  
+  .browse-nav {
+    display: none !important;
+  }
+}
