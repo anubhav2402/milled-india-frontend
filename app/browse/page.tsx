@@ -1,4 +1,5 @@
 import Logo from "../components/Logo";
+import { Suspense } from "react";
 
 type Email = {
   id: number;
@@ -39,7 +40,7 @@ function getBrands(emails: Email[]): string[] {
   return Array.from(brands).sort() as string[];
 }
 
-export default async function BrowsePage({
+async function BrowseContent({
   searchParams,
 }: {
   searchParams?: Promise<{ q?: string; brand?: string }>;
@@ -355,5 +356,25 @@ export default async function BrowsePage({
         )}
       </main>
     </div>
+  );
+}
+
+export default async function BrowsePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ q?: string; brand?: string }>;
+}) {
+  return (
+    <Suspense
+      fallback={
+        <div style={{ minHeight: "100vh", backgroundColor: "#fafafa", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ textAlign: "center", color: "#999" }}>
+            <p style={{ fontSize: 16 }}>Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <BrowseContent searchParams={searchParams} />
+    </Suspense>
   );
 }
