@@ -626,12 +626,12 @@ export default function Home() {
               }}
             >
               {[
-                { name: "Nykaa", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Nykaa_New_Logo.svg" },
+                { name: "Nykaa", logo: "https://images.nykaa.com/uploads/nykaa-og-logo.png" },
                 { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
-                { name: "Zomato", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Zomato_Logo.svg" },
+                { name: "Zomato", logo: "https://b.zmtcdn.com/web_assets/b40b97e677bc7b2ca77c58c61db266fe1603954218.png" },
                 { name: "Swiggy", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" },
                 { name: "Meesho", logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Meesho_logo.png" },
-                { name: "Mamaearth", logo: "https://mamaearth.com/cdn/shop/files/mama.svg" },
+                { name: "Mamaearth", logo: "https://images.mamaearth.in/wysiwyg/Mamaearth_Green_Logo_with_leaves_5x.webp" },
               ].map((brand, idx) => (
                 <div
                   key={idx}
@@ -1181,12 +1181,12 @@ export default function Home() {
           {/* Indian D2C Brand Logos */}
           <div className="brand-logos" style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 48 }}>
             {[
-              { name: "Nykaa", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Nykaa_New_Logo.svg" },
+              { name: "Nykaa", logo: "https://images.nykaa.com/uploads/nykaa-og-logo.png" },
               { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
-              { name: "Zomato", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Zomato_Logo.svg" },
+              { name: "Zomato", logo: "https://b.zmtcdn.com/web_assets/b40b97e677bc7b2ca77c58c61db266fe1603954218.png" },
               { name: "Swiggy", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" },
               { name: "Meesho", logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Meesho_logo.png" },
-              { name: "Mamaearth", logo: "https://mamaearth.com/cdn/shop/files/mama.svg" },
+              { name: "Mamaearth", logo: "https://images.mamaearth.in/wysiwyg/Mamaearth_Green_Logo_with_leaves_5x.webp" },
             ].map((brand, idx) => (
               <div
                 key={idx}
