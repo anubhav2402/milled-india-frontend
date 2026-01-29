@@ -419,7 +419,7 @@ export default function Home() {
                   fontWeight: 400,
                 }}
               >
-                From Nykaa to Myntra, Zomato to Swiggy—access thousands of real emails sent by India's top D2C brands. Copy winning campaigns, steal subject lines, and see what actually converts.
+                Access thousands of real emails sent by India's top D2C brands and marketplaces. Copy winning campaigns, steal subject lines, and see what actually converts.
               </p>
 
               {/* Search Bar */}
@@ -721,7 +721,7 @@ export default function Home() {
             Why Ecommerce Brands Love MailMuse
           </h2>
           <p className="section-subtitle" style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 640, margin: "0 auto 48px" }}>
-            Stop guessing. See exactly what Nykaa, Myntra, and other top brands send their customers—then copy what works.
+            Stop guessing. See exactly what top brands send their customers—then copy what works.
           </p>
           <div
             className="cards-grid"
@@ -735,7 +735,7 @@ export default function Home() {
               {
                 icon: "🎯",
                 title: "Steal Winning Campaigns",
-                description: "See every email Nykaa, Myntra, and Zomato send. Copy their subject lines, CTAs, and messaging—then watch your conversions soar.",
+                description: "See every email top D2C brands send. Copy their subject lines, CTAs, and messaging—then watch your conversions soar.",
                 color: "#14b8a6",
               },
               {
@@ -1068,7 +1068,7 @@ export default function Home() {
               {
                 step: "1",
                 title: "Search Any Brand",
-                description: "Type 'Nykaa', 'Myntra', or any brand name. Instantly see every email they've sent—welcome sequences, flash sales, cart abandonment, everything.",
+                description: "Type any brand name. Instantly see every email they've sent—welcome sequences, flash sales, cart abandonment, everything.",
               },
               {
                 step: "2",
@@ -1237,13 +1237,13 @@ export default function Home() {
           <div className="cards-grid-2col" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
             {[
               {
-                quote: "We copied Nykaa's welcome email sequence and saw a 40% increase in first-purchase conversions. MailMuse pays for itself in one campaign.",
+                quote: "We copied a top brand's welcome email sequence and saw a 40% increase in first-purchase conversions. MailMuse pays for itself in one campaign.",
                 author: "Priya Sharma",
                 role: "Head of Marketing, D2C Beauty Brand",
                 avatar: "PS",
               },
               {
-                quote: "Every week I check what Myntra and Zomato are sending. Their subject lines are gold—we've doubled our open rates by copying their best campaigns.",
+                quote: "Every week I check what top brands are sending. Their subject lines are gold—we've doubled our open rates by copying their best campaigns.",
                 author: "Rahul Mehta",
                 role: "Email Marketing Lead, Ecommerce Startup",
                 avatar: "RM",
@@ -1317,7 +1317,7 @@ export default function Home() {
             Start Stealing Winning Campaigns Today
           </h2>
           <p className="final-cta-subtitle" style={{ fontSize: 17, marginBottom: 32, opacity: 0.95, fontWeight: 400, lineHeight: 1.7 }}>
-            Free access to thousands of real emails from Nykaa, Myntra, Zomato, and more. Copy what works, boost your conversions, and grow your email revenue—no credit card required.
+            Free access to thousands of real emails from India's top D2C brands. Copy what works, boost your conversions, and grow your email revenue—no credit card required.
           </p>
           <div className="final-cta-buttons" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <a
