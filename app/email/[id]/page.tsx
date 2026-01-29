@@ -52,19 +52,29 @@ export default function EmailPage() {
 
     const iframe = iframeRef.current;
     
-    const handleLoad = () => {
+    const resizeIframe = () => {
       try {
         const doc = iframe.contentDocument || iframe.contentWindow?.document;
-        if (doc) {
-          // Wait a bit for images to load
-          setTimeout(() => {
-            const height = doc.documentElement.scrollHeight || doc.body.scrollHeight;
-            setIframeHeight(Math.max(height + 40, 400));
-          }, 500);
+        if (doc && doc.body) {
+          const height = Math.max(
+            doc.body.scrollHeight,
+            doc.body.offsetHeight,
+            doc.documentElement.scrollHeight,
+            doc.documentElement.offsetHeight
+          );
+          setIframeHeight(Math.max(height + 60, 600));
         }
       } catch (e) {
         console.error("Could not access iframe content:", e);
       }
+    };
+    
+    const handleLoad = () => {
+      // Initial resize
+      resizeIframe();
+      // Resize again after images load
+      setTimeout(resizeIframe, 1000);
+      setTimeout(resizeIframe, 2500);
     };
 
     iframe.addEventListener("load", handleLoad);
@@ -72,6 +82,7 @@ export default function EmailPage() {
   }, [email?.html]);
 
   // Wrap email HTML with proper document structure for iframe
+  // Preserve original email styles as much as possible
   const getIframeContent = (html: string) => {
     return `
       <!DOCTYPE html>
@@ -79,19 +90,52 @@ export default function EmailPage() {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <style>
+          /* Minimal reset - don't override email styles */
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+          }
+          
+          /* Center the email content */
           body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            -webkit-font-smoothing: antialiased;
+            background-color: #f5f5f5 !important;
+            display: flex;
+            justify-content: center;
           }
+          
+          /* Email container styling */
+          body > table,
+          body > div,
+          body > center {
+            margin: 0 auto !important;
+          }
+          
+          /* Ensure images display properly */
           img {
-            max-width: 100%;
-            height: auto;
+            border: 0;
+            outline: none;
+            text-decoration: none;
+            -ms-interpolation-mode: bicubic;
           }
+          
+          /* Fix table rendering */
+          table {
+            border-collapse: collapse !important;
+          }
+          
+          /* Ensure links are clickable */
           a {
-            color: inherit;
+            text-decoration: none;
+          }
+          
+          /* Hide any broken image icons */
+          img[src=""] {
+            display: none !important;
           }
         </style>
       </head>
@@ -152,7 +196,7 @@ export default function EmailPage() {
       <Header />
 
       {/* Main content */}
-      <main style={{ maxWidth: 900, margin: "0 auto", padding: "40px 24px" }}>
+      <main style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 24px" }}>
         <div
           style={{
             backgroundColor: "#fff",
@@ -212,7 +256,7 @@ export default function EmailPage() {
           </div>
 
           {/* Email body in iframe for proper isolation */}
-          <div style={{ backgroundColor: "#fff" }}>
+          <div style={{ backgroundColor: "#f5f5f5", padding: "20px 0" }}>
             <iframe
               ref={iframeRef}
               srcDoc={getIframeContent(email.html)}
@@ -221,9 +265,10 @@ export default function EmailPage() {
                 height: iframeHeight,
                 border: "none",
                 display: "block",
+                backgroundColor: "#f5f5f5",
               }}
               title="Email content"
-              sandbox="allow-same-origin"
+              sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
             />
           </div>
         </div>
