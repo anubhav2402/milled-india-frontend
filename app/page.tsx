@@ -626,12 +626,12 @@ export default function Home() {
               }}
             >
               {[
-                { name: "Nykaa", logo: "https://images.nykaa.com/uploads/nykaa-og-logo.png" },
-                { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
-                { name: "Zomato", logo: "https://b.zmtcdn.com/web_assets/b40b97e677bc7b2ca77c58c61db266fe1603954218.png" },
-                { name: "Swiggy", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" },
-                { name: "Meesho", logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Meesho_logo.png" },
-                { name: "Mamaearth", logo: "https://images.mamaearth.in/wysiwyg/Mamaearth_Green_Logo_with_leaves_5x.webp" },
+                { name: "Nykaa", logo: "https://logo.clearbit.com/nykaa.com" },
+                { name: "Myntra", logo: "https://logo.clearbit.com/myntra.com" },
+                { name: "Zomato", logo: "https://logo.clearbit.com/zomato.com" },
+                { name: "Swiggy", logo: "https://logo.clearbit.com/swiggy.com" },
+                { name: "Meesho", logo: "https://logo.clearbit.com/meesho.com" },
+                { name: "Mamaearth", logo: "https://logo.clearbit.com/mamaearth.in" },
               ].map((brand, idx) => (
                 <div
                   key={idx}
@@ -1181,12 +1181,12 @@ export default function Home() {
           {/* Indian D2C Brand Logos */}
           <div className="brand-logos" style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 48 }}>
             {[
-              { name: "Nykaa", logo: "https://images.nykaa.com/uploads/nykaa-og-logo.png" },
-              { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
-              { name: "Zomato", logo: "https://b.zmtcdn.com/web_assets/b40b97e677bc7b2ca77c58c61db266fe1603954218.png" },
-              { name: "Swiggy", logo: "https://upload.wikimedia.org/wikipedia/commons/1/13/Swiggy_logo.png" },
-              { name: "Meesho", logo: "https://upload.wikimedia.org/wikipedia/commons/3/33/Meesho_logo.png" },
-              { name: "Mamaearth", logo: "https://images.mamaearth.in/wysiwyg/Mamaearth_Green_Logo_with_leaves_5x.webp" },
+              { name: "Nykaa", logo: "https://logo.clearbit.com/nykaa.com" },
+              { name: "Myntra", logo: "https://logo.clearbit.com/myntra.com" },
+              { name: "Zomato", logo: "https://logo.clearbit.com/zomato.com" },
+              { name: "Swiggy", logo: "https://logo.clearbit.com/swiggy.com" },
+              { name: "Meesho", logo: "https://logo.clearbit.com/meesho.com" },
+              { name: "Mamaearth", logo: "https://logo.clearbit.com/mamaearth.in" },
             ].map((brand, idx) => (
               <div
                 key={idx}
