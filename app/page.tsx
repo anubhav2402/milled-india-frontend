@@ -626,18 +626,18 @@ export default function Home() {
               }}
             >
               {[
-                { name: "Nykaa", logo: "https://logo.clearbit.com/nykaa.com" },
-                { name: "Myntra", logo: "https://logo.clearbit.com/myntra.com" },
-                { name: "Zomato", logo: "https://logo.clearbit.com/zomato.com" },
-                { name: "Swiggy", logo: "https://logo.clearbit.com/swiggy.com" },
-                { name: "Meesho", logo: "https://logo.clearbit.com/meesho.com" },
-                { name: "Mamaearth", logo: "https://logo.clearbit.com/mamaearth.in" },
+                { name: "Nykaa", logo: "" },
+                { name: "Myntra", logo: "" },
+                { name: "Zomato", logo: "" },
+                { name: "Swiggy", logo: "" },
+                { name: "Meesho", logo: "" },
+                { name: "Mamaearth", logo: "" },
               ].map((brand, idx) => (
                 <div
                   key={idx}
                   className="brand-logo-card"
                   style={{
-                    padding: "12px 20px",
+                    padding: "12px 24px",
                     backgroundColor: "#ffffff",
                     borderRadius: 10,
                     border: "1px solid #e2e8f0",
@@ -660,22 +660,9 @@ export default function Home() {
                     e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
                   }}
                 >
-                  <img
-                    src={brand.logo}
-                    alt={brand.name}
-                    style={{
-                      maxHeight: "36px",
-                      maxWidth: "110px",
-                      objectFit: "contain",
-                    }}
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                      const parent = e.currentTarget.parentElement;
-                      if (parent) {
-                        parent.innerHTML = `<span style="font-size: 14px; font-weight: 700; color: #1a1a1a;">${brand.name}</span>`;
-                      }
-                    }}
-                  />
+                  <span style={{ fontSize: 15, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.01em" }}>
+                    {brand.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -1181,12 +1168,12 @@ export default function Home() {
           {/* Indian D2C Brand Logos */}
           <div className="brand-logos" style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 48 }}>
             {[
-              { name: "Nykaa", logo: "https://logo.clearbit.com/nykaa.com" },
-              { name: "Myntra", logo: "https://logo.clearbit.com/myntra.com" },
-              { name: "Zomato", logo: "https://logo.clearbit.com/zomato.com" },
-              { name: "Swiggy", logo: "https://logo.clearbit.com/swiggy.com" },
-              { name: "Meesho", logo: "https://logo.clearbit.com/meesho.com" },
-              { name: "Mamaearth", logo: "https://logo.clearbit.com/mamaearth.in" },
+              { name: "Nykaa", logo: "" },
+              { name: "Myntra", logo: "" },
+              { name: "Zomato", logo: "" },
+              { name: "Swiggy", logo: "" },
+              { name: "Meesho", logo: "" },
+              { name: "Mamaearth", logo: "" },
             ].map((brand, idx) => (
               <div
                 key={idx}
@@ -1212,23 +1199,9 @@ export default function Home() {
                   e.currentTarget.style.boxShadow = "0 4px 20px rgba(139, 92, 246, 0.08)";
                 }}
               >
-                <img
-                  src={brand.logo}
-                  alt={brand.name}
-                  style={{
-                    maxHeight: "40px",
-                    maxWidth: "110px",
-                    objectFit: "contain",
-                  }}
-                  onError={(e) => {
-                    // Fallback to text if image fails to load
-                    e.currentTarget.style.display = "none";
-                    const parent = e.currentTarget.parentElement;
-                    if (parent) {
-                      parent.innerHTML = `<span style="font-size: 16px; font-weight: 700; color: #1a1a1a;">${brand.name}</span>`;
-                    }
-                  }}
-                />
+                <span style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.01em" }}>
+                  {brand.name}
+                </span>
               </div>
             ))}
           </div>
