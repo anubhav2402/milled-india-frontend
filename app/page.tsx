@@ -310,6 +310,19 @@ export default function Home() {
                   style={{
                     padding: "10px 20px",
                     fontSize: 14,
+                    fontWeight: 500,
+                    color: "#64748b",
+                    textDecoration: "none",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: 14,
                     fontWeight: 600,
                     color: "#fff",
                     backgroundColor: "#14b8a6",
@@ -318,7 +331,7 @@ export default function Home() {
                     transition: "all 0.2s",
                   }}
                 >
-                  Login
+                  Sign Up
                 </Link>
               </>
             )}

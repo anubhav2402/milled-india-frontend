@@ -253,21 +253,36 @@ export default function BrandsPage() {
                 </button>
               </>
             ) : (
-              <Link
-                href="/login"
-                style={{
-                  padding: "10px 20px",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#fff",
-                  backgroundColor: "#14b8a6",
-                  textDecoration: "none",
-                  borderRadius: 8,
-                  transition: "all 0.2s",
-                }}
-              >
-                Login
-              </Link>
+              <>
+                <Link
+                  href="/login"
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "#64748b",
+                    textDecoration: "none",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#fff",
+                    backgroundColor: "#14b8a6",
+                    textDecoration: "none",
+                    borderRadius: 8,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Sign Up
+                </Link>
+              </>
             )}
           </div>
         </div>
