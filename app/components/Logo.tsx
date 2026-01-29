@@ -6,44 +6,25 @@ export default function Logo({ size = 32 }: { size?: number }) {
       viewBox="0 0 40 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ display: "inline-block", verticalAlign: "middle", marginRight: 8 }}
+      style={{ display: "inline-block", verticalAlign: "middle", marginRight: 10 }}
     >
-      {/* Elegant "M" lettermark with envelope fold */}
-      {/* Background circle */}
-      <circle cx="20" cy="20" r="18" fill="#14b8a6" />
-      
-      {/* Stylized M that resembles an open envelope */}
+      {/* Apple/Nike style - minimal, iconic, single shape */}
+      {/* Abstract "M" formed by envelope opening - clean geometric design */}
       <path
-        d="M10 14L20 22L30 14"
-        stroke="#fff"
-        strokeWidth="2.5"
+        d="M4 12L20 24L36 12"
+        stroke="#14b8a6"
+        strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
       />
       <path
-        d="M10 14V26C10 27.1 10.9 28 12 28H28C29.1 28 30 27.1 30 26V14"
-        stroke="#fff"
-        strokeWidth="2.5"
+        d="M4 12L4 30L36 30L36 12"
+        stroke="#14b8a6"
+        strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
         fill="none"
-      />
-      
-      {/* Inner fold lines for depth */}
-      <path
-        d="M10 26L16 21"
-        stroke="#fff"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        opacity="0.6"
-      />
-      <path
-        d="M30 26L24 21"
-        stroke="#fff"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        opacity="0.6"
       />
     </svg>
   );

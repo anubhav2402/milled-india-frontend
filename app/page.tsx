@@ -337,8 +337,8 @@ export default function Home() {
       >
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
-            <Logo size={32} />
-            <span style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>MailMuse</span>
+            <Logo size={44} />
+            <span style={{ fontSize: 26, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.02em" }}>MailMuse</span>
           </a>
           <a
             href="/browse"
@@ -1346,8 +1346,8 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 40, marginBottom: 40 }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-              <Logo size={40} />
-              <span style={{ fontSize: 24, fontWeight: 700 }}>MailMuse</span>
+              <Logo size={48} />
+              <span style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.02em" }}>MailMuse</span>
             </div>
               <p style={{ fontSize: 14, color: "#999", lineHeight: 1.6 }}>
                 The complete database of emails sent by India's top D2C brands. Copy winning campaigns and boost your email revenue.
