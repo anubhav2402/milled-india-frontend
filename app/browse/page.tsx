@@ -50,6 +50,7 @@ export default function BrowsePage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [hasMoreOnServer, setHasMoreOnServer] = useState(true);
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
   
   // Filter states
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -122,18 +123,21 @@ export default function BrowsePage() {
       setLoading(true);
       await Promise.all([fetchEmails(), fetchBrands()]);
       setLoading(false);
+      setInitialLoadDone(true);
     };
     init();
-  }, [fetchEmails, fetchBrands]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Refetch when filters change
+  // Refetch when filters change (only after initial load)
   useEffect(() => {
-    if (!loading) {
-      const industry = selectedIndustries.length === 1 ? selectedIndustries[0] : undefined;
-      const brand = selectedBrands.length === 1 ? selectedBrands[0] : undefined;
-      fetchEmails(industry, brand, searchQuery || undefined, 0, false);
-    }
-  }, [selectedIndustries, selectedBrands, searchQuery, fetchEmails, loading]);
+    if (!initialLoadDone) return;
+    
+    const industry = selectedIndustries.length === 1 ? selectedIndustries[0] : undefined;
+    const brand = selectedBrands.length === 1 ? selectedBrands[0] : undefined;
+    fetchEmails(industry, brand, searchQuery || undefined, 0, false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIndustries, selectedBrands, searchQuery]);
 
   // Filter emails based on selections (client-side filtering for multi-select and date)
   const filteredEmails = emails.filter((email) => {
