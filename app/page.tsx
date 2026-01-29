@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Logo from "./components/Logo";
+import EmailCard from "./components/EmailCard";
 
 // Industry list for filtering
 const INDUSTRIES = [
@@ -155,126 +156,20 @@ function BrowseSection() {
             className="cards-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
               gap: 20,
             }}
           >
             {emails.map((email) => (
-              <a
+              <EmailCard
                 key={email.id}
-                href={`/email/${email.id}`}
-                style={{
-                  textDecoration: "none",
-                  color: "inherit",
-                  display: "block",
-                }}
-              >
-                <div
-                  className="email-card"
-                  style={{
-                    backgroundColor: "#fff",
-                    borderRadius: 14,
-                    border: "1px solid #e5e5e5",
-                    padding: 20,
-                    transition: "all 0.2s",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.1)";
-                    e.currentTarget.style.borderColor = "#14b8a6";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "none";
-                    e.currentTarget.style.borderColor = "#e5e5e5";
-                  }}
-                >
-                  {/* Brand & Industry */}
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                    <div
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 10,
-                        backgroundColor: "#f0fdfa",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 700,
-                        fontSize: 18,
-                        color: "#14b8a6",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {email.brand?.[0]?.toUpperCase() || "?"}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 600, fontSize: 15, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {email.brand || "Unknown Brand"}
-                      </div>
-                      {email.industry && (
-                        <div style={{ fontSize: 12, color: "#14b8a6", fontWeight: 500 }}>
-                          {email.industry}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Subject */}
-                  <h3
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 600,
-                      color: "#1a1a1a",
-                      marginBottom: 8,
-                      lineHeight: 1.4,
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                      flex: 1,
-                    }}
-                  >
-                    {email.subject}
-                  </h3>
-
-                  {/* Preview */}
-                  {email.preview && (
-                    <p
-                      style={{
-                        fontSize: 14,
-                        color: "#666",
-                        lineHeight: 1.5,
-                        margin: 0,
-                        marginBottom: 16,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {email.preview}
-                    </p>
-                  )}
-
-                  {/* Footer */}
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", paddingTop: 16, borderTop: "1px solid #f0f0f0" }}>
-                    <time style={{ fontSize: 12, color: "#999" }}>
-                      {new Date(email.received_at).toLocaleDateString("en-IN", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </time>
-                    <span style={{ fontSize: 13, color: "#14b8a6", fontWeight: 600 }}>
-                      View Email →
-                    </span>
-                  </div>
-                </div>
-              </a>
+                id={email.id}
+                subject={email.subject}
+                brand={email.brand}
+                preview={email.preview}
+                industry={email.industry}
+                received_at={email.received_at}
+              />
             ))}
           </div>
         )}
