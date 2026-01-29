@@ -66,13 +66,13 @@ function BrowseSection() {
   }, [selectedIndustry]);
 
   return (
-    <section style={{ 
-      padding: "100px 24px", 
+    <section className="section-padding" style={{ 
+      padding: "80px 24px", 
       backgroundColor: "#fff",
       borderTop: "1px solid #e2e8f0",
       borderBottom: "1px solid #e2e8f0",
     }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 8px" }}>
         {/* Section badge */}
         <div style={{ 
           display: "flex", 
@@ -92,28 +92,29 @@ function BrowseSection() {
             Explore
           </span>
         </div>
-        <h2 style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+        <h2 className="section-title" style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
           Browse by Industry
         </h2>
-        <p style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 40, fontWeight: 400, maxWidth: 600, margin: "0 auto 40px" }}>
+        <p className="section-subtitle" style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 32, fontWeight: 400, maxWidth: 600, margin: "0 auto 32px" }}>
           Explore email campaigns from India's top brands across industries
         </p>
 
         {/* Industry Filter Tabs */}
-        <div style={{ 
+        <div className="industry-tabs" style={{ 
           display: "flex", 
           flexWrap: "wrap", 
-          gap: 12, 
+          gap: 10, 
           justifyContent: "center", 
-          marginBottom: 48,
+          marginBottom: 40,
         }}>
           {INDUSTRIES.map((industry) => (
             <button
               key={industry}
               onClick={() => setSelectedIndustry(industry)}
+              className="industry-tab"
               style={{
-                padding: "10px 20px",
-                borderRadius: 24,
+                padding: "8px 16px",
+                borderRadius: 20,
                 border: selectedIndustry === industry ? "2px solid #14b8a6" : "2px solid #e2e8f0",
                 backgroundColor: selectedIndustry === industry ? "#14b8a6" : "#fff",
                 color: selectedIndustry === industry ? "#fff" : "#4a5568",
@@ -151,10 +152,11 @@ function BrowseSection() {
           </div>
         ) : (
           <div
+            className="cards-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
-              gap: 24,
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: 20,
             }}
           >
             {emails.map((email) => (
@@ -168,11 +170,12 @@ function BrowseSection() {
                 }}
               >
                 <div
+                  className="email-card"
                   style={{
                     backgroundColor: "#fff",
-                    borderRadius: 16,
+                    borderRadius: 14,
                     border: "1px solid #e5e5e5",
-                    padding: 24,
+                    padding: 20,
                     transition: "all 0.2s",
                     height: "100%",
                     display: "flex",
@@ -335,13 +338,14 @@ export default function Home() {
           boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
         }}
       >
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="navbar-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
             <Logo size={44} />
-            <span style={{ fontSize: 26, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.02em" }}>MailMuse</span>
+            <span className="navbar-logo-text" style={{ fontSize: 26, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.02em" }}>MailMuse</span>
           </a>
           <a
             href="/browse"
+            className="navbar-cta"
             style={{
               padding: "10px 24px",
               backgroundColor: "#14b8a6",
@@ -368,12 +372,13 @@ export default function Home() {
 
       {/* Hero Section */}
       <section
+        className="section-padding"
         style={{
           padding: "60px 24px 100px",
           backgroundColor: "#ffffff",
           position: "relative",
           overflow: "hidden",
-          minHeight: "85vh",
+          minHeight: "auto",
           display: "flex",
           alignItems: "center",
         }}
@@ -381,9 +386,10 @@ export default function Home() {
 
         <div style={{ maxWidth: 1400, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
           <div
+            className="hero-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
+              gridTemplateColumns: "1fr 1fr",
               gap: 80,
               alignItems: "center",
             }}
@@ -391,11 +397,12 @@ export default function Home() {
             {/* Left Side: Content */}
             <div>
               <h1
+                className="hero-title"
                 style={{
-                  fontSize: "clamp(38px, 5vw, 58px)",
+                  fontSize: "clamp(32px, 5vw, 52px)",
                   fontWeight: 800,
                   color: "#1a1a1a",
-                  marginBottom: 32,
+                  marginBottom: 24,
                   lineHeight: 1.1,
                   letterSpacing: "-0.03em",
                 }}
@@ -403,10 +410,11 @@ export default function Home() {
                 India's Largest Search Engine for Marketing Emails
               </h1>
               <p
+                className="hero-subtitle"
                 style={{
-                  fontSize: "clamp(18px, 2vw, 24px)",
+                  fontSize: "clamp(16px, 2vw, 20px)",
                   color: "#4a5568",
-                  marginBottom: 48,
+                  marginBottom: 32,
                   lineHeight: 1.6,
                   fontWeight: 400,
                 }}
@@ -415,24 +423,25 @@ export default function Home() {
               </p>
 
               {/* Search Bar */}
-              <form onSubmit={handleSearch} style={{ marginBottom: 32 }}>
-                <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+              <form onSubmit={handleSearch} style={{ marginBottom: 24 }}>
+                <div className="search-container" style={{ display: "flex", gap: 12, marginBottom: 16 }}>
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search by brand, campaign type, or keyword..."
+                    className="search-input"
                     style={{
                       flex: 1,
-                      padding: "18px 24px",
-                      border: "none",
-                      borderRadius: 14,
+                      padding: "16px 20px",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: 12,
                       fontSize: 16,
                       outline: "none",
                       transition: "all 0.2s",
                       color: "#1a1a1a",
                       backgroundColor: "#ffffff",
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
                     }}
                     onFocus={(e) => {
                       e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.2)";
@@ -445,14 +454,15 @@ export default function Home() {
                   />
                   <button
                     type="submit"
+                    className="search-button"
                     style={{
-                      padding: "18px 36px",
+                      padding: "16px 28px",
                       backgroundColor: "#14b8a6",
                       color: "#ffffff",
                       border: "none",
-                      borderRadius: 14,
+                      borderRadius: 12,
                       fontSize: 16,
-                      fontWeight: 700,
+                      fontWeight: 600,
                       cursor: "pointer",
                       transition: "all 0.2s",
                       boxShadow: "0 4px 12px rgba(20, 184, 166, 0.3)",
@@ -477,17 +487,18 @@ export default function Home() {
               </form>
 
               {/* CTA Buttons */}
-              <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+              <div className="cta-buttons" style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                 <a
                   href="/browse"
+                  className="cta-button"
                   style={{
-                    padding: "18px 36px",
+                    padding: "14px 28px",
                     backgroundColor: "#14b8a6",
                     color: "#ffffff",
                     textDecoration: "none",
-                    borderRadius: 14,
-                    fontWeight: 700,
-                    fontSize: 17,
+                    borderRadius: 10,
+                    fontWeight: 600,
+                    fontSize: 16,
                     transition: "all 0.2s",
                     display: "inline-block",
                     boxShadow: "0 4px 12px rgba(20, 184, 166, 0.3)",
@@ -507,14 +518,15 @@ export default function Home() {
                 </a>
                 <a
                   href="/browse"
+                  className="cta-button"
                   style={{
-                    padding: "18px 36px",
+                    padding: "14px 28px",
                     backgroundColor: "#ffffff",
                     color: "#14b8a6",
                     textDecoration: "none",
-                    borderRadius: 14,
-                    fontWeight: 700,
-                    fontSize: 17,
+                    borderRadius: 10,
+                    fontWeight: 600,
+                    fontSize: 16,
                     border: "2px solid #14b8a6",
                     transition: "all 0.2s",
                     display: "inline-block",
@@ -537,6 +549,7 @@ export default function Home() {
 
             {/* Right Side: Image */}
             <div
+              className="hero-image-container"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -547,11 +560,11 @@ export default function Home() {
                 <div
                   style={{
                     width: "100%",
-                    maxWidth: "600px",
-                    height: "500px",
-                    borderRadius: 24,
+                    maxWidth: "500px",
+                    height: "400px",
+                    borderRadius: 20,
                     overflow: "hidden",
-                    boxShadow: "0 20px 60px rgba(0,0,0,0.1)",
+                    boxShadow: "0 16px 48px rgba(0,0,0,0.1)",
                     backgroundColor: "#f8fafc",
                     border: "1px solid #e5e5e5",
                     display: "flex",
@@ -589,25 +602,26 @@ export default function Home() {
           </div>
 
           {/* Brand Logos - Moved below */}
-          <div style={{ marginTop: 80, textAlign: "center" }}>
+          <div style={{ marginTop: 60, textAlign: "center" }}>
             <p
               style={{
-                fontSize: 14,
-                color: "#666",
-                marginBottom: 32,
+                fontSize: 13,
+                color: "#64748b",
+                marginBottom: 24,
                 fontWeight: 500,
                 textTransform: "uppercase",
-                letterSpacing: "0.1em",
+                letterSpacing: "0.08em",
               }}
             >
               Trusted by India's Top Brands
             </p>
             <div
+              className="brand-logos"
               style={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                gap: 32,
+                gap: 16,
                 flexWrap: "wrap",
               }}
             >
@@ -621,18 +635,19 @@ export default function Home() {
               ].map((brand, idx) => (
                 <div
                   key={idx}
+                  className="brand-logo-card"
                   style={{
-                    padding: "16px 28px",
+                    padding: "12px 20px",
                     backgroundColor: "#ffffff",
-                    borderRadius: 12,
+                    borderRadius: 10,
                     border: "1px solid #e2e8f0",
                     transition: "all 0.2s",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: 56,
-                    minWidth: 110,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                    height: 48,
+                    minWidth: 100,
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = "#f8f9fa";
@@ -677,12 +692,12 @@ export default function Home() {
       }} />
 
       {/* Value Proposition / Features */}
-      <section style={{ 
-        padding: "100px 24px", 
+      <section className="section-padding" style={{ 
+        padding: "80px 24px", 
         backgroundColor: "#fff",
         position: "relative",
       }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
           {/* Section badge */}
           <div style={{ 
             display: "flex", 
@@ -702,17 +717,18 @@ export default function Home() {
               Why MailMuse
             </span>
           </div>
-          <h2 style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+          <h2 className="section-title" style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
             Why Ecommerce Brands Love MailMuse
           </h2>
-          <p style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 640, margin: "0 auto 48px" }}>
+          <p className="section-subtitle" style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 640, margin: "0 auto 48px" }}>
             Stop guessing. See exactly what Nykaa, Myntra, and other top brands send their customers—then copy what works.
           </p>
           <div
+            className="cards-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: 40,
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: 24,
             }}
           >
             {[
@@ -737,11 +753,12 @@ export default function Home() {
             ].map((feature, idx) => (
               <div
                 key={idx}
+                className="card"
                 style={{
                   textAlign: "center",
-                  padding: "48px 32px",
+                  padding: "36px 24px",
                   backgroundColor: "#fff",
-                  borderRadius: 24,
+                  borderRadius: 20,
                   border: "1px solid #e2e8f0",
                   transition: "all 0.3s",
                   boxShadow: "0 4px 20px rgba(0,0,0,0.03)",
@@ -783,8 +800,8 @@ export default function Home() {
       </section>
 
       {/* Who Is This For */}
-      <section style={{ 
-        padding: "100px 24px", 
+      <section className="section-padding" style={{ 
+        padding: "80px 24px", 
         background: "linear-gradient(180deg, #f0fdfa 0%, #ecfdf5 100%)",
         position: "relative",
       }}>
@@ -820,25 +837,27 @@ export default function Home() {
               Perfect For
             </span>
           </div>
-          <h2 style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+          <h2 className="section-title" style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
             Who Is This For?
           </h2>
-          <p style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 500, margin: "0 auto 48px" }}>
+          <p className="section-subtitle" style={{ textAlign: "center", fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 500, margin: "0 auto 48px" }}>
             Built for teams who want to win at email marketing
           </p>
           <div
+            className="cards-grid-2col"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-              gap: 32,
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gap: 24,
             }}
           >
             {/* Marketing Teams */}
             <div
+              className="card"
               style={{
-                padding: "48px 40px",
+                padding: "36px 28px",
                 backgroundColor: "#fff",
-                borderRadius: 24,
+                borderRadius: 20,
                 border: "none",
                 transition: "all 0.3s",
                 boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
@@ -909,10 +928,11 @@ export default function Home() {
 
             {/* Marketing Agencies */}
             <div
+              className="card"
               style={{
-                padding: "48px 40px",
+                padding: "36px 28px",
                 backgroundColor: "#fff",
-                borderRadius: 24,
+                borderRadius: 20,
                 border: "none",
                 transition: "all 0.3s",
                 boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
@@ -988,8 +1008,8 @@ export default function Home() {
       <BrowseSection />
 
       {/* How It Works */}
-      <section style={{ 
-        padding: "100px 24px", 
+      <section className="section-padding" style={{ 
+        padding: "80px 24px", 
         background: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)",
         position: "relative",
         overflow: "hidden",
@@ -1037,13 +1057,13 @@ export default function Home() {
               How It Works
             </span>
           </div>
-          <h2 style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#fff", letterSpacing: "-0.02em" }}>
+          <h2 className="section-title" style={{ textAlign: "center", fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#fff", letterSpacing: "-0.02em" }}>
             How Top Brands Use MailMuse
           </h2>
-          <p style={{ textAlign: "center", fontSize: 18, color: "#94a3b8", marginBottom: 48, fontWeight: 400, maxWidth: 480, margin: "0 auto 48px" }}>
+          <p className="section-subtitle" style={{ textAlign: "center", fontSize: 18, color: "#94a3b8", marginBottom: 40, fontWeight: 400, maxWidth: 480, margin: "0 auto 40px" }}>
             Three steps to steal winning email campaigns
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
+          <div className="cards-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20 }}>
             {[
               {
                 step: "1",
@@ -1063,11 +1083,12 @@ export default function Home() {
             ].map((item, idx) => (
               <div
                 key={idx}
+                className="card"
                 style={{
                   textAlign: "center",
-                  padding: "40px 32px",
+                  padding: "32px 24px",
                   backgroundColor: "rgba(255, 255, 255, 0.03)",
-                  borderRadius: 20,
+                  borderRadius: 16,
                   border: "1px solid rgba(255, 255, 255, 0.08)",
                   transition: "all 0.3s",
                 }}
@@ -1113,8 +1134,8 @@ export default function Home() {
       </section>
 
       {/* Social Proof */}
-      <section style={{ 
-        padding: "100px 24px", 
+      <section className="section-padding" style={{ 
+        padding: "80px 24px", 
         background: "linear-gradient(180deg, #faf5ff 0%, #f3e8ff 50%, #faf5ff 100%)",
         position: "relative",
       }}>
@@ -1150,15 +1171,15 @@ export default function Home() {
               Trusted
             </span>
           </div>
-          <h2 style={{ fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+          <h2 className="section-title" style={{ fontSize: 36, fontWeight: 700, marginBottom: 12, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
             Used by India's Fastest-Growing Brands
           </h2>
-          <p style={{ fontSize: 18, color: "#64748b", marginBottom: 48, fontWeight: 400, maxWidth: 560, margin: "0 auto 48px" }}>
+          <p className="section-subtitle" style={{ fontSize: 18, color: "#64748b", marginBottom: 40, fontWeight: 400, maxWidth: 560, margin: "0 auto 40px" }}>
             Join D2C brands and marketing teams who use MailMuse to outsmart competitors and boost email revenue.
           </p>
           
           {/* Indian D2C Brand Logos */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap", marginBottom: 60 }}>
+          <div className="brand-logos" style={{ display: "flex", justifyContent: "center", gap: 16, flexWrap: "wrap", marginBottom: 48 }}>
             {[
               { name: "Nykaa", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Nykaa_New_Logo.svg" },
               { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
@@ -1213,7 +1234,7 @@ export default function Home() {
           </div>
 
           {/* Testimonials */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
+          <div className="cards-grid-2col" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
             {[
               {
                 quote: "We copied Nykaa's welcome email sequence and saw a 40% increase in first-purchase conversions. MailMuse pays for itself in one campaign.",
@@ -1281,8 +1302,9 @@ export default function Home() {
 
       {/* Final CTA Section */}
       <section
+        className="section-padding"
         style={{
-          padding: "100px 24px",
+          padding: "80px 24px",
           background: "linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #059669 100%)",
           textAlign: "center",
           color: "#fff",
@@ -1290,24 +1312,25 @@ export default function Home() {
           overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 700, margin: "0 auto", position: "relative", zIndex: 1 }}>
-          <h2 style={{ fontSize: 36, fontWeight: 700, marginBottom: 16, color: "#fff", letterSpacing: "-0.02em" }}>
+        <div style={{ maxWidth: 600, margin: "0 auto", position: "relative", zIndex: 1, padding: "0 16px" }}>
+          <h2 className="final-cta-title" style={{ fontSize: 32, fontWeight: 700, marginBottom: 16, color: "#fff", letterSpacing: "-0.02em" }}>
             Start Stealing Winning Campaigns Today
           </h2>
-          <p style={{ fontSize: 18, marginBottom: 40, opacity: 0.95, fontWeight: 400, lineHeight: 1.7 }}>
+          <p className="final-cta-subtitle" style={{ fontSize: 17, marginBottom: 32, opacity: 0.95, fontWeight: 400, lineHeight: 1.7 }}>
             Free access to thousands of real emails from Nykaa, Myntra, Zomato, and more. Copy what works, boost your conversions, and grow your email revenue—no credit card required.
           </p>
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+          <div className="final-cta-buttons" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <a
               href="/browse"
+              className="final-cta-button"
               style={{
-                padding: "16px 32px",
+                padding: "14px 28px",
                 backgroundColor: "#fff",
                 color: "#14b8a6",
                 textDecoration: "none",
-                borderRadius: 12,
+                borderRadius: 10,
                 fontWeight: 600,
-                fontSize: 16,
+                fontSize: 15,
                 transition: "transform 0.2s",
                 display: "inline-block",
               }}
@@ -1318,14 +1341,15 @@ export default function Home() {
             </a>
             <a
               href="/browse"
+              className="final-cta-button"
               style={{
-                padding: "16px 32px",
+                padding: "14px 28px",
                 backgroundColor: "transparent",
                 color: "#fff",
                 textDecoration: "none",
-                borderRadius: 12,
+                borderRadius: 10,
                 fontWeight: 600,
-                fontSize: 16,
+                fontSize: 15,
                 border: "2px solid #fff",
                 transition: "background-color 0.2s",
                 display: "inline-block",
@@ -1340,9 +1364,9 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer style={{ padding: "60px 24px 40px", backgroundColor: "#1a1a1a", color: "#fff" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 40, marginBottom: 40 }}>
+      <footer style={{ padding: "48px 24px 32px", backgroundColor: "#1a1a1a", color: "#fff" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 8px" }}>
+          <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 32, marginBottom: 32 }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
               <Logo size={48} />
