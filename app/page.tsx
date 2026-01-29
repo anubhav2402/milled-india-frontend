@@ -1,8 +1,288 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Logo from "./components/Logo";
+
+// Industry list for filtering
+const INDUSTRIES = [
+  "All",
+  "Beauty & Personal Care",
+  "Women's Fashion",
+  "Men's Fashion",
+  "Food & Beverages",
+  "Travel & Hospitality",
+  "Electronics & Gadgets",
+  "Home & Living",
+  "Health & Wellness",
+  "Finance & Fintech",
+  "Kids & Baby",
+  "Sports & Fitness",
+  "Entertainment",
+  "General Retail",
+];
+
+type Email = {
+  id: number;
+  subject: string;
+  brand?: string;
+  industry?: string;
+  received_at: string;
+  preview?: string;
+  type?: string;
+  category?: string;
+};
+
+function BrowseSection() {
+  const [selectedIndustry, setSelectedIndustry] = useState("All");
+  const [emails, setEmails] = useState<Email[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEmails = async () => {
+      setLoading(true);
+      try {
+        const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+        if (!base) return;
+        
+        let url = `${base}/emails?limit=12`;
+        if (selectedIndustry !== "All") {
+          url += `&industry=${encodeURIComponent(selectedIndustry)}`;
+        }
+        
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          setEmails(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch emails:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmails();
+  }, [selectedIndustry]);
+
+  return (
+    <section style={{ padding: "80px 24px", backgroundColor: "#fff" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+          Browse by Industry
+        </h2>
+        <p style={{ textAlign: "center", fontSize: 20, color: "#4a5568", marginBottom: 40, fontWeight: 400 }}>
+          Explore email campaigns from India's top brands across industries
+        </p>
+
+        {/* Industry Filter Tabs */}
+        <div style={{ 
+          display: "flex", 
+          flexWrap: "wrap", 
+          gap: 12, 
+          justifyContent: "center", 
+          marginBottom: 48,
+        }}>
+          {INDUSTRIES.map((industry) => (
+            <button
+              key={industry}
+              onClick={() => setSelectedIndustry(industry)}
+              style={{
+                padding: "10px 20px",
+                borderRadius: 24,
+                border: selectedIndustry === industry ? "2px solid #14b8a6" : "2px solid #e2e8f0",
+                backgroundColor: selectedIndustry === industry ? "#14b8a6" : "#fff",
+                color: selectedIndustry === industry ? "#fff" : "#4a5568",
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                if (selectedIndustry !== industry) {
+                  e.currentTarget.style.borderColor = "#14b8a6";
+                  e.currentTarget.style.backgroundColor = "#f0fdfa";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (selectedIndustry !== industry) {
+                  e.currentTarget.style.borderColor = "#e2e8f0";
+                  e.currentTarget.style.backgroundColor = "#fff";
+                }
+              }}
+            >
+              {industry}
+            </button>
+          ))}
+        </div>
+
+        {/* Email Cards Grid */}
+        {loading ? (
+          <div style={{ textAlign: "center", padding: "60px 0", color: "#666" }}>
+            Loading emails...
+          </div>
+        ) : emails.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "60px 0", color: "#666" }}>
+            No emails found for this industry yet.
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+              gap: 24,
+            }}
+          >
+            {emails.map((email) => (
+              <a
+                key={email.id}
+                href={`/email/${email.id}`}
+                style={{
+                  textDecoration: "none",
+                  color: "inherit",
+                  display: "block",
+                }}
+              >
+                <div
+                  style={{
+                    backgroundColor: "#fff",
+                    borderRadius: 16,
+                    border: "1px solid #e5e5e5",
+                    padding: 24,
+                    transition: "all 0.2s",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = "0 12px 24px rgba(0,0,0,0.1)";
+                    e.currentTarget.style.borderColor = "#14b8a6";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.borderColor = "#e5e5e5";
+                  }}
+                >
+                  {/* Brand & Industry */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 10,
+                        backgroundColor: "#f0fdfa",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 700,
+                        fontSize: 18,
+                        color: "#14b8a6",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {email.brand?.[0]?.toUpperCase() || "?"}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, fontSize: 15, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {email.brand || "Unknown Brand"}
+                      </div>
+                      {email.industry && (
+                        <div style={{ fontSize: 12, color: "#14b8a6", fontWeight: 500 }}>
+                          {email.industry}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Subject */}
+                  <h3
+                    style={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: "#1a1a1a",
+                      marginBottom: 8,
+                      lineHeight: 1.4,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      flex: 1,
+                    }}
+                  >
+                    {email.subject}
+                  </h3>
+
+                  {/* Preview */}
+                  {email.preview && (
+                    <p
+                      style={{
+                        fontSize: 14,
+                        color: "#666",
+                        lineHeight: 1.5,
+                        margin: 0,
+                        marginBottom: 16,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {email.preview}
+                    </p>
+                  )}
+
+                  {/* Footer */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", paddingTop: 16, borderTop: "1px solid #f0f0f0" }}>
+                    <time style={{ fontSize: 12, color: "#999" }}>
+                      {new Date(email.received_at).toLocaleDateString("en-IN", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </time>
+                    <span style={{ fontSize: 13, color: "#14b8a6", fontWeight: 600 }}>
+                      View Email →
+                    </span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* View All Button */}
+        <div style={{ textAlign: "center", marginTop: 48 }}>
+          <a
+            href={selectedIndustry === "All" ? "/browse" : `/browse?industry=${encodeURIComponent(selectedIndustry)}`}
+            style={{
+              padding: "16px 32px",
+              backgroundColor: "#14b8a6",
+              color: "#fff",
+              textDecoration: "none",
+              borderRadius: 12,
+              fontWeight: 600,
+              fontSize: 16,
+              display: "inline-block",
+              transition: "all 0.2s",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#0d9488";
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#14b8a6";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+          >
+            View All {selectedIndustry !== "All" ? selectedIndustry : ""} Emails →
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   const router = useRouter();
@@ -88,7 +368,7 @@ export default function Home() {
             <div>
               <h1
                 style={{
-                  fontSize: "clamp(48px, 6vw, 72px)",
+                  fontSize: "clamp(38px, 5vw, 58px)",
                   fontWeight: 800,
                   color: "#1a1a1a",
                   marginBottom: 32,
@@ -431,6 +711,114 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Who Is This For */}
+      <section style={{ padding: "80px 24px", backgroundColor: "#f8fafc" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+            Who Is This For?
+          </h2>
+          <p style={{ textAlign: "center", fontSize: 20, color: "#4a5568", marginBottom: 60, fontWeight: 400 }}>
+            Built for teams who want to win at email marketing
+          </p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+              gap: 40,
+            }}
+          >
+            {/* Marketing Teams */}
+            <div
+              style={{
+                padding: "48px 40px",
+                backgroundColor: "#fff",
+                borderRadius: 24,
+                border: "2px solid #e2e8f0",
+                transition: "all 0.3s",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-8px)";
+                e.currentTarget.style.boxShadow = "0 16px 40px rgba(20, 184, 166, 0.15)";
+                e.currentTarget.style.borderColor = "#14b8a6";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.04)";
+                e.currentTarget.style.borderColor = "#e2e8f0";
+              }}
+            >
+              <div style={{ fontSize: 64, marginBottom: 24 }}>🏢</div>
+              <h3 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+                Brand Marketing Teams
+              </h3>
+              <p style={{ fontSize: 17, color: "#4a5568", lineHeight: 1.7, marginBottom: 24 }}>
+                D2C brands, ecommerce platforms, and retail companies who want to spy on competitor campaigns and steal winning strategies.
+              </p>
+              <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                {[
+                  "See what competitors are sending",
+                  "Copy high-converting campaigns",
+                  "Get inspiration for seasonal sales",
+                  "Benchmark against industry leaders",
+                ].map((item, idx) => (
+                  <li key={idx} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12, fontSize: 15, color: "#4a5568" }}>
+                    <span style={{ color: "#14b8a6", fontWeight: 700 }}>✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Marketing Agencies */}
+            <div
+              style={{
+                padding: "48px 40px",
+                backgroundColor: "#fff",
+                borderRadius: 24,
+                border: "2px solid #e2e8f0",
+                transition: "all 0.3s",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-8px)";
+                e.currentTarget.style.boxShadow = "0 16px 40px rgba(20, 184, 166, 0.15)";
+                e.currentTarget.style.borderColor = "#14b8a6";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.04)";
+                e.currentTarget.style.borderColor = "#e2e8f0";
+              }}
+            >
+              <div style={{ fontSize: 64, marginBottom: 24 }}>🚀</div>
+              <h3 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+                Marketing Agencies
+              </h3>
+              <p style={{ fontSize: 17, color: "#4a5568", lineHeight: 1.7, marginBottom: 24 }}>
+                Digital agencies, email marketing consultants, and freelancers who need to deliver winning campaigns for clients.
+              </p>
+              <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
+                {[
+                  "Research client industries quickly",
+                  "Build campaigns based on proven winners",
+                  "Impress clients with competitor insights",
+                  "Save hours of research time",
+                ].map((item, idx) => (
+                  <li key={idx} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12, fontSize: 15, color: "#4a5568" }}>
+                    <span style={{ color: "#14b8a6", fontWeight: 700 }}>✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Browse by Industry */}
+      <BrowseSection />
 
       {/* How It Works */}
       <section style={{ padding: "80px 24px", backgroundColor: "#f8fafc" }}>

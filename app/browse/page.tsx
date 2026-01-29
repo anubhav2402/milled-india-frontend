@@ -8,10 +8,29 @@ type Email = {
   preview?: string;
   type?: string;
   category?: string;
+  industry?: string;
   received_at: string;
 };
 
-async function fetchEmails(q?: string, brand?: string): Promise<Email[]> {
+// Industry list for filtering
+const INDUSTRIES = [
+  "All",
+  "Beauty & Personal Care",
+  "Women's Fashion",
+  "Men's Fashion",
+  "Food & Beverages",
+  "Travel & Hospitality",
+  "Electronics & Gadgets",
+  "Home & Living",
+  "Health & Wellness",
+  "Finance & Fintech",
+  "Kids & Baby",
+  "Sports & Fitness",
+  "Entertainment",
+  "General Retail",
+];
+
+async function fetchEmails(q?: string, brand?: string, industry?: string): Promise<Email[]> {
   const base = process.env.NEXT_PUBLIC_API_BASE_URL;
   if (!base) {
     console.error("NEXT_PUBLIC_API_BASE_URL is not set");
@@ -21,6 +40,7 @@ async function fetchEmails(q?: string, brand?: string): Promise<Email[]> {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (brand) params.set("brand", brand);
+    if (industry && industry !== "All") params.set("industry", industry);
     params.set("limit", "200");
     const url = `${base}/emails?${params.toString()}`;
     const res = await fetch(url, { cache: "no-store" });
@@ -43,24 +63,25 @@ function getBrands(emails: Email[]): string[] {
 async function BrowseContent({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; brand?: string }>;
+  searchParams?: Promise<{ q?: string; brand?: string; industry?: string }>;
 }) {
   let resolvedParams;
   try {
-    resolvedParams = searchParams ? await searchParams : { q: undefined, brand: undefined };
+    resolvedParams = searchParams ? await searchParams : { q: undefined, brand: undefined, industry: undefined };
   } catch (error) {
     console.error("Error resolving searchParams:", error);
-    resolvedParams = { q: undefined, brand: undefined };
+    resolvedParams = { q: undefined, brand: undefined, industry: undefined };
   }
   
   const q = resolvedParams.q;
   const brand = resolvedParams.brand;
+  const industry = resolvedParams.industry;
   
   let emails: Email[] = [];
   let allBrands: string[] = [];
   
   try {
-    emails = await fetchEmails(q, brand);
+    emails = await fetchEmails(q, brand, industry);
     allBrands = getBrands(emails);
   } catch (error) {
     console.error("Error fetching emails:", error);
@@ -123,40 +144,77 @@ async function BrowseContent({
             </div>
           </div>
 
+          {/* Industry filters */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#666", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              Industry
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {INDUSTRIES.map((ind) => {
+                const isActive = (ind === "All" && !industry) || industry === ind;
+                const href = ind === "All" 
+                  ? `/browse${q ? `?q=${encodeURIComponent(q)}` : ""}`
+                  : `/browse?industry=${encodeURIComponent(ind)}${q ? `&q=${encodeURIComponent(q)}` : ""}`;
+                return (
+                  <a
+                    key={ind}
+                    href={href}
+                    style={{
+                      padding: "6px 14px",
+                      borderRadius: 20,
+                      backgroundColor: isActive ? "#14b8a6" : "#f0f0f0",
+                      color: isActive ? "#fff" : "#666",
+                      textDecoration: "none",
+                      fontSize: 13,
+                      fontWeight: 500,
+                    }}
+                  >
+                    {ind}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Brand filters */}
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <a
-              href="/browse"
-              style={{
-                padding: "6px 12px",
-                borderRadius: 20,
-                backgroundColor: brand ? "#f0f0f0" : "#14b8a6",
-                color: brand ? "#666" : "#fff",
-                textDecoration: "none",
-                fontSize: 13,
-                fontWeight: 500,
-              }}
-            >
-              All
-            </a>
-            {allBrands.map((b) => (
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#666", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+              Brand
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <a
-                key={b}
-                href={`/browse?brand=${encodeURIComponent(b)}`}
+                href={industry ? `/browse?industry=${encodeURIComponent(industry)}` : "/browse"}
                 style={{
                   padding: "6px 12px",
                   borderRadius: 20,
-                  backgroundColor: brand === b ? "#14b8a6" : "#f0f0f0",
-                  color: brand === b ? "#fff" : "#666",
+                  backgroundColor: brand ? "#f0f0f0" : "#14b8a6",
+                  color: brand ? "#666" : "#fff",
                   textDecoration: "none",
                   fontSize: 13,
                   fontWeight: 500,
-                  textTransform: "capitalize",
                 }}
               >
-                {b}
+                All Brands
               </a>
-            ))}
+              {allBrands.map((b) => (
+                <a
+                  key={b}
+                  href={`/browse?brand=${encodeURIComponent(b)}${industry ? `&industry=${encodeURIComponent(industry)}` : ""}`}
+                  style={{
+                    padding: "6px 12px",
+                    borderRadius: 20,
+                    backgroundColor: brand === b ? "#14b8a6" : "#f0f0f0",
+                    color: brand === b ? "#fff" : "#666",
+                    textDecoration: "none",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {b}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </header>
@@ -362,7 +420,7 @@ async function BrowseContent({
 export default async function BrowsePage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string; brand?: string }>;
+  searchParams?: Promise<{ q?: string; brand?: string; industry?: string }>;
 }) {
   return (
     <Suspense
