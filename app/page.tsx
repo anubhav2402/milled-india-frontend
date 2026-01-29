@@ -338,7 +338,7 @@ export default function Home() {
           boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
         }}
       >
-        <div className="navbar-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="navbar-container" style={{ maxWidth: 1200, margin: "0 auto", padding: "0 48px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center" }}>
             <Logo size={44} />
             <span className="navbar-logo-text" style={{ fontSize: 26, fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.02em" }}>MailMuse</span>
@@ -374,7 +374,7 @@ export default function Home() {
       <section
         className="section-padding"
         style={{
-          padding: "60px 24px 100px",
+          padding: "60px 48px 100px",
           backgroundColor: "#ffffff",
           position: "relative",
           overflow: "hidden",
@@ -384,7 +384,7 @@ export default function Home() {
         }}
       >
 
-        <div style={{ maxWidth: 1400, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
           <div
             className="hero-grid"
             style={{
