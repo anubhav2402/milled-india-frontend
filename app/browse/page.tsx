@@ -1,7 +1,7 @@
 "use client";
 
 import Logo from "../components/Logo";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type Email = {
   id: number;
@@ -39,11 +39,16 @@ const DATE_FILTERS = [
   { label: "Last 90 Days", value: "90" },
 ];
 
+const ITEMS_PER_PAGE = 24;
+
 export default function BrowsePage() {
   const [emails, setEmails] = useState<Email[]>([]);
   const [allBrands, setAllBrands] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE);
+  const [totalCount, setTotalCount] = useState(0);
   
   // Filter states
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -53,54 +58,86 @@ export default function BrowsePage() {
   // Sidebar collapse state for mobile
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Fetch emails
-  useEffect(() => {
-    const fetchEmails = async () => {
-      setLoading(true);
-      const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-      if (!base) return;
-      
-      try {
-        const params = new URLSearchParams();
-        params.set("limit", "500");
-        const res = await fetch(`${base}/emails?${params.toString()}`);
-        if (res.ok) {
-          const data: Email[] = await res.json();
-          setEmails(data);
-          
-          // Extract unique brands
-          const brands = new Set(data.map((e) => e.brand).filter(Boolean));
-          setAllBrands(Array.from(brands).sort() as string[]);
-        }
-      } catch (error) {
-        console.error("Failed to fetch emails:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch emails with filters from API
+  const fetchEmails = useCallback(async (industry?: string, brand?: string, search?: string) => {
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+    if (!base) return;
     
-    fetchEmails();
+    try {
+      const params = new URLSearchParams();
+      params.set("limit", "200");
+      if (industry) params.set("industry", industry);
+      if (brand) params.set("brand", brand);
+      if (search) params.set("q", search);
+      
+      const res = await fetch(`${base}/emails?${params.toString()}`, {
+        cache: "force-cache",
+        next: { revalidate: 60 },
+      });
+      if (res.ok) {
+        const data: Email[] = await res.json();
+        setEmails(data);
+        setTotalCount(data.length);
+        setDisplayCount(ITEMS_PER_PAGE);
+      }
+    } catch (error) {
+      console.error("Failed to fetch emails:", error);
+    }
   }, []);
 
-  // Filter emails based on selections
-  const filteredEmails = emails.filter((email) => {
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      const matchesSearch = 
-        email.subject?.toLowerCase().includes(query) ||
-        email.brand?.toLowerCase().includes(query) ||
-        email.preview?.toLowerCase().includes(query);
-      if (!matchesSearch) return false;
-    }
+  // Fetch brands list separately (cached)
+  const fetchBrands = useCallback(async () => {
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+    if (!base) return;
     
-    // Brand filter
-    if (selectedBrands.length > 0 && !selectedBrands.includes(email.brand || "")) {
+    try {
+      const res = await fetch(`${base}/brands`, {
+        cache: "force-cache",
+        next: { revalidate: 300 },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAllBrands(data);
+      }
+    } catch {
+      // Fallback: extract from emails if brands endpoint doesn't exist
+      const res = await fetch(`${base}/emails?limit=500`);
+      if (res.ok) {
+        const data: Email[] = await res.json();
+        const brands = new Set(data.map((e) => e.brand).filter(Boolean));
+        setAllBrands(Array.from(brands).sort() as string[]);
+      }
+    }
+  }, []);
+
+  // Initial load
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true);
+      await Promise.all([fetchEmails(), fetchBrands()]);
+      setLoading(false);
+    };
+    init();
+  }, [fetchEmails, fetchBrands]);
+
+  // Refetch when filters change
+  useEffect(() => {
+    if (!loading) {
+      const industry = selectedIndustries.length === 1 ? selectedIndustries[0] : undefined;
+      const brand = selectedBrands.length === 1 ? selectedBrands[0] : undefined;
+      fetchEmails(industry, brand, searchQuery || undefined);
+    }
+  }, [selectedIndustries, selectedBrands, searchQuery, fetchEmails, loading]);
+
+  // Filter emails based on selections (client-side filtering for multi-select)
+  const filteredEmails = emails.filter((email) => {
+    // Multi-brand filter (client side)
+    if (selectedBrands.length > 1 && !selectedBrands.includes(email.brand || "")) {
       return false;
     }
     
-    // Industry filter
-    if (selectedIndustries.length > 0 && !selectedIndustries.includes(email.industry || "")) {
+    // Multi-industry filter (client side)
+    if (selectedIndustries.length > 1 && !selectedIndustries.includes(email.industry || "")) {
       return false;
     }
     
@@ -115,6 +152,18 @@ export default function BrowsePage() {
     
     return true;
   });
+
+  // Paginated emails to display
+  const displayedEmails = filteredEmails.slice(0, displayCount);
+  const hasMore = displayCount < filteredEmails.length;
+
+  const loadMore = () => {
+    setLoadingMore(true);
+    setTimeout(() => {
+      setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
+      setLoadingMore(false);
+    }, 100);
+  };
 
   const toggleBrand = (brand: string) => {
     setSelectedBrands((prev) =>
@@ -446,7 +495,17 @@ export default function BrowsePage() {
           {/* Email Grid */}
           {loading ? (
             <div style={{ textAlign: "center", padding: "80px 20px", color: "#94a3b8" }}>
-              <div style={{ fontSize: 16 }}>Loading emails...</div>
+              <div style={{ 
+                width: 40, 
+                height: 40, 
+                border: "3px solid #e2e8f0", 
+                borderTopColor: "#14b8a6", 
+                borderRadius: "50%", 
+                margin: "0 auto 16px",
+                animation: "spin 1s linear infinite",
+              }} />
+              <div style={{ fontSize: 15 }}>Loading emails...</div>
+              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
           ) : filteredEmails.length === 0 ? (
             <div style={{ textAlign: "center", padding: "80px 20px", color: "#94a3b8" }}>
@@ -472,14 +531,15 @@ export default function BrowsePage() {
               )}
             </div>
           ) : (
+            <>
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-                gap: 20,
+                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                gap: 16,
               }}
             >
-              {filteredEmails.map((e) => {
+              {displayedEmails.map((e) => {
                 const brandInitial = e.brand ? e.brand.charAt(0).toUpperCase() : "?";
                 const receivedDate = new Date(e.received_at);
                 const formattedDate = receivedDate.toLocaleDateString("en-IN", {
@@ -574,6 +634,35 @@ export default function BrowsePage() {
                 );
               })}
             </div>
+            
+            {/* Load More Button */}
+            {hasMore && (
+              <div style={{ textAlign: "center", marginTop: 32 }}>
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  style={{
+                    padding: "14px 40px",
+                    backgroundColor: loadingMore ? "#94a3b8" : "#14b8a6",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 10,
+                    fontWeight: 600,
+                    fontSize: 15,
+                    cursor: loadingMore ? "wait" : "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {loadingMore ? "Loading..." : `Load More (${filteredEmails.length - displayCount} remaining)`}
+                </button>
+              </div>
+            )}
+            
+            {/* Showing count */}
+            <div style={{ textAlign: "center", marginTop: 20, fontSize: 13, color: "#94a3b8" }}>
+              Showing {displayedEmails.length} of {filteredEmails.length} emails
+            </div>
+            </>
           )}
         </main>
       </div>
