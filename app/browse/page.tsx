@@ -41,6 +41,7 @@ const DATE_FILTERS = [
 ];
 
 const ITEMS_PER_PAGE = 24;
+const FETCH_BATCH_SIZE = 100; // Fetch 100 emails at a time from server
 
 export default function BrowsePage() {
   const [emails, setEmails] = useState<Email[]>([]);
@@ -48,8 +49,7 @@ export default function BrowsePage() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE);
-  const [totalCount, setTotalCount] = useState(0);
+  const [hasMoreOnServer, setHasMoreOnServer] = useState(true);
   
   // Filter states
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -59,27 +59,37 @@ export default function BrowsePage() {
   // Sidebar collapse state for mobile
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Fetch emails with filters from API
-  const fetchEmails = useCallback(async (industry?: string, brand?: string, search?: string) => {
+  // Fetch emails with filters from API (with pagination)
+  const fetchEmails = useCallback(async (
+    industry?: string, 
+    brand?: string, 
+    search?: string,
+    skip: number = 0,
+    append: boolean = false
+  ) => {
     const base = process.env.NEXT_PUBLIC_API_BASE_URL;
     if (!base) return;
     
     try {
       const params = new URLSearchParams();
-      // No limit - fetch all emails so filters work on complete dataset
-      // Backend will return all emails sorted by newest first
+      params.set("limit", String(FETCH_BATCH_SIZE));
+      params.set("skip", String(skip));
       if (industry) params.set("industry", industry);
       if (brand) params.set("brand", brand);
       if (search) params.set("q", search);
       
       const res = await fetch(`${base}/emails?${params.toString()}`, {
-        cache: "no-store", // Always get fresh data
+        cache: "no-store",
       });
       if (res.ok) {
         const data: Email[] = await res.json();
-        setEmails(data);
-        setTotalCount(data.length);
-        setDisplayCount(ITEMS_PER_PAGE);
+        if (append) {
+          setEmails(prev => [...prev, ...data]);
+        } else {
+          setEmails(data);
+        }
+        // If we got fewer than batch size, no more on server
+        setHasMoreOnServer(data.length === FETCH_BATCH_SIZE);
       }
     } catch (error) {
       console.error("Failed to fetch emails:", error);
@@ -101,13 +111,8 @@ export default function BrowsePage() {
         setAllBrands(data);
       }
     } catch {
-      // Fallback: extract from emails if brands endpoint doesn't exist
-      const res = await fetch(`${base}/emails?limit=500`);
-      if (res.ok) {
-        const data: Email[] = await res.json();
-        const brands = new Set(data.map((e) => e.brand).filter(Boolean));
-        setAllBrands(Array.from(brands).sort() as string[]);
-      }
+      // Brands endpoint might not exist, that's ok
+      console.log("Brands endpoint not available");
     }
   }, []);
 
@@ -126,11 +131,11 @@ export default function BrowsePage() {
     if (!loading) {
       const industry = selectedIndustries.length === 1 ? selectedIndustries[0] : undefined;
       const brand = selectedBrands.length === 1 ? selectedBrands[0] : undefined;
-      fetchEmails(industry, brand, searchQuery || undefined);
+      fetchEmails(industry, brand, searchQuery || undefined, 0, false);
     }
   }, [selectedIndustries, selectedBrands, searchQuery, fetchEmails, loading]);
 
-  // Filter emails based on selections (client-side filtering for multi-select)
+  // Filter emails based on selections (client-side filtering for multi-select and date)
   const filteredEmails = emails.filter((email) => {
     // Multi-brand filter (client side)
     if (selectedBrands.length > 1 && !selectedBrands.includes(email.brand || "")) {
@@ -154,16 +159,13 @@ export default function BrowsePage() {
     return true;
   });
 
-  // Paginated emails to display
-  const displayedEmails = filteredEmails.slice(0, displayCount);
-  const hasMore = displayCount < filteredEmails.length;
-
-  const loadMore = () => {
+  // Load more from server
+  const loadMore = async () => {
     setLoadingMore(true);
-    setTimeout(() => {
-      setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
-      setLoadingMore(false);
-    }, 100);
+    const industry = selectedIndustries.length === 1 ? selectedIndustries[0] : undefined;
+    const brand = selectedBrands.length === 1 ? selectedBrands[0] : undefined;
+    await fetchEmails(industry, brand, searchQuery || undefined, emails.length, true);
+    setLoadingMore(false);
   };
 
   const toggleBrand = (brand: string) => {
@@ -540,7 +542,7 @@ export default function BrowsePage() {
                 gap: 20,
               }}
             >
-              {displayedEmails.map((e) => {
+              {filteredEmails.map((e) => {
                 const brandInitial = e.brand ? e.brand.charAt(0).toUpperCase() : "?";
                 const receivedDate = new Date(e.received_at);
                 const formattedDate = receivedDate.toLocaleDateString("en-IN", {
@@ -701,7 +703,7 @@ export default function BrowsePage() {
             </div>
             
             {/* Load More Button */}
-            {hasMore && (
+            {hasMoreOnServer && (
               <div style={{ textAlign: "center", marginTop: 32 }}>
                 <button
                   onClick={loadMore}
@@ -718,14 +720,14 @@ export default function BrowsePage() {
                     transition: "all 0.2s",
                   }}
                 >
-                  {loadingMore ? "Loading..." : `Load More (${filteredEmails.length - displayCount} remaining)`}
+                  {loadingMore ? "Loading..." : "Load More Emails"}
                 </button>
               </div>
             )}
             
             {/* Showing count */}
             <div style={{ textAlign: "center", marginTop: 20, fontSize: 13, color: "#94a3b8" }}>
-              Showing {displayedEmails.length} of {filteredEmails.length} emails
+              Showing {filteredEmails.length} emails {hasMoreOnServer && "(more available)"}
             </div>
             </>
           )}
