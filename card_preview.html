@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Card Design Options</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #fafafa;
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .section {
+            margin-bottom: 60px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        
+        /* Option 1: Minimal Card */
+        .card-1 {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e5e5;
+            padding: 20px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .card-1:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .card-1-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+        .card-1-brand {
+            padding: 4px 10px;
+            background: #f0f0f0;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #666;
+        }
+        .card-1-date {
+            font-size: 12px;
+            color: #999;
+        }
+        .card-1-subject {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .card-1-preview-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #f0fdfa 0%, #d1fae5 100%);
+        }
+        .card-1-preview {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Option 2: Brand-First Card */
+        .card-2 {
+            background: #fff;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .card-2:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transform: translateY(-4px);
+        }
+        .card-2-brand {
+            background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+            color: #fff;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .card-2-preview-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #f0fdfa 0%, #d1fae5 100%);
+        }
+        .card-2-content {
+            padding: 20px;
+        }
+        .card-2-subject {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+        }
+        .card-2-preview {
+            font-size: 15px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .card-2-date {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #14b8a6;
+            font-weight: 600;
+        }
+        
+        /* Option 3: Magazine-Style Card */
+        .card-3 {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e5e5e5;
+            overflow: hidden;
+            display: flex;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .card-3:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .card-3-image {
+            width: 160px;
+            min-width: 160px;
+            background: linear-gradient(135deg, #f0fdfa 0%, #d1fae5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .card-3-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-3-content {
+            flex: 1;
+            padding: 20px;
+        }
+        .card-3-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .card-3-brand {
+            font-size: 14px;
+            font-weight: 700;
+            color: #14b8a6;
+            text-transform: uppercase;
+        }
+        .card-3-date {
+            font-size: 12px;
+            color: #999;
+        }
+        .card-3-subject {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        .card-3-preview {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        /* Option 4: Compact List Card */
+        .card-4 {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #e5e5e5;
+            padding: 16px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .card-4:hover {
+            background: #f8fafc;
+            border-color: #14b8a6;
+        }
+        .card-4-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+        .card-4-brand {
+            padding: 4px 10px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #666;
+            min-width: 80px;
+            text-align: center;
+        }
+        .card-4-subject {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .card-4-date {
+            font-size: 12px;
+            color: #999;
+            min-width: 60px;
+            text-align: right;
+        }
+        .card-4-preview-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #f0fdfa 0%, #d1fae5 100%);
+        }
+        .card-4-preview {
+            font-size: 13px;
+            color: #666;
+            margin-left: 0;
+            line-height: 1.5;
+        }
+        
+        /* Option 5: Feature-Rich Card */
+        .card-5 {
+            background: #fff;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+            padding: 24px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .card-5:hover {
+            box-shadow: 0 8px 24px rgba(20, 184, 166, 0.15);
+            border-color: #14b8a6;
+            transform: translateY(-2px);
+        }
+        .card-5-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+        .card-5-brand-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .card-5-brand-logo {
+            width: 40px;
+            height: 40px;
+            background: #f0fdfa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #14b8a6;
+        }
+        .card-5-brand-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-transform: uppercase;
+        }
+        .card-5-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .card-5-badge {
+            padding: 4px 10px;
+            background: #f0fdfa;
+            border: 1px solid #14b8a6;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #14b8a6;
+            text-transform: uppercase;
+        }
+        .card-5-subject {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        .card-5-preview-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #f0fdfa 0%, #d1fae5 100%);
+        }
+        .card-5-preview {
+            font-size: 15px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .card-5-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid #e5e5e5;
+        }
+        .card-5-date {
+            font-size: 13px;
+            color: #999;
+        }
+        .card-5-button {
+            padding: 8px 20px;
+            background: #14b8a6;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; font-size: 32px; margin-bottom: 40px; color: #1a1a1a;">Email Card Design Options</h1>
+    
+    <!-- Option 1: Minimal Card -->
+    <div class="section">
+        <div class="section-title">Option 1: Minimal Card (Clean & Simple)</div>
+        <div class="cards-container">
+            <div class="card-1">
+                <div class="card-1-header">
+                    <span class="card-1-brand">Nykaa</span>
+                    <span class="card-1-date">Jan 28</span>
+                </div>
+                <img src="https://via.placeholder.com/400x180/14b8a6/ffffff?text=Email+Preview" alt="Email preview" class="card-1-preview-image" />
+                <div class="card-1-subject">Flash Sale: Up to 50% Off on Beauty Products</div>
+                <div class="card-1-preview">Don't miss out on our biggest sale of the year. Shop now and save big on your favorite beauty brands.</div>
+            </div>
+            <div class="card-1">
+                <div class="card-1-header">
+                    <span class="card-1-brand">Myntra</span>
+                    <span class="card-1-date">Jan 27</span>
+                </div>
+                <img src="https://via.placeholder.com/400x180/FF6B35/ffffff?text=Email+Preview" alt="Email preview" class="card-1-preview-image" />
+                <div class="card-1-subject">New Arrivals: Latest Fashion Trends</div>
+                <div class="card-1-preview">Discover the newest collection from top brands. Get ready to upgrade your wardrobe with the latest styles.</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Option 2: Brand-First Card -->
+    <div class="section">
+        <div class="section-title">Option 2: Brand-First Card (Ecommerce Style)</div>
+        <div class="cards-container">
+            <div class="card-2">
+                <div class="card-2-brand">NYKAA</div>
+                <img src="https://via.placeholder.com/400x200/E91E63/ffffff?text=Email+Preview" alt="Email preview" class="card-2-preview-image" />
+                <div class="card-2-content">
+                    <div class="card-2-subject">Flash Sale: Up to 50% Off on Beauty Products</div>
+                    <div class="card-2-preview">Don't miss out on our biggest sale of the year. Shop now and save big on your favorite beauty brands.</div>
+                    <span class="card-2-date">Jan 28, 2026</span>
+                </div>
+            </div>
+            <div class="card-2">
+                <div style="background: linear-gradient(135deg, #FF6B35 0%, #E85A2B 100%);" class="card-2-brand">MYNTRA</div>
+                <img src="https://via.placeholder.com/400x200/FF6B35/ffffff?text=Email+Preview" alt="Email preview" class="card-2-preview-image" />
+                <div class="card-2-content">
+                    <div class="card-2-subject">New Arrivals: Latest Fashion Trends</div>
+                    <div class="card-2-preview">Discover the newest collection from top brands. Get ready to upgrade your wardrobe.</div>
+                    <span class="card-2-date">Jan 27, 2026</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Option 3: Magazine-Style Card -->
+    <div class="section">
+        <div class="section-title">Option 3: Magazine-Style Card (Visual)</div>
+        <div class="cards-container">
+            <div class="card-3">
+                <div class="card-3-image">
+                    <img src="https://via.placeholder.com/160x200/14b8a6/ffffff?text=Preview" alt="Email preview" />
+                </div>
+                <div class="card-3-content">
+                    <div class="card-3-header">
+                        <span class="card-3-brand">Nykaa</span>
+                        <span class="card-3-date">Jan 28</span>
+                    </div>
+                    <div class="card-3-subject">Flash Sale: Up to 50% Off</div>
+                    <div class="card-3-preview">Don't miss out on our biggest sale of the year. Shop now and save big.</div>
+                </div>
+            </div>
+            <div class="card-3">
+                <div class="card-3-image">
+                    <img src="https://via.placeholder.com/160x200/FF6B35/ffffff?text=Preview" alt="Email preview" />
+                </div>
+                <div class="card-3-content">
+                    <div class="card-3-header">
+                        <span class="card-3-brand">Myntra</span>
+                        <span class="card-3-date">Jan 27</span>
+                    </div>
+                    <div class="card-3-subject">New Arrivals: Latest Fashion</div>
+                    <div class="card-3-preview">Discover the newest collection from top brands. Upgrade your wardrobe.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Option 4: Compact List Card -->
+    <div class="section">
+        <div class="section-title">Option 4: Compact List Card (Dense)</div>
+        <div class="cards-container">
+            <div class="card-4">
+                <img src="https://via.placeholder.com/400x120/14b8a6/ffffff?text=Email+Preview" alt="Email preview" class="card-4-preview-image" />
+                <div class="card-4-header">
+                    <span class="card-4-brand">Nykaa</span>
+                    <span class="card-4-subject">Flash Sale: Up to 50% Off on Beauty Products</span>
+                    <span class="card-4-date">Jan 28</span>
+                </div>
+                <div class="card-4-preview">Don't miss out on our biggest sale of the year. Shop now and save big on your favorite beauty brands.</div>
+            </div>
+            <div class="card-4">
+                <img src="https://via.placeholder.com/400x120/FF6B35/ffffff?text=Email+Preview" alt="Email preview" class="card-4-preview-image" />
+                <div class="card-4-header">
+                    <span class="card-4-brand">Myntra</span>
+                    <span class="card-4-subject">New Arrivals: Latest Fashion Trends</span>
+                    <span class="card-4-date">Jan 27</span>
+                </div>
+                <div class="card-4-preview">Discover the newest collection from top brands. Get ready to upgrade your wardrobe with the latest styles.</div>
+            </div>
+            <div class="card-4">
+                <img src="https://via.placeholder.com/400x120/FF6B00/ffffff?text=Email+Preview" alt="Email preview" class="card-4-preview-image" />
+                <div class="card-4-header">
+                    <span class="card-4-brand">Zomato</span>
+                    <span class="card-4-subject">Order Now: Get 40% Off on Your Favorite Food</span>
+                    <span class="card-4-date">Jan 26</span>
+                </div>
+                <div class="card-4-preview">Craving your favorite meal? Order now and enjoy amazing discounts on delicious food from top restaurants.</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Option 5: Feature-Rich Card -->
+    <div class="section">
+        <div class="section-title">Option 5: Feature-Rich Card (Detailed)</div>
+        <div class="cards-container">
+            <div class="card-5">
+                <div class="card-5-top">
+                    <div class="card-5-brand-section">
+                        <div class="card-5-brand-logo">N</div>
+                        <div>
+                            <div class="card-5-brand-name">Nykaa</div>
+                            <div class="card-5-badges">
+                                <span class="card-5-badge">Promotional</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <img src="https://via.placeholder.com/400x200/E91E63/ffffff?text=Email+Preview" alt="Email preview" class="card-5-preview-image" />
+                <div class="card-5-subject">Flash Sale: Up to 50% Off on Beauty Products</div>
+                <div class="card-5-preview">Don't miss out on our biggest sale of the year. Shop now and save big on your favorite beauty brands and discover new favorites.</div>
+                <div class="card-5-footer">
+                    <span class="card-5-date">Jan 28, 2026 • 10:30 AM</span>
+                    <span class="card-5-button">View Email →</span>
+                </div>
+            </div>
+            <div class="card-5">
+                <div class="card-5-top">
+                    <div class="card-5-brand-section">
+                        <div class="card-5-brand-logo">M</div>
+                        <div>
+                            <div class="card-5-brand-name">Myntra</div>
+                            <div class="card-5-badges">
+                                <span class="card-5-badge">New Arrival</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <img src="https://via.placeholder.com/400x200/FF6B35/ffffff?text=Email+Preview" alt="Email preview" class="card-5-preview-image" />
+                <div class="card-5-subject">New Arrivals: Latest Fashion Trends</div>
+                <div class="card-5-preview">Discover the newest collection from top brands. Get ready to upgrade your wardrobe with the latest styles and trends.</div>
+                <div class="card-5-footer">
+                    <span class="card-5-date">Jan 27, 2026 • 2:15 PM</span>
+                    <span class="card-5-button">View Email →</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

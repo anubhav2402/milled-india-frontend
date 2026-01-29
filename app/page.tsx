@@ -66,8 +66,32 @@ function BrowseSection() {
   }, [selectedIndustry]);
 
   return (
-    <section style={{ padding: "80px 24px", backgroundColor: "#fff" }}>
+    <section style={{ 
+      padding: "100px 24px", 
+      backgroundColor: "#fff",
+      borderTop: "1px solid #e2e8f0",
+      borderBottom: "1px solid #e2e8f0",
+    }}>
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        {/* Section badge */}
+        <div style={{ 
+          display: "flex", 
+          justifyContent: "center", 
+          marginBottom: 24 
+        }}>
+          <span style={{
+            padding: "8px 20px",
+            backgroundColor: "#fef3c7",
+            color: "#d97706",
+            fontSize: 13,
+            fontWeight: 600,
+            borderRadius: 50,
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+          }}>
+            Explore
+          </span>
+        </div>
         <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
           Browse by Industry
         </h2>
@@ -644,9 +668,40 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Section Divider */}
+      <div style={{ 
+        height: 1, 
+        background: "linear-gradient(90deg, transparent 0%, #e2e8f0 20%, #e2e8f0 80%, transparent 100%)",
+        margin: "0 auto",
+        maxWidth: 800,
+      }} />
+
       {/* Value Proposition / Features */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#fff" }}>
+      <section style={{ 
+        padding: "100px 24px", 
+        backgroundColor: "#fff",
+        position: "relative",
+      }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          {/* Section badge */}
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            marginBottom: 24 
+          }}>
+            <span style={{
+              padding: "8px 20px",
+              backgroundColor: "#f0fdfa",
+              color: "#14b8a6",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 50,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+            }}>
+              Why MailMuse
+            </span>
+          </div>
           <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
             Why Ecommerce Brands Love MailMuse
           </h2>
@@ -665,45 +720,61 @@ export default function Home() {
                 icon: "🎯",
                 title: "Steal Winning Campaigns",
                 description: "See every email Nykaa, Myntra, and Zomato send. Copy their subject lines, CTAs, and messaging—then watch your conversions soar.",
+                color: "#14b8a6",
               },
               {
                 icon: "📧",
                 title: "Complete Email Archive",
                 description: "Welcome emails, flash sales, cart abandonment, re-engagement—every campaign from India's top D2C brands, all in one place.",
+                color: "#6366f1",
               },
               {
                 icon: "⚡",
                 title: "Find What Works Fast",
                 description: "Search by brand, campaign type, or keyword. See what messaging converts, what subject lines get opens, and what CTAs drive clicks.",
+                color: "#f59e0b",
               },
             ].map((feature, idx) => (
               <div
                 key={idx}
                 style={{
                   textAlign: "center",
-                  padding: "40px 32px",
+                  padding: "48px 32px",
                   backgroundColor: "#fff",
-                  borderRadius: 20,
-                  border: "2px solid #e2e8f0",
+                  borderRadius: 24,
+                  border: "1px solid #e2e8f0",
                   transition: "all 0.3s",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  boxShadow: "0 4px 20px rgba(0,0,0,0.03)",
+                  position: "relative",
+                  overflow: "hidden",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-8px)";
-                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(20, 184, 166, 0.15)";
-                  e.currentTarget.style.borderColor = "#14b8a6";
+                  e.currentTarget.style.boxShadow = "0 20px 40px rgba(0,0,0,0.08)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.04)";
-                  e.currentTarget.style.borderColor = "#e2e8f0";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.03)";
                 }}
               >
-                <div style={{ fontSize: 56, marginBottom: 20 }}>{feature.icon}</div>
-                <h3 style={{ fontSize: 26, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+                {/* Accent bar at top */}
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 4,
+                  backgroundColor: feature.color,
+                }} />
+                <div style={{ 
+                  fontSize: 56, 
+                  marginBottom: 24,
+                  filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.1))",
+                }}>{feature.icon}</div>
+                <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
                   {feature.title}
                 </h3>
-                <p style={{ fontSize: 17, color: "#4a5568", lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.7, margin: 0 }}>
                   {feature.description}
                 </p>
               </div>
@@ -713,8 +784,43 @@ export default function Home() {
       </section>
 
       {/* Who Is This For */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#f8fafc" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <section style={{ 
+        padding: "100px 24px", 
+        background: "linear-gradient(180deg, #f0fdfa 0%, #ecfdf5 100%)",
+        position: "relative",
+      }}>
+        {/* Decorative pattern */}
+        <div style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: "radial-gradient(circle at 1px 1px, rgba(20, 184, 166, 0.08) 1px, transparent 0)",
+          backgroundSize: "40px 40px",
+          pointerEvents: "none",
+        }} />
+        
+        <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative" }}>
+          {/* Section badge */}
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            marginBottom: 24 
+          }}>
+            <span style={{
+              padding: "8px 20px",
+              backgroundColor: "#14b8a6",
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 50,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+            }}>
+              Perfect For
+            </span>
+          </div>
           <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
             Who Is This For?
           </h2>
@@ -725,7 +831,7 @@ export default function Home() {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-              gap: 40,
+              gap: 32,
             }}
           >
             {/* Marketing Teams */}
@@ -734,26 +840,45 @@ export default function Home() {
                 padding: "48px 40px",
                 backgroundColor: "#fff",
                 borderRadius: 24,
-                border: "2px solid #e2e8f0",
+                border: "none",
                 transition: "all 0.3s",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
+                position: "relative",
+                overflow: "hidden",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-8px)";
-                e.currentTarget.style.boxShadow = "0 16px 40px rgba(20, 184, 166, 0.15)";
-                e.currentTarget.style.borderColor = "#14b8a6";
+                e.currentTarget.style.boxShadow = "0 20px 50px rgba(20, 184, 166, 0.15)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.04)";
-                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.currentTarget.style.boxShadow = "0 10px 40px rgba(0,0,0,0.06)";
               }}
             >
-              <div style={{ fontSize: 64, marginBottom: 24 }}>🏢</div>
-              <h3 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+              {/* Gradient accent */}
+              <div style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 5,
+                background: "linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%)",
+              }} />
+              <div style={{ 
+                width: 72,
+                height: 72,
+                borderRadius: 20,
+                backgroundColor: "#f0fdfa",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 36,
+                marginBottom: 24,
+              }}>🏢</div>
+              <h3 style={{ fontSize: 26, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
                 Brand Marketing Teams
               </h3>
-              <p style={{ fontSize: 17, color: "#4a5568", lineHeight: 1.7, marginBottom: 24 }}>
+              <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.7, marginBottom: 24 }}>
                 D2C brands, ecommerce platforms, and retail companies who want to spy on competitor campaigns and steal winning strategies.
               </p>
               <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
@@ -763,8 +888,20 @@ export default function Home() {
                   "Get inspiration for seasonal sales",
                   "Benchmark against industry leaders",
                 ].map((item, idx) => (
-                  <li key={idx} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12, fontSize: 15, color: "#4a5568" }}>
-                    <span style={{ color: "#14b8a6", fontWeight: 700 }}>✓</span>
+                  <li key={idx} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14, fontSize: 15, color: "#475569" }}>
+                    <span style={{ 
+                      width: 22,
+                      height: 22,
+                      borderRadius: "50%",
+                      backgroundColor: "#f0fdfa",
+                      color: "#14b8a6", 
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 12,
+                      flexShrink: 0,
+                    }}>✓</span>
                     {item}
                   </li>
                 ))}
@@ -777,26 +914,45 @@ export default function Home() {
                 padding: "48px 40px",
                 backgroundColor: "#fff",
                 borderRadius: 24,
-                border: "2px solid #e2e8f0",
+                border: "none",
                 transition: "all 0.3s",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.04)",
+                boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
+                position: "relative",
+                overflow: "hidden",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-8px)";
-                e.currentTarget.style.boxShadow = "0 16px 40px rgba(20, 184, 166, 0.15)";
-                e.currentTarget.style.borderColor = "#14b8a6";
+                e.currentTarget.style.boxShadow = "0 20px 50px rgba(20, 184, 166, 0.15)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.04)";
-                e.currentTarget.style.borderColor = "#e2e8f0";
+                e.currentTarget.style.boxShadow = "0 10px 40px rgba(0,0,0,0.06)";
               }}
             >
-              <div style={{ fontSize: 64, marginBottom: 24 }}>🚀</div>
-              <h3 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
+              {/* Gradient accent */}
+              <div style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 5,
+                background: "linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%)",
+              }} />
+              <div style={{ 
+                width: 72,
+                height: 72,
+                borderRadius: 20,
+                backgroundColor: "#eef2ff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 36,
+                marginBottom: 24,
+              }}>🚀</div>
+              <h3 style={{ fontSize: 26, fontWeight: 700, marginBottom: 16, color: "#1a1a1a" }}>
                 Marketing Agencies
               </h3>
-              <p style={{ fontSize: 17, color: "#4a5568", lineHeight: 1.7, marginBottom: 24 }}>
+              <p style={{ fontSize: 16, color: "#64748b", lineHeight: 1.7, marginBottom: 24 }}>
                 Digital agencies, email marketing consultants, and freelancers who need to deliver winning campaigns for clients.
               </p>
               <ul style={{ margin: 0, padding: 0, listStyle: "none" }}>
@@ -806,8 +962,20 @@ export default function Home() {
                   "Impress clients with competitor insights",
                   "Save hours of research time",
                 ].map((item, idx) => (
-                  <li key={idx} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12, fontSize: 15, color: "#4a5568" }}>
-                    <span style={{ color: "#14b8a6", fontWeight: 700 }}>✓</span>
+                  <li key={idx} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14, fontSize: 15, color: "#475569" }}>
+                    <span style={{ 
+                      width: 22,
+                      height: 22,
+                      borderRadius: "50%",
+                      backgroundColor: "#eef2ff",
+                      color: "#6366f1", 
+                      fontWeight: 700,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 12,
+                      flexShrink: 0,
+                    }}>✓</span>
                     {item}
                   </li>
                 ))}
@@ -821,15 +989,62 @@ export default function Home() {
       <BrowseSection />
 
       {/* How It Works */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#f8fafc" }}>
-        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-          <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
+      <section style={{ 
+        padding: "100px 24px", 
+        background: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        {/* Decorative elements */}
+        <div style={{
+          position: "absolute",
+          top: -100,
+          right: -100,
+          width: 300,
+          height: 300,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, transparent 70%)",
+          pointerEvents: "none",
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: -100,
+          left: -100,
+          width: 300,
+          height: 300,
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)",
+          pointerEvents: "none",
+        }} />
+
+        <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative" }}>
+          {/* Section badge */}
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            marginBottom: 24 
+          }}>
+            <span style={{
+              padding: "8px 20px",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              color: "#5eead4",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 50,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+              border: "1px solid rgba(94, 234, 212, 0.3)",
+            }}>
+              How It Works
+            </span>
+          </div>
+          <h2 style={{ textAlign: "center", fontSize: 44, fontWeight: 800, marginBottom: 16, color: "#fff", letterSpacing: "-0.02em" }}>
             How Top Brands Use MailMuse
           </h2>
-          <p style={{ textAlign: "center", fontSize: 20, color: "#4a5568", marginBottom: 60, fontWeight: 400 }}>
+          <p style={{ textAlign: "center", fontSize: 20, color: "#94a3b8", marginBottom: 60, fontWeight: 400 }}>
             Three steps to steal winning email campaigns
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 40 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
             {[
               {
                 step: "1",
@@ -852,21 +1067,28 @@ export default function Home() {
                 style={{
                   textAlign: "center",
                   padding: "40px 32px",
-                  transition: "transform 0.2s",
+                  backgroundColor: "rgba(255, 255, 255, 0.03)",
+                  borderRadius: 20,
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  transition: "all 0.3s",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.transform = "translateY(-8px)";
+                  e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.06)";
+                  e.currentTarget.style.borderColor = "rgba(20, 184, 166, 0.3)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.03)";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
                 }}
               >
                 <div
                   style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: "50%",
-                    backgroundColor: "#14b8a6",
+                    width: 64,
+                    height: 64,
+                    borderRadius: 16,
+                    background: "linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%)",
                     color: "#fff",
                     display: "flex",
                     alignItems: "center",
@@ -874,14 +1096,15 @@ export default function Home() {
                     fontSize: 28,
                     fontWeight: 700,
                     margin: "0 auto 24px",
+                    boxShadow: "0 8px 24px rgba(20, 184, 166, 0.3)",
                   }}
                 >
                   {item.step}
                 </div>
-                <h3 style={{ fontSize: 24, fontWeight: 600, marginBottom: 12, color: "#1a1a1a" }}>
+                <h3 style={{ fontSize: 22, fontWeight: 600, marginBottom: 14, color: "#fff" }}>
                   {item.title}
                 </h3>
-                <p style={{ fontSize: 16, color: "#666", lineHeight: 1.6, margin: 0 }}>
+                <p style={{ fontSize: 15, color: "#94a3b8", lineHeight: 1.7, margin: 0 }}>
                   {item.description}
                 </p>
               </div>
@@ -891,8 +1114,43 @@ export default function Home() {
       </section>
 
       {/* Social Proof */}
-      <section style={{ padding: "80px 24px", backgroundColor: "#fff" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
+      <section style={{ 
+        padding: "100px 24px", 
+        background: "linear-gradient(180deg, #faf5ff 0%, #f3e8ff 50%, #faf5ff 100%)",
+        position: "relative",
+      }}>
+        {/* Decorative pattern */}
+        <div style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: "radial-gradient(circle at 1px 1px, rgba(139, 92, 246, 0.06) 1px, transparent 0)",
+          backgroundSize: "32px 32px",
+          pointerEvents: "none",
+        }} />
+
+        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center", position: "relative" }}>
+          {/* Section badge */}
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            marginBottom: 24 
+          }}>
+            <span style={{
+              padding: "8px 20px",
+              backgroundColor: "#8b5cf6",
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 600,
+              borderRadius: 50,
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
+            }}>
+              Trusted
+            </span>
+          </div>
           <h2 style={{ fontSize: 40, fontWeight: 800, marginBottom: 16, color: "#1a1a1a", letterSpacing: "-0.02em" }}>
             Used by India's Fastest-Growing Ecommerce Brands
           </h2>
@@ -901,7 +1159,7 @@ export default function Home() {
           </p>
           
           {/* Indian D2C Brand Logos */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 32, flexWrap: "wrap", marginBottom: 60 }}>
+          <div style={{ display: "flex", justifyContent: "center", gap: 24, flexWrap: "wrap", marginBottom: 60 }}>
             {[
               { name: "Nykaa", logo: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Nykaa_New_Logo.svg" },
               { name: "Myntra", logo: "https://upload.wikimedia.org/wikipedia/commons/b/bc/Myntra_Logo.png" },
@@ -913,35 +1171,33 @@ export default function Home() {
               <div
                 key={idx}
                 style={{
-                  padding: "24px 36px",
+                  padding: "20px 32px",
                   backgroundColor: "#fff",
-                  borderRadius: 16,
-                  border: "2px solid #e2e8f0",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                  borderRadius: 12,
+                  border: "none",
+                  boxShadow: "0 4px 20px rgba(139, 92, 246, 0.08)",
                   transition: "all 0.2s",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  height: 70,
-                  minWidth: 140,
+                  height: 64,
+                  minWidth: 120,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-6px)";
-                  e.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.12)";
-                  e.currentTarget.style.borderColor = "#14b8a6";
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(139, 92, 246, 0.15)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
-                  e.currentTarget.style.borderColor = "#e2e8f0";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(139, 92, 246, 0.08)";
                 }}
               >
                 <img
                   src={brand.logo}
                   alt={brand.name}
                   style={{
-                    maxHeight: "50px",
-                    maxWidth: "140px",
+                    maxHeight: "40px",
+                    maxWidth: "110px",
                     objectFit: "contain",
                   }}
                   onError={(e) => {
@@ -949,7 +1205,7 @@ export default function Home() {
                     e.currentTarget.style.display = "none";
                     const parent = e.currentTarget.parentElement;
                     if (parent) {
-                      parent.innerHTML = `<span style="font-size: 18px; font-weight: 700; color: #1a1a1a;">${brand.name}</span>`;
+                      parent.innerHTML = `<span style="font-size: 16px; font-weight: 700; color: #1a1a1a;">${brand.name}</span>`;
                     }
                   }}
                 />
@@ -958,17 +1214,19 @@ export default function Home() {
           </div>
 
           {/* Testimonials */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
             {[
               {
                 quote: "We copied Nykaa's welcome email sequence and saw a 40% increase in first-purchase conversions. MailMuse pays for itself in one campaign.",
                 author: "Priya Sharma",
                 role: "Head of Marketing, D2C Beauty Brand",
+                avatar: "PS",
               },
               {
                 quote: "Every week I check what Myntra and Zomato are sending. Their subject lines are gold—we've doubled our open rates by copying their best campaigns.",
                 author: "Rahul Mehta",
                 role: "Email Marketing Lead, Ecommerce Startup",
+                avatar: "RM",
               },
             ].map((testimonial, idx) => (
               <div
@@ -976,19 +1234,45 @@ export default function Home() {
                 style={{
                   padding: "32px",
                   backgroundColor: "#fff",
-                  borderRadius: 16,
-                  border: "1px solid #e5e5e5",
+                  borderRadius: 20,
+                  border: "none",
+                  boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
                   textAlign: "left",
+                  position: "relative",
                 }}
               >
-                <p style={{ fontSize: 16, color: "#666", lineHeight: 1.6, marginBottom: 20, fontStyle: "italic" }}>
+                {/* Quote mark */}
+                <div style={{
+                  position: "absolute",
+                  top: 20,
+                  right: 24,
+                  fontSize: 48,
+                  color: "#e9d5ff",
+                  fontFamily: "Georgia, serif",
+                  lineHeight: 1,
+                }}>"</div>
+                <p style={{ fontSize: 16, color: "#475569", lineHeight: 1.7, marginBottom: 24, fontStyle: "italic", position: "relative" }}>
                   "{testimonial.quote}"
                 </p>
-                <div>
-                  <div style={{ fontWeight: 600, color: "#1a1a1a", marginBottom: 4 }}>
-                    {testimonial.author}
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontWeight: 600,
+                    fontSize: 14,
+                  }}>{testimonial.avatar}</div>
+                  <div>
+                    <div style={{ fontWeight: 600, color: "#1a1a1a", marginBottom: 2 }}>
+                      {testimonial.author}
+                    </div>
+                    <div style={{ fontSize: 13, color: "#64748b" }}>{testimonial.role}</div>
                   </div>
-                  <div style={{ fontSize: 14, color: "#999" }}>{testimonial.role}</div>
                 </div>
               </div>
             ))}
