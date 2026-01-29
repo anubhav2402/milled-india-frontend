@@ -3,7 +3,7 @@
 import Logo from "../components/Logo";
 import EmailCard from "../components/EmailCard";
 import Link from "next/link";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 type Email = {
@@ -52,7 +52,53 @@ type BrandStats = {
   };
 };
 
+// Loading fallback component
+function BrowseLoadingFallback() {
+  return (
+    <div style={{ 
+      minHeight: "100vh", 
+      backgroundColor: "#f8fafc",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }}>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 16
+      }}>
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            border: "3px solid #e2e8f0",
+            borderTopColor: "#14b8a6",
+            borderRadius: "50%",
+            animation: "spin 1s linear infinite",
+          }}
+        />
+        <span style={{ color: "#64748b", fontSize: 14 }}>Loading emails...</span>
+        <style>{`
+          @keyframes spin {
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+}
+
+// Wrapper component with Suspense
 export default function BrowsePage() {
+  return (
+    <Suspense fallback={<BrowseLoadingFallback />}>
+      <BrowseContent />
+    </Suspense>
+  );
+}
+
+function BrowseContent() {
   const searchParams = useSearchParams();
   const brandFromUrl = searchParams.get("brand");
   
