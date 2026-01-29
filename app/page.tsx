@@ -2,8 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import Logo from "./components/Logo";
 import EmailCard from "./components/EmailCard";
+import { useAuth } from "./context/AuthContext";
 
 // Industry list for filtering
 const INDUSTRIES = [
@@ -228,6 +230,7 @@ function BrowseSection() {
 
 export default function Home() {
   const router = useRouter();
+  const { user, logout, isLoading: authLoading } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (e: React.FormEvent) => {
@@ -275,30 +278,75 @@ export default function Home() {
               Browse Brands
             </a>
           </div>
-          <a
-            href="/browse"
-            className="navbar-cta"
-            style={{
-              padding: "10px 24px",
-              backgroundColor: "#14b8a6",
-              color: "#ffffff",
-              textDecoration: "none",
-              borderRadius: 8,
-              fontWeight: 600,
-              fontSize: 14,
-              transition: "all 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#0d9488";
-              e.currentTarget.style.transform = "translateY(-1px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#14b8a6";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            Explore Database
-          </a>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            {authLoading ? (
+              <div style={{ width: 80, height: 36 }} />
+            ) : user ? (
+              <>
+                <span style={{ fontSize: 14, color: "#64748b" }}>
+                  {user.name || user.email}
+                </span>
+                <button
+                  onClick={logout}
+                  style={{
+                    padding: "8px 16px",
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "#64748b",
+                    backgroundColor: "#f1f5f9",
+                    border: "none",
+                    borderRadius: 8,
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#fff",
+                    backgroundColor: "#14b8a6",
+                    textDecoration: "none",
+                    borderRadius: 8,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Login
+                </Link>
+              </>
+            )}
+            <a
+              href="/browse"
+              className="navbar-cta"
+              style={{
+                padding: "10px 24px",
+                backgroundColor: "#14b8a6",
+                color: "#ffffff",
+                textDecoration: "none",
+                borderRadius: 8,
+                fontWeight: 600,
+                fontSize: 14,
+                transition: "all 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#0d9488";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "#14b8a6";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              Explore Database
+            </a>
+          </div>
         </div>
       </nav>
 

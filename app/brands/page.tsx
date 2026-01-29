@@ -1,46 +1,70 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Logo from "../components/Logo";
+import { useAuth } from "../context/AuthContext";
 
 type BrandStats = {
-  email_count: number;
+  email_count: number | string;
   send_frequency: string;
 };
 
 type BrandWithStats = {
   name: string;
-  email_count: number;
+  email_count: number | string;
   send_frequency: string;
   industry?: string;
 };
 
 export default function BrandsPage() {
+  const router = useRouter();
+  const { user, token, logout, isLoading: authLoading } = useAuth();
+  
   const [brands, setBrands] = useState<BrandWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [followedBrands, setFollowedBrands] = useState<Set<string>>(new Set());
   const [sortBy, setSortBy] = useState<"name" | "emails" | "frequency">("emails");
 
-  useEffect(() => {
-    // Load followed brands from localStorage
-    const saved = localStorage.getItem("followedBrands");
-    if (saved) {
-      setFollowedBrands(new Set(JSON.parse(saved)));
-    }
-  }, []);
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
+  // Fetch followed brands from API for logged-in users
+  const fetchFollowedBrands = useCallback(async () => {
+    if (!token) {
+      setFollowedBrands(new Set());
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/user/follows`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setFollowedBrands(new Set(data.follows));
+      }
+    } catch (error) {
+      console.error("Failed to fetch followed brands:", error);
+    }
+  }, [token, API_BASE]);
+
+  // Fetch brands and stats
   useEffect(() => {
     const fetchBrands = async () => {
-      const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-      if (!base) return;
+      if (!API_BASE) return;
 
       try {
+        const headers: HeadersInit = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
         // Fetch both brands list and stats
         const [brandsRes, statsRes] = await Promise.all([
-          fetch(`${base}/brands`),
-          fetch(`${base}/brands/stats`),
+          fetch(`${API_BASE}/brands`),
+          fetch(`${API_BASE}/brands/stats`, { headers }),
         ]);
 
         if (brandsRes.ok && statsRes.ok) {
@@ -49,8 +73,8 @@ export default function BrandsPage() {
 
           const brandsWithStats: BrandWithStats[] = brandsList.map((name) => ({
             name,
-            email_count: stats[name]?.email_count || 0,
-            send_frequency: stats[name]?.send_frequency || "Unknown",
+            email_count: stats[name]?.email_count ?? "xx",
+            send_frequency: stats[name]?.send_frequency ?? "xx",
           }));
 
           setBrands(brandsWithStats);
@@ -63,19 +87,42 @@ export default function BrandsPage() {
     };
 
     fetchBrands();
-  }, []);
+  }, [API_BASE, token]);
 
-  const toggleFollow = (brandName: string) => {
-    setFollowedBrands((prev) => {
-      const updated = new Set(prev);
-      if (updated.has(brandName)) {
-        updated.delete(brandName);
-      } else {
-        updated.add(brandName);
+  // Fetch followed brands when token changes
+  useEffect(() => {
+    fetchFollowedBrands();
+  }, [fetchFollowedBrands]);
+
+  const toggleFollow = async (brandName: string) => {
+    if (!user) {
+      // Redirect to login
+      router.push("/login");
+      return;
+    }
+
+    const isCurrentlyFollowed = followedBrands.has(brandName);
+    
+    try {
+      const res = await fetch(`${API_BASE}/user/follows/${encodeURIComponent(brandName)}`, {
+        method: isCurrentlyFollowed ? "DELETE" : "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        setFollowedBrands((prev) => {
+          const updated = new Set(prev);
+          if (isCurrentlyFollowed) {
+            updated.delete(brandName);
+          } else {
+            updated.add(brandName);
+          }
+          return updated;
+        });
       }
-      localStorage.setItem("followedBrands", JSON.stringify([...updated]));
-      return updated;
-    });
+    } catch (error) {
+      console.error("Failed to toggle follow:", error);
+    }
   };
 
   // Filter and sort brands
@@ -94,14 +141,18 @@ export default function BrandsPage() {
       if (sortBy === "name") {
         return a.name.localeCompare(b.name);
       } else if (sortBy === "emails") {
-        return b.email_count - a.email_count;
+        const aCount = typeof a.email_count === "number" ? a.email_count : 0;
+        const bCount = typeof b.email_count === "number" ? b.email_count : 0;
+        return bCount - aCount;
       } else {
         // Sort by frequency (extract number from string like "3x/week")
-        const aNum = parseInt(a.send_frequency) || 0;
-        const bNum = parseInt(b.send_frequency) || 0;
+        const aNum = typeof a.send_frequency === "string" ? parseInt(a.send_frequency) || 0 : 0;
+        const bNum = typeof b.send_frequency === "string" ? parseInt(b.send_frequency) || 0 : 0;
         return bNum - aNum;
       }
     });
+
+  const isAuthenticated = !!user;
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
@@ -126,52 +177,99 @@ export default function BrandsPage() {
             gap: 24,
           }}
         >
-          <Link
-            href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              textDecoration: "none",
-            }}
-          >
-            <Logo size={36} />
-            <span
+          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+            <Link
+              href="/"
               style={{
-                fontWeight: 700,
-                fontSize: 20,
-                color: "#0f172a",
-                letterSpacing: "-0.02em",
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                textDecoration: "none",
               }}
             >
-              MailMuse
-            </span>
-          </Link>
+              <Logo size={36} />
+              <span
+                style={{
+                  fontWeight: 700,
+                  fontSize: 20,
+                  color: "#0f172a",
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                MailMuse
+              </span>
+            </Link>
 
-          <nav style={{ display: "flex", gap: 24, alignItems: "center" }}>
-            <Link
-              href="/browse"
-              style={{
-                fontSize: 14,
-                fontWeight: 500,
-                color: "#64748b",
-                textDecoration: "none",
-              }}
-            >
-              Browse Emails
-            </Link>
-            <Link
-              href="/brands"
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#14b8a6",
-                textDecoration: "none",
-              }}
-            >
-              Browse Brands
-            </Link>
-          </nav>
+            <nav style={{ display: "flex", gap: 24, alignItems: "center" }}>
+              <Link
+                href="/browse"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#64748b",
+                  textDecoration: "none",
+                }}
+              >
+                Browse Emails
+              </Link>
+              <Link
+                href="/brands"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#14b8a6",
+                  textDecoration: "none",
+                }}
+              >
+                Browse Brands
+              </Link>
+            </nav>
+          </div>
+
+          {/* Auth Section */}
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            {authLoading ? (
+              <div style={{ width: 80, height: 36 }} />
+            ) : user ? (
+              <>
+                <span style={{ fontSize: 14, color: "#64748b" }}>
+                  {user.name || user.email}
+                </span>
+                <button
+                  onClick={logout}
+                  style={{
+                    padding: "8px 16px",
+                    fontSize: 14,
+                    fontWeight: 500,
+                    color: "#64748b",
+                    backgroundColor: "#f1f5f9",
+                    border: "none",
+                    borderRadius: 8,
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                style={{
+                  padding: "10px 20px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#fff",
+                  backgroundColor: "#14b8a6",
+                  textDecoration: "none",
+                  borderRadius: 8,
+                  transition: "all 0.2s",
+                }}
+              >
+                Login
+              </Link>
+            )}
+          </div>
         </div>
       </header>
 
@@ -193,6 +291,47 @@ export default function BrandsPage() {
             Discover and follow {brands.length} brands to track their email campaigns
           </p>
         </div>
+
+        {/* Login Banner for non-authenticated users */}
+        {!isAuthenticated && !authLoading && (
+          <div
+            style={{
+              backgroundColor: "#f0fdfa",
+              border: "1px solid #14b8a6",
+              borderRadius: 12,
+              padding: "16px 20px",
+              marginBottom: 24,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 16,
+            }}
+          >
+            <div>
+              <p style={{ margin: 0, fontSize: 15, fontWeight: 500, color: "#0f172a" }}>
+                Login to unlock brand stats and follow your favorite brands
+              </p>
+              <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "#64748b" }}>
+                Stats are hidden until you sign in
+              </p>
+            </div>
+            <Link
+              href="/login"
+              style={{
+                padding: "10px 20px",
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#fff",
+                backgroundColor: "#14b8a6",
+                textDecoration: "none",
+                borderRadius: 8,
+              }}
+            >
+              Login to See Stats
+            </Link>
+          </div>
+        )}
 
         {/* Search and Sort */}
         <div
@@ -319,6 +458,7 @@ export default function BrandsPage() {
                 brand={brand}
                 isFollowed={followedBrands.has(brand.name)}
                 onToggleFollow={() => toggleFollow(brand.name)}
+                isAuthenticated={isAuthenticated}
               />
             ))}
           </div>
@@ -355,12 +495,15 @@ function BrandCard({
   brand,
   isFollowed,
   onToggleFollow,
+  isAuthenticated,
 }: {
   brand: BrandWithStats;
   isFollowed: boolean;
   onToggleFollow: () => void;
+  isAuthenticated: boolean;
 }) {
   const brandInitial = brand.name.charAt(0).toUpperCase();
+  const isMasked = brand.email_count === "xx";
 
   // Generate a consistent color based on brand name
   const colors = [
@@ -447,10 +590,10 @@ function BrandCard({
             style={{
               margin: "4px 0 0 0",
               fontSize: 13,
-              color: "#64748b",
+              color: isMasked ? "#94a3b8" : "#64748b",
             }}
           >
-            {brand.email_count} email{brand.email_count !== 1 ? "s" : ""}
+            {isMasked ? "Login to see stats" : `${brand.email_count} emails`}
           </p>
         </div>
       </div>
@@ -469,7 +612,7 @@ function BrandCard({
           <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>
             Total Emails
           </div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: "#0f172a" }}>
+          <div style={{ fontSize: 18, fontWeight: 600, color: isMasked ? "#cbd5e1" : "#0f172a" }}>
             {brand.email_count}
           </div>
         </div>
@@ -477,7 +620,7 @@ function BrandCard({
           <div style={{ fontSize: 11, color: "#94a3b8", marginBottom: 2 }}>
             Send Frequency
           </div>
-          <div style={{ fontSize: 18, fontWeight: 600, color: "#0f172a" }}>
+          <div style={{ fontSize: 18, fontWeight: 600, color: isMasked ? "#cbd5e1" : "#0f172a" }}>
             {brand.send_frequency}
           </div>
         </div>
@@ -500,23 +643,32 @@ function BrandCard({
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            backgroundColor: isFollowed ? "#f1f5f9" : brandColor,
-            color: isFollowed ? "#64748b" : "#fff",
+            backgroundColor: isFollowed ? "#f1f5f9" : isAuthenticated ? brandColor : "#e2e8f0",
+            color: isFollowed ? "#64748b" : isAuthenticated ? "#fff" : "#64748b",
           }}
         >
-          {isFollowed ? (
-            <>
-              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Following
-            </>
+          {isAuthenticated ? (
+            isFollowed ? (
+              <>
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Following
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Follow
+              </>
+            )
           ) : (
             <>
               <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              Follow
+              Login to Follow
             </>
           )}
         </button>
