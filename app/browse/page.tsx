@@ -12,7 +12,7 @@ type Email = {
   category?: string;
   industry?: string;
   received_at: string;
-  html?: string;
+  preview_image_url?: string;
 };
 
 // Industry list for filtering
@@ -569,39 +569,30 @@ export default function BrowsePage() {
                     {/* Email Preview Image */}
                     <div
                       style={{
-                        height: 200,
-                        backgroundColor: "#f8fafc",
+                        height: 180,
+                        backgroundColor: "#f1f5f9",
                         borderBottom: "1px solid #e2e8f0",
                         position: "relative",
                         overflow: "hidden",
                       }}
                     >
-                      {e.html ? (
-                        <div
+                      {e.preview_image_url ? (
+                        <img
+                          src={e.preview_image_url}
+                          alt={e.subject}
+                          loading="lazy"
                           style={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            width: "200%",
-                            height: "200%",
-                            transform: "scale(0.5)",
-                            transformOrigin: "top left",
-                            pointerEvents: "none",
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            objectPosition: "top center",
                           }}
-                        >
-                          <iframe
-                            srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_blank"><style>body{margin:0;padding:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}img{max-width:100%;height:auto;}</style></head><body>${e.html}</body></html>`}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              border: "none",
-                              display: "block",
-                            }}
-                            sandbox="allow-same-origin"
-                            loading="lazy"
-                            title={`Preview of ${e.subject}`}
-                          />
-                        </div>
+                          onError={(event) => {
+                            // Hide broken images
+                            const target = event.target as HTMLImageElement;
+                            target.style.display = "none";
+                          }}
+                        />
                       ) : (
                         <div
                           style={{
@@ -610,11 +601,29 @@ export default function BrowsePage() {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            color: "#94a3b8",
-                            fontSize: 14,
+                            flexDirection: "column",
+                            gap: 8,
+                            background: "linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%)",
                           }}
                         >
-                          No preview
+                          <div
+                            style={{
+                              width: 48,
+                              height: 48,
+                              background: "#fff",
+                              borderRadius: 12,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontWeight: 700,
+                              color: "#14b8a6",
+                              fontSize: 20,
+                              boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                            }}
+                          >
+                            {brandInitial}
+                          </div>
+                          <span style={{ fontSize: 12, color: "#64748b" }}>Email Preview</span>
                         </div>
                       )}
                     </div>
