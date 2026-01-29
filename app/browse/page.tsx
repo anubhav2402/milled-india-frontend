@@ -44,11 +44,27 @@ export default async function BrowsePage({
 }: {
   searchParams?: Promise<{ q?: string; brand?: string }>;
 }) {
-  const resolvedParams = searchParams ? await searchParams : { q: undefined, brand: undefined };
+  let resolvedParams;
+  try {
+    resolvedParams = searchParams ? await searchParams : { q: undefined, brand: undefined };
+  } catch (error) {
+    console.error("Error resolving searchParams:", error);
+    resolvedParams = { q: undefined, brand: undefined };
+  }
+  
   const q = resolvedParams.q;
   const brand = resolvedParams.brand;
-  const emails = await fetchEmails(q, brand);
-  const allBrands = getBrands(emails);
+  
+  let emails: Email[] = [];
+  let allBrands: string[] = [];
+  
+  try {
+    emails = await fetchEmails(q, brand);
+    allBrands = getBrands(emails);
+  } catch (error) {
+    console.error("Error fetching emails:", error);
+    // Continue with empty arrays - page will show "No emails found"
+  }
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#fafafa" }}>
