@@ -1,6 +1,7 @@
 "use client";
 
 import Logo from "../components/Logo";
+import EmailCard from "../components/EmailCard";
 import { useState, useEffect, useCallback } from "react";
 
 type Email = {
@@ -12,7 +13,6 @@ type Email = {
   category?: string;
   industry?: string;
   received_at: string;
-  preview_image_url?: string;
 };
 
 // Industry list for filtering
@@ -546,164 +546,17 @@ export default function BrowsePage() {
                 gap: 20,
               }}
             >
-              {filteredEmails.map((e) => {
-                const brandInitial = e.brand ? e.brand.charAt(0).toUpperCase() : "?";
-                const receivedDate = new Date(e.received_at);
-                const formattedDate = receivedDate.toLocaleDateString("en-IN", {
-                  month: "short",
-                  day: "numeric",
-                });
-
-                return (
-                  <a
-                    key={e.id}
-                    href={`/email/${e.id}`}
-                    style={{
-                      backgroundColor: "#fff",
-                      borderRadius: 14,
-                      border: "1px solid #e2e8f0",
-                      textDecoration: "none",
-                      color: "inherit",
-                      display: "flex",
-                      flexDirection: "column",
-                      transition: "all 0.2s",
-                      cursor: "pointer",
-                      overflow: "hidden",
-                    }}
-                    className="hover-button"
-                  >
-                    {/* Email Preview Image */}
-                    <div
-                      style={{
-                        height: 180,
-                        backgroundColor: "#f1f5f9",
-                        borderBottom: "1px solid #e2e8f0",
-                        position: "relative",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {e.preview_image_url ? (
-                        <img
-                          src={e.preview_image_url}
-                          alt={e.subject}
-                          loading="lazy"
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            objectPosition: "top center",
-                          }}
-                          onError={(event) => {
-                            // Hide broken images
-                            const target = event.target as HTMLImageElement;
-                            target.style.display = "none";
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexDirection: "column",
-                            gap: 8,
-                            background: "linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%)",
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: 48,
-                              height: 48,
-                              background: "#fff",
-                              borderRadius: 12,
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              fontWeight: 700,
-                              color: "#14b8a6",
-                              fontSize: 20,
-                              boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                            }}
-                          >
-                            {brandInitial}
-                          </div>
-                          <span style={{ fontSize: 12, color: "#64748b" }}>Email Preview</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Card Content */}
-                    <div style={{ padding: 16 }}>
-                      {/* Brand header */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                        <div
-                          style={{
-                            width: 32,
-                            height: 32,
-                            background: "#f0fdfa",
-                            borderRadius: 8,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontWeight: 700,
-                            color: "#14b8a6",
-                            fontSize: 14,
-                            flexShrink: 0,
-                          }}
-                        >
-                          {brandInitial}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", textTransform: "capitalize", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                            {e.brand || "Unknown"}
-                          </div>
-                          {e.industry && (
-                            <div style={{ fontSize: 11, color: "#14b8a6", fontWeight: 500 }}>{e.industry}</div>
-                          )}
-                        </div>
-                        <time style={{ fontSize: 11, color: "#94a3b8", flexShrink: 0 }}>{formattedDate}</time>
-                      </div>
-
-                      {/* Subject */}
-                      <h3
-                        style={{
-                          margin: "0 0 6px 0",
-                          fontSize: 14,
-                          fontWeight: 600,
-                          color: "#1a1a1a",
-                          lineHeight: 1.4,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {e.subject}
-                      </h3>
-
-                      {/* Preview text */}
-                      {e.preview && (
-                        <p
-                          style={{
-                            margin: 0,
-                            fontSize: 12,
-                            color: "#64748b",
-                            lineHeight: 1.5,
-                            display: "-webkit-box",
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                          }}
-                        >
-                          {e.preview}
-                        </p>
-                      )}
-                    </div>
-                  </a>
-                );
-              })}
+              {filteredEmails.map((e) => (
+                <EmailCard
+                  key={e.id}
+                  id={e.id}
+                  subject={e.subject}
+                  brand={e.brand}
+                  preview={e.preview}
+                  industry={e.industry}
+                  received_at={e.received_at}
+                />
+              ))}
             </div>
             
             {/* Load More Button */}
