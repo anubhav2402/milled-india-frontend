@@ -12,6 +12,7 @@ type Email = {
   category?: string;
   industry?: string;
   received_at: string;
+  html?: string;
 };
 
 // Industry list for filtering
@@ -535,8 +536,8 @@ export default function BrowsePage() {
             <div
               style={{
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-                gap: 16,
+                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                gap: 20,
               }}
             >
               {displayedEmails.map((e) => {
@@ -555,81 +556,136 @@ export default function BrowsePage() {
                       backgroundColor: "#fff",
                       borderRadius: 14,
                       border: "1px solid #e2e8f0",
-                      padding: 20,
                       textDecoration: "none",
                       color: "inherit",
                       display: "flex",
                       flexDirection: "column",
                       transition: "all 0.2s",
                       cursor: "pointer",
+                      overflow: "hidden",
                     }}
                     className="hover-button"
                   >
-                    {/* Brand header */}
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                      <div
-                        style={{
-                          width: 40,
-                          height: 40,
-                          background: "#f0fdfa",
-                          borderRadius: 10,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontWeight: 700,
-                          color: "#14b8a6",
-                          fontSize: 16,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {brandInitial}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: "#1a1a1a", textTransform: "capitalize", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                          {e.brand || "Unknown"}
-                        </div>
-                        {e.industry && (
-                          <div style={{ fontSize: 12, color: "#14b8a6", fontWeight: 500 }}>{e.industry}</div>
-                        )}
-                      </div>
-                      <time style={{ fontSize: 12, color: "#94a3b8", flexShrink: 0 }}>{formattedDate}</time>
-                    </div>
-
-                    {/* Subject */}
-                    <h3
+                    {/* Email Preview Image */}
+                    <div
                       style={{
-                        margin: "0 0 8px 0",
-                        fontSize: 15,
-                        fontWeight: 600,
-                        color: "#1a1a1a",
-                        lineHeight: 1.4,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
+                        height: 200,
+                        backgroundColor: "#f8fafc",
+                        borderBottom: "1px solid #e2e8f0",
+                        position: "relative",
                         overflow: "hidden",
-                        flex: 1,
                       }}
                     >
-                      {e.subject}
-                    </h3>
+                      {e.html ? (
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "200%",
+                            height: "200%",
+                            transform: "scale(0.5)",
+                            transformOrigin: "top left",
+                            pointerEvents: "none",
+                          }}
+                        >
+                          <iframe
+                            srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_blank"><style>body{margin:0;padding:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}img{max-width:100%;height:auto;}</style></head><body>${e.html}</body></html>`}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              border: "none",
+                              display: "block",
+                            }}
+                            sandbox="allow-same-origin"
+                            loading="lazy"
+                            title={`Preview of ${e.subject}`}
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "#94a3b8",
+                            fontSize: 14,
+                          }}
+                        >
+                          No preview
+                        </div>
+                      )}
+                    </div>
 
-                    {/* Preview */}
-                    {e.preview && (
-                      <p
+                    {/* Card Content */}
+                    <div style={{ padding: 16 }}>
+                      {/* Brand header */}
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                        <div
+                          style={{
+                            width: 32,
+                            height: 32,
+                            background: "#f0fdfa",
+                            borderRadius: 8,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: 700,
+                            color: "#14b8a6",
+                            fontSize: 14,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {brandInitial}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a", textTransform: "capitalize", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                            {e.brand || "Unknown"}
+                          </div>
+                          {e.industry && (
+                            <div style={{ fontSize: 11, color: "#14b8a6", fontWeight: 500 }}>{e.industry}</div>
+                          )}
+                        </div>
+                        <time style={{ fontSize: 11, color: "#94a3b8", flexShrink: 0 }}>{formattedDate}</time>
+                      </div>
+
+                      {/* Subject */}
+                      <h3
                         style={{
-                          margin: 0,
-                          fontSize: 13,
-                          color: "#64748b",
-                          lineHeight: 1.5,
+                          margin: "0 0 6px 0",
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: "#1a1a1a",
+                          lineHeight: 1.4,
                           display: "-webkit-box",
                           WebkitLineClamp: 2,
                           WebkitBoxOrient: "vertical",
                           overflow: "hidden",
                         }}
                       >
-                        {e.preview}
-                      </p>
-                    )}
+                        {e.subject}
+                      </h3>
+
+                      {/* Preview text */}
+                      {e.preview && (
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: 12,
+                            color: "#64748b",
+                            lineHeight: 1.5,
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {e.preview}
+                        </p>
+                      )}
+                    </div>
                   </a>
                 );
               })}
