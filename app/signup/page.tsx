@@ -302,10 +302,12 @@ export default function SignupPage() {
                   width: "100%",
                   padding: "14px 16px",
                   fontSize: 15,
+                  color: "#0f172a",
                   border: "1px solid #e2e8f0",
                   borderRadius: 10,
                   outline: "none",
                   transition: "border-color 0.2s",
+                  backgroundColor: "#fff",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
@@ -326,10 +328,12 @@ export default function SignupPage() {
                   width: "100%",
                   padding: "14px 16px",
                   fontSize: 15,
+                  color: "#0f172a",
                   border: "1px solid #e2e8f0",
                   borderRadius: 10,
                   outline: "none",
                   transition: "border-color 0.2s",
+                  backgroundColor: "#fff",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
@@ -351,10 +355,12 @@ export default function SignupPage() {
                   width: "100%",
                   padding: "14px 16px",
                   fontSize: 15,
+                  color: "#0f172a",
                   border: "1px solid #e2e8f0",
                   borderRadius: 10,
                   outline: "none",
                   transition: "border-color 0.2s",
+                  backgroundColor: "#fff",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}

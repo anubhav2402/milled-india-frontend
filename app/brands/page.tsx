@@ -401,6 +401,7 @@ export default function BrandsPage() {
                 width: "100%",
                 padding: "12px 16px 12px 44px",
                 fontSize: 14,
+                color: "#0f172a",
                 border: "1px solid #e2e8f0",
                 borderRadius: 10,
                 outline: "none",
@@ -418,6 +419,7 @@ export default function BrandsPage() {
               style={{
                 padding: "10px 14px",
                 fontSize: 14,
+                color: "#0f172a",
                 border: "1px solid #e2e8f0",
                 borderRadius: 8,
                 backgroundColor: "#fff",
@@ -669,7 +671,7 @@ function BrandCard({
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            backgroundColor: isFollowed ? "#f1f5f9" : isAuthenticated ? brandColor : "#e2e8f0",
+            backgroundColor: isFollowed ? "#f1f5f9" : isAuthenticated ? "#14b8a6" : "#e2e8f0",
             color: isFollowed ? "#64748b" : isAuthenticated ? "#fff" : "#64748b",
           }}
         >

@@ -414,6 +414,7 @@ export default function AnalyticsPage() {
                   style={{
                     padding: "12px 16px",
                     fontSize: 14,
+                    color: "#0f172a",
                     border: "1px solid #e2e8f0",
                     borderRadius: 8,
                     backgroundColor: "#fff",
@@ -713,6 +714,7 @@ function BrandComparison({
           style={{
             padding: "10px 14px",
             fontSize: 14,
+            color: "#0f172a",
             border: "1px solid #e2e8f0",
             borderRadius: 8,
             backgroundColor: "#fff",
