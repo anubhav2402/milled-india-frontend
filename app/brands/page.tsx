@@ -223,6 +223,17 @@ export default function BrandsPage() {
               >
                 Browse Brands
               </Link>
+              <Link
+                href="/analytics"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#64748b",
+                  textDecoration: "none",
+                }}
+              >
+                Analytics
+              </Link>
             </nav>
           </div>
 

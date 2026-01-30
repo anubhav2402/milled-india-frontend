@@ -277,6 +277,21 @@ export default function Home() {
             >
               Browse Brands
             </a>
+            <a
+              href="/analytics"
+              className="navbar-link"
+              style={{
+                fontSize: 14,
+                fontWeight: 500,
+                color: "#64748b",
+                textDecoration: "none",
+                transition: "color 0.2s",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#14b8a6")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#64748b")}
+            >
+              Analytics
+            </a>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             {authLoading ? (
