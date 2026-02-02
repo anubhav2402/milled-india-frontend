@@ -19,7 +19,6 @@ type Email = {
   received_at: string;
   preview?: string;
   type?: string;
-  html?: string;
 };
 
 // Search icon component
@@ -147,8 +146,6 @@ function Header() {
 
 // Email Preview Card for Hero
 function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  
   const formatDate = (date: string) => {
     const d = new Date(date);
     const now = new Date();
@@ -157,6 +154,20 @@ function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }
     if (hours < 24) return `${hours}h ago`;
     const days = Math.floor(hours / 24);
     return `${days}d ago`;
+  };
+
+  // Generate a subtle gradient based on brand name
+  const getGradient = (brand: string) => {
+    const gradients = [
+      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+      "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+      "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+      "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+      "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
+    ];
+    const index = brand ? brand.charCodeAt(0) % gradients.length : 0;
+    return gradients[index];
   };
 
   return (
@@ -181,45 +192,47 @@ function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }
         e.currentTarget.style.boxShadow = "0 4px 24px rgba(0, 0, 0, 0.08)";
       }}
     >
-      {/* Email Preview via iframe */}
+      {/* Stylized Email Preview */}
       <div style={{
-        height: 160,
-        background: "#f8fafc",
+        height: 120,
+        background: getGradient(email.brand || ""),
         position: "relative",
         overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}>
-        {!isLoaded && (
-          <div style={{
+        {/* Email icon/visual */}
+        <div style={{
+          width: 48,
+          height: 36,
+          background: "rgba(255, 255, 255, 0.9)",
+          borderRadius: 4,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+        }}>
+          <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
+            <rect x="1" y="1" width="22" height="16" rx="2" stroke="#64748b" strokeWidth="1.5" fill="white"/>
+            <path d="M1 3L12 10L23 3" stroke="#64748b" strokeWidth="1.5"/>
+          </svg>
+        </div>
+        {/* Industry badge */}
+        {email.industry && (
+          <span style={{
             position: "absolute",
-            inset: 0,
-            background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-          }} />
-        )}
-        {email.html && (
-          <iframe
-            srcDoc={`
-              <!DOCTYPE html>
-              <html>
-              <head>
-                <style>
-                  body { margin: 0; padding: 0; transform: scale(0.25); transform-origin: top left; width: 400%; pointer-events: none; }
-                </style>
-              </head>
-              <body>${email.html}</body>
-              </html>
-            `}
-            style={{
-              width: "100%",
-              height: 640,
-              border: "none",
-              opacity: isLoaded ? 1 : 0,
-              transition: "opacity 300ms ease",
-            }}
-            onLoad={() => setIsLoaded(true)}
-            title={email.subject}
-          />
+            top: 10,
+            right: 10,
+            background: "rgba(255, 255, 255, 0.9)",
+            color: "#475569",
+            fontSize: 10,
+            fontWeight: 500,
+            padding: "3px 8px",
+            borderRadius: 20,
+          }}>
+            {email.industry}
+          </span>
         )}
       </div>
       <div style={{ padding: 16 }}>
@@ -236,9 +249,9 @@ function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }
             fontSize: 12,
             fontWeight: 600,
           }}>
-            {email.brand?.[0] || "?"}
+            {email.brand?.[0]?.toUpperCase() || "?"}
           </div>
-          <div>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-primary)" }}>
               {email.brand || "Unknown"}
             </div>
@@ -246,6 +259,18 @@ function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }
               {formatDate(email.received_at)}
             </div>
           </div>
+          {email.type && (
+            <span style={{
+              background: "#f1f5f9",
+              color: "#64748b",
+              fontSize: 10,
+              fontWeight: 500,
+              padding: "3px 8px",
+              borderRadius: 4,
+            }}>
+              {email.type}
+            </span>
+          )}
         </div>
         <div style={{
           fontSize: 14,
@@ -257,9 +282,24 @@ function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }
           display: "-webkit-box",
           WebkitLineClamp: 2,
           WebkitBoxOrient: "vertical",
+          marginBottom: 8,
         }}>
           {email.subject}
         </div>
+        {email.preview && (
+          <div style={{
+            fontSize: 12,
+            color: "var(--color-tertiary)",
+            lineHeight: 1.5,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+          }}>
+            {email.preview.slice(0, 100)}...
+          </div>
+        )}
       </div>
     </div>
   );
