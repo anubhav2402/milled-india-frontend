@@ -19,6 +19,7 @@ type Email = {
   received_at: string;
   preview?: string;
   type?: string;
+  html?: string;
 };
 
 // Search icon component
@@ -146,6 +147,8 @@ function Header() {
 
 // Email Preview Card for Hero
 function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
   const formatDate = (date: string) => {
     const d = new Date(date);
     const now = new Date();
@@ -178,17 +181,46 @@ function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }
         e.currentTarget.style.boxShadow = "0 4px 24px rgba(0, 0, 0, 0.08)";
       }}
     >
-      {/* Preview placeholder */}
+      {/* Email Preview via iframe */}
       <div style={{
-        height: 140,
-        background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "var(--color-tertiary)",
-        fontSize: 13,
+        height: 160,
+        background: "#f8fafc",
+        position: "relative",
+        overflow: "hidden",
       }}>
-        Email Preview
+        {!isLoaded && (
+          <div style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.5s infinite",
+          }} />
+        )}
+        {email.html && (
+          <iframe
+            srcDoc={`
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <style>
+                  body { margin: 0; padding: 0; transform: scale(0.25); transform-origin: top left; width: 400%; pointer-events: none; }
+                </style>
+              </head>
+              <body>${email.html}</body>
+              </html>
+            `}
+            style={{
+              width: "100%",
+              height: 640,
+              border: "none",
+              opacity: isLoaded ? 1 : 0,
+              transition: "opacity 300ms ease",
+            }}
+            onLoad={() => setIsLoaded(true)}
+            title={email.subject}
+          />
+        )}
       </div>
       <div style={{ padding: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
@@ -473,6 +505,107 @@ function FeaturesSection() {
   );
 }
 
+// Who Is This For Section
+function WhoIsThisForSection() {
+  const audiences = [
+    {
+      icon: "📧",
+      title: "Email Marketers",
+      description: "Get inspiration for subject lines, copy, and design from proven campaigns that drive results.",
+    },
+    {
+      icon: "🎯",
+      title: "Marketing Managers",
+      description: "Benchmark your email strategy against competitors. Know when they run sales and promotions.",
+    },
+    {
+      icon: "🚀",
+      title: "D2C Founders",
+      description: "Learn from the best in your industry. See how top brands communicate with their customers.",
+    },
+    {
+      icon: "✍️",
+      title: "Copywriters",
+      description: "Build a swipe file of high-converting emails. Study what makes subject lines click-worthy.",
+    },
+  ];
+
+  return (
+    <section style={{
+      padding: "96px 24px",
+      background: "#f8fafc",
+    }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 64 }}>
+          <h2 style={{
+            fontSize: "clamp(28px, 4vw, 36px)",
+            fontWeight: 700,
+            color: "var(--color-primary)",
+            letterSpacing: "-0.02em",
+            marginBottom: 16,
+          }}>
+            Who Is This For?
+          </h2>
+          <p style={{
+            fontSize: 17,
+            color: "var(--color-secondary)",
+            maxWidth: 500,
+            margin: "0 auto",
+          }}>
+            MailMuse helps marketing professionals stay ahead of the curve.
+          </p>
+        </div>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 24,
+        }}>
+          {audiences.map((audience, idx) => (
+            <div
+              key={idx}
+              style={{
+                background: "white",
+                borderRadius: 16,
+                padding: 28,
+                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+                border: "1px solid var(--color-border)",
+                transition: "transform 200ms ease, box-shadow 200ms ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.08)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.04)";
+              }}
+            >
+              <div style={{ fontSize: 36, marginBottom: 16 }}>{audience.icon}</div>
+              <h3 style={{
+                fontSize: 17,
+                fontWeight: 600,
+                color: "var(--color-primary)",
+                marginBottom: 8,
+              }}>
+                {audience.title}
+              </h3>
+              <p style={{
+                fontSize: 14,
+                color: "var(--color-secondary)",
+                lineHeight: 1.6,
+                margin: 0,
+              }}>
+                {audience.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // CTA Section
 function CTASection() {
   return (
@@ -543,6 +676,7 @@ export default function Home() {
       <Header />
       <HeroSection />
       <FeaturesSection />
+      <WhoIsThisForSection />
       <CTASection />
       <Footer />
     </div>
