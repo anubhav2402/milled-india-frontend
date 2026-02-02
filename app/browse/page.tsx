@@ -1,10 +1,13 @@
 "use client";
 
-import Logo from "../components/Logo";
-import EmailCard from "../components/EmailCard";
-import Link from "next/link";
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import Logo from "../components/Logo";
+import EmailCard, { EmailCardSkeleton } from "../components/EmailCard";
+import Button from "../components/Button";
+import Badge from "../components/Badge";
+import Input from "../components/Input";
 
 type Email = {
   id: number;
@@ -12,12 +15,17 @@ type Email = {
   brand?: string;
   preview?: string;
   type?: string;
-  category?: string;
   industry?: string;
   received_at: string;
 };
 
-// Industry list for filtering
+type BrandStats = {
+  [brand: string]: {
+    email_count: number;
+    send_frequency: string;
+  };
+};
+
 const INDUSTRIES = [
   "Beauty & Personal Care",
   "Women's Fashion",
@@ -34,7 +42,6 @@ const INDUSTRIES = [
   "General Retail",
 ];
 
-// Date filter options
 const DATE_FILTERS = [
   { label: "All Time", value: "all" },
   { label: "Last 7 Days", value: "7" },
@@ -43,157 +50,562 @@ const DATE_FILTERS = [
 ];
 
 const ITEMS_PER_PAGE = 24;
-const FETCH_BATCH_SIZE = 100; // Fetch 100 emails at a time from server
 
-type BrandStats = {
-  [brand: string]: {
-    email_count: number;
-    send_frequency: string;
-  };
-};
+// Search Icon
+const SearchIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8" />
+    <path d="M21 21l-4.35-4.35" />
+  </svg>
+);
 
-// Loading fallback component
-function BrowseLoadingFallback() {
+// Filter Icon
+const FilterIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="4" y1="6" x2="20" y2="6" />
+    <line x1="6" y1="12" x2="18" y2="12" />
+    <line x1="8" y1="18" x2="16" y2="18" />
+  </svg>
+);
+
+// Close Icon
+const CloseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="18" y1="6" x2="6" y2="18" />
+    <line x1="6" y1="6" x2="18" y2="18" />
+  </svg>
+);
+
+// Chevron Icon
+const ChevronIcon = ({ open }: { open: boolean }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    style={{
+      transform: open ? "rotate(180deg)" : "rotate(0deg)",
+      transition: "transform 200ms ease",
+    }}
+  >
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+);
+
+// Header Component
+function Header({ searchQuery, setSearchQuery, filterCount, onOpenFilters }: {
+  searchQuery: string;
+  setSearchQuery: (q: string) => void;
+  filterCount: number;
+  onOpenFilters: () => void;
+}) {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      backgroundColor: "#f8fafc",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    }}>
+    <header
+      style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 100,
+        background: scrolled ? "rgba(255, 255, 255, 0.9)" : "white",
+        backdropFilter: scrolled ? "blur(12px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
+        borderBottom: "1px solid var(--color-border)",
+        transition: "all 200ms ease",
+      }}
+    >
       <div style={{
+        maxWidth: 1400,
+        margin: "0 auto",
+        padding: "14px 24px",
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
-        gap: 16
+        gap: 24,
       }}>
-        <div
+        {/* Logo */}
+        <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
+          <Logo size={32} />
+          <span className="hide-mobile" style={{ fontSize: 20, fontWeight: 700, color: "var(--color-primary)" }}>
+            MailMuse
+          </span>
+        </Link>
+
+        {/* Search */}
+        <div style={{ flex: 1, maxWidth: 480 }}>
+          <Input
+            type="search"
+            placeholder="Search emails..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            icon={<SearchIcon />}
+            size="sm"
+          />
+        </div>
+
+        {/* Nav Links */}
+        <nav className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: 24 }}>
+          <Link href="/brands" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
+            Brands
+          </Link>
+          <Link href="/analytics" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
+            Analytics
+          </Link>
+        </nav>
+
+        {/* Mobile Filter Button */}
+        <button
+          onClick={onOpenFilters}
+          className="show-mobile"
           style={{
-            width: 40,
-            height: 40,
-            border: "3px solid #e2e8f0",
-            borderTopColor: "#14b8a6",
-            borderRadius: "50%",
-            animation: "spin 1s linear infinite",
+            display: "none",
+            alignItems: "center",
+            gap: 6,
+            padding: "10px 14px",
+            background: filterCount > 0 ? "var(--color-accent)" : "var(--color-surface)",
+            color: filterCount > 0 ? "white" : "var(--color-secondary)",
+            border: filterCount > 0 ? "none" : "1px solid var(--color-border)",
+            borderRadius: 10,
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: "pointer",
           }}
-        />
-        <span style={{ color: "#64748b", fontSize: 14 }}>Loading emails...</span>
-        <style>{`
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-        `}</style>
+        >
+          <FilterIcon />
+          {filterCount > 0 && filterCount}
+        </button>
       </div>
+    </header>
+  );
+}
+
+// Filter Section Component
+function FilterSection({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <div style={{ borderBottom: "1px solid var(--color-border)", paddingBottom: 16, marginBottom: 16 }}>
+      <button
+        onClick={() => setOpen(!open)}
+        style={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "none",
+          border: "none",
+          padding: 0,
+          marginBottom: open ? 12 : 0,
+          cursor: "pointer",
+          fontSize: 13,
+          fontWeight: 600,
+          color: "var(--color-primary)",
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+        }}
+      >
+        {title}
+        <ChevronIcon open={open} />
+      </button>
+      {open && <div>{children}</div>}
     </div>
   );
 }
 
-// Wrapper component with Suspense
-export default function BrowsePage() {
+// Checkbox Component
+function Checkbox({
+  checked,
+  onChange,
+  label,
+  count,
+}: {
+  checked: boolean;
+  onChange: () => void;
+  label: string;
+  count?: number;
+}) {
   return (
-    <Suspense fallback={<BrowseLoadingFallback />}>
-      <BrowseContent />
-    </Suspense>
+    <label
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "8px 0",
+        cursor: "pointer",
+        fontSize: 14,
+        color: checked ? "var(--color-primary)" : "var(--color-secondary)",
+        transition: "color 150ms ease",
+      }}
+    >
+      <div
+        style={{
+          width: 18,
+          height: 18,
+          borderRadius: 5,
+          border: checked ? "none" : "2px solid var(--color-border)",
+          background: checked ? "var(--color-accent)" : "transparent",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          transition: "all 150ms ease",
+          flexShrink: 0,
+        }}
+      >
+        {checked && (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+        )}
+      </div>
+      <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        {label}
+      </span>
+      {count !== undefined && (
+        <span style={{ fontSize: 12, color: "var(--color-tertiary)" }}>{count}</span>
+      )}
+    </label>
   );
 }
 
+// Sidebar Filters
+function Sidebar({
+  open,
+  onClose,
+  industries,
+  selectedIndustries,
+  toggleIndustry,
+  brands,
+  selectedBrands,
+  toggleBrand,
+  brandSearch,
+  setBrandSearch,
+  selectedDate,
+  setSelectedDate,
+  clearAll,
+  brandStats,
+}: {
+  open: boolean;
+  onClose: () => void;
+  industries: string[];
+  selectedIndustries: string[];
+  toggleIndustry: (i: string) => void;
+  brands: string[];
+  selectedBrands: string[];
+  toggleBrand: (b: string) => void;
+  brandSearch: string;
+  setBrandSearch: (s: string) => void;
+  selectedDate: string;
+  setSelectedDate: (d: string) => void;
+  clearAll: () => void;
+  brandStats: BrandStats;
+}) {
+  const filteredBrands = brands.filter((b) =>
+    b.toLowerCase().includes(brandSearch.toLowerCase())
+  );
+
+  const activeCount = selectedIndustries.length + selectedBrands.length + (selectedDate !== "all" ? 1 : 0);
+
+  return (
+    <>
+      {/* Mobile Overlay */}
+      {open && (
+        <div
+          onClick={onClose}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0, 0, 0, 0.3)",
+            backdropFilter: "blur(4px)",
+            zIndex: 200,
+          }}
+          className="show-mobile"
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        style={{
+          width: 280,
+          flexShrink: 0,
+          position: "sticky",
+          top: 80,
+          height: "fit-content",
+          maxHeight: "calc(100vh - 100px)",
+          overflowY: "auto",
+          background: "white",
+          borderRadius: 14,
+          padding: 20,
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.04)",
+        }}
+        className="hide-mobile"
+      >
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--color-primary)", margin: 0 }}>
+            Filters
+          </h3>
+          {activeCount > 0 && (
+            <button
+              onClick={clearAll}
+              style={{
+                background: "none",
+                border: "none",
+                fontSize: 13,
+                color: "var(--color-accent)",
+                cursor: "pointer",
+                fontWeight: 500,
+              }}
+            >
+              Clear all
+            </button>
+          )}
+        </div>
+
+        {/* Industry Filter */}
+        <FilterSection title="Industry">
+          <div style={{ maxHeight: 240, overflowY: "auto" }}>
+            {industries.map((industry) => (
+              <Checkbox
+                key={industry}
+                checked={selectedIndustries.includes(industry)}
+                onChange={() => toggleIndustry(industry)}
+                label={industry}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* Brand Filter */}
+        <FilterSection title="Brand">
+          <Input
+            type="search"
+            placeholder="Search brands..."
+            value={brandSearch}
+            onChange={(e) => setBrandSearch(e.target.value)}
+            size="sm"
+            style={{ marginBottom: 12 }}
+          />
+          <div style={{ maxHeight: 200, overflowY: "auto" }}>
+            {filteredBrands.slice(0, 30).map((brand) => (
+              <Checkbox
+                key={brand}
+                checked={selectedBrands.includes(brand)}
+                onChange={() => toggleBrand(brand)}
+                label={brand}
+                count={brandStats[brand]?.email_count}
+              />
+            ))}
+            {filteredBrands.length > 30 && (
+              <p style={{ fontSize: 12, color: "var(--color-tertiary)", margin: "8px 0 0" }}>
+                +{filteredBrands.length - 30} more brands
+              </p>
+            )}
+          </div>
+        </FilterSection>
+
+        {/* Date Filter */}
+        <FilterSection title="Date" defaultOpen={false}>
+          {DATE_FILTERS.map((filter) => (
+            <Checkbox
+              key={filter.value}
+              checked={selectedDate === filter.value}
+              onChange={() => setSelectedDate(filter.value)}
+              label={filter.label}
+            />
+          ))}
+        </FilterSection>
+      </aside>
+
+      {/* Mobile Sidebar */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          maxHeight: "80vh",
+          background: "white",
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          padding: 24,
+          zIndex: 201,
+          overflowY: "auto",
+          transform: open ? "translateY(0)" : "translateY(100%)",
+          transition: "transform 300ms ease",
+          boxShadow: "0 -4px 20px rgba(0, 0, 0, 0.1)",
+        }}
+        className="show-mobile"
+      >
+        {/* Mobile Header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-primary)", margin: 0 }}>
+            Filters
+          </h3>
+          <button
+            onClick={onClose}
+            style={{
+              background: "var(--color-surface)",
+              border: "none",
+              borderRadius: 8,
+              padding: 8,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CloseIcon />
+          </button>
+        </div>
+
+        {/* Same filter sections */}
+        <FilterSection title="Industry">
+          <div style={{ maxHeight: 200, overflowY: "auto" }}>
+            {industries.map((industry) => (
+              <Checkbox
+                key={industry}
+                checked={selectedIndustries.includes(industry)}
+                onChange={() => toggleIndustry(industry)}
+                label={industry}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        <FilterSection title="Brand">
+          <Input
+            type="search"
+            placeholder="Search brands..."
+            value={brandSearch}
+            onChange={(e) => setBrandSearch(e.target.value)}
+            size="sm"
+            style={{ marginBottom: 12 }}
+          />
+          <div style={{ maxHeight: 160, overflowY: "auto" }}>
+            {filteredBrands.slice(0, 20).map((brand) => (
+              <Checkbox
+                key={brand}
+                checked={selectedBrands.includes(brand)}
+                onChange={() => toggleBrand(brand)}
+                label={brand}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        <FilterSection title="Date" defaultOpen={false}>
+          {DATE_FILTERS.map((filter) => (
+            <Checkbox
+              key={filter.value}
+              checked={selectedDate === filter.value}
+              onChange={() => setSelectedDate(filter.value)}
+              label={filter.label}
+            />
+          ))}
+        </FilterSection>
+
+        {/* Apply Button */}
+        <div style={{ marginTop: 24 }}>
+          <Button fullWidth onClick={onClose}>
+            Apply Filters {activeCount > 0 && `(${activeCount})`}
+          </Button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// Loading State
+function LoadingGrid() {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+        gap: 20,
+      }}
+    >
+      {Array.from({ length: 6 }).map((_, i) => (
+        <EmailCardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+
+// Main Browse Content
 function BrowseContent() {
   const searchParams = useSearchParams();
   const brandFromUrl = searchParams.get("brand");
-  
+  const industryFromUrl = searchParams.get("industry");
+
   const [emails, setEmails] = useState<Email[]>([]);
   const [allBrands, setAllBrands] = useState<string[]>([]);
   const [brandStats, setBrandStats] = useState<BrandStats>({});
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [hasMoreOnServer, setHasMoreOnServer] = useState(true);
-  const [initialLoadDone, setInitialLoadDone] = useState(false);
-  
-  // Filter states - initialize with brand from URL if present
-  const [selectedBrands, setSelectedBrands] = useState<string[]>(
-    brandFromUrl ? [brandFromUrl] : []
-  );
-  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
-  const [selectedDate, setSelectedDate] = useState("all");
-  
-  // Sidebar collapse state for mobile
+  const [brandSearch, setBrandSearch] = useState("");
+  const [hasMore, setHasMore] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE);
 
-  // Fetch emails with filters from API (with pagination)
-  const fetchEmails = useCallback(async (
-    industry?: string, 
-    brand?: string, 
-    search?: string,
-    skip: number = 0,
-    append: boolean = false
-  ) => {
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(brandFromUrl ? [brandFromUrl] : []);
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>(industryFromUrl ? [industryFromUrl] : []);
+  const [selectedDate, setSelectedDate] = useState("all");
+
+  // Fetch emails
+  const fetchEmails = useCallback(async () => {
     const base = process.env.NEXT_PUBLIC_API_BASE_URL;
     if (!base) return;
-    
+
     try {
       const params = new URLSearchParams();
-      params.set("limit", String(FETCH_BATCH_SIZE));
-      params.set("skip", String(skip));
-      if (industry) params.set("industry", industry);
-      if (brand) params.set("brand", brand);
-      if (search) params.set("q", search);
-      
-      const res = await fetch(`${base}/emails?${params.toString()}`, {
-        cache: "no-store",
-      });
+      params.set("limit", "500");
+      if (selectedIndustries.length === 1) params.set("industry", selectedIndustries[0]);
+      if (selectedBrands.length === 1) params.set("brand", selectedBrands[0]);
+      if (searchQuery) params.set("q", searchQuery);
+
+      const res = await fetch(`${base}/emails?${params.toString()}`);
       if (res.ok) {
-        const data: Email[] = await res.json();
-        if (append) {
-          setEmails(prev => [...prev, ...data]);
-        } else {
-          setEmails(data);
-        }
-        // If we got fewer than batch size, no more on server
-        setHasMoreOnServer(data.length === FETCH_BATCH_SIZE);
+        const data = await res.json();
+        setEmails(data);
+        setHasMore(data.length === 500);
       }
     } catch (error) {
       console.error("Failed to fetch emails:", error);
     }
-  }, []);
+  }, [selectedIndustries, selectedBrands, searchQuery]);
 
-  // Fetch brands list separately (cached)
+  // Fetch brands
   const fetchBrands = useCallback(async () => {
     const base = process.env.NEXT_PUBLIC_API_BASE_URL;
     if (!base) return;
-    
-    try {
-      const res = await fetch(`${base}/brands`, {
-        cache: "force-cache",
-        next: { revalidate: 300 },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setAllBrands(data);
-      }
-    } catch {
-      // Brands endpoint might not exist, that's ok
-      console.log("Brands endpoint not available");
-    }
-  }, []);
 
-  // Fetch brand stats (send frequency)
-  const fetchBrandStats = useCallback(async () => {
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-    if (!base) return;
-    
     try {
-      const res = await fetch(`${base}/brands/stats`, {
-        cache: "force-cache",
-        next: { revalidate: 300 },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setBrandStats(data);
-      }
-    } catch {
-      console.log("Brand stats endpoint not available");
+      const [brandsRes, statsRes] = await Promise.all([
+        fetch(`${base}/brands`),
+        fetch(`${base}/brands/stats`),
+      ]);
+
+      if (brandsRes.ok) setAllBrands(await brandsRes.json());
+      if (statsRes.ok) setBrandStats(await statsRes.json());
+    } catch (error) {
+      console.error("Failed to fetch brands:", error);
     }
   }, []);
 
@@ -201,72 +613,50 @@ function BrowseContent() {
   useEffect(() => {
     const init = async () => {
       setLoading(true);
-      // Use brand from URL for initial fetch if present
-      await Promise.all([
-        fetchEmails(undefined, brandFromUrl || undefined, undefined, 0, false),
-        fetchBrands(),
-        fetchBrandStats()
-      ]);
+      await Promise.all([fetchEmails(), fetchBrands()]);
       setLoading(false);
-      setInitialLoadDone(true);
     };
     init();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [brandFromUrl]);
+  }, [fetchEmails, fetchBrands]);
 
-  // Refetch when filters change (only after initial load)
-  useEffect(() => {
-    if (!initialLoadDone) return;
-    
-    const industry = selectedIndustries.length === 1 ? selectedIndustries[0] : undefined;
-    const brand = selectedBrands.length === 1 ? selectedBrands[0] : undefined;
-    fetchEmails(industry, brand, searchQuery || undefined, 0, false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedIndustries, selectedBrands, searchQuery]);
-
-  // Filter emails based on selections (client-side filtering for multi-select and date)
+  // Filter emails client-side
   const filteredEmails = emails.filter((email) => {
-    // Multi-brand filter (client side)
-    if (selectedBrands.length > 1 && !selectedBrands.includes(email.brand || "")) {
-      return false;
-    }
-    
-    // Multi-industry filter (client side)
-    if (selectedIndustries.length > 1 && !selectedIndustries.includes(email.industry || "")) {
-      return false;
-    }
-    
-    // Date filter
+    if (selectedBrands.length > 1 && !selectedBrands.includes(email.brand || "")) return false;
+    if (selectedIndustries.length > 1 && !selectedIndustries.includes(email.industry || "")) return false;
+
     if (selectedDate !== "all") {
       const days = parseInt(selectedDate);
       const emailDate = new Date(email.received_at);
-      const cutoffDate = new Date();
-      cutoffDate.setDate(cutoffDate.getDate() - days);
-      if (emailDate < cutoffDate) return false;
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - days);
+      if (emailDate < cutoff) return false;
     }
-    
+
     return true;
   });
 
-  // Load more from server
-  const loadMore = async () => {
+  const displayedEmails = filteredEmails.slice(0, displayCount);
+
+  const loadMore = () => {
     setLoadingMore(true);
-    const industry = selectedIndustries.length === 1 ? selectedIndustries[0] : undefined;
-    const brand = selectedBrands.length === 1 ? selectedBrands[0] : undefined;
-    await fetchEmails(industry, brand, searchQuery || undefined, emails.length, true);
-    setLoadingMore(false);
+    setTimeout(() => {
+      setDisplayCount((prev) => prev + ITEMS_PER_PAGE);
+      setLoadingMore(false);
+    }, 300);
   };
 
   const toggleBrand = (brand: string) => {
     setSelectedBrands((prev) =>
       prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
     );
+    setDisplayCount(ITEMS_PER_PAGE);
   };
 
   const toggleIndustry = (industry: string) => {
     setSelectedIndustries((prev) =>
       prev.includes(industry) ? prev.filter((i) => i !== industry) : [...prev, industry]
     );
+    setDisplayCount(ITEMS_PER_PAGE);
   };
 
   const clearAllFilters = () => {
@@ -274,348 +664,93 @@ function BrowseContent() {
     setSelectedIndustries([]);
     setSelectedDate("all");
     setSearchQuery("");
+    setDisplayCount(ITEMS_PER_PAGE);
   };
 
   const activeFilterCount = selectedBrands.length + selectedIndustries.length + (selectedDate !== "all" ? 1 : 0);
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
-      {/* Header */}
-      <header
-        style={{
-          backgroundColor: "#fff",
-          borderBottom: "1px solid #e5e5e5",
-          padding: "16px 0",
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-        }}
-      >
-        <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 24px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-            <a href="/" style={{ textDecoration: "none", color: "inherit", display: "flex", alignItems: "center", gap: 8 }}>
-              <Logo size={36} />
-              <span style={{ fontSize: 24, fontWeight: 700, color: "#1a1a1a" }}>MailMuse</span>
-            </a>
-            
-            {/* Search bar */}
-            <div style={{ flex: 1, maxWidth: 500 }}>
-              <div style={{ position: "relative" }}>
-                <input
-                  type="text"
-                  placeholder="Search by brand, subject, or keyword..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px 12px 44px",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 10,
-                    fontSize: 14,
-                    color: "#1a1a1a",
-                    backgroundColor: "#f8fafc",
-                    outline: "none",
-                  }}
-                />
-                <svg
-                  style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
-            
-            {/* Navigation Links */}
-            <nav style={{ display: "flex", gap: 20, alignItems: "center" }} className="browse-nav">
-              <Link
-                href="/browse"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#14b8a6",
-                  textDecoration: "none",
-                }}
-              >
-                Browse Emails
-              </Link>
-              <Link
-                href="/brands"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "#64748b",
-                  textDecoration: "none",
-                }}
-              >
-                Browse Brands
-              </Link>
-              <Link
-                href="/analytics"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "#64748b",
-                  textDecoration: "none",
-                }}
-              >
-                Analytics
-              </Link>
-            </nav>
-            
-            {/* Mobile filter toggle */}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              style={{
-                display: "none",
-                padding: "10px 16px",
-                backgroundColor: "#14b8a6",
-                color: "#fff",
-                border: "none",
-                borderRadius: 8,
-                fontWeight: 600,
-                fontSize: 14,
-                cursor: "pointer",
-              }}
-              className="mobile-filter-btn"
-            >
-              Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
-            </button>
-          </div>
-        </div>
-      </header>
+    <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
+      <Header
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        filterCount={activeFilterCount}
+        onOpenFilters={() => setSidebarOpen(true)}
+      />
 
-      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "24px", display: "flex", gap: 24 }}>
-        {/* Left Sidebar - Filters */}
-        <aside
-          className={`filter-sidebar ${sidebarOpen ? "open" : ""}`}
-          style={{
-            width: 280,
-            flexShrink: 0,
-            position: "sticky",
-            top: 100,
-            height: "fit-content",
-            maxHeight: "calc(100vh - 120px)",
-            overflowY: "auto",
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#fff",
-              borderRadius: 16,
-              border: "1px solid #e2e8f0",
-              overflow: "hidden",
-            }}
-          >
-            {/* Filter Header */}
-            <div
-              style={{
-                padding: "16px 20px",
-                borderBottom: "1px solid #e2e8f0",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a" }}>Filters</span>
-              {activeFilterCount > 0 && (
-                <button
-                  onClick={clearAllFilters}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#14b8a6",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
-                >
-                  Clear All
-                </button>
-              )}
-            </div>
-
-            {/* Industry Filter */}
-            <div style={{ borderBottom: "1px solid #e2e8f0" }}>
-              <div style={{ padding: "16px 20px 12px", fontSize: 13, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Industry
-              </div>
-              <div style={{ padding: "0 12px 16px", maxHeight: 240, overflowY: "auto" }}>
-                {INDUSTRIES.map((industry) => (
-                  <label
-                    key={industry}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "8px 8px",
-                      borderRadius: 8,
-                      cursor: "pointer",
-                      transition: "background-color 0.15s",
-                      backgroundColor: selectedIndustries.includes(industry) ? "#f0fdfa" : "transparent",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedIndustries.includes(industry)}
-                      onChange={() => toggleIndustry(industry)}
-                      style={{
-                        width: 18,
-                        height: 18,
-                        accentColor: "#14b8a6",
-                        cursor: "pointer",
-                      }}
-                    />
-                    <span style={{ fontSize: 14, color: "#374151" }}>{industry}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Brand Filter */}
-            <div style={{ borderBottom: "1px solid #e2e8f0" }}>
-              <div style={{ padding: "16px 20px 12px", fontSize: 13, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Brand ({allBrands.length})
-              </div>
-              <div style={{ padding: "0 12px 16px", maxHeight: 280, overflowY: "auto" }}>
-                {allBrands.length === 0 ? (
-                  <p style={{ fontSize: 13, color: "#94a3b8", padding: "8px" }}>Loading brands...</p>
-                ) : (
-                  allBrands.map((brand) => (
-                    <label
-                      key={brand}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                        padding: "8px 8px",
-                        borderRadius: 8,
-                        cursor: "pointer",
-                        transition: "background-color 0.15s",
-                        backgroundColor: selectedBrands.includes(brand) ? "#f0fdfa" : "transparent",
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedBrands.includes(brand)}
-                        onChange={() => toggleBrand(brand)}
-                        style={{
-                          width: 18,
-                          height: 18,
-                          accentColor: "#14b8a6",
-                          cursor: "pointer",
-                        }}
-                      />
-                      <span style={{ fontSize: 14, color: "#374151", textTransform: "capitalize" }}>{brand}</span>
-                    </label>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Date Filter */}
-            <div>
-              <div style={{ padding: "16px 20px 12px", fontSize: 13, fontWeight: 600, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Date
-              </div>
-              <div style={{ padding: "0 12px 16px" }}>
-                {DATE_FILTERS.map((option) => (
-                  <label
-                    key={option.value}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "8px 8px",
-                      borderRadius: 8,
-                      cursor: "pointer",
-                      transition: "background-color 0.15s",
-                      backgroundColor: selectedDate === option.value ? "#f0fdfa" : "transparent",
-                    }}
-                  >
-                    <input
-                      type="radio"
-                      name="date"
-                      checked={selectedDate === option.value}
-                      onChange={() => setSelectedDate(option.value)}
-                      style={{
-                        width: 18,
-                        height: 18,
-                        accentColor: "#14b8a6",
-                        cursor: "pointer",
-                      }}
-                    />
-                    <span style={{ fontSize: 14, color: "#374151" }}>{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-        </aside>
+      <div style={{ maxWidth: 1400, margin: "0 auto", padding: 24, display: "flex", gap: 24 }}>
+        <Sidebar
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          industries={INDUSTRIES}
+          selectedIndustries={selectedIndustries}
+          toggleIndustry={toggleIndustry}
+          brands={allBrands}
+          selectedBrands={selectedBrands}
+          toggleBrand={toggleBrand}
+          brandSearch={brandSearch}
+          setBrandSearch={setBrandSearch}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          clearAll={clearAllFilters}
+          brandStats={brandStats}
+        />
 
         {/* Main Content */}
         <main style={{ flex: 1, minWidth: 0 }}>
-          {/* Results header */}
-          <div style={{ marginBottom: 20, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <span style={{ fontSize: 14, color: "#64748b" }}>
-                {loading ? "Loading..." : `${filteredEmails.length} emails found`}
-              </span>
-              {activeFilterCount > 0 && (
-                <span style={{ fontSize: 14, color: "#14b8a6", marginLeft: 8 }}>
-                  ({activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} applied)
-                </span>
-              )}
-            </div>
-            
-            {/* Active filter chips */}
+          {/* Results Header */}
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginBottom: 20,
+            flexWrap: "wrap",
+            gap: 12,
+          }}>
+            <p style={{ fontSize: 14, color: "var(--color-secondary)", margin: 0 }}>
+              {loading ? "Loading..." : `${filteredEmails.length} emails`}
+            </p>
+
+            {/* Active Filters */}
             {activeFilterCount > 0 && (
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {selectedIndustries.map((ind) => (
-                  <span
-                    key={ind}
-                    onClick={() => toggleIndustry(ind)}
-                    style={{
-                      padding: "4px 10px",
-                      backgroundColor: "#f0fdfa",
-                      border: "1px solid #14b8a6",
-                      borderRadius: 20,
-                      fontSize: 12,
-                      color: "#14b8a6",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                    }}
-                  >
-                    {ind} <span style={{ fontWeight: 700 }}>×</span>
-                  </span>
+                {selectedIndustries.map((i) => (
+                  <Badge key={i} variant="accent">
+                    {i}
+                    <button
+                      onClick={() => toggleIndustry(i)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        marginLeft: 6,
+                        cursor: "pointer",
+                        color: "inherit",
+                        padding: 0,
+                        lineHeight: 1,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </Badge>
                 ))}
                 {selectedBrands.map((b) => (
-                  <span
-                    key={b}
-                    onClick={() => toggleBrand(b)}
-                    style={{
-                      padding: "4px 10px",
-                      backgroundColor: "#f0fdfa",
-                      border: "1px solid #14b8a6",
-                      borderRadius: 20,
-                      fontSize: 12,
-                      color: "#14b8a6",
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      textTransform: "capitalize",
-                    }}
-                  >
-                    {b} <span style={{ fontWeight: 700 }}>×</span>
-                  </span>
+                  <Badge key={b} variant="accent">
+                    {b}
+                    <button
+                      onClick={() => toggleBrand(b)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        marginLeft: 6,
+                        cursor: "pointer",
+                        color: "inherit",
+                        padding: 0,
+                        lineHeight: 1,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </Badge>
                 ))}
               </div>
             )}
@@ -623,136 +758,105 @@ function BrowseContent() {
 
           {/* Email Grid */}
           {loading ? (
-            <div style={{ textAlign: "center", padding: "80px 20px", color: "#94a3b8" }}>
-              <div style={{ 
-                width: 40, 
-                height: 40, 
-                border: "3px solid #e2e8f0", 
-                borderTopColor: "#14b8a6", 
-                borderRadius: "50%", 
-                margin: "0 auto 16px",
-                animation: "spin 1s linear infinite",
-              }} />
-              <div style={{ fontSize: 15 }}>Loading emails...</div>
-              <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-            </div>
-          ) : filteredEmails.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "80px 20px", color: "#94a3b8" }}>
+            <LoadingGrid />
+          ) : displayedEmails.length === 0 ? (
+            <div style={{
+              textAlign: "center",
+              padding: "80px 20px",
+              background: "white",
+              borderRadius: 14,
+            }}>
               <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
-              <div style={{ fontSize: 18, fontWeight: 600, color: "#64748b", marginBottom: 8 }}>No emails found</div>
-              <div style={{ fontSize: 14 }}>Try adjusting your filters or search query</div>
-              {activeFilterCount > 0 && (
-                <button
-                  onClick={clearAllFilters}
-                  style={{
-                    marginTop: 16,
-                    padding: "10px 20px",
-                    backgroundColor: "#14b8a6",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 8,
-                    fontWeight: 600,
-                    cursor: "pointer",
-                  }}
-                >
-                  Clear All Filters
-                </button>
-              )}
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-primary)", marginBottom: 8 }}>
+                No emails found
+              </h3>
+              <p style={{ fontSize: 14, color: "var(--color-secondary)", marginBottom: 20 }}>
+                Try adjusting your filters or search query
+              </p>
+              <Button variant="secondary" onClick={clearAllFilters}>
+                Clear Filters
+              </Button>
             </div>
           ) : (
             <>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-                gap: 20,
-              }}
-            >
-              {filteredEmails.map((e) => (
-                <EmailCard
-                  key={e.id}
-                  id={e.id}
-                  subject={e.subject}
-                  brand={e.brand}
-                  preview={e.preview}
-                  industry={e.industry}
-                  received_at={e.received_at}
-                  campaignType={e.type}
-                  sendFrequency={e.brand ? brandStats[e.brand]?.send_frequency : undefined}
-                />
-              ))}
-            </div>
-            
-            {/* Load More Button */}
-            {hasMoreOnServer && (
-              <div style={{ textAlign: "center", marginTop: 32 }}>
-                <button
-                  onClick={loadMore}
-                  disabled={loadingMore}
-                  style={{
-                    padding: "14px 40px",
-                    backgroundColor: loadingMore ? "#94a3b8" : "#14b8a6",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: 10,
-                    fontWeight: 600,
-                    fontSize: 15,
-                    cursor: loadingMore ? "wait" : "pointer",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  {loadingMore ? "Loading..." : "Load More Emails"}
-                </button>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                  gap: 20,
+                }}
+              >
+                {displayedEmails.map((email, idx) => (
+                  <div
+                    key={email.id}
+                    style={{
+                      opacity: 0,
+                      animation: `fadeInUp 0.4s ease ${Math.min(idx * 30, 300)}ms forwards`,
+                    }}
+                  >
+                    <EmailCard
+                      id={email.id}
+                      subject={email.subject}
+                      brand={email.brand}
+                      preview={email.preview}
+                      industry={email.industry}
+                      received_at={email.received_at}
+                      campaignType={email.type}
+                      sendFrequency={email.brand ? brandStats[email.brand]?.send_frequency : undefined}
+                    />
+                  </div>
+                ))}
               </div>
-            )}
-            
-            {/* Showing count */}
-            <div style={{ textAlign: "center", marginTop: 20, fontSize: 13, color: "#94a3b8" }}>
-              Showing {filteredEmails.length} emails {hasMoreOnServer && "(more available)"}
-            </div>
+
+              {/* Load More */}
+              {displayCount < filteredEmails.length && (
+                <div style={{ textAlign: "center", marginTop: 40 }}>
+                  <Button variant="secondary" onClick={loadMore} loading={loadingMore}>
+                    Load More
+                  </Button>
+                  <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 12 }}>
+                    Showing {displayCount} of {filteredEmails.length}
+                  </p>
+                </div>
+              )}
             </>
           )}
         </main>
       </div>
-
-      {/* Mobile filter overlay */}
-      {sidebarOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            zIndex: 200,
-          }}
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      <style>{`
-        @media (max-width: 900px) {
-          .filter-sidebar {
-            position: fixed !important;
-            top: 0 !important;
-            left: -300px;
-            bottom: 0;
-            width: 280px !important;
-            max-height: 100vh !important;
-            z-index: 300;
-            transition: left 0.3s ease;
-            padding: 20px;
-            background: #f8fafc;
-          }
-          .filter-sidebar.open {
-            left: 0;
-          }
-          .mobile-filter-btn {
-            display: flex !important;
-          }
-        }
-      `}</style>
     </div>
+  );
+}
+
+// Main Export with Suspense
+export default function BrowsePage() {
+  return (
+    <Suspense
+      fallback={
+        <div style={{
+          minHeight: "100vh",
+          background: "var(--color-surface)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+          <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                border: "3px solid var(--color-border)",
+                borderTopColor: "var(--color-accent)",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite",
+                margin: "0 auto 16px",
+              }}
+            />
+            <p style={{ color: "var(--color-secondary)", fontSize: 14 }}>Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <BrowseContent />
+    </Suspense>
   );
 }

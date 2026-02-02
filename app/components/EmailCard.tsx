@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Badge from "./Badge";
 
 type EmailCardProps = {
   id: number;
@@ -9,48 +10,67 @@ type EmailCardProps = {
   preview?: string;
   industry?: string;
   received_at: string;
-  sendFrequency?: string; // e.g., "3x/week"
-  campaignType?: string; // e.g., "Sale", "Welcome", etc.
+  sendFrequency?: string;
+  campaignType?: string;
+  showPreview?: boolean;
 };
 
-export default function EmailCard({ id, subject, brand, preview, industry, received_at, sendFrequency, campaignType }: EmailCardProps) {
+export default function EmailCard({
+  id,
+  subject,
+  brand,
+  preview,
+  industry,
+  received_at,
+  sendFrequency,
+  campaignType,
+  showPreview = true,
+}: EmailCardProps) {
   const [html, setHtml] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLAnchorElement>(null);
 
   const brandInitial = brand ? brand.charAt(0).toUpperCase() : "?";
-  const receivedDate = new Date(received_at);
-  const formattedDate = receivedDate.toLocaleDateString("en-IN", {
-    month: "short",
-    day: "numeric",
-  });
+  
+  // Format date as relative time
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    
+    if (hours < 1) return "Just now";
+    if (hours < 24) return `${hours}h ago`;
+    
+    const days = Math.floor(hours / 24);
+    if (days < 7) return `${days}d ago`;
+    
+    return date.toLocaleDateString("en-IN", { month: "short", day: "numeric" });
+  };
 
-  // Intersection Observer to detect when card is visible
+  // Intersection Observer for lazy loading
   useEffect(() => {
+    if (!showPreview) return;
+    
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.disconnect(); // Only need to detect once
+          observer.disconnect();
         }
       },
-      {
-        rootMargin: "100px", // Start loading 100px before visible
-        threshold: 0.1,
-      }
+      { rootMargin: "100px", threshold: 0.1 }
     );
 
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
+    if (cardRef.current) observer.observe(cardRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [showPreview]);
 
-  // Fetch HTML when card becomes visible
+  // Fetch HTML when visible
   useEffect(() => {
-    if (!isVisible || html !== null || isLoading) return;
+    if (!isVisible || !showPreview || html !== null || isLoading) return;
 
     const fetchHtml = async () => {
       setIsLoading(true);
@@ -71,153 +91,138 @@ export default function EmailCard({ id, subject, brand, preview, industry, recei
     };
 
     fetchHtml();
-  }, [isVisible, id, html, isLoading]);
+  }, [isVisible, id, html, isLoading, showPreview]);
 
   return (
     <a
       ref={cardRef}
       href={`/email/${id}`}
       style={{
+        display: "block",
         backgroundColor: "#fff",
         borderRadius: 14,
-        border: "1px solid #e2e8f0",
-        display: "flex",
-        flexDirection: "column",
-        transition: "all 0.2s",
         overflow: "hidden",
-        position: "relative",
         textDecoration: "none",
         color: "inherit",
         cursor: "pointer",
+        boxShadow: isHovered 
+          ? "0 8px 30px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04)"
+          : "0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.04)",
+        transform: isHovered ? "translateY(-2px)" : "translateY(0)",
+        transition: "all 200ms ease",
       }}
-      className="hover-button"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Campaign Type Badge */}
-      {campaignType && (
+      {/* Preview Area */}
+      {showPreview && (
         <div
           style={{
-            position: "absolute",
-            top: 12,
-            left: 12,
-            padding: "4px 10px",
-            backgroundColor: "rgba(20, 184, 166, 0.9)",
-            color: "#fff",
-            fontSize: 10,
-            fontWeight: 600,
-            borderRadius: 12,
-            textTransform: "uppercase",
-            letterSpacing: "0.5px",
-            zIndex: 10,
+            height: 180,
+            backgroundColor: "#f8fafc",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
-          {campaignType}
-        </div>
-      )}
+          {/* Campaign Type Badge */}
+          {campaignType && (
+            <div style={{ position: "absolute", top: 12, left: 12, zIndex: 10 }}>
+              <Badge variant="accent">{campaignType}</Badge>
+            </div>
+          )}
 
-      {/* Email Preview - Scaled iframe */}
-      <div
-        style={{
-          height: 200,
-          backgroundColor: "#f8fafc",
-          borderBottom: "1px solid #e2e8f0",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {html ? (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "300%",
-              height: "300%",
-              transform: "scale(0.333)",
-              transformOrigin: "top left",
-              pointerEvents: "none",
-            }}
-          >
-            <iframe
-              srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_blank"><style>body{margin:0;padding:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}img{max-width:100%;height:auto;}</style></head><body>${html}</body></html>`}
+          {html ? (
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "300%",
+                height: "300%",
+                transform: "scale(0.333)",
+                transformOrigin: "top left",
+                pointerEvents: "none",
+              }}
+            >
+              <iframe
+                srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_blank"><style>body{margin:0;padding:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}img{max-width:100%;height:auto;}</style></head><body>${html}</body></html>`}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  border: "none",
+                  display: "block",
+                }}
+                sandbox="allow-same-origin"
+                title={`Preview of ${subject}`}
+              />
+            </div>
+          ) : (
+            <div
               style={{
                 width: "100%",
                 height: "100%",
-                border: "none",
-                display: "block",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+                gap: 10,
+                background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
               }}
-              sandbox="allow-same-origin"
-              title={`Preview of ${subject}`}
-            />
-          </div>
-        ) : (
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-              gap: 8,
-              background: "linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%)",
-            }}
-          >
-            {isLoading ? (
-              <>
+            >
+              {isLoading ? (
                 <div
                   style={{
-                    width: 32,
-                    height: 32,
-                    border: "3px solid #e2e8f0",
+                    width: 28,
+                    height: 28,
+                    border: "2px solid #e2e8f0",
                     borderTopColor: "#14b8a6",
                     borderRadius: "50%",
                     animation: "spin 1s linear infinite",
                   }}
                 />
-                <span style={{ fontSize: 12, color: "#64748b" }}>Loading preview...</span>
-              </>
-            ) : (
-              <>
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    background: "#fff",
-                    borderRadius: 12,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 700,
-                    color: "#14b8a6",
-                    fontSize: 20,
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                  }}
-                >
-                  {brandInitial}
-                </div>
-                <span style={{ fontSize: 12, color: "#64748b" }}>Email Preview</span>
-              </>
-            )}
-          </div>
-        )}
-      </div>
+              ) : (
+                <>
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 12,
+                      background: "white",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 600,
+                      fontSize: 18,
+                      color: "#14b8a6",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    {brandInitial}
+                  </div>
+                  <span style={{ fontSize: 12, color: "#94a3b8" }}>Email Preview</span>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
-      {/* Card Content */}
-      <div style={{ padding: 16 }}>
-        {/* Brand header */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+      {/* Content */}
+      <div style={{ padding: 20 }}>
+        {/* Brand Row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <div
             style={{
-              width: 32,
-              height: 32,
+              width: 36,
+              height: 36,
+              borderRadius: 10,
               background: "#f0fdfa",
-              borderRadius: 8,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontWeight: 700,
-              color: "#14b8a6",
+              fontWeight: 600,
               fontSize: 14,
+              color: "#14b8a6",
               flexShrink: 0,
             }}
           >
@@ -226,9 +231,9 @@ export default function EmailCard({ id, subject, brand, preview, industry, recei
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: 600,
-                color: "#1a1a1a",
+                color: "#0f172a",
                 textTransform: "capitalize",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
@@ -237,30 +242,20 @@ export default function EmailCard({ id, subject, brand, preview, industry, recei
             >
               {brand || "Unknown"}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              {industry && (
-                <span style={{ fontSize: 11, color: "#14b8a6", fontWeight: 500 }}>{industry}</span>
-              )}
-              {sendFrequency && (
-                <>
-                  {industry && <span style={{ color: "#cbd5e1" }}>•</span>}
-                  <span style={{ fontSize: 10, color: "#94a3b8", fontWeight: 500 }}>
-                    📬 {sendFrequency}
-                  </span>
-                </>
-              )}
+            <div style={{ fontSize: 12, color: "#94a3b8" }}>
+              {formatDate(received_at)}
+              {sendFrequency && ` · ${sendFrequency}`}
             </div>
           </div>
-          <time style={{ fontSize: 11, color: "#94a3b8", flexShrink: 0 }}>{formattedDate}</time>
         </div>
 
         {/* Subject */}
         <h3
           style={{
-            margin: "0 0 6px 0",
-            fontSize: 14,
+            margin: "0 0 8px 0",
+            fontSize: 15,
             fontWeight: 600,
-            color: "#1a1a1a",
+            color: "#0f172a",
             lineHeight: 1.4,
             display: "-webkit-box",
             WebkitLineClamp: 2,
@@ -271,12 +266,12 @@ export default function EmailCard({ id, subject, brand, preview, industry, recei
           {subject}
         </h3>
 
-        {/* Preview text */}
+        {/* Preview Text */}
         {preview && (
           <p
             style={{
-              margin: 0,
-              fontSize: 12,
+              margin: "0 0 14px 0",
+              fontSize: 13,
               color: "#64748b",
               lineHeight: 1.5,
               display: "-webkit-box",
@@ -288,6 +283,16 @@ export default function EmailCard({ id, subject, brand, preview, industry, recei
             {preview}
           </p>
         )}
+
+        {/* Tags */}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {!showPreview && campaignType && (
+            <Badge variant="accent">{campaignType}</Badge>
+          )}
+          {industry && (
+            <Badge>{industry}</Badge>
+          )}
+        </div>
       </div>
 
       <style>{`
@@ -296,5 +301,132 @@ export default function EmailCard({ id, subject, brand, preview, industry, recei
         }
       `}</style>
     </a>
+  );
+}
+
+// Skeleton version for loading states
+export function EmailCardSkeleton() {
+  return (
+    <div
+      style={{
+        backgroundColor: "#fff",
+        borderRadius: 14,
+        overflow: "hidden",
+        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.04)",
+      }}
+    >
+      {/* Preview skeleton */}
+      <div
+        style={{
+          height: 180,
+          background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+          backgroundSize: "200% 100%",
+          animation: "shimmer 1.5s infinite",
+        }}
+      />
+      
+      {/* Content skeleton */}
+      <div style={{ padding: 20 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+              backgroundSize: "200% 100%",
+              animation: "shimmer 1.5s infinite",
+            }}
+          />
+          <div style={{ flex: 1 }}>
+            <div
+              style={{
+                width: 100,
+                height: 14,
+                borderRadius: 4,
+                marginBottom: 6,
+                background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+                backgroundSize: "200% 100%",
+                animation: "shimmer 1.5s infinite",
+              }}
+            />
+            <div
+              style={{
+                width: 60,
+                height: 12,
+                borderRadius: 4,
+                background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+                backgroundSize: "200% 100%",
+                animation: "shimmer 1.5s infinite",
+              }}
+            />
+          </div>
+        </div>
+        
+        <div
+          style={{
+            width: "90%",
+            height: 16,
+            borderRadius: 4,
+            marginBottom: 8,
+            background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.5s infinite",
+          }}
+        />
+        <div
+          style={{
+            width: "100%",
+            height: 14,
+            borderRadius: 4,
+            marginBottom: 6,
+            background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.5s infinite",
+          }}
+        />
+        <div
+          style={{
+            width: "70%",
+            height: 14,
+            borderRadius: 4,
+            marginBottom: 14,
+            background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+            backgroundSize: "200% 100%",
+            animation: "shimmer 1.5s infinite",
+          }}
+        />
+        
+        <div style={{ display: "flex", gap: 8 }}>
+          <div
+            style={{
+              width: 50,
+              height: 22,
+              borderRadius: 11,
+              background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+              backgroundSize: "200% 100%",
+              animation: "shimmer 1.5s infinite",
+            }}
+          />
+          <div
+            style={{
+              width: 80,
+              height: 22,
+              borderRadius: 11,
+              background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+              backgroundSize: "200% 100%",
+              animation: "shimmer 1.5s infinite",
+            }}
+          />
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+      `}</style>
+    </div>
   );
 }
