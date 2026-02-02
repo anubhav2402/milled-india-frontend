@@ -7,6 +7,7 @@ interface BadgeProps {
   variant?: "default" | "accent" | "success" | "warning" | "error";
   size?: "sm" | "md";
   className?: string;
+  style?: React.CSSProperties;
 }
 
 export default function Badge({
@@ -14,6 +15,7 @@ export default function Badge({
   variant = "default",
   size = "sm",
   className = "",
+  style = {},
 }: BadgeProps) {
   const baseStyles: React.CSSProperties = {
     display: "inline-flex",
@@ -69,6 +71,7 @@ export default function Badge({
         ...baseStyles,
         ...sizeStyles[size],
         ...variantStyles[variant],
+        ...style,
       }}
       className={className}
     >
