@@ -44,8 +44,8 @@ export default function Badge({
       border: "1px solid #e2e8f0",
     },
     accent: {
-      background: "#ccfbf1",
-      color: "#0d9488",
+      background: "#F5E6DC",
+      color: "#A85E3A",
       border: "1px solid transparent",
     },
     success: {

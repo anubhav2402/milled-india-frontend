@@ -133,8 +133,8 @@ function Header({ searchQuery, setSearchQuery, filterCount, onOpenFilters }: {
         {/* Logo */}
         <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
           <Logo size={32} />
-          <span className="hide-mobile" style={{ fontSize: 20, fontWeight: 700, color: "var(--color-primary)" }}>
-            MailMuse
+          <span className="hide-mobile" style={{ fontFamily: "var(--font-dm-serif)", fontSize: 20, color: "var(--color-primary)" }}>
+            Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em>
           </span>
         </Link>
 

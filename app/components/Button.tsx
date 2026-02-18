@@ -50,7 +50,7 @@ export default function Button({
 
   const variantStyles: Record<string, React.CSSProperties> = {
     primary: {
-      background: "#14b8a6",
+      background: "#C2714A",
       color: "white",
     },
     secondary: {
@@ -66,9 +66,9 @@ export default function Button({
 
   const hoverStyles: Record<string, React.CSSProperties> = {
     primary: {
-      background: "#0d9488",
+      background: "#A85E3A",
       transform: "translateY(-1px)",
-      boxShadow: "0 4px 12px rgba(20, 184, 166, 0.3)",
+      boxShadow: "0 4px 12px rgba(194, 113, 74, 0.3)",
     },
     secondary: {
       borderColor: "#cbd5e1",

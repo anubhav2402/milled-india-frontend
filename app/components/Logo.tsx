@@ -12,7 +12,7 @@ export default function Logo({ size = 32 }: { size?: number }) {
       {/* Abstract "M" formed by envelope opening - clean geometric design */}
       <path
         d="M4 12L20 24L36 12"
-        stroke="#14b8a6"
+        stroke="#C2714A"
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -20,7 +20,7 @@ export default function Logo({ size = 32 }: { size?: number }) {
       />
       <path
         d="M4 12L4 30L36 30L36 12"
-        stroke="#14b8a6"
+        stroke="#C2714A"
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"

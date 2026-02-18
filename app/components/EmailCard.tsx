@@ -175,7 +175,7 @@ export default function EmailCard({
                     width: 28,
                     height: 28,
                     border: "2px solid #e2e8f0",
-                    borderTopColor: "#14b8a6",
+                    borderTopColor: "#C2714A",
                     borderRadius: "50%",
                     animation: "spin 1s linear infinite",
                   }}
@@ -193,7 +193,7 @@ export default function EmailCard({
                       justifyContent: "center",
                       fontWeight: 600,
                       fontSize: 18,
-                      color: "#14b8a6",
+                      color: "#C2714A",
                       boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                     }}
                   >
@@ -216,13 +216,13 @@ export default function EmailCard({
               width: 36,
               height: 36,
               borderRadius: 10,
-              background: "#f0fdfa",
+              background: "#F5E6DC",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontWeight: 600,
               fontSize: 14,
-              color: "#14b8a6",
+              color: "#C2714A",
               flexShrink: 0,
             }}
           >

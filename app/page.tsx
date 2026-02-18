@@ -64,8 +64,8 @@ function Header() {
         {/* Logo */}
         <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
           <Logo size={36} />
-          <span style={{ fontSize: 22, fontWeight: 700, color: "var(--color-primary)", letterSpacing: "-0.02em" }}>
-            MailMuse
+          <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 22, color: "var(--color-primary)", letterSpacing: "-0.01em" }}>
+            Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em>
           </span>
         </Link>
 
@@ -357,14 +357,15 @@ function HeroSection() {
               3,000+ emails tracked
             </Badge>
             <h1 style={{
+              fontFamily: "var(--font-dm-serif)",
               fontSize: "clamp(36px, 5vw, 56px)",
-              fontWeight: 700,
+              fontWeight: 400,
               color: "var(--color-primary)",
               lineHeight: 1.1,
-              letterSpacing: "-0.02em",
+              letterSpacing: "-0.01em",
               marginBottom: 20,
             }}>
-              Track Every Email Your Competitors Send
+              Discover what the world&apos;s best brands are sending
             </h1>
             <p style={{
               fontSize: "clamp(16px, 2vw, 18px)",
@@ -699,7 +700,9 @@ function Footer() {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Logo size={32} />
-          <span style={{ fontSize: 18, fontWeight: 600 }}>MailMuse</span>
+          <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 18, color: "white" }}>
+            Mail <em style={{ fontStyle: "italic", color: "#E8A882" }}>Muse</em>
+          </span>
         </div>
         <p style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.5)" }}>
           © 2026 MailMuse. All rights reserved.
