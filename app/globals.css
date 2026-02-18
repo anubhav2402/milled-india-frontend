@@ -428,21 +428,29 @@ body {
     --text-h3: 18px;
     --space-4xl: 64px;
   }
-  
+
   .container {
     padding: 0 var(--space-md);
   }
-  
+
   .section {
     padding: var(--space-3xl) var(--space-md);
   }
-  
+
   .hide-mobile {
     display: none !important;
   }
-  
+
   .show-mobile {
     display: block !important;
+  }
+
+  .email-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .email-detail-sidebar {
+    order: 2;
   }
 }
 
