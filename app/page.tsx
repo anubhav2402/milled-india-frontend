@@ -317,7 +317,7 @@ function HeroSection() {
       try {
         const base = process.env.NEXT_PUBLIC_API_BASE_URL;
         if (!base) return;
-        const res = await fetch(`${base}/emails?limit=3`);
+        const res = await fetch(`${base}/emails?limit=6`);
         if (res.ok) {
           const data = await res.json();
           setEmails(data);
@@ -339,95 +339,95 @@ function HeroSection() {
   return (
     <section style={{
       minHeight: "calc(100vh - 68px)",
-      background: "linear-gradient(180deg, #f8fafc 0%, #ffffff 50%)",
-      display: "flex",
-      alignItems: "center",
-      padding: "64px 24px",
+      background: "linear-gradient(180deg, var(--color-surface) 0%, #ffffff 60%)",
+      padding: "80px 24px 64px",
     }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+        {/* Centered Hero Content */}
         <div style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 64,
-          alignItems: "center",
-        }} className="hero-grid">
-          {/* Left: Content */}
-          <div style={{ opacity: 0, animation: "fadeInUp 0.6s ease forwards" }}>
-            <Badge variant="accent" style={{ marginBottom: 24 }}>
-              3,000+ emails tracked
-            </Badge>
-            <h1 style={{
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: "clamp(36px, 5vw, 56px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              lineHeight: 1.1,
-              letterSpacing: "-0.01em",
-              marginBottom: 20,
-            }}>
-              Discover what the world&apos;s best brands are sending
-            </h1>
-            <p style={{
-              fontSize: "clamp(16px, 2vw, 18px)",
-              color: "var(--color-secondary)",
-              lineHeight: 1.6,
-              marginBottom: 32,
-              maxWidth: 480,
-            }}>
-              Competitive intelligence for marketing teams. See what brands are sending, when, and why.
-            </p>
+          textAlign: "center",
+          maxWidth: 680,
+          margin: "0 auto",
+          opacity: 0,
+          animation: "fadeInUp 0.6s ease forwards",
+        }}>
+          <Badge variant="accent" style={{ marginBottom: 24 }}>
+            3,000+ emails tracked
+          </Badge>
+          <h1 style={{
+            fontFamily: "var(--font-dm-serif)",
+            fontSize: "clamp(40px, 6vw, 64px)",
+            fontWeight: 400,
+            color: "var(--color-primary)",
+            lineHeight: 1.08,
+            letterSpacing: "-0.02em",
+            marginBottom: 20,
+          }}>
+            Discover what the world&apos;s best brands are sending
+          </h1>
+          <p style={{
+            fontSize: "clamp(16px, 2vw, 19px)",
+            color: "var(--color-secondary)",
+            lineHeight: 1.6,
+            maxWidth: 520,
+            margin: "0 auto 36px",
+          }}>
+            Competitive intelligence for marketing teams. See what brands are sending, when, and why.
+          </p>
 
-            {/* Search */}
-            <form onSubmit={handleSearch} style={{ marginBottom: 24 }}>
-              <div style={{ display: "flex", gap: 12, maxWidth: 480 }}>
-                <Input
-                  type="search"
-                  placeholder="Search brands or keywords..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  icon={<SearchIcon />}
-                  size="lg"
-                />
-                <Button type="submit" size="lg">
-                  Search
-                </Button>
-              </div>
-            </form>
+          {/* Search */}
+          <form onSubmit={handleSearch} style={{ marginBottom: 20 }}>
+            <div style={{ display: "flex", gap: 12, maxWidth: 560, margin: "0 auto" }}>
+              <Input
+                type="search"
+                placeholder="Search brands or keywords..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                icon={<SearchIcon />}
+                size="lg"
+              />
+              <Button type="submit" size="lg">
+                Search
+              </Button>
+            </div>
+          </form>
 
-            <p style={{ fontSize: 13, color: "var(--color-tertiary)" }}>
-              Free access · No signup required · Updated daily
-            </p>
-          </div>
+          <p style={{ fontSize: 13, color: "var(--color-tertiary)" }}>
+            Free access · No signup required · Updated daily
+          </p>
+        </div>
 
-          {/* Right: Email Previews */}
-          <div className="hide-mobile" style={{ position: "relative" }}>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 16,
-            }}>
-              {loading ? (
-                <>
-                  <SkeletonCard />
-                  <SkeletonCard />
-                  <SkeletonCard />
-                </>
-              ) : (
-                emails.map((email, idx) => (
-                  <EmailPreviewCard 
-                    key={email.id} 
-                    email={email} 
+        {/* Email Preview Cards — Horizontal Scroll */}
+        <div style={{
+          marginTop: 56,
+          opacity: 0,
+          animation: "fadeInUp 0.6s ease 0.2s forwards",
+        }}>
+          <div className="horizontal-scroll" style={{ padding: "8px 4px" }}>
+            {loading ? (
+              <>
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="scroll-card" style={{ width: 280, minWidth: 280 }}>
+                    <SkeletonCard />
+                  </div>
+                ))}
+              </>
+            ) : (
+              emails.map((email, idx) => (
+                <div key={email.id} className="scroll-card" style={{ width: 280, minWidth: 280 }}>
+                  <EmailPreviewCard
+                    email={email}
                     delay={idx * 100}
                   />
-                ))
-              )}
-            </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
         {/* Trusted By */}
         <div style={{
-          marginTop: 80,
+          marginTop: 64,
           textAlign: "center",
           opacity: 0,
           animation: "fadeIn 0.6s ease 0.4s forwards",
@@ -440,7 +440,7 @@ function HeroSection() {
             letterSpacing: "0.1em",
             marginBottom: 24,
           }}>
-            Tracking emails from India's top brands
+            Tracking emails from India&apos;s top brands
           </p>
           <div style={{
             display: "flex",

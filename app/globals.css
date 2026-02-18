@@ -464,6 +464,28 @@ body {
   }
 }
 
+/* ========== HORIZONTAL SCROLL ========== */
+
+.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-card {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
 /* ========== LEGACY SUPPORT ========== */
 
 /* Email content styling */
