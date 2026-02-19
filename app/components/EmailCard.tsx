@@ -74,8 +74,7 @@ export default function EmailCard({
 
     const fetchHtml = async () => {
       setIsLoading(true);
-      const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-      if (!base) return;
+      const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
       try {
         const res = await fetch(`${base}/emails/${id}/html`);

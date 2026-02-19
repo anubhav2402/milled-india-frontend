@@ -8,6 +8,7 @@ import EmailCard, { EmailCardSkeleton } from "../components/EmailCard";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
 import Input from "../components/Input";
+import { API_BASE } from "../lib/constants";
 
 type Email = {
   id: number;
@@ -582,8 +583,7 @@ function BrowseContent() {
 
   // Fetch emails
   const fetchEmails = useCallback(async () => {
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-    if (!base) return;
+    const base = API_BASE;
 
     try {
       const params = new URLSearchParams();
@@ -605,8 +605,7 @@ function BrowseContent() {
 
   // Fetch brands
   const fetchBrands = useCallback(async () => {
-    const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-    if (!base) return;
+    const base = API_BASE;
 
     try {
       const [brandsRes, statsRes] = await Promise.all([

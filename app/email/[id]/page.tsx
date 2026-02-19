@@ -79,7 +79,7 @@ export default function EmailPage() {
   const [brandEmails, setBrandEmails] = useState<RelatedEmail[]>([]);
   const [similarEmails, setSimilarEmails] = useState<RelatedEmail[]>([]);
 
-  const base = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
   // Fetch email
   useEffect(() => {

@@ -28,7 +28,7 @@ export default function BrandsPage() {
   const [followedBrands, setFollowedBrands] = useState<Set<string>>(new Set());
   const [sortBy, setSortBy] = useState<"name" | "emails" | "frequency">("emails");
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
   // Fetch followed brands from API for logged-in users
   const fetchFollowedBrands = useCallback(async () => {

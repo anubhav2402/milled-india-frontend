@@ -40,7 +40,7 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [brandLoading, setBrandLoading] = useState(false);
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
   // Fetch overview data
   useEffect(() => {
