@@ -8,18 +8,7 @@ import Button from "./components/Button";
 import Badge from "./components/Badge";
 import Card from "./components/Card";
 import Input from "./components/Input";
-import { SkeletonCard } from "./components/Skeleton";
 import { useAuth } from "./context/AuthContext";
-
-type Email = {
-  id: number;
-  subject: string;
-  brand?: string;
-  industry?: string;
-  received_at: string;
-  preview?: string;
-  type?: string;
-};
 
 // Search icon component
 const SearchIcon = () => (
@@ -144,192 +133,10 @@ function Header() {
   );
 }
 
-// Email Preview Card for Hero
-function EmailPreviewCard({ email, delay = 0 }: { email: Email; delay?: number }) {
-  const formatDate = (date: string) => {
-    const d = new Date(date);
-    const now = new Date();
-    const diff = now.getTime() - d.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    if (hours < 24) return `${hours}h ago`;
-    const days = Math.floor(hours / 24);
-    return `${days}d ago`;
-  };
-
-  // Generate a subtle gradient based on brand name
-  const getGradient = (brand: string) => {
-    const gradients = [
-      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-      "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-      "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-      "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-      "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
-      "linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)",
-    ];
-    const index = brand ? brand.charCodeAt(0) % gradients.length : 0;
-    return gradients[index];
-  };
-
-  return (
-    <div
-      style={{
-        background: "white",
-        borderRadius: 16,
-        boxShadow: "0 4px 24px rgba(0, 0, 0, 0.08)",
-        overflow: "hidden",
-        opacity: 0,
-        animation: `fadeInUp 0.5s ease ${delay}ms forwards`,
-        cursor: "pointer",
-        transition: "transform 200ms ease, box-shadow 200ms ease",
-      }}
-      onClick={() => window.location.href = `/email/${email.id}`}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-4px)";
-        e.currentTarget.style.boxShadow = "0 12px 40px rgba(0, 0, 0, 0.12)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "0 4px 24px rgba(0, 0, 0, 0.08)";
-      }}
-    >
-      {/* Stylized Email Preview */}
-      <div style={{
-        height: 120,
-        background: getGradient(email.brand || ""),
-        position: "relative",
-        overflow: "hidden",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}>
-        {/* Email icon/visual */}
-        <div style={{
-          width: 48,
-          height: 36,
-          background: "rgba(255, 255, 255, 0.9)",
-          borderRadius: 4,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        }}>
-          <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
-            <rect x="1" y="1" width="22" height="16" rx="2" stroke="#64748b" strokeWidth="1.5" fill="white"/>
-            <path d="M1 3L12 10L23 3" stroke="#64748b" strokeWidth="1.5"/>
-          </svg>
-        </div>
-        {/* Industry badge */}
-        {email.industry && (
-          <span style={{
-            position: "absolute",
-            top: 10,
-            right: 10,
-            background: "rgba(255, 255, 255, 0.9)",
-            color: "#475569",
-            fontSize: 10,
-            fontWeight: 500,
-            padding: "3px 8px",
-            borderRadius: 20,
-          }}>
-            {email.industry}
-          </span>
-        )}
-      </div>
-      <div style={{ padding: 16 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-          <div style={{
-            width: 32,
-            height: 32,
-            borderRadius: "50%",
-            background: "var(--color-accent)",
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 12,
-            fontWeight: 600,
-          }}>
-            {email.brand?.[0]?.toUpperCase() || "?"}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--color-primary)" }}>
-              {email.brand || "Unknown"}
-            </div>
-            <div style={{ fontSize: 11, color: "var(--color-tertiary)" }}>
-              {formatDate(email.received_at)}
-            </div>
-          </div>
-          {email.type && (
-            <span style={{
-              background: "#f1f5f9",
-              color: "#64748b",
-              fontSize: 10,
-              fontWeight: 500,
-              padding: "3px 8px",
-              borderRadius: 4,
-            }}>
-              {email.type}
-            </span>
-          )}
-        </div>
-        <div style={{
-          fontSize: 14,
-          fontWeight: 500,
-          color: "var(--color-primary)",
-          lineHeight: 1.4,
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
-          marginBottom: 8,
-        }}>
-          {email.subject}
-        </div>
-        {email.preview && (
-          <div style={{
-            fontSize: 12,
-            color: "var(--color-tertiary)",
-            lineHeight: 1.5,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-          }}>
-            {email.preview.slice(0, 100)}...
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // Hero Section
 function HeroSection() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [emails, setEmails] = useState<Email[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEmails = async () => {
-      try {
-        const base = process.env.NEXT_PUBLIC_API_BASE_URL;
-        if (!base) return;
-        const res = await fetch(`${base}/emails?limit=6`);
-        if (res.ok) {
-          const data = await res.json();
-          setEmails(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch emails:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEmails();
-  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -340,6 +147,8 @@ function HeroSection() {
     <section style={{
       minHeight: "calc(100vh - 68px)",
       background: "linear-gradient(180deg, var(--color-surface) 0%, #ffffff 60%)",
+      display: "flex",
+      alignItems: "center",
       padding: "80px 24px 64px",
     }}>
       <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%" }}>
@@ -395,73 +204,6 @@ function HeroSection() {
           <p style={{ fontSize: 13, color: "var(--color-tertiary)" }}>
             Free access · No signup required · Updated daily
           </p>
-        </div>
-
-        {/* Email Preview Cards — Horizontal Scroll */}
-        <div style={{
-          marginTop: 56,
-          opacity: 0,
-          animation: "fadeInUp 0.6s ease 0.2s forwards",
-        }}>
-          <div className="horizontal-scroll" style={{ padding: "8px 4px" }}>
-            {loading ? (
-              <>
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="scroll-card" style={{ width: 280, minWidth: 280 }}>
-                    <SkeletonCard />
-                  </div>
-                ))}
-              </>
-            ) : (
-              emails.map((email, idx) => (
-                <div key={email.id} className="scroll-card" style={{ width: 280, minWidth: 280 }}>
-                  <EmailPreviewCard
-                    email={email}
-                    delay={idx * 100}
-                  />
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Trusted By */}
-        <div style={{
-          marginTop: 64,
-          textAlign: "center",
-          opacity: 0,
-          animation: "fadeIn 0.6s ease 0.4s forwards",
-        }}>
-          <p style={{
-            fontSize: 12,
-            fontWeight: 500,
-            color: "var(--color-tertiary)",
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
-            marginBottom: 24,
-          }}>
-            Tracking emails from India&apos;s top brands
-          </p>
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 32,
-            flexWrap: "wrap",
-          }}>
-            {["Nykaa", "Myntra", "Zomato", "Swiggy", "Mamaearth", "Meesho"].map((brand) => (
-              <span
-                key={brand}
-                style={{
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: "var(--color-tertiary)",
-                  opacity: 0.7,
-                }}
-              >
-                {brand}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
     </section>
