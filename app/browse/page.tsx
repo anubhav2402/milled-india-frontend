@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Logo from "../components/Logo";
@@ -558,16 +558,27 @@ function BrowseContent() {
   const [allBrands, setAllBrands] = useState<string[]>([]);
   const [brandStats, setBrandStats] = useState<BrandStats>({});
   const [loading, setLoading] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState(queryFromUrl || "");
+  const [debouncedQuery, setDebouncedQuery] = useState(queryFromUrl || "");
   const [brandSearch, setBrandSearch] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE);
+  const isInitialLoad = useRef(true);
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>(brandFromUrl ? [brandFromUrl] : []);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>(industryFromUrl ? [industryFromUrl] : []);
   const [selectedDate, setSelectedDate] = useState("all");
+
+  // Debounce search query (400ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Fetch emails
   const fetchEmails = useCallback(async () => {
@@ -579,7 +590,7 @@ function BrowseContent() {
       params.set("limit", "500");
       if (selectedIndustries.length === 1) params.set("industry", selectedIndustries[0]);
       if (selectedBrands.length === 1) params.set("brand", selectedBrands[0]);
-      if (searchQuery) params.set("q", searchQuery);
+      if (debouncedQuery) params.set("q", debouncedQuery);
 
       const res = await fetch(`${base}/emails?${params.toString()}`);
       if (res.ok) {
@@ -590,7 +601,7 @@ function BrowseContent() {
     } catch (error) {
       console.error("Failed to fetch emails:", error);
     }
-  }, [selectedIndustries, selectedBrands, searchQuery]);
+  }, [selectedIndustries, selectedBrands, debouncedQuery]);
 
   // Fetch brands
   const fetchBrands = useCallback(async () => {
@@ -612,12 +623,20 @@ function BrowseContent() {
 
   // Initial load
   useEffect(() => {
-    const init = async () => {
-      setLoading(true);
-      await Promise.all([fetchEmails(), fetchBrands()]);
-      setLoading(false);
+    const load = async () => {
+      if (isInitialLoad.current) {
+        setLoading(true);
+        await Promise.all([fetchEmails(), fetchBrands()]);
+        setLoading(false);
+        isInitialLoad.current = false;
+      } else {
+        setSearching(true);
+        await fetchEmails();
+        setSearching(false);
+      }
+      setDisplayCount(ITEMS_PER_PAGE);
     };
-    init();
+    load();
   }, [fetchEmails, fetchBrands]);
 
   // Filter emails client-side
@@ -709,7 +728,7 @@ function BrowseContent() {
             gap: 12,
           }}>
             <p style={{ fontSize: 14, color: "var(--color-secondary)", margin: 0 }}>
-              {loading ? "Loading..." : `${filteredEmails.length} emails`}
+              {loading ? "Loading..." : searching ? "Searching..." : `${filteredEmails.length} emails`}
             </p>
 
             {/* Active Filters */}
