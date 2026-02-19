@@ -6,6 +6,9 @@ import Link from "next/link";
 import Logo from "../../components/Logo";
 import Badge from "../../components/Badge";
 import Button from "../../components/Button";
+import Header from "../../components/Header";
+import { useAuth } from "../../context/AuthContext";
+import { useBookmarks } from "../../hooks/useBookmarks";
 
 type Email = {
   id: number;
@@ -78,6 +81,8 @@ export default function EmailPage() {
   const [brandAnalytics, setBrandAnalytics] = useState<BrandAnalytics | null>(null);
   const [brandEmails, setBrandEmails] = useState<RelatedEmail[]>([]);
   const [similarEmails, setSimilarEmails] = useState<RelatedEmail[]>([]);
+  const { user } = useAuth();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
 
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
@@ -285,23 +290,44 @@ img[src=""] { display: none !important; }
                   }}>
                     {email.subject}
                   </h1>
-                  <button
-                    onClick={copySubject}
-                    title="Copy subject line"
-                    style={{
-                      flexShrink: 0, marginTop: 4,
-                      background: copied ? "#dcfce7" : "var(--color-surface)",
-                      border: `1px solid ${copied ? "#86efac" : "var(--color-border)"}`,
-                      borderRadius: 8, padding: "8px 12px",
-                      cursor: "pointer", display: "flex", alignItems: "center", gap: 6,
-                      fontSize: 12, fontWeight: 500,
-                      color: copied ? "#16a34a" : "var(--color-secondary)",
-                      transition: "all 150ms ease",
-                    }}
-                  >
-                    {copied ? <CheckIcon /> : <CopyIcon />}
-                    {copied ? "Copied!" : "Copy"}
-                  </button>
+                  <div style={{ display: "flex", gap: 8, flexShrink: 0, marginTop: 4 }}>
+                    <button
+                      onClick={copySubject}
+                      title="Copy subject line"
+                      style={{
+                        background: copied ? "#dcfce7" : "var(--color-surface)",
+                        border: `1px solid ${copied ? "#86efac" : "var(--color-border)"}`,
+                        borderRadius: 8, padding: "8px 12px",
+                        cursor: "pointer", display: "flex", alignItems: "center", gap: 6,
+                        fontSize: 12, fontWeight: 500,
+                        color: copied ? "#16a34a" : "var(--color-secondary)",
+                        transition: "all 150ms ease",
+                      }}
+                    >
+                      {copied ? <CheckIcon /> : <CopyIcon />}
+                      {copied ? "Copied!" : "Copy"}
+                    </button>
+                    {user && (
+                      <button
+                        onClick={() => toggleBookmark(Number(id))}
+                        title={isBookmarked(Number(id)) ? "Remove bookmark" : "Bookmark email"}
+                        style={{
+                          background: isBookmarked(Number(id)) ? "#fef2f2" : "var(--color-surface)",
+                          border: `1px solid ${isBookmarked(Number(id)) ? "#fecaca" : "var(--color-border)"}`,
+                          borderRadius: 8, padding: "8px 12px",
+                          cursor: "pointer", display: "flex", alignItems: "center", gap: 6,
+                          fontSize: 12, fontWeight: 500,
+                          color: isBookmarked(Number(id)) ? "#ef4444" : "var(--color-secondary)",
+                          transition: "all 150ms ease",
+                        }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill={isBookmarked(Number(id)) ? "#ef4444" : "none"} stroke="currentColor" strokeWidth="2">
+                          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                        </svg>
+                        {isBookmarked(Number(id)) ? "Saved" : "Save"}
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 {/* Subject Analysis Strip */}
@@ -594,35 +620,4 @@ function MiniEmailCard({ email }: { email: RelatedEmail }) {
 }
 
 // Header
-function Header() {
-  return (
-    <header style={{
-      position: "sticky", top: 0, zIndex: 100,
-      backgroundColor: "rgba(255, 255, 255, 0.9)",
-      backdropFilter: "blur(12px)",
-      WebkitBackdropFilter: "blur(12px)",
-      borderBottom: "1px solid var(--color-border)",
-    }}>
-      <div style={{
-        maxWidth: 1200, margin: "0 auto", padding: "14px 24px",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-      }}>
-        <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
-          <Logo size={32} />
-          <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 20, color: "var(--color-primary)" }}>
-            Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em>
-          </span>
-        </Link>
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          <Link
-            href="/browse"
-            style={{ color: "var(--color-secondary)", textDecoration: "none", fontSize: 14, fontWeight: 500 }}
-          >
-            ← Back
-          </Link>
-          <Button href="/browse" size="sm">Browse Emails</Button>
-        </div>
-      </div>
-    </header>
-  );
-}
+// Header is now imported from shared component

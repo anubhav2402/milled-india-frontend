@@ -152,9 +152,15 @@ function Header({ searchQuery, setSearchQuery, filterCount, onOpenFilters }: {
         </div>
 
         {/* Nav Links */}
-        <nav className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: 24 }}>
+        <nav className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <Link href="/brands" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
             Brands
+          </Link>
+          <Link href="/swipe-file" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
+            Swipe File
+          </Link>
+          <Link href="/benchmarks" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
+            Benchmarks
           </Link>
           <Link href="/analytics" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
             Analytics

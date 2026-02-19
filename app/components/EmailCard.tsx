@@ -13,6 +13,8 @@ type EmailCardProps = {
   sendFrequency?: string;
   campaignType?: string;
   showPreview?: boolean;
+  isBookmarked?: boolean;
+  onToggleBookmark?: (id: number) => void;
 };
 
 export default function EmailCard({
@@ -25,6 +27,8 @@ export default function EmailCard({
   sendFrequency,
   campaignType,
   showPreview = true,
+  isBookmarked,
+  onToggleBookmark,
 }: EmailCardProps) {
   const [html, setHtml] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -128,6 +132,26 @@ export default function EmailCard({
             <div style={{ position: "absolute", top: 12, left: 12, zIndex: 10 }}>
               <Badge variant="accent">{campaignType}</Badge>
             </div>
+          )}
+
+          {/* Bookmark Button */}
+          {onToggleBookmark && (
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleBookmark(id); }}
+              style={{
+                position: "absolute", top: 12, right: 12, zIndex: 10,
+                width: 32, height: 32, borderRadius: 8,
+                background: isBookmarked ? "rgba(239,68,68,0.1)" : "rgba(255,255,255,0.9)",
+                border: "none", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                backdropFilter: "blur(4px)", transition: "all 150ms ease",
+              }}
+              title={isBookmarked ? "Remove bookmark" : "Bookmark"}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill={isBookmarked ? "#ef4444" : "none"} stroke={isBookmarked ? "#ef4444" : "#64748b"} strokeWidth="2">
+                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+              </svg>
+            </button>
           )}
 
           {html ? (

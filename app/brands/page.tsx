@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Logo from "../components/Logo";
+import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 
 type BrandStats = {
@@ -156,141 +157,7 @@ export default function BrandsPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
-      {/* Header */}
-      <header
-        style={{
-          backgroundColor: "#fff",
-          borderBottom: "1px solid #e2e8f0",
-          padding: "16px 24px",
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1400,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 24,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-            <Link
-              href="/"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                textDecoration: "none",
-              }}
-            >
-              <Logo size={36} />
-              <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 20, color: "var(--color-primary)", letterSpacing: "-0.01em" }}>
-                Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em>
-              </span>
-            </Link>
-
-            <nav style={{ display: "flex", gap: 24, alignItems: "center" }}>
-              <Link
-                href="/browse"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "#64748b",
-                  textDecoration: "none",
-                }}
-              >
-                Browse Emails
-              </Link>
-              <Link
-                href="/brands"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#C2714A",
-                  textDecoration: "none",
-                }}
-              >
-                Browse Brands
-              </Link>
-              <Link
-                href="/analytics"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "#64748b",
-                  textDecoration: "none",
-                }}
-              >
-                Analytics
-              </Link>
-            </nav>
-          </div>
-
-          {/* Auth Section */}
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            {authLoading ? (
-              <div style={{ width: 80, height: 36 }} />
-            ) : user ? (
-              <>
-                <span style={{ fontSize: 14, color: "#64748b" }}>
-                  {user.name || user.email}
-                </span>
-                <button
-                  onClick={logout}
-                  style={{
-                    padding: "8px 16px",
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: "#64748b",
-                    backgroundColor: "#f1f5f9",
-                    border: "none",
-                    borderRadius: 8,
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  style={{
-                    padding: "10px 20px",
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: "#64748b",
-                    textDecoration: "none",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/signup"
-                  style={{
-                    padding: "10px 20px",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#fff",
-                    backgroundColor: "#C2714A",
-                    textDecoration: "none",
-                    borderRadius: 8,
-                    transition: "all 0.2s",
-                  }}
-                >
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header activeRoute="/brands" />
 
       {/* Main Content */}
       <main style={{ maxWidth: 1400, margin: "0 auto", padding: "32px 24px" }}>

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Logo from "../components/Logo";
+import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 
 type OverviewData = {
@@ -109,81 +110,7 @@ export default function AnalyticsPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
-      {/* Header */}
-      <header
-        style={{
-          backgroundColor: "#fff",
-          borderBottom: "1px solid #e2e8f0",
-          padding: "16px 24px",
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-        }}
-      >
-        <div
-          style={{
-            maxWidth: 1400,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-              <Logo size={36} />
-              <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 20, color: "var(--color-primary)", letterSpacing: "-0.01em" }}>Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em></span>
-            </Link>
-            <nav style={{ display: "flex", gap: 24 }}>
-              <Link href="/browse" style={{ fontSize: 14, fontWeight: 500, color: "#64748b", textDecoration: "none" }}>
-                Browse Emails
-              </Link>
-              <Link href="/brands" style={{ fontSize: 14, fontWeight: 500, color: "#64748b", textDecoration: "none" }}>
-                Brands
-              </Link>
-              <Link href="/analytics" style={{ fontSize: 14, fontWeight: 600, color: "#C2714A", textDecoration: "none" }}>
-                Analytics
-              </Link>
-            </nav>
-          </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            {authLoading ? null : user ? (
-              <>
-                <span style={{ fontSize: 14, color: "#64748b" }}>{user.name || user.email}</span>
-                <button
-                  onClick={logout}
-                  style={{
-                    padding: "8px 16px",
-                    fontSize: 14,
-                    color: "#64748b",
-                    backgroundColor: "#f1f5f9",
-                    border: "none",
-                    borderRadius: 8,
-                    cursor: "pointer",
-                  }}
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link
-                href="/login"
-                style={{
-                  padding: "10px 20px",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#fff",
-                  backgroundColor: "#C2714A",
-                  textDecoration: "none",
-                  borderRadius: 8,
-                }}
-              >
-                Login
-              </Link>
-            )}
-          </div>
-        </div>
-      </header>
+      <Header activeRoute="/analytics" />
 
       <main style={{ maxWidth: 1400, margin: "0 auto", padding: "32px 24px" }}>
         {/* Page Header */}
