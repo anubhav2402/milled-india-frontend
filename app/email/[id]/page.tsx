@@ -32,11 +32,13 @@ type RelatedEmail = {
 };
 
 type BrandAnalytics = {
-  total_emails: number;
+  brand: string;
+  total_emails: number | string;
   primary_industry: string;
-  emails_per_week: number;
-  campaign_type_breakdown: Record<string, number>;
-  date_range: { first_email: string; last_email: string };
+  emails_per_week: number | string;
+  campaign_breakdown: Record<string, number | string>;
+  first_email: string;
+  last_email: string;
 };
 
 // Subject line analysis (computed client-side)
@@ -403,7 +405,9 @@ img[src=""] { display: none !important; }
                       </div>
                       <div>
                         <div style={{ fontSize: 22, fontWeight: 700, color: "var(--color-primary)" }}>
-                          {brandAnalytics.emails_per_week.toFixed(1)}
+                          {typeof brandAnalytics.emails_per_week === "number"
+                            ? brandAnalytics.emails_per_week.toFixed(1)
+                            : brandAnalytics.emails_per_week}
                         </div>
                         <div style={{ fontSize: 11, color: "var(--color-tertiary)", fontWeight: 500 }}>
                           Per Week
@@ -412,17 +416,18 @@ img[src=""] { display: none !important; }
                     </div>
 
                     {/* Campaign type breakdown */}
-                    {Object.keys(brandAnalytics.campaign_type_breakdown).length > 0 && (
+                    {Object.keys(brandAnalytics.campaign_breakdown).length > 0 && (
                       <div style={{ marginBottom: 20 }}>
                         <div style={{ fontSize: 12, fontWeight: 600, color: "var(--color-primary)", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.05em" }}>
                           Campaign Types
                         </div>
-                        {Object.entries(brandAnalytics.campaign_type_breakdown)
-                          .sort(([, a], [, b]) => b - a)
+                        {Object.entries(brandAnalytics.campaign_breakdown)
+                          .sort(([, a], [, b]) => Number(b) - Number(a))
                           .slice(0, 5)
                           .map(([type, count]) => {
-                            const total = Object.values(brandAnalytics.campaign_type_breakdown).reduce((a, b) => a + b, 0);
-                            const pct = Math.round((count / total) * 100);
+                            const numCount = Number(count);
+                            const total = Object.values(brandAnalytics.campaign_breakdown).reduce((a, b) => Number(a) + Number(b), 0) as number;
+                            const pct = total > 0 ? Math.round((numCount / total) * 100) : 0;
                             return (
                               <div key={type} style={{ marginBottom: 8 }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 4 }}>
