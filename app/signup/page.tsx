@@ -116,7 +116,7 @@ export default function SignupPage() {
   if (isLoading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f8fafc" }}>
-        <div style={{ width: 40, height: 40, border: "3px solid #e2e8f0", borderTopColor: "#14b8a6", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+        <div style={{ width: 40, height: 40, border: "3px solid #e2e8f0", borderTopColor: "#C2714A", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
@@ -129,7 +129,7 @@ export default function SignupPage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
             <Logo size={36} />
-            <span style={{ fontSize: 22, fontWeight: 700, color: "#0f172a" }}>MailMuse</span>
+            <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 22, color: "var(--color-primary)" }}>Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em></span>
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <span style={{ fontSize: 14, color: "#64748b" }}>Already have an account?</span>
@@ -139,8 +139,8 @@ export default function SignupPage() {
                 padding: "10px 20px",
                 fontSize: 14,
                 fontWeight: 600,
-                color: "#14b8a6",
-                border: "1px solid #14b8a6",
+                color: "#C2714A",
+                border: "1px solid #C2714A",
                 textDecoration: "none",
                 borderRadius: 8,
               }}
@@ -160,8 +160,8 @@ export default function SignupPage() {
             <span style={{
               display: "inline-block",
               padding: "6px 12px",
-              backgroundColor: "#f0fdfa",
-              color: "#14b8a6",
+              backgroundColor: "#F5E6DC",
+              color: "#C2714A",
               fontSize: 13,
               fontWeight: 600,
               borderRadius: 20,
@@ -200,7 +200,7 @@ export default function SignupPage() {
                 <div style={{
                   width: 48,
                   height: 48,
-                  backgroundColor: "#f0fdfa",
+                  backgroundColor: "#F5E6DC",
                   borderRadius: 12,
                   display: "flex",
                   alignItems: "center",
@@ -231,17 +231,17 @@ export default function SignupPage() {
           }}>
             <div style={{ display: "flex", gap: 32, alignItems: "center", flexWrap: "wrap" }}>
               <div>
-                <div style={{ fontSize: 28, fontWeight: 700, color: "#14b8a6" }}>3,000+</div>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "#C2714A" }}>3,000+</div>
                 <div style={{ fontSize: 13, color: "#64748b" }}>Emails Tracked</div>
               </div>
               <div style={{ width: 1, height: 40, backgroundColor: "#e2e8f0" }} />
               <div>
-                <div style={{ fontSize: 28, fontWeight: 700, color: "#14b8a6" }}>200+</div>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "#C2714A" }}>200+</div>
                 <div style={{ fontSize: 13, color: "#64748b" }}>Brands Monitored</div>
               </div>
               <div style={{ width: 1, height: 40, backgroundColor: "#e2e8f0" }} />
               <div>
-                <div style={{ fontSize: 28, fontWeight: 700, color: "#14b8a6" }}>Daily</div>
+                <div style={{ fontSize: 28, fontWeight: 700, color: "#C2714A" }}>Daily</div>
                 <div style={{ fontSize: 13, color: "#64748b" }}>Updates</div>
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function SignupPage() {
                   transition: "border-color 0.2s",
                   backgroundColor: "#fff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
+                onFocus={(e) => (e.target.style.borderColor = "#C2714A")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                 placeholder="John Doe"
               />
@@ -335,7 +335,7 @@ export default function SignupPage() {
                   transition: "border-color 0.2s",
                   backgroundColor: "#fff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
+                onFocus={(e) => (e.target.style.borderColor = "#C2714A")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                 placeholder="you@company.com"
               />
@@ -362,7 +362,7 @@ export default function SignupPage() {
                   transition: "border-color 0.2s",
                   backgroundColor: "#fff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
+                onFocus={(e) => (e.target.style.borderColor = "#C2714A")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                 placeholder="Min. 6 characters"
               />
@@ -374,7 +374,7 @@ export default function SignupPage() {
               style={{
                 width: "100%",
                 padding: "16px",
-                backgroundColor: submitting ? "#94a3b8" : "#14b8a6",
+                backgroundColor: submitting ? "#94a3b8" : "#C2714A",
                 color: "#fff",
                 fontSize: 16,
                 fontWeight: 600,
@@ -384,8 +384,8 @@ export default function SignupPage() {
                 transition: "all 0.2s",
                 marginBottom: 16,
               }}
-              onMouseEnter={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#0d9488")}
-              onMouseLeave={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#14b8a6")}
+              onMouseEnter={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#A85E3A")}
+              onMouseLeave={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#C2714A")}
             >
               {submitting ? "Creating account..." : "Create Free Account"}
             </button>
@@ -393,19 +393,19 @@ export default function SignupPage() {
             {/* Trust Signals */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, flexWrap: "wrap" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b" }}>
-                <svg width="14" height="14" fill="#14b8a6" viewBox="0 0 24 24">
+                <svg width="14" height="14" fill="#C2714A" viewBox="0 0 24 24">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                 </svg>
                 Free forever
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b" }}>
-                <svg width="14" height="14" fill="#14b8a6" viewBox="0 0 24 24">
+                <svg width="14" height="14" fill="#C2714A" viewBox="0 0 24 24">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                 </svg>
                 No credit card
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#64748b" }}>
-                <svg width="14" height="14" fill="#14b8a6" viewBox="0 0 24 24">
+                <svg width="14" height="14" fill="#C2714A" viewBox="0 0 24 24">
                   <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
                 </svg>
                 Instant access

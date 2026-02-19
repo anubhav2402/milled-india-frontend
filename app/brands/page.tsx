@@ -188,15 +188,8 @@ export default function BrandsPage() {
               }}
             >
               <Logo size={36} />
-              <span
-                style={{
-                  fontWeight: 700,
-                  fontSize: 20,
-                  color: "#0f172a",
-                  letterSpacing: "-0.02em",
-                }}
-              >
-                MailMuse
+              <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 20, color: "var(--color-primary)", letterSpacing: "-0.01em" }}>
+                Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em>
               </span>
             </Link>
 
@@ -217,7 +210,7 @@ export default function BrandsPage() {
                 style={{
                   fontSize: 14,
                   fontWeight: 600,
-                  color: "#14b8a6",
+                  color: "#C2714A",
                   textDecoration: "none",
                 }}
               >
@@ -285,7 +278,7 @@ export default function BrandsPage() {
                     fontSize: 14,
                     fontWeight: 600,
                     color: "#fff",
-                    backgroundColor: "#14b8a6",
+                    backgroundColor: "#C2714A",
                     textDecoration: "none",
                     borderRadius: 8,
                     transition: "all 0.2s",
@@ -322,8 +315,8 @@ export default function BrandsPage() {
         {!isAuthenticated && !authLoading && (
           <div
             style={{
-              backgroundColor: "#f0fdfa",
-              border: "1px solid #14b8a6",
+              backgroundColor: "#F5E6DC",
+              border: "1px solid #C2714A",
               borderRadius: 12,
               padding: "16px 20px",
               marginBottom: 24,
@@ -349,7 +342,7 @@ export default function BrandsPage() {
                 fontSize: 14,
                 fontWeight: 600,
                 color: "#fff",
-                backgroundColor: "#14b8a6",
+                backgroundColor: "#C2714A",
                 textDecoration: "none",
                 borderRadius: 8,
               }}
@@ -438,10 +431,10 @@ export default function BrandsPage() {
             <div
               style={{
                 padding: "8px 14px",
-                backgroundColor: "#f0fdfa",
+                backgroundColor: "#F5E6DC",
                 borderRadius: 8,
                 fontSize: 13,
-                color: "#14b8a6",
+                color: "#C2714A",
                 fontWeight: 500,
               }}
             >
@@ -465,7 +458,7 @@ export default function BrandsPage() {
                 width: 40,
                 height: 40,
                 border: "3px solid #e2e8f0",
-                borderTopColor: "#14b8a6",
+                borderTopColor: "#C2714A",
                 borderRadius: "50%",
                 animation: "spin 1s linear infinite",
               }}
@@ -535,8 +528,8 @@ function BrandCard({
 
   // Generate a consistent color based on brand name
   const colors = [
-    "#14b8a6", "#6366f1", "#f59e0b", "#ec4899", "#8b5cf6",
-    "#10b981", "#3b82f6", "#ef4444", "#84cc16", "#06b6d4",
+    "#C2714A", "#6366f1", "#f59e0b", "#ec4899", "#8b5cf6",
+    "#059669", "#3b82f6", "#ef4444", "#84cc16", "#0ea5e9",
   ];
   const colorIndex = brand.name.charCodeAt(0) % colors.length;
   const brandColor = colors[colorIndex];
@@ -671,7 +664,7 @@ function BrandCard({
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            backgroundColor: isFollowed ? "#f1f5f9" : isAuthenticated ? "#14b8a6" : "#e2e8f0",
+            backgroundColor: isFollowed ? "#f1f5f9" : isAuthenticated ? "#C2714A" : "#e2e8f0",
             color: isFollowed ? "#64748b" : isAuthenticated ? "#fff" : "#64748b",
           }}
         >

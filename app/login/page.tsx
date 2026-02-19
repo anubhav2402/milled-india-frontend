@@ -109,7 +109,7 @@ export default function LoginPage() {
   if (isLoading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", backgroundColor: "#f8fafc" }}>
-        <div style={{ width: 40, height: 40, border: "3px solid #e2e8f0", borderTopColor: "#14b8a6", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
+        <div style={{ width: 40, height: 40, border: "3px solid #e2e8f0", borderTopColor: "#C2714A", borderRadius: "50%", animation: "spin 1s linear infinite" }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
@@ -122,7 +122,7 @@ export default function LoginPage() {
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
             <Logo size={36} />
-            <span style={{ fontSize: 22, fontWeight: 700, color: "#0f172a" }}>MailMuse</span>
+            <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 22, color: "var(--color-primary)" }}>Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em></span>
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <span style={{ fontSize: 14, color: "#64748b" }}>Don't have an account?</span>
@@ -133,7 +133,7 @@ export default function LoginPage() {
                 fontSize: 14,
                 fontWeight: 600,
                 color: "#fff",
-                backgroundColor: "#14b8a6",
+                backgroundColor: "#C2714A",
                 textDecoration: "none",
                 borderRadius: 8,
               }}
@@ -209,7 +209,7 @@ export default function LoginPage() {
                   transition: "border-color 0.2s",
                   backgroundColor: "#fff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
+                onFocus={(e) => (e.target.style.borderColor = "#C2714A")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                 placeholder="you@company.com"
               />
@@ -235,7 +235,7 @@ export default function LoginPage() {
                   transition: "border-color 0.2s",
                   backgroundColor: "#fff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#14b8a6")}
+                onFocus={(e) => (e.target.style.borderColor = "#C2714A")}
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                 placeholder="Enter your password"
               />
@@ -247,7 +247,7 @@ export default function LoginPage() {
               style={{
                 width: "100%",
                 padding: "16px",
-                backgroundColor: submitting ? "#94a3b8" : "#14b8a6",
+                backgroundColor: submitting ? "#94a3b8" : "#C2714A",
                 color: "#fff",
                 fontSize: 16,
                 fontWeight: 600,
@@ -256,8 +256,8 @@ export default function LoginPage() {
                 cursor: submitting ? "not-allowed" : "pointer",
                 transition: "all 0.2s",
               }}
-              onMouseEnter={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#0d9488")}
-              onMouseLeave={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#14b8a6")}
+              onMouseEnter={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#A85E3A")}
+              onMouseLeave={(e) => !submitting && (e.currentTarget.style.backgroundColor = "#C2714A")}
             >
               {submitting ? "Signing in..." : "Sign In"}
             </button>
@@ -273,7 +273,7 @@ export default function LoginPage() {
           }}>
             <p style={{ margin: 0, fontSize: 14, color: "#64748b" }}>
               New to MailMuse?{" "}
-              <Link href="/signup" style={{ color: "#14b8a6", fontWeight: 600, textDecoration: "none" }}>
+              <Link href="/signup" style={{ color: "#C2714A", fontWeight: 600, textDecoration: "none" }}>
                 Create a free account
               </Link>
             </p>

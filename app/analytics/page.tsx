@@ -132,7 +132,7 @@ export default function AnalyticsPage() {
           <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
             <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
               <Logo size={36} />
-              <span style={{ fontWeight: 700, fontSize: 20, color: "#0f172a" }}>MailMuse</span>
+              <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 20, color: "var(--color-primary)", letterSpacing: "-0.01em" }}>Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em></span>
             </Link>
             <nav style={{ display: "flex", gap: 24 }}>
               <Link href="/browse" style={{ fontSize: 14, fontWeight: 500, color: "#64748b", textDecoration: "none" }}>
@@ -141,7 +141,7 @@ export default function AnalyticsPage() {
               <Link href="/brands" style={{ fontSize: 14, fontWeight: 500, color: "#64748b", textDecoration: "none" }}>
                 Brands
               </Link>
-              <Link href="/analytics" style={{ fontSize: 14, fontWeight: 600, color: "#14b8a6", textDecoration: "none" }}>
+              <Link href="/analytics" style={{ fontSize: 14, fontWeight: 600, color: "#C2714A", textDecoration: "none" }}>
                 Analytics
               </Link>
             </nav>
@@ -173,7 +173,7 @@ export default function AnalyticsPage() {
                   fontSize: 14,
                   fontWeight: 600,
                   color: "#fff",
-                  backgroundColor: "#14b8a6",
+                  backgroundColor: "#C2714A",
                   textDecoration: "none",
                   borderRadius: 8,
                 }}
@@ -244,7 +244,7 @@ export default function AnalyticsPage() {
                 width: 40,
                 height: 40,
                 border: "3px solid #e2e8f0",
-                borderTopColor: "#14b8a6",
+                borderTopColor: "#C2714A",
                 borderRadius: "50%",
                 animation: "spin 1s linear infinite",
               }}
@@ -300,11 +300,11 @@ export default function AnalyticsPage() {
                           <div
                             style={{
                               padding: "4px 12px",
-                              backgroundColor: "#f0fdfa",
+                              backgroundColor: "#F5E6DC",
                               borderRadius: 20,
                               fontSize: 13,
                               fontWeight: 600,
-                              color: "#14b8a6",
+                              color: "#C2714A",
                             }}
                           >
                             {count}
@@ -438,7 +438,7 @@ export default function AnalyticsPage() {
                       width: 32,
                       height: 32,
                       border: "3px solid #e2e8f0",
-                      borderTopColor: "#14b8a6",
+                      borderTopColor: "#C2714A",
                       borderRadius: "50%",
                       animation: "spin 1s linear infinite",
                       margin: "0 auto",
@@ -482,10 +482,10 @@ export default function AnalyticsPage() {
                               key={type}
                               style={{
                                 padding: "6px 14px",
-                                backgroundColor: "#f0fdfa",
+                                backgroundColor: "#F5E6DC",
                                 borderRadius: 20,
                                 fontSize: 13,
-                                color: "#0f766e",
+                                color: "#A85E3A",
                               }}
                             >
                               {type}: {count}
@@ -590,7 +590,7 @@ function StatCard({ title, value, icon }: { title: string; value: number | strin
         style={{
           width: 48,
           height: 48,
-          backgroundColor: "#f0fdfa",
+          backgroundColor: "#F5E6DC",
           borderRadius: 12,
           display: "flex",
           alignItems: "center",
@@ -740,7 +740,7 @@ function BrandComparison({
               fontSize: 14,
               fontWeight: 600,
               color: "#fff",
-              backgroundColor: "#14b8a6",
+              backgroundColor: "#C2714A",
               border: "none",
               borderRadius: 8,
               cursor: loading ? "not-allowed" : "pointer",
@@ -763,10 +763,10 @@ function BrandComparison({
                 alignItems: "center",
                 gap: 8,
                 padding: "6px 12px",
-                backgroundColor: "#f0fdfa",
+                backgroundColor: "#F5E6DC",
                 borderRadius: 20,
                 fontSize: 13,
-                color: "#0f766e",
+                color: "#A85E3A",
               }}
             >
               {brand}
@@ -775,7 +775,7 @@ function BrandComparison({
                 style={{
                   background: "none",
                   border: "none",
-                  color: "#0f766e",
+                  color: "#A85E3A",
                   cursor: "pointer",
                   padding: 0,
                   fontSize: 16,
