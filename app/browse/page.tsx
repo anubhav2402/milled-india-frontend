@@ -552,13 +552,14 @@ function BrowseContent() {
   const searchParams = useSearchParams();
   const brandFromUrl = searchParams.get("brand");
   const industryFromUrl = searchParams.get("industry");
+  const queryFromUrl = searchParams.get("q");
 
   const [emails, setEmails] = useState<Email[]>([]);
   const [allBrands, setAllBrands] = useState<string[]>([]);
   const [brandStats, setBrandStats] = useState<BrandStats>({});
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(queryFromUrl || "");
   const [brandSearch, setBrandSearch] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
