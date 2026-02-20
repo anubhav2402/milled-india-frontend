@@ -161,7 +161,7 @@ function HeroSection() {
           animation: "fadeInUp 0.6s ease forwards",
         }}>
           <Badge variant="accent" style={{ marginBottom: 24 }}>
-            3,000+ emails tracked
+            7,000+ emails · 150+ brands · 13 industries
           </Badge>
           <h1 style={{
             fontFamily: "var(--font-dm-serif)",
@@ -172,16 +172,16 @@ function HeroSection() {
             letterSpacing: "-0.02em",
             marginBottom: 20,
           }}>
-            Discover what the world&apos;s best brands are sending
+            The largest collection of D2C brand emails
           </h1>
           <p style={{
             fontSize: "clamp(16px, 2vw, 19px)",
             color: "var(--color-secondary)",
             lineHeight: 1.6,
-            maxWidth: 520,
+            maxWidth: 560,
             margin: "0 auto 36px",
           }}>
-            Competitive intelligence for marketing teams. See what brands are sending, when, and why.
+            Track 7,000+ real emails from 150+ brands across 13 industries. See exactly what top D2C brands send, when they send it, and what works.
           </p>
 
           {/* Search */}
@@ -202,8 +202,130 @@ function HeroSection() {
           </form>
 
           <p style={{ fontSize: 13, color: "var(--color-tertiary)" }}>
-            Free access · No signup required · Updated daily
+            Free to use · No credit card · New emails added every day
           </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Stats Section — Social Proof
+function StatsSection() {
+  const stats = [
+    { value: "7,000+", label: "Emails Tracked" },
+    { value: "150+", label: "Brands Monitored" },
+    { value: "13", label: "Industries Covered" },
+    { value: "Daily", label: "Updates" },
+  ];
+
+  return (
+    <section style={{
+      padding: "64px 24px",
+      background: "white",
+      borderBottom: "1px solid var(--color-border)",
+    }}>
+      <div className="stats-grid" style={{
+        maxWidth: 900,
+        margin: "0 auto",
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 1fr)",
+        gap: 32,
+        textAlign: "center",
+      }}>
+        {stats.map((stat, idx) => (
+          <div
+            key={idx}
+            style={{
+              opacity: 0,
+              animation: `fadeInUp 0.5s ease forwards`,
+              animationDelay: `${idx * 0.1}s`,
+            }}
+          >
+            <div style={{
+              fontFamily: "var(--font-dm-serif)",
+              fontSize: "clamp(32px, 4vw, 44px)",
+              fontWeight: 400,
+              color: "var(--color-accent)",
+              lineHeight: 1.1,
+              marginBottom: 8,
+            }}>
+              {stat.value}
+            </div>
+            <div style={{
+              fontSize: 14,
+              fontWeight: 500,
+              color: "var(--color-secondary)",
+              letterSpacing: "0.02em",
+              textTransform: "uppercase",
+            }}>
+              {stat.label}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// Brand Logos Section — Social Proof
+function BrandLogosSection() {
+  const brands = [
+    "Gucci", "Net-A-Porter", "Anthropologie", "Nykaa", "Balenciaga",
+    "Bobbi Brown", "Mango", "Reformation", "Calvin Klein", "Fossil",
+    "Allbirds", "Pottery Barn", "Urban Decay", "Zomato", "Givenchy",
+    "Luisaviaroma", "Innisfree", "Nicobar", "Mytheresa", "Ganni",
+  ];
+
+  return (
+    <section style={{
+      padding: "64px 24px",
+      background: "var(--color-surface)",
+    }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <p style={{
+          textAlign: "center",
+          fontSize: 14,
+          fontWeight: 500,
+          color: "var(--color-secondary)",
+          letterSpacing: "0.04em",
+          textTransform: "uppercase",
+          marginBottom: 32,
+        }}>
+          Tracking emails from the world&apos;s top brands
+        </p>
+        <div style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: 12,
+        }}>
+          {brands.map((brand) => (
+            <span
+              key={brand}
+              style={{
+                padding: "10px 20px",
+                borderRadius: 100,
+                border: "1px solid var(--color-border)",
+                background: "white",
+                fontSize: 14,
+                fontWeight: 500,
+                color: "var(--color-secondary)",
+                whiteSpace: "nowrap",
+                transition: "all 150ms ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--color-accent)";
+                e.currentTarget.style.color = "var(--color-accent)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--color-border)";
+                e.currentTarget.style.color = "var(--color-secondary)";
+              }}
+            >
+              {brand}
+            </span>
+          ))}
         </div>
       </div>
     </section>
@@ -413,7 +535,7 @@ function CTASection() {
           marginBottom: 32,
           lineHeight: 1.6,
         }}>
-          Free access to thousands of real emails from India's top brands.
+          Free access to thousands of real emails from the world&apos;s top D2C brands.
         </p>
         <Button href="/browse" size="lg" variant="secondary">
           Start Exploring →
@@ -460,6 +582,8 @@ export default function Home() {
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header />
       <HeroSection />
+      <StatsSection />
+      <BrandLogosSection />
       <FeaturesSection />
       <WhoIsThisForSection />
       <CTASection />

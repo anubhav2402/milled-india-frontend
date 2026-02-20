@@ -441,6 +441,11 @@ body {
     display: none !important;
   }
 
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px !important;
+  }
+
   .show-mobile {
     display: block !important;
   }
