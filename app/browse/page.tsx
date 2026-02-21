@@ -792,6 +792,30 @@ function BrowseContent() {
             )}
           </div>
 
+          {/* 30-day archive banner for free users */}
+          {!user?.is_pro && (
+            <div style={{
+              background: "linear-gradient(135deg, #fff7f5, #fef3ee)",
+              border: "1px solid #f5d0c5",
+              borderRadius: 12,
+              padding: "14px 20px",
+              marginBottom: 16,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 12,
+            }}>
+              <span style={{ fontSize: 13, color: "var(--color-secondary)" }}>
+                Showing emails from the last 30 days.{" "}
+                <Link href="/pricing" style={{ color: "var(--color-accent)", fontWeight: 600, textDecoration: "none" }}>
+                  Upgrade to Pro
+                </Link>{" "}
+                for full archive access.
+              </span>
+            </div>
+          )}
+
           {/* Email Grid */}
           {loading ? (
             <LoadingGrid />
