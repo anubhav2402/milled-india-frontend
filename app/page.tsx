@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Logo from "./components/Logo";
+import Header from "./components/Header";
 import Button from "./components/Button";
 import Badge from "./components/Badge";
 import Card from "./components/Card";
@@ -18,120 +19,6 @@ const SearchIcon = () => (
   </svg>
 );
 
-// Header Component
-function Header() {
-  const { user, logout, isLoading } = useAuth();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return (
-    <header
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        background: scrolled ? "rgba(255, 255, 255, 0.8)" : "transparent",
-        backdropFilter: scrolled ? "blur(12px)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
-        borderBottom: scrolled ? "1px solid var(--color-border)" : "1px solid transparent",
-        transition: "all 200ms ease",
-      }}
-    >
-      <div style={{
-        maxWidth: 1200,
-        margin: "0 auto",
-        padding: "16px 24px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}>
-        {/* Logo */}
-        <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8 }}>
-          <Logo size={36} />
-          <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 22, color: "var(--color-primary)", letterSpacing: "-0.01em" }}>
-            Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em>
-          </span>
-        </Link>
-
-        {/* Nav Links */}
-        <nav className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: 32 }}>
-          <Link
-            href="/brands"
-            style={{
-              fontSize: 14,
-              fontWeight: 500,
-              color: "var(--color-secondary)",
-              textDecoration: "none",
-              transition: "color 150ms ease",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-secondary)")}
-          >
-            Brands
-          </Link>
-          <Link
-            href="/browse"
-            style={{
-              fontSize: 14,
-              fontWeight: 500,
-              color: "var(--color-secondary)",
-              textDecoration: "none",
-              transition: "color 150ms ease",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-secondary)")}
-          >
-            Browse
-          </Link>
-          <Link
-            href="/analytics"
-            style={{
-              fontSize: 14,
-              fontWeight: 500,
-              color: "var(--color-secondary)",
-              textDecoration: "none",
-              transition: "color 150ms ease",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-secondary)")}
-          >
-            Analytics
-          </Link>
-        </nav>
-
-        {/* Auth */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          {isLoading ? (
-            <div style={{ width: 80, height: 36 }} />
-          ) : user ? (
-            <>
-              <span className="hide-mobile" style={{ fontSize: 14, color: "var(--color-secondary)" }}>
-                {user.name || user.email}
-              </span>
-              <Button variant="ghost" size="sm" onClick={logout}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="hide-mobile" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
-                Sign In
-              </Link>
-              <Button href="/signup" size="sm">
-                Get Started
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
-    </header>
-  );
-}
 
 // Hero Section
 function HeroSection() {
@@ -583,7 +470,7 @@ function Footer() {
 export default function Home() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
-      <Header />
+      <Header transparent />
       <HeroSection />
       <StatsSection />
       <BrandLogosSection />

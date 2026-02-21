@@ -413,7 +413,7 @@ img[src=""] { display: none !important; }
                 </div>
 
                 {/* Stats */}
-                {brandAnalytics && (
+                {brandAnalytics && brandAnalytics.total_emails !== "xx" ? (
                   <>
                     <div style={{
                       display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12,
@@ -474,6 +474,31 @@ img[src=""] { display: none !important; }
                       </div>
                     )}
                   </>
+                ) : brandAnalytics && (
+                  <div style={{
+                    padding: "16px 0",
+                    borderTop: "1px solid var(--color-border)",
+                    textAlign: "center",
+                  }}>
+                    <p style={{ fontSize: 13, color: "var(--color-secondary)", margin: "0 0 12px" }}>
+                      Sign up free to see brand analytics
+                    </p>
+                    <Link
+                      href="/signup"
+                      style={{
+                        display: "inline-block",
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "white",
+                        background: "var(--color-accent)",
+                        textDecoration: "none",
+                        padding: "8px 20px",
+                        borderRadius: 8,
+                      }}
+                    >
+                      Sign up free
+                    </Link>
+                  </div>
                 )}
 
                 {/* View all from brand */}

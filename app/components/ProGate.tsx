@@ -71,7 +71,7 @@ export default function ProGate({
               height: 48,
               borderRadius: 12,
               background: isLoggedIn
-                ? "linear-gradient(135deg, #f0e6ff, #e0d0ff)"
+                ? "linear-gradient(135deg, var(--color-accent-light), #f0ddd0)"
                 : "var(--color-accent-light)",
               display: "flex",
               alignItems: "center",
@@ -86,7 +86,7 @@ export default function ProGate({
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#7c3aed"
+                stroke="var(--color-accent)"
                 strokeWidth="2"
               >
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -139,7 +139,7 @@ export default function ProGate({
                   fontSize: 14,
                   fontWeight: 500,
                   color: "white",
-                  background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                  background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
                   textDecoration: "none",
                   padding: "10px 24px",
                   borderRadius: 10,

@@ -11,13 +11,13 @@ const API_BASE =
 
 const features = [
   { name: "Browse emails", free: "Last 30 days", pro: "Full archive" },
-  { name: "Brand pages", free: "5 per day", pro: "Unlimited" },
-  { name: "Email HTML view", free: "10 per day", pro: "Unlimited" },
   { name: "Analytics & benchmarks", free: false, pro: true },
   { name: "Subject line database", free: false, pro: true },
-  { name: "Campaign calendar", free: false, pro: true },
+  { name: "Brand pages", free: "5 per day", pro: "Unlimited" },
+  { name: "Email HTML view", free: "10 per day", pro: "Unlimited" },
   { name: "Follow brands", free: "Up to 3", pro: "Unlimited" },
   { name: "Bookmarks", free: "Up to 10", pro: "Unlimited" },
+  { name: "Campaign calendar", free: false, pro: true },
   { name: "Export data", free: false, pro: true },
 ];
 
@@ -35,6 +35,14 @@ const faqs = [
     a: "The Free plan lets you explore MailMuse with limited access. Upgrade when you're ready for full analytics.",
   },
   {
+    q: "How many brands do you track?",
+    a: "We track 300+ Indian D2C brands and growing. New brands are added every week based on user requests.",
+  },
+  {
+    q: "How often is data updated?",
+    a: "Daily — we capture every email as it's sent, so you always see the latest campaigns.",
+  },
+  {
     q: "Can I get a refund?",
     a: "We offer a 7-day money-back guarantee. If you're not satisfied, contact us for a full refund.",
   },
@@ -45,19 +53,31 @@ export default function PricingPage() {
   const router = useRouter();
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const monthlyPrice = 2499;
   const annualPrice = 19188;
   const annualMonthly = Math.round(annualPrice / 12);
+  const dailyCost = Math.round(annualPrice / 365);
 
   const handleSubscribe = async () => {
+    setError(null);
+
     if (!user) {
       router.push("/signup?redirect=/pricing");
       return;
     }
 
     if (user.is_pro) return;
+
+    const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    if (!razorpayKey) {
+      setError(
+        "Payment system is being set up. Please try again in a few minutes, or contact support."
+      );
+      return;
+    }
 
     setLoading(true);
     try {
@@ -71,11 +91,16 @@ export default function PricingPage() {
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || "Failed to create subscription");
+      if (!res.ok) {
+        setError(
+          data.detail || "Could not create subscription. Please try again."
+        );
+        return;
+      }
 
       // Open Razorpay checkout
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: razorpayKey,
         subscription_id: data.subscription_id,
         name: "MailMuse",
         description: `Pro ${billing === "monthly" ? "Monthly" : "Annual"} Plan`,
@@ -84,7 +109,6 @@ export default function PricingPage() {
           razorpay_subscription_id: string;
           razorpay_signature: string;
         }) => {
-          // Verify payment
           const verifyRes = await fetch(`${API_BASE}/subscription/verify`, {
             method: "POST",
             headers: {
@@ -95,10 +119,11 @@ export default function PricingPage() {
           });
 
           if (verifyRes.ok) {
-            // Refresh user data
             window.location.href = "/account?upgraded=true";
           } else {
-            alert("Payment verification failed. Please contact support.");
+            setError(
+              "Payment was received but verification failed. Please contact support — your payment is safe."
+            );
           }
         },
         prefill: {
@@ -106,7 +131,7 @@ export default function PricingPage() {
           name: user.name || "",
         },
         theme: {
-          color: "#7c3aed",
+          color: "#C2714A",
         },
       };
 
@@ -115,7 +140,9 @@ export default function PricingPage() {
       rzp.open();
     } catch (err) {
       console.error("Subscribe error:", err);
-      alert("Something went wrong. Please try again.");
+      setError(
+        "Could not connect to the payment server. Please check your connection and try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -135,7 +162,7 @@ export default function PricingPage() {
         }}
       >
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
           <h1
             style={{
               fontSize: 36,
@@ -145,19 +172,51 @@ export default function PricingPage() {
               fontFamily: "var(--font-dm-serif)",
             }}
           >
-            Simple, transparent pricing
+            Unlock the full power of email intelligence
           </h1>
           <p
             style={{
               fontSize: 18,
               color: "var(--color-secondary)",
               margin: 0,
-              maxWidth: 500,
+              maxWidth: 520,
               marginInline: "auto",
             }}
           >
-            Start free. Upgrade when you need full access to analytics, the complete email archive, and more.
+            Start free. Upgrade when you need the complete toolkit for tracking,
+            analyzing, and learning from India&apos;s best D2C email campaigns.
           </p>
+        </div>
+
+        {/* Social proof */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 24,
+            marginBottom: 40,
+            flexWrap: "wrap",
+          }}
+        >
+          {[
+            "10,000+ emails tracked",
+            "300+ D2C brands",
+            "Updated daily",
+          ].map((stat) => (
+            <span
+              key={stat}
+              style={{
+                fontSize: 13,
+                color: "var(--color-secondary)",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <span style={{ color: "var(--color-accent)" }}>&#10003;</span>
+              {stat}
+            </span>
+          ))}
         </div>
 
         {/* Billing toggle */}
@@ -176,8 +235,10 @@ export default function PricingPage() {
               padding: "8px 20px",
               borderRadius: 8,
               border: "1px solid var(--color-border)",
-              background: billing === "monthly" ? "var(--color-primary)" : "transparent",
-              color: billing === "monthly" ? "white" : "var(--color-secondary)",
+              background:
+                billing === "monthly" ? "var(--color-primary)" : "transparent",
+              color:
+                billing === "monthly" ? "white" : "var(--color-secondary)",
               cursor: "pointer",
               fontSize: 14,
               fontWeight: 500,
@@ -191,8 +252,10 @@ export default function PricingPage() {
               padding: "8px 20px",
               borderRadius: 8,
               border: "1px solid var(--color-border)",
-              background: billing === "annual" ? "var(--color-primary)" : "transparent",
-              color: billing === "annual" ? "white" : "var(--color-secondary)",
+              background:
+                billing === "annual" ? "var(--color-primary)" : "transparent",
+              color:
+                billing === "annual" ? "white" : "var(--color-secondary)",
               cursor: "pointer",
               fontSize: 14,
               fontWeight: 500,
@@ -217,6 +280,7 @@ export default function PricingPage() {
 
         {/* Pricing cards */}
         <div
+          className="pricing-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -254,10 +318,19 @@ export default function PricingPage() {
               Explore email marketing trends
             </p>
             <div style={{ marginBottom: 24 }}>
-              <span style={{ fontSize: 36, fontWeight: 700, color: "var(--color-primary)" }}>
+              <span
+                style={{
+                  fontSize: 36,
+                  fontWeight: 700,
+                  color: "var(--color-primary)",
+                }}
+              >
                 &#8377;0
               </span>
-              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}> /forever</span>
+              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
+                {" "}
+                /forever
+              </span>
             </div>
             <Link
               href={user ? "/browse" : "/signup"}
@@ -274,7 +347,7 @@ export default function PricingPage() {
                 marginBottom: 24,
               }}
             >
-              {user ? "Current Plan" : "Get Started"}
+              {user ? "Current Plan" : "Get Started Free"}
             </Link>
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
               {features.map((f) => (
@@ -282,7 +355,10 @@ export default function PricingPage() {
                   key={f.name}
                   style={{
                     fontSize: 14,
-                    color: f.free === false ? "var(--color-muted)" : "var(--color-secondary)",
+                    color:
+                      f.free === false
+                        ? "var(--color-muted, #999)"
+                        : "var(--color-secondary)",
                     padding: "8px 0",
                     borderBottom: "1px solid var(--color-border-light, #f0f0f0)",
                     display: "flex",
@@ -300,7 +376,13 @@ export default function PricingPage() {
                   <span>
                     {f.name}
                     {typeof f.free === "string" && (
-                      <span style={{ color: "var(--color-muted, #999)", marginLeft: 4, fontSize: 12 }}>
+                      <span
+                        style={{
+                          color: "var(--color-muted, #999)",
+                          marginLeft: 4,
+                          fontSize: 12,
+                        }}
+                      >
                         ({f.free})
                       </span>
                     )}
@@ -313,7 +395,7 @@ export default function PricingPage() {
           {/* Pro Plan */}
           <div
             style={{
-              border: "2px solid #7c3aed",
+              border: "2px solid var(--color-accent)",
               borderRadius: 16,
               padding: 32,
               background: "white",
@@ -326,7 +408,8 @@ export default function PricingPage() {
                 top: -12,
                 left: "50%",
                 transform: "translateX(-50%)",
-                background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                background:
+                  "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
                 color: "white",
                 fontSize: 12,
                 fontWeight: 600,
@@ -356,13 +439,40 @@ export default function PricingPage() {
               Full email marketing intelligence
             </p>
             <div style={{ marginBottom: 24 }}>
-              <span style={{ fontSize: 36, fontWeight: 700, color: "var(--color-primary)" }}>
-                &#8377;{billing === "monthly" ? monthlyPrice.toLocaleString("en-IN") : annualMonthly.toLocaleString("en-IN")}
+              <span
+                style={{
+                  fontSize: 36,
+                  fontWeight: 700,
+                  color: "var(--color-primary)",
+                }}
+              >
+                &#8377;
+                {billing === "monthly"
+                  ? monthlyPrice.toLocaleString("en-IN")
+                  : annualMonthly.toLocaleString("en-IN")}
               </span>
-              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}> /month</span>
+              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
+                {" "}
+                /month
+              </span>
               {billing === "annual" && (
-                <div style={{ fontSize: 12, color: "var(--color-secondary)", marginTop: 4 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "var(--color-secondary)",
+                    marginTop: 4,
+                  }}
+                >
                   Billed &#8377;{annualPrice.toLocaleString("en-IN")}/year
+                  <span
+                    style={{
+                      marginLeft: 8,
+                      color: "var(--color-accent)",
+                      fontWeight: 500,
+                    }}
+                  >
+                    (just &#8377;{dailyCost}/day)
+                  </span>
                 </div>
               )}
             </div>
@@ -378,12 +488,12 @@ export default function PricingPage() {
                 border: "none",
                 background: user?.is_pro
                   ? "#22c55e"
-                  : "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                  : "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
                 color: "white",
                 cursor: user?.is_pro ? "default" : "pointer",
                 fontSize: 14,
-                fontWeight: 500,
-                marginBottom: 24,
+                fontWeight: 600,
+                marginBottom: 8,
                 opacity: loading ? 0.7 : 1,
               }}
             >
@@ -391,8 +501,41 @@ export default function PricingPage() {
                 ? "Current Plan"
                 : loading
                 ? "Processing..."
-                : "Subscribe to Pro"}
+                : billing === "annual"
+                ? "Start Pro Plan (Save 36%)"
+                : "Start Pro Plan"}
             </button>
+
+            {/* Guarantee text */}
+            <p
+              style={{
+                fontSize: 12,
+                color: "var(--color-secondary)",
+                textAlign: "center",
+                margin: "0 0 24px",
+              }}
+            >
+              7-day money-back guarantee. Cancel anytime.
+            </p>
+
+            {/* Inline error */}
+            {error && (
+              <div
+                style={{
+                  background: "#fef2f2",
+                  border: "1px solid #fecaca",
+                  borderRadius: 8,
+                  padding: "10px 14px",
+                  marginBottom: 16,
+                  fontSize: 13,
+                  color: "#991b1b",
+                  lineHeight: 1.5,
+                }}
+              >
+                {error}
+              </div>
+            )}
+
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
               {features.map((f) => (
                 <li
@@ -407,13 +550,26 @@ export default function PricingPage() {
                     gap: 8,
                   }}
                 >
-                  <span style={{ width: 18, textAlign: "center", color: "#7c3aed" }}>
+                  <span
+                    style={{
+                      width: 18,
+                      textAlign: "center",
+                      color: "var(--color-accent)",
+                    }}
+                  >
                     &#10003;
                   </span>
                   <span>
                     {f.name}
                     {typeof f.pro === "string" && (
-                      <span style={{ color: "#7c3aed", marginLeft: 4, fontSize: 12, fontWeight: 500 }}>
+                      <span
+                        style={{
+                          color: "var(--color-accent)",
+                          marginLeft: 4,
+                          fontSize: 12,
+                          fontWeight: 500,
+                        }}
+                      >
                         ({f.pro})
                       </span>
                     )}
@@ -464,7 +620,9 @@ export default function PricingPage() {
                 }}
               >
                 {faq.q}
-                <span style={{ fontSize: 18, color: "var(--color-secondary)" }}>
+                <span
+                  style={{ fontSize: 18, color: "var(--color-secondary)" }}
+                >
                   {openFaq === i ? "\u2212" : "+"}
                 </span>
               </button>
@@ -484,6 +642,18 @@ export default function PricingPage() {
           ))}
         </div>
       </div>
+
+      {/* Mobile responsive styles */}
+      <style>{`
+        @media (max-width: 640px) {
+          .pricing-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .pricing-grid > div:last-child {
+            order: -1;
+          }
+        }
+      `}</style>
     </>
   );
 }

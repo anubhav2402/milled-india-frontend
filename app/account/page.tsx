@@ -160,7 +160,7 @@ function AccountContent() {
       <div
         style={{
           border: subscription?.is_pro
-            ? "2px solid #7c3aed"
+            ? "2px solid var(--color-accent)"
             : "1px solid var(--color-border)",
           borderRadius: 12,
           padding: 24,
@@ -193,7 +193,7 @@ function AccountContent() {
               padding: "4px 12px",
               borderRadius: 20,
               background: subscription?.is_pro
-                ? "linear-gradient(135deg, #7c3aed, #6d28d9)"
+                ? "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))"
                 : "var(--color-accent-light)",
               color: subscription?.is_pro ? "white" : "var(--color-accent)",
             }}
@@ -283,7 +283,7 @@ function AccountContent() {
                 fontSize: 14,
                 fontWeight: 500,
                 color: "white",
-                background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
                 textDecoration: "none",
                 padding: "10px 24px",
                 borderRadius: 10,

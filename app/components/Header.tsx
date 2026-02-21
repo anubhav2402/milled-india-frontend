@@ -4,22 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
 import { useAuth } from "../context/AuthContext";
+import { getNavLinks } from "../lib/nav";
 
-const NAV_LINKS = [
-  { label: "Browse", href: "/browse" },
-  { label: "Brands", href: "/brands" },
-  { label: "Swipe File", href: "/swipe-file" },
-  { label: "Benchmarks", href: "/benchmarks" },
-  { label: "Analytics", href: "/analytics" },
-  { label: "Pricing", href: "/pricing" },
-];
-
-const AUTH_LINKS = [
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Saved", href: "/saved" },
-];
-
-export default function Header({ activeRoute }: { activeRoute?: string }) {
+export default function Header({ activeRoute, transparent }: { activeRoute?: string; transparent?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -30,7 +17,7 @@ export default function Header({ activeRoute }: { activeRoute?: string }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const allLinks = user ? [...NAV_LINKS, ...AUTH_LINKS] : NAV_LINKS;
+  const allLinks = getNavLinks(user);
 
   return (
     <>
@@ -39,10 +26,10 @@ export default function Header({ activeRoute }: { activeRoute?: string }) {
           position: "sticky",
           top: 0,
           zIndex: 100,
-          background: scrolled ? "rgba(255, 255, 255, 0.9)" : "white",
+          background: scrolled ? "rgba(255, 255, 255, 0.9)" : transparent ? "transparent" : "white",
           backdropFilter: scrolled ? "blur(12px)" : "none",
           WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
-          borderBottom: "1px solid var(--color-border)",
+          borderBottom: scrolled || !transparent ? "1px solid var(--color-border)" : "1px solid transparent",
           transition: "all 200ms ease",
         }}
       >
@@ -127,7 +114,7 @@ export default function Header({ activeRoute }: { activeRoute?: string }) {
                       fontSize: 11,
                       fontWeight: 600,
                       color: "white",
-                      background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                      background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
                       padding: "4px 10px",
                       borderRadius: 20,
                     }}
@@ -140,8 +127,8 @@ export default function Header({ activeRoute }: { activeRoute?: string }) {
                     style={{
                       fontSize: 12,
                       fontWeight: 600,
-                      color: "#7c3aed",
-                      background: "#f0e6ff",
+                      color: "var(--color-accent)",
+                      background: "var(--color-accent-light)",
                       textDecoration: "none",
                       padding: "5px 12px",
                       borderRadius: 20,
@@ -312,7 +299,7 @@ export default function Header({ activeRoute }: { activeRoute?: string }) {
                         fontSize: 11,
                         fontWeight: 600,
                         color: "white",
-                        background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                        background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
                         padding: "3px 10px",
                         borderRadius: 20,
                       }}
@@ -349,7 +336,7 @@ export default function Header({ activeRoute }: { activeRoute?: string }) {
                         fontSize: 14,
                         fontWeight: 500,
                         color: "white",
-                        background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                        background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
                         textDecoration: "none",
                         padding: "12px 18px",
                         borderRadius: 10,

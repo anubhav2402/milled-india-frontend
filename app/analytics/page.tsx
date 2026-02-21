@@ -266,11 +266,11 @@ export default function AnalyticsPage() {
                           <div
                             style={{
                               padding: "4px 12px",
-                              backgroundColor: "#ede9fe",
+                              backgroundColor: "var(--color-accent-light)",
                               borderRadius: 20,
                               fontSize: 13,
                               fontWeight: 600,
-                              color: "#7c3aed",
+                              color: "var(--color-accent)",
                             }}
                           >
                             {count}
@@ -463,10 +463,10 @@ export default function AnalyticsPage() {
                               key={word}
                               style={{
                                 padding: "6px 12px",
-                                backgroundColor: "#ede9fe",
+                                backgroundColor: "var(--color-accent-light)",
                                 borderRadius: 16,
                                 fontSize: 13,
-                                color: "#6d28d9",
+                                color: "var(--color-accent-hover)",
                               }}
                             >
                               {word}
@@ -779,10 +779,10 @@ function BrandComparison({
                       style={{
                         display: "inline-block",
                         padding: "4px 10px",
-                        backgroundColor: "#ede9fe",
+                        backgroundColor: "var(--color-accent-light)",
                         borderRadius: 12,
                         fontSize: 12,
-                        color: "#7c3aed",
+                        color: "var(--color-accent)",
                       }}
                     >
                       {data.top_campaign_type || "N/A"}

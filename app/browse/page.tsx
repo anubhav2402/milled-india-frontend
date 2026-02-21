@@ -9,6 +9,8 @@ import Button from "../components/Button";
 import Badge from "../components/Badge";
 import Input from "../components/Input";
 import { API_BASE } from "../lib/constants";
+import { useAuth } from "../context/AuthContext";
+import { getNavLinks } from "../lib/nav";
 
 type Email = {
   id: number;
@@ -96,13 +98,15 @@ const ChevronIcon = ({ open }: { open: boolean }) => (
 );
 
 // Header Component
-function Header({ searchQuery, setSearchQuery, filterCount, onOpenFilters }: {
+function BrowseHeader({ searchQuery, setSearchQuery, filterCount, onOpenFilters }: {
   searchQuery: string;
   setSearchQuery: (q: string) => void;
   filterCount: number;
   onOpenFilters: () => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
+  const { user } = useAuth();
+  const navLinks = getNavLinks(user).filter((l) => l.href !== "/browse");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -153,18 +157,15 @@ function Header({ searchQuery, setSearchQuery, filterCount, onOpenFilters }: {
 
         {/* Nav Links */}
         <nav className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <Link href="/brands" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
-            Brands
-          </Link>
-          <Link href="/swipe-file" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
-            Swipe File
-          </Link>
-          <Link href="/benchmarks" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
-            Benchmarks
-          </Link>
-          <Link href="/analytics" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}>
-            Analytics
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              style={{ fontSize: 14, fontWeight: 500, color: "var(--color-secondary)", textDecoration: "none" }}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         {/* Mobile Filter Button */}
@@ -702,7 +703,7 @@ function BrowseContent() {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
-      <Header
+      <BrowseHeader
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         filterCount={activeFilterCount}
