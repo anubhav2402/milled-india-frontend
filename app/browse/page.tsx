@@ -564,6 +564,7 @@ function BrowseContent() {
   const [emails, setEmails] = useState<Email[]>([]);
   const [allBrands, setAllBrands] = useState<string[]>([]);
   const [brandStats, setBrandStats] = useState<BrandStats>({});
+  const [totalEmailCount, setTotalEmailCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -609,18 +610,23 @@ function BrowseContent() {
     }
   }, [selectedIndustries, selectedBrands, debouncedQuery]);
 
-  // Fetch brands
+  // Fetch brands and total count
   const fetchBrands = useCallback(async () => {
     const base = API_BASE;
 
     try {
-      const [brandsRes, statsRes] = await Promise.all([
+      const [brandsRes, statsRes, countRes] = await Promise.all([
         fetch(`${base}/brands`),
         fetch(`${base}/brands/stats`),
+        fetch(`${base}/emails/count`),
       ]);
 
       if (brandsRes.ok) setAllBrands(await brandsRes.json());
       if (statsRes.ok) setBrandStats(await statsRes.json());
+      if (countRes.ok) {
+        const countData = await countRes.json();
+        setTotalEmailCount(countData.total);
+      }
     } catch (error) {
       console.error("Failed to fetch brands:", error);
     }
@@ -733,7 +739,11 @@ function BrowseContent() {
             gap: 12,
           }}>
             <p style={{ fontSize: 14, color: "var(--color-secondary)", margin: 0 }}>
-              {loading ? "Loading..." : searching ? "Searching..." : `${filteredEmails.length} emails`}
+              {loading ? "Loading..." : searching ? "Searching..." : (() => {
+                const hasFilters = debouncedQuery || selectedBrands.length > 0 || selectedIndustries.length > 0 || selectedDate !== "all";
+                const count = hasFilters ? filteredEmails.length.toLocaleString() : (totalEmailCount !== null ? totalEmailCount.toLocaleString() : filteredEmails.length.toLocaleString());
+                return `${count} emails`;
+              })()}
             </p>
 
             {/* Active Filters */}
