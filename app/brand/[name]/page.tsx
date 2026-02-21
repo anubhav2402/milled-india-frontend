@@ -45,6 +45,7 @@ export default function BrandReportCard() {
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState("All");
 
   useEffect(() => {
     const headers: Record<string, string> = {};
@@ -55,7 +56,7 @@ export default function BrandReportCard() {
       try {
         const [analyticsRes, emailsRes] = await Promise.all([
           fetch(`${API_BASE}/analytics/brand/${encodeURIComponent(brandName)}`, { headers }),
-          fetch(`${API_BASE}/emails?brand=${encodeURIComponent(brandName)}&limit=10`),
+          fetch(`${API_BASE}/emails?brand=${encodeURIComponent(brandName)}&limit=50`),
         ]);
 
         if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
@@ -331,36 +332,74 @@ export default function BrandReportCard() {
         )}
 
         {/* Recent Campaigns */}
-        {emails.length > 0 && (
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-              <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Recent Campaigns
-              </h3>
-              <Link
-                href={`/browse?brand=${encodeURIComponent(brandName)}`}
-                style={{ fontSize: 13, color: "var(--color-accent)", textDecoration: "none", fontWeight: 500 }}
-              >
-                View all →
-              </Link>
-            </div>
-            <div className="horizontal-scroll">
-              {emails.map((email) => (
-                <div key={email.id} className="scroll-card" style={{ width: 320, flexShrink: 0 }}>
-                  <EmailCard
-                    id={email.id}
-                    subject={email.subject}
-                    brand={email.brand}
-                    preview={email.preview}
-                    industry={email.industry}
-                    received_at={email.received_at}
-                    campaignType={email.type}
-                  />
+        {emails.length > 0 && (() => {
+          const campaignTypes = ["All", ...Array.from(new Set(emails.map(e => e.type).filter(Boolean))) as string[]];
+          const filteredEmails = activeTab === "All" ? emails : emails.filter(e => e.type === activeTab);
+          return (
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  Recent Campaigns
+                </h3>
+                <Link
+                  href={`/browse?brand=${encodeURIComponent(brandName)}`}
+                  style={{ fontSize: 13, color: "var(--color-accent)", textDecoration: "none", fontWeight: 500 }}
+                >
+                  View all →
+                </Link>
+              </div>
+
+              {/* Campaign Type Filter Tabs */}
+              <div style={{
+                display: "flex", gap: 8, marginBottom: 16,
+                overflowX: "auto", paddingBottom: 4,
+              }}>
+                {campaignTypes.map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setActiveTab(type)}
+                    style={{
+                      padding: "6px 16px",
+                      borderRadius: 100,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                      border: activeTab === type ? "1px solid var(--color-accent)" : "1px solid var(--color-border)",
+                      background: activeTab === type ? "var(--color-accent)" : "white",
+                      color: activeTab === type ? "white" : "var(--color-secondary)",
+                      transition: "all 150ms ease",
+                    }}
+                  >
+                    {type}
+                  </button>
+                ))}
+              </div>
+
+              {filteredEmails.length > 0 ? (
+                <div className="horizontal-scroll">
+                  {filteredEmails.map((email) => (
+                    <div key={email.id} className="scroll-card" style={{ width: 320, flexShrink: 0 }}>
+                      <EmailCard
+                        id={email.id}
+                        subject={email.subject}
+                        brand={email.brand}
+                        preview={email.preview}
+                        industry={email.industry}
+                        received_at={email.received_at}
+                        campaignType={email.type}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <p style={{ fontSize: 14, color: "var(--color-tertiary)", textAlign: "center", padding: "32px 0" }}>
+                  No {activeTab} campaigns found
+                </p>
+              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

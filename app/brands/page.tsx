@@ -438,7 +438,10 @@ function BrandCard({
       )}
 
       {/* Brand Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+      <Link
+        href={`/brand/${encodeURIComponent(brand.name)}`}
+        style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none" }}
+      >
         {/* Brand Logo/Initial */}
         <div
           style={{
@@ -484,7 +487,7 @@ function BrandCard({
             {isMasked ? "Login to see stats" : `${brand.email_count} emails`}
           </p>
         </div>
-      </div>
+      </Link>
 
       {/* Stats */}
       <div

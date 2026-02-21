@@ -301,8 +301,9 @@ function BrandLogosSection() {
           gap: 12,
         }}>
           {brands.map((brand) => (
-            <span
+            <Link
               key={brand}
+              href={`/brand/${encodeURIComponent(brand)}`}
               style={{
                 padding: "10px 20px",
                 borderRadius: 100,
@@ -313,6 +314,8 @@ function BrandLogosSection() {
                 color: "var(--color-secondary)",
                 whiteSpace: "nowrap",
                 transition: "all 150ms ease",
+                textDecoration: "none",
+                cursor: "pointer",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = "var(--color-accent)";
@@ -324,7 +327,7 @@ function BrandLogosSection() {
               }}
             >
               {brand}
-            </span>
+            </Link>
           ))}
         </div>
       </div>
