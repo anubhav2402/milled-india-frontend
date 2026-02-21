@@ -7,6 +7,8 @@ export type User = {
   id: number;
   email: string;
   name: string | null;
+  subscription_tier: "free" | "pro";
+  is_pro: boolean;
 };
 
 type AuthContextType = {

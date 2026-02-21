@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Swipe File", href: "/swipe-file" },
   { label: "Benchmarks", href: "/benchmarks" },
   { label: "Analytics", href: "/analytics" },
+  { label: "Pricing", href: "/pricing" },
 ];
 
 const AUTH_LINKS = [
@@ -120,30 +121,49 @@ export default function Header({ activeRoute }: { activeRoute?: string }) {
           >
             {user ? (
               <>
-                <span
+                {user.is_pro ? (
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: "white",
+                      background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                      padding: "4px 10px",
+                      borderRadius: 20,
+                    }}
+                  >
+                    PRO
+                  </span>
+                ) : (
+                  <Link
+                    href="/pricing"
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 600,
+                      color: "#7c3aed",
+                      background: "#f0e6ff",
+                      textDecoration: "none",
+                      padding: "5px 12px",
+                      borderRadius: 20,
+                    }}
+                  >
+                    Upgrade
+                  </Link>
+                )}
+                <Link
+                  href="/account"
                   style={{
                     fontSize: 13,
-                    color: "var(--color-secondary)",
                     fontWeight: 500,
+                    color: "var(--color-secondary)",
+                    textDecoration: "none",
+                    padding: "6px 14px",
+                    borderRadius: 8,
+                    border: "1px solid var(--color-border)",
                   }}
                 >
                   {user.name || user.email}
-                </span>
-                <button
-                  onClick={logout}
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "var(--color-tertiary)",
-                    background: "none",
-                    border: "1px solid var(--color-border)",
-                    padding: "6px 14px",
-                    borderRadius: 8,
-                    cursor: "pointer",
-                  }}
-                >
-                  Logout
-                </button>
+                </Link>
               </>
             ) : (
               <>
@@ -270,31 +290,75 @@ export default function Header({ activeRoute }: { activeRoute?: string }) {
               <div
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
+                  flexDirection: "column",
+                  gap: 12,
                 }}
               >
-                <span
-                  style={{ fontSize: 14, color: "var(--color-secondary)" }}
-                >
-                  {user.name || user.email}
-                </span>
-                <button
-                  onClick={() => {
-                    logout();
-                    setMobileMenuOpen(false);
-                  }}
+                <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 500,
-                    color: "var(--color-accent)",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  Logout
-                </button>
+                  <span
+                    style={{ fontSize: 14, color: "var(--color-secondary)" }}
+                  >
+                    {user.name || user.email}
+                  </span>
+                  {user.is_pro && (
+                    <span
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: "white",
+                        background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                        padding: "3px 10px",
+                        borderRadius: 20,
+                      }}
+                    >
+                      PRO
+                    </span>
+                  )}
+                </div>
+                <div style={{ display: "flex", gap: 12 }}>
+                  <Link
+                    href="/account"
+                    onClick={() => setMobileMenuOpen(false)}
+                    style={{
+                      flex: 1,
+                      textAlign: "center",
+                      fontSize: 14,
+                      fontWeight: 500,
+                      color: "var(--color-primary)",
+                      textDecoration: "none",
+                      padding: "12px 18px",
+                      borderRadius: 10,
+                      border: "1px solid var(--color-border)",
+                    }}
+                  >
+                    Account
+                  </Link>
+                  {!user.is_pro && (
+                    <Link
+                      href="/pricing"
+                      onClick={() => setMobileMenuOpen(false)}
+                      style={{
+                        flex: 1,
+                        textAlign: "center",
+                        fontSize: 14,
+                        fontWeight: 500,
+                        color: "white",
+                        background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                        textDecoration: "none",
+                        padding: "12px 18px",
+                        borderRadius: 10,
+                      }}
+                    >
+                      Upgrade
+                    </Link>
+                  )}
+                </div>
               </div>
             ) : (
               <div style={{ display: "flex", gap: 12 }}>
