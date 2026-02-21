@@ -62,7 +62,6 @@ export default function BrandReportCard() {
         if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
         if (emailsRes.ok) setEmails(await emailsRes.json());
 
-        // Check follow status
         if (token) {
           const followsRes = await fetch(`${API_BASE}/user/follows`, { headers });
           if (followsRes.ok) {
@@ -106,7 +105,7 @@ export default function BrandReportCard() {
     return (
       <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
         <Header />
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
           <div style={{ background: "white", borderRadius: 14, padding: 32, textAlign: "center" }}>
             <div style={{
               width: 40, height: 40, border: "3px solid var(--color-border)",
@@ -124,7 +123,7 @@ export default function BrandReportCard() {
     return (
       <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
         <Header />
-        <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center" }}>
           <h2 style={{ fontSize: 20, color: "var(--color-primary)" }}>Brand not found</h2>
           <p style={{ color: "var(--color-secondary)" }}>No data available for &quot;{brandName}&quot;</p>
           <Link href="/brands" style={{ color: "var(--color-accent)" }}>Browse all brands</Link>
@@ -142,45 +141,68 @@ export default function BrandReportCard() {
     (sum, v) => sum + (typeof v === "number" ? v : 0), 0
   );
 
+  const campaignTypes = ["All", ...Array.from(new Set(emails.map(e => e.type).filter(Boolean))) as string[]];
+  const filteredEmails = activeTab === "All" ? emails : emails.filter(e => e.type === activeTab);
+
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header />
 
-      <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 24px" }}>
-        {/* Brand Header */}
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
+        {/* Brand Header — Compact */}
         <div style={{
-          background: "white", borderRadius: 14, padding: "28px 32px",
+          background: "white", borderRadius: 14, padding: "24px 28px",
           marginBottom: 24, border: "1px solid var(--color-border)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
             <div style={{
-              width: 56, height: 56, borderRadius: 14,
+              width: 52, height: 52, borderRadius: 14,
               background: "var(--color-accent-light)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 24, fontWeight: 700, color: "var(--color-accent)",
+              fontSize: 22, fontWeight: 700, color: "var(--color-accent)",
+              flexShrink: 0,
             }}>
               {brandName.charAt(0).toUpperCase()}
             </div>
-            <div style={{ flex: 1 }}>
-              <h1 style={{
-                fontFamily: "var(--font-dm-serif)", fontSize: 28,
-                color: "var(--color-primary)", margin: "0 0 4px",
-                textTransform: "capitalize",
-              }}>
-                {brandName}
-              </h1>
-              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
+                <h1 style={{
+                  fontFamily: "var(--font-dm-serif)", fontSize: 24,
+                  color: "var(--color-primary)", margin: 0,
+                  textTransform: "capitalize",
+                }}>
+                  {brandName}
+                </h1>
                 {analytics.primary_industry && (
                   <Badge>{analytics.primary_industry}</Badge>
                 )}
+              </div>
+              {/* Inline stats */}
+              <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", fontSize: 13, color: "var(--color-secondary)" }}>
+                <span style={{ fontWeight: 600, color: "var(--color-primary)" }}>
+                  {analytics.total_emails} emails
+                </span>
+                <span>·</span>
+                <span>{analytics.emails_per_week}/week</span>
+                {subjectStats && (
+                  <>
+                    <span>·</span>
+                    <span>Avg {subjectStats.avg_length}ch subject</span>
+                    <span>·</span>
+                    <span>{subjectStats.emoji_usage_rate}% emoji</span>
+                  </>
+                )}
                 {analytics.first_email && analytics.first_email !== "xx" && (
-                  <span style={{ fontSize: 12, color: "var(--color-tertiary)" }}>
-                    Tracking since {new Date(analytics.first_email).toLocaleDateString("en-IN", { month: "short", year: "2-digit" })}
-                  </span>
+                  <>
+                    <span>·</span>
+                    <span style={{ color: "var(--color-tertiary)" }}>
+                      Since {new Date(analytics.first_email).toLocaleDateString("en-IN", { month: "short", year: "2-digit" })}
+                    </span>
+                  </>
                 )}
               </div>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
               {user && (
                 <button
                   onClick={toggleFollow}
@@ -209,178 +231,68 @@ export default function BrandReportCard() {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div style={{
-          display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: 16, marginBottom: 24,
-        }}>
-          {[
-            { label: "Emails", value: analytics.total_emails },
-            { label: "/week", value: analytics.emails_per_week },
-            { label: "Avg Subject", value: subjectStats ? `${subjectStats.avg_length}ch` : "xx" },
-            { label: "Emoji Rate", value: subjectStats ? `${subjectStats.emoji_usage_rate}%` : "xx" },
-          ].map((stat) => (
-            <div key={stat.label} style={{
-              background: "white", borderRadius: 12, padding: "20px 24px",
-              border: "1px solid var(--color-border)", textAlign: "center",
-            }}>
-              <div style={{ fontSize: 28, fontWeight: 700, color: "var(--color-primary)", marginBottom: 4 }}>
-                {stat.value}
-              </div>
-              <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Campaign Types + Send Days */}
-        {isAuthenticated ? (
-          <div style={{
-            display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24,
-          }} className="email-detail-grid">
-            {/* Campaign Types */}
-            <div style={{
-              background: "white", borderRadius: 14, padding: 24,
-              border: "1px solid var(--color-border)",
-            }}>
-              <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)", margin: "0 0 16px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                Campaign Types
-              </h3>
-              {Object.entries(campaignBreakdown)
-                .sort(([, a], [, b]) => (b as number) - (a as number))
-                .map(([type, count]) => {
-                  const pct = campaignTotal > 0 ? ((count as number) / campaignTotal) * 100 : 0;
-                  return (
-                    <div key={type} style={{ marginBottom: 12 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 4 }}>
-                        <span style={{ color: "var(--color-primary)", fontWeight: 500 }}>{type}</span>
-                        <span style={{ color: "var(--color-tertiary)" }}>{Math.round(pct)}%</span>
-                      </div>
-                      <div style={{ height: 6, borderRadius: 3, background: "var(--color-surface)" }}>
-                        <div style={{
-                          height: "100%", borderRadius: 3, width: `${pct}%`,
-                          background: CAMPAIGN_TYPE_COLORS[type] || "var(--color-accent)",
-                          transition: "width 500ms ease",
-                        }} />
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-
-            {/* Send Days */}
-            {sendDays && (
-              <div style={{
-                background: "white", borderRadius: 14, padding: 24,
-                border: "1px solid var(--color-border)",
-              }}>
-                <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)", margin: "0 0 16px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                  Send Days
-                </h3>
-                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
-                  const count = sendDays[day] || 0;
-                  const pct = maxDayCount > 0 ? (count / maxDayCount) * 100 : 0;
-                  const isPeak = count === maxDayCount && count > 0;
-                  return (
-                    <div key={day} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                      <span style={{ width: 32, fontSize: 12, color: "var(--color-tertiary)", textAlign: "right" }}>
-                        {day.slice(0, 3)}
-                      </span>
-                      <div style={{ flex: 1, height: 6, borderRadius: 3, background: "var(--color-surface)" }}>
-                        <div style={{
-                          height: "100%", borderRadius: 3, width: `${pct}%`,
-                          background: isPeak ? "var(--color-accent)" : "#94a3b8",
-                          transition: "width 500ms ease",
-                        }} />
-                      </div>
-                      <span style={{ width: 24, fontSize: 12, color: isPeak ? "var(--color-accent)" : "var(--color-tertiary)", fontWeight: isPeak ? 600 : 400 }}>
-                        {count}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        ) : (
-          <AuthGate previewRows={4}>
-            <div style={{
-              display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24,
-            }}>
-              <div style={{ background: "white", borderRadius: 14, padding: 24, height: 250 }} />
-              <div style={{ background: "white", borderRadius: 14, padding: 24, height: 250 }} />
-            </div>
-          </AuthGate>
-        )}
-
-        {/* Top Words */}
-        {subjectStats && subjectStats.top_words.length > 0 && (
-          <div style={{
-            background: "white", borderRadius: 14, padding: 24,
-            border: "1px solid var(--color-border)", marginBottom: 24,
-          }}>
-            <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)", margin: "0 0 12px", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              Top Subject Words
-            </h3>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {subjectStats.top_words.map((word) => (
-                <Badge key={word} variant="accent" size="md">{word}</Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Recent Campaigns */}
-        {emails.length > 0 && (() => {
-          const campaignTypes = ["All", ...Array.from(new Set(emails.map(e => e.type).filter(Boolean))) as string[]];
-          const filteredEmails = activeTab === "All" ? emails : emails.filter(e => e.type === activeTab);
-          return (
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)", margin: 0, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                  Recent Campaigns
-                </h3>
-                <Link
-                  href={`/browse?brand=${encodeURIComponent(brandName)}`}
-                  style={{ fontSize: 13, color: "var(--color-accent)", textDecoration: "none", fontWeight: 500 }}
-                >
-                  View all →
-                </Link>
-              </div>
-
-              {/* Campaign Type Filter Tabs */}
-              <div style={{
-                display: "flex", gap: 8, marginBottom: 16,
-                overflowX: "auto", paddingBottom: 4,
-              }}>
-                {campaignTypes.map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => setActiveTab(type)}
-                    style={{
-                      padding: "6px 16px",
-                      borderRadius: 100,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      cursor: "pointer",
-                      whiteSpace: "nowrap",
-                      border: activeTab === type ? "1px solid var(--color-accent)" : "1px solid var(--color-border)",
-                      background: activeTab === type ? "var(--color-accent)" : "white",
-                      color: activeTab === type ? "white" : "var(--color-secondary)",
-                      transition: "all 150ms ease",
-                    }}
+        {/* Two-column layout: Emails + Insights sidebar */}
+        <div
+          className="email-detail-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 340px",
+            gap: 24,
+            alignItems: "start",
+          }}
+        >
+          {/* Left: Email Grid */}
+          <div>
+            {/* Filter Tabs */}
+            {emails.length > 0 && (
+              <>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                  <h2 style={{ fontSize: 16, fontWeight: 600, color: "var(--color-primary)", margin: 0 }}>
+                    Emails
+                  </h2>
+                  <Link
+                    href={`/browse?brand=${encodeURIComponent(brandName)}`}
+                    style={{ fontSize: 13, color: "var(--color-accent)", textDecoration: "none", fontWeight: 500 }}
                   >
-                    {type}
-                  </button>
-                ))}
-              </div>
+                    View all →
+                  </Link>
+                </div>
 
-              {filteredEmails.length > 0 ? (
-                <div className="horizontal-scroll">
-                  {filteredEmails.map((email) => (
-                    <div key={email.id} className="scroll-card" style={{ width: 320, flexShrink: 0 }}>
+                <div style={{
+                  display: "flex", gap: 8, marginBottom: 20,
+                  overflowX: "auto", paddingBottom: 4,
+                }}>
+                  {campaignTypes.map((type) => (
+                    <button
+                      key={type}
+                      onClick={() => setActiveTab(type)}
+                      style={{
+                        padding: "6px 16px",
+                        borderRadius: 100,
+                        fontSize: 13,
+                        fontWeight: 500,
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                        border: activeTab === type ? "1px solid var(--color-accent)" : "1px solid var(--color-border)",
+                        background: activeTab === type ? "var(--color-accent)" : "white",
+                        color: activeTab === type ? "white" : "var(--color-secondary)",
+                        transition: "all 150ms ease",
+                      }}
+                    >
+                      {type}
+                    </button>
+                  ))}
+                </div>
+
+                {filteredEmails.length > 0 ? (
+                  <div style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                    gap: 16,
+                  }}>
+                    {filteredEmails.slice(0, 12).map((email) => (
                       <EmailCard
+                        key={email.id}
                         id={email.id}
                         subject={email.subject}
                         brand={email.brand}
@@ -389,17 +301,147 @@ export default function BrandReportCard() {
                         received_at={email.received_at}
                         campaignType={email.type}
                       />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p style={{ fontSize: 14, color: "var(--color-tertiary)", textAlign: "center", padding: "32px 0" }}>
-                  No {activeTab} campaigns found
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{
+                    background: "white", borderRadius: 14, padding: "48px 24px",
+                    border: "1px solid var(--color-border)", textAlign: "center",
+                  }}>
+                    <p style={{ fontSize: 14, color: "var(--color-tertiary)", margin: 0 }}>
+                      No {activeTab} campaigns found
+                    </p>
+                  </div>
+                )}
+
+                {filteredEmails.length > 12 && (
+                  <div style={{ textAlign: "center", marginTop: 20 }}>
+                    <Link
+                      href={`/browse?brand=${encodeURIComponent(brandName)}`}
+                      style={{
+                        display: "inline-block", padding: "10px 24px",
+                        borderRadius: 8, fontSize: 14, fontWeight: 500,
+                        color: "var(--color-accent)", border: "1px solid var(--color-accent)",
+                        textDecoration: "none", transition: "all 150ms ease",
+                      }}
+                    >
+                      View all {filteredEmails.length} emails →
+                    </Link>
+                  </div>
+                )}
+              </>
+            )}
+
+            {emails.length === 0 && (
+              <div style={{
+                background: "white", borderRadius: 14, padding: "64px 24px",
+                border: "1px solid var(--color-border)", textAlign: "center",
+              }}>
+                <p style={{ fontSize: 16, color: "var(--color-secondary)", margin: "0 0 8px" }}>
+                  No emails tracked yet
                 </p>
-              )}
-            </div>
-          );
-        })()}
+                <p style={{ fontSize: 14, color: "var(--color-tertiary)", margin: 0 }}>
+                  We&apos;re working on adding emails from {brandName}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Right: Insights Sidebar */}
+          <div style={{ position: "sticky", top: 80, display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Campaign Types */}
+            {isAuthenticated ? (
+              <>
+                <div style={{
+                  background: "white", borderRadius: 14, padding: 20,
+                  border: "1px solid var(--color-border)",
+                }}>
+                  <h3 style={{ fontSize: 12, fontWeight: 600, color: "var(--color-tertiary)", margin: "0 0 14px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                    Campaign Types
+                  </h3>
+                  {Object.entries(campaignBreakdown)
+                    .sort(([, a], [, b]) => (b as number) - (a as number))
+                    .map(([type, count]) => {
+                      const pct = campaignTotal > 0 ? ((count as number) / campaignTotal) * 100 : 0;
+                      return (
+                        <div key={type} style={{ marginBottom: 10 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 3 }}>
+                            <span style={{ color: "var(--color-primary)", fontWeight: 500 }}>{type}</span>
+                            <span style={{ color: "var(--color-tertiary)", fontSize: 12 }}>{Math.round(pct)}%</span>
+                          </div>
+                          <div style={{ height: 5, borderRadius: 3, background: "var(--color-surface)" }}>
+                            <div style={{
+                              height: "100%", borderRadius: 3, width: `${pct}%`,
+                              background: CAMPAIGN_TYPE_COLORS[type] || "var(--color-accent)",
+                              transition: "width 500ms ease",
+                            }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
+
+                {/* Send Days */}
+                {sendDays && (
+                  <div style={{
+                    background: "white", borderRadius: 14, padding: 20,
+                    border: "1px solid var(--color-border)",
+                  }}>
+                    <h3 style={{ fontSize: 12, fontWeight: 600, color: "var(--color-tertiary)", margin: "0 0 14px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                      Send Days
+                    </h3>
+                    {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => {
+                      const count = sendDays[day] || 0;
+                      const pct = maxDayCount > 0 ? (count / maxDayCount) * 100 : 0;
+                      const isPeak = count === maxDayCount && count > 0;
+                      return (
+                        <div key={day} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                          <span style={{ width: 28, fontSize: 12, color: "var(--color-tertiary)", textAlign: "right" }}>
+                            {day.slice(0, 3)}
+                          </span>
+                          <div style={{ flex: 1, height: 5, borderRadius: 3, background: "var(--color-surface)" }}>
+                            <div style={{
+                              height: "100%", borderRadius: 3, width: `${pct}%`,
+                              background: isPeak ? "var(--color-accent)" : "#94a3b8",
+                              transition: "width 500ms ease",
+                            }} />
+                          </div>
+                          <span style={{ width: 20, fontSize: 12, color: isPeak ? "var(--color-accent)" : "var(--color-tertiary)", fontWeight: isPeak ? 600 : 400, textAlign: "right" }}>
+                            {count}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Top Words */}
+                {subjectStats && subjectStats.top_words.length > 0 && (
+                  <div style={{
+                    background: "white", borderRadius: 14, padding: 20,
+                    border: "1px solid var(--color-border)",
+                  }}>
+                    <h3 style={{ fontSize: 12, fontWeight: 600, color: "var(--color-tertiary)", margin: "0 0 12px", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                      Top Subject Words
+                    </h3>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {subjectStats.top_words.map((word) => (
+                        <Badge key={word} variant="accent" size="sm">{word}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <AuthGate previewRows={4}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  <div style={{ background: "white", borderRadius: 14, padding: 20, height: 200 }} />
+                  <div style={{ background: "white", borderRadius: 14, padding: 20, height: 180 }} />
+                </div>
+              </AuthGate>
+            )}
+          </div>
+        </div>
       </div>
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
