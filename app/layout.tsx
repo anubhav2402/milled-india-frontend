@@ -26,8 +26,27 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Mail Muse — Email marketing intelligence",
-  description: "Discover what the world's best brands are sending. Curated email marketing intelligence for marketers and brand managers.",
+  title: {
+    default: "MailMuse — Email Marketing Intelligence for D2C Brands",
+    template: "%s | MailMuse",
+  },
+  description: "Track 7,000+ real emails from 150+ D2C brands across 13 industries. See what top brands send, when they send it, and what works.",
+  metadataBase: new URL("https://www.mailmuse.in"),
+  openGraph: {
+    type: "website",
+    siteName: "MailMuse",
+    title: "MailMuse — Email Marketing Intelligence for D2C Brands",
+    description: "Track 7,000+ real emails from 150+ D2C brands. Competitive intelligence for email marketers.",
+    url: "https://www.mailmuse.in",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MailMuse — Email Marketing Intelligence",
+    description: "Track 7,000+ real emails from 150+ D2C brands across 13 industries.",
+  },
+  alternates: {
+    canonical: "https://www.mailmuse.in",
+  },
 };
 
 export default function RootLayout({
