@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, DM_Serif_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
+import JsonLd from "./components/JsonLd";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,6 +60,32 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${dmSerifDisplay.variable} ${inter.variable} antialiased`}
       >
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "MailMuse",
+            url: "https://www.mailmuse.in",
+            description:
+              "Email Marketing Intelligence for D2C Brands",
+            potentialAction: {
+              "@type": "SearchAction",
+              target:
+                "https://www.mailmuse.in/browse?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
+          }}
+        />
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "MailMuse",
+            url: "https://www.mailmuse.in",
+            description:
+              "Track 7,000+ real emails from 150+ D2C brands across 13 industries.",
+          }}
+        />
         <AuthProvider>
           {children}
         </AuthProvider>

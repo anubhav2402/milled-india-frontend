@@ -35,12 +35,18 @@ type EmailItem = {
   received_at: string;
 };
 
-export default function BrandPageClient() {
+export default function BrandPageClient({
+  serverAnalytics,
+}: {
+  serverAnalytics?: BrandAnalytics | null;
+}) {
   const params = useParams();
   const brandName = decodeURIComponent(params.name as string);
   const { user, token } = useAuth();
 
-  const [analytics, setAnalytics] = useState<BrandAnalytics | null>(null);
+  const [analytics, setAnalytics] = useState<BrandAnalytics | null>(
+    serverAnalytics ?? null
+  );
   const [emails, setEmails] = useState<EmailItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);

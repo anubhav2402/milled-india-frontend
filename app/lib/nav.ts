@@ -6,8 +6,9 @@ export function getNavLinks(user: User | null): NavLink[] {
   const links: NavLink[] = [
     { label: "Browse", href: "/browse" },
     { label: "Brands", href: "/brands" },
+    { label: "Industries", href: "/industry" },
     { label: "Analytics", href: "/analytics" },
-    { label: "Benchmarks", href: "/benchmarks" },
+    { label: "Blog", href: "/blog" },
   ];
   if (user) {
     links.push({ label: "Saved", href: "/saved" });

@@ -1,4 +1,7 @@
 import type { MetadataRoute } from "next";
+import { INDUSTRIES } from "./lib/constants";
+import { industryToSlug } from "./lib/industry-utils";
+import { posts } from "./blog/posts";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -116,6 +119,38 @@ export default async function sitemap({
       }
     } catch (e) {
       console.error("Failed to fetch brands for sitemap:", e);
+    }
+
+    // Industry pages
+    entries.push({
+      url: `${SITE_URL}/industry`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    });
+    for (const industry of INDUSTRIES) {
+      entries.push({
+        url: `${SITE_URL}/industry/${industryToSlug(industry)}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      });
+    }
+
+    // Blog pages
+    entries.push({
+      url: `${SITE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    });
+    for (const post of posts) {
+      entries.push({
+        url: `${SITE_URL}/blog/${post.slug}`,
+        lastModified: new Date(post.date),
+        changeFrequency: "monthly",
+        priority: 0.6,
+      });
     }
 
     return entries;
