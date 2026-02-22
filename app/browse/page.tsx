@@ -558,6 +558,7 @@ function LoadingGrid() {
 // Main Browse Content
 function BrowseContent() {
   const searchParams = useSearchParams();
+  const { user } = useAuth();
   const brandFromUrl = searchParams.get("brand");
   const industryFromUrl = searchParams.get("industry");
   const queryFromUrl = searchParams.get("q");
