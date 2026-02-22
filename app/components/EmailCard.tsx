@@ -56,9 +56,9 @@ export default function EmailCard({
     return date.toLocaleDateString("en-IN", { month: "short", day: "numeric" });
   };
 
-  // Intersection Observer for lazy loading (only for authenticated users)
+  // Intersection Observer for lazy loading
   useEffect(() => {
-    if (!showPreview || !user) return;
+    if (!showPreview) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -72,11 +72,11 @@ export default function EmailCard({
 
     if (cardRef.current) observer.observe(cardRef.current);
     return () => observer.disconnect();
-  }, [showPreview, user]);
+  }, [showPreview]);
 
-  // Fetch HTML when visible (only for authenticated users)
+  // Fetch HTML when visible
   useEffect(() => {
-    if (!isVisible || !showPreview || html !== null || isLoading || !user) return;
+    if (!isVisible || !showPreview || html !== null || isLoading) return;
 
     const fetchHtml = async () => {
       setIsLoading(true);
@@ -98,7 +98,7 @@ export default function EmailCard({
     };
 
     fetchHtml();
-  }, [isVisible, id, html, isLoading, showPreview, user, token]);
+  }, [isVisible, id, html, isLoading, showPreview, token]);
 
   return (
     <a
