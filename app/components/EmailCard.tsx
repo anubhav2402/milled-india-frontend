@@ -208,8 +208,8 @@ export default function EmailCard({
                     animation: "spin 1s linear infinite",
                   }}
                 />
-              ) : preview && !user ? (
-                /* Text preview for non-authenticated users */
+              ) : preview ? (
+                /* Text preview fallback when HTML isn't loaded */
                 <div style={{
                   width: "100%",
                   height: "100%",
