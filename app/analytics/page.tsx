@@ -144,7 +144,10 @@ export default function AnalyticsPage() {
                 Login to unlock full analytics
               </p>
               <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "#a16207" }}>
-                See detailed stats, campaign breakdowns, and timing insights
+                See detailed stats, campaign breakdowns, and timing insights.{" "}
+                <Link href="/analytics/sample" style={{ color: "#92400e", fontWeight: 600, textDecoration: "underline" }}>
+                  Preview a sample report
+                </Link>
               </p>
             </div>
             <Link

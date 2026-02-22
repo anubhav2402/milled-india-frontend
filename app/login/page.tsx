@@ -37,7 +37,7 @@ export default function LoginPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (!isLoading && user) {
-      router.push("/brands");
+      router.push("/browse");
     }
   }, [user, isLoading, router]);
 
@@ -82,7 +82,7 @@ export default function LoginPage() {
     const result = await googleLogin(response.credential);
     
     if (result.success) {
-      router.push("/brands");
+      router.push("/browse");
     } else {
       setError(result.error || "Google login failed");
     }
@@ -98,7 +98,7 @@ export default function LoginPage() {
     const result = await login(email, password);
     
     if (result.success) {
-      router.push("/brands");
+      router.push("/browse");
     } else {
       setError(result.error || "Login failed");
     }

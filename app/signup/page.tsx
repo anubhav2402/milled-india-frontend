@@ -38,7 +38,7 @@ export default function SignupPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (!isLoading && user) {
-      router.push("/brands");
+      router.push("/browse");
     }
   }, [user, isLoading, router]);
 
@@ -83,7 +83,7 @@ export default function SignupPage() {
     const result = await googleLogin(response.credential);
     
     if (result.success) {
-      router.push("/brands");
+      router.push("/browse");
     } else {
       setError(result.error || "Google signup failed");
     }
@@ -105,7 +105,7 @@ export default function SignupPage() {
     const result = await register(email, password, name || undefined);
     
     if (result.success) {
-      router.push("/brands");
+      router.push("/browse");
     } else {
       setError(result.error || "Registration failed");
     }

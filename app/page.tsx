@@ -239,6 +239,7 @@ function FeaturesSection() {
       icon: "📊",
       title: "Analyze Patterns",
       description: "See send frequency, timing, and messaging strategies that drive results.",
+      link: "/analytics/sample",
     },
   ];
 
@@ -292,6 +293,18 @@ function FeaturesSection() {
               }}>
                 {feature.description}
               </p>
+              {"link" in feature && feature.link && (
+                <Link href={feature.link} style={{
+                  display: "inline-block",
+                  marginTop: 12,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "var(--color-accent)",
+                  textDecoration: "none",
+                }}>
+                  See a sample report →
+                </Link>
+              )}
             </Card>
           ))}
         </div>
@@ -401,6 +414,124 @@ function WhoIsThisForSection() {
   );
 }
 
+// Newsletter Signup Section
+function NewsletterSection() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    setStatus("loading");
+    try {
+      const res = await fetch(`${API_BASE}/newsletter/subscribe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setMessage("You're in! We'll send you the best D2C email insights weekly.");
+        setEmail("");
+      } else {
+        setStatus("error");
+        setMessage("Something went wrong. Please try again.");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Something went wrong. Please try again.");
+    }
+  };
+
+  return (
+    <section style={{
+      padding: "80px 24px",
+      background: "white",
+      borderTop: "1px solid var(--color-border)",
+    }}>
+      <div style={{ maxWidth: 560, margin: "0 auto", textAlign: "center" }}>
+        <h2 style={{
+          fontSize: "clamp(24px, 3vw, 30px)",
+          fontWeight: 700,
+          color: "var(--color-primary)",
+          letterSpacing: "-0.02em",
+          marginBottom: 12,
+        }}>
+          Get weekly D2C email insights
+        </h2>
+        <p style={{
+          fontSize: 16,
+          color: "var(--color-secondary)",
+          marginBottom: 28,
+          lineHeight: 1.6,
+        }}>
+          Top campaigns, subject line trends, and send-time analysis — delivered to your inbox every week. No spam, unsubscribe anytime.
+        </p>
+
+        {status === "success" ? (
+          <div style={{
+            padding: "16px 24px",
+            backgroundColor: "#f0fdf4",
+            border: "1px solid #86efac",
+            borderRadius: 12,
+            color: "#166534",
+            fontSize: 15,
+            fontWeight: 500,
+          }}>
+            {message}
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: "flex", gap: 12, maxWidth: 480, margin: "0 auto" }}>
+            <input
+              type="email"
+              required
+              placeholder="you@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={{
+                flex: 1,
+                padding: "14px 16px",
+                fontSize: 15,
+                color: "var(--color-primary)",
+                border: "1px solid var(--color-border)",
+                borderRadius: 10,
+                outline: "none",
+                transition: "border-color 0.2s",
+              }}
+              onFocus={(e) => (e.target.style.borderColor = "var(--color-accent)")}
+              onBlur={(e) => (e.target.style.borderColor = "var(--color-border)")}
+            />
+            <button
+              type="submit"
+              disabled={status === "loading"}
+              style={{
+                padding: "14px 28px",
+                fontSize: 15,
+                fontWeight: 600,
+                color: "#fff",
+                backgroundColor: status === "loading" ? "#94a3b8" : "var(--color-accent)",
+                border: "none",
+                borderRadius: 10,
+                cursor: status === "loading" ? "not-allowed" : "pointer",
+                transition: "background-color 0.2s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {status === "loading" ? "..." : "Subscribe"}
+            </button>
+          </form>
+        )}
+        {status === "error" && (
+          <p style={{ marginTop: 12, fontSize: 14, color: "#dc2626" }}>{message}</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
 // CTA Section
 function CTASection() {
   return (
@@ -476,6 +607,7 @@ export default function Home() {
       <BrandLogosSection />
       <FeaturesSection />
       <WhoIsThisForSection />
+      <NewsletterSection />
       <CTASection />
       <Footer />
     </div>
