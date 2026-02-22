@@ -8,6 +8,23 @@ const SITE_URL = "https://www.mailmuse.in";
 // Each sitemap chunk holds up to 1000 URLs to stay well under Google's 50k/50MB limits
 const EMAILS_PER_SITEMAP = 1000;
 
+// Timeout for API calls (Render free tier cold-starts can take 30s+)
+const FETCH_TIMEOUT_MS = 8000;
+
+/** Fetch with a timeout so sitemap generation never hangs. */
+async function fetchWithTimeout(url: string): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, {
+      signal: controller.signal,
+      next: { revalidate: 3600 },
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /**
  * Generate sitemap index entries.
  * Sitemap 0 = static pages + brands
@@ -16,9 +33,7 @@ const EMAILS_PER_SITEMAP = 1000;
 export async function generateSitemaps() {
   let emailCount = 0;
   try {
-    const res = await fetch(`${API_BASE}/emails/count`, {
-      next: { revalidate: 3600 },
-    });
+    const res = await fetchWithTimeout(`${API_BASE}/emails/count`);
     if (res.ok) {
       const data = await res.json();
       emailCount = data.total || 0;
@@ -87,9 +102,7 @@ export default async function sitemap({
     ];
 
     try {
-      const brandsRes = await fetch(`${API_BASE}/brands`, {
-        next: { revalidate: 3600 },
-      });
+      const brandsRes = await fetchWithTimeout(`${API_BASE}/brands`);
       if (brandsRes.ok) {
         const brands: string[] = await brandsRes.json();
         for (const brand of brands) {
@@ -113,9 +126,7 @@ export default async function sitemap({
   const entries: MetadataRoute.Sitemap = [];
 
   try {
-    const emailsRes = await fetch(`${API_BASE}/emails/ids`, {
-      next: { revalidate: 3600 },
-    });
+    const emailsRes = await fetchWithTimeout(`${API_BASE}/emails/ids`);
     if (emailsRes.ok) {
       const allEmails: { id: number; received_at: string | null }[] =
         await emailsRes.json();
