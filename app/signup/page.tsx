@@ -173,7 +173,7 @@ export default function SignupPage() {
               Unlock the secrets behind India's best email campaigns
             </h1>
             <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.6, margin: 0 }}>
-              Join 500+ marketers who use MailMuse to spy on competitors, steal winning strategies, and 10x their email performance.
+              Track 7,000+ real emails from 150+ Indian D2C brands. See exactly what top brands send, when they send it, and what works.
             </p>
           </div>
 

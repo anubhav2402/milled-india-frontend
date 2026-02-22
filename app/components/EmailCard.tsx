@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Badge from "./Badge";
+import { useAuth } from "../context/AuthContext";
 
 type EmailCardProps = {
   id: number;
@@ -35,6 +36,7 @@ export default function EmailCard({
   const [isLoading, setIsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLAnchorElement>(null);
+  const { user, token } = useAuth();
 
   const brandInitial = brand ? brand.charAt(0).toUpperCase() : "?";
   
@@ -54,10 +56,10 @@ export default function EmailCard({
     return date.toLocaleDateString("en-IN", { month: "short", day: "numeric" });
   };
 
-  // Intersection Observer for lazy loading
+  // Intersection Observer for lazy loading (only for authenticated users)
   useEffect(() => {
-    if (!showPreview) return;
-    
+    if (!showPreview || !user) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -70,18 +72,20 @@ export default function EmailCard({
 
     if (cardRef.current) observer.observe(cardRef.current);
     return () => observer.disconnect();
-  }, [showPreview]);
+  }, [showPreview, user]);
 
-  // Fetch HTML when visible
+  // Fetch HTML when visible (only for authenticated users)
   useEffect(() => {
-    if (!isVisible || !showPreview || html !== null || isLoading) return;
+    if (!isVisible || !showPreview || html !== null || isLoading || !user) return;
 
     const fetchHtml = async () => {
       setIsLoading(true);
       const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
       try {
-        const res = await fetch(`${base}/emails/${id}/html`);
+        const headers: HeadersInit = {};
+        if (token) headers.Authorization = `Bearer ${token}`;
+        const res = await fetch(`${base}/emails/${id}/html`, { headers });
         if (res.ok) {
           const data = await res.json();
           setHtml(data.html);
@@ -94,7 +98,7 @@ export default function EmailCard({
     };
 
     fetchHtml();
-  }, [isVisible, id, html, isLoading, showPreview]);
+  }, [isVisible, id, html, isLoading, showPreview, user, token]);
 
   return (
     <a
@@ -190,6 +194,7 @@ export default function EmailCard({
                 flexDirection: "column",
                 gap: 10,
                 background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
+                padding: "16px 20px",
               }}
             >
               {isLoading ? (
@@ -203,6 +208,43 @@ export default function EmailCard({
                     animation: "spin 1s linear infinite",
                   }}
                 />
+              ) : preview && !user ? (
+                /* Text preview for non-authenticated users */
+                <div style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  gap: 8,
+                }}>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}>
+                    <div style={{
+                      width: 28, height: 28, borderRadius: 7,
+                      background: "white", display: "flex",
+                      alignItems: "center", justifyContent: "center",
+                      fontWeight: 600, fontSize: 12, color: "#C2714A",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.06)", flexShrink: 0,
+                    }}>
+                      {brandInitial}
+                    </div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>
+                      {brand || "Unknown"}
+                    </span>
+                  </div>
+                  <p style={{
+                    margin: 0, fontSize: 13, color: "#64748b",
+                    lineHeight: 1.5,
+                    display: "-webkit-box", WebkitLineClamp: 4,
+                    WebkitBoxOrient: "vertical", overflow: "hidden",
+                  }}>
+                    {preview}
+                  </p>
+                </div>
               ) : (
                 <>
                   <div

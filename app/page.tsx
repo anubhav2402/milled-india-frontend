@@ -157,12 +157,17 @@ function StatsSection() {
 
 // Brand Logos Section — Social Proof
 function BrandLogosSection() {
-  const brands = [
-    "Gucci", "Net-A-Porter", "Anthropologie", "Nykaa", "Balenciaga",
-    "Bobbi Brown", "Mango", "Reformation", "Calvin Klein", "Fossil",
-    "Allbirds", "Pottery Barn", "Urban Decay", "Zomato", "Givenchy",
-    "Luisaviaroma", "Innisfree", "Nicobar", "Mytheresa", "Ganni",
-  ];
+  const [brands, setBrands] = useState<string[]>([]);
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
+
+  useEffect(() => {
+    fetch(`${API_BASE}/brands`)
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data: string[]) => setBrands(data.slice(0, 24)))
+      .catch(() => {});
+  }, [API_BASE]);
+
+  if (brands.length === 0) return null;
 
   return (
     <section style={{
@@ -179,7 +184,7 @@ function BrandLogosSection() {
           textTransform: "uppercase",
           marginBottom: 32,
         }}>
-          Tracking emails from the world&apos;s top brands
+          Tracking emails from {brands.length}+ brands
         </p>
         <div style={{
           display: "flex",
