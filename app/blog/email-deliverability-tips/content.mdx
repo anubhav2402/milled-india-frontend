@@ -1,0 +1,101 @@
+# Email Deliverability: Getting Past the Inbox Gatekeepers
+
+You can craft the perfect email — compelling subject line, stunning design, irresistible offer — and none of it matters if the email never reaches the inbox. Deliverability is the unglamorous foundation that everything else rests on. Across **7,000+ emails from 150+ Indian D2C brands** tracked on MailMuse, the brands with the most consistent sending patterns are invariably the ones that have mastered deliverability fundamentals.
+
+## The Deliverability Landscape for Indian D2C
+
+Indian D2C email marketing faces unique deliverability challenges. A significant portion of the subscriber base uses Gmail, which means Google's filtering algorithms disproportionately determine inbox placement. Yahoo Mail and Outlook also have meaningful market share, each with their own filtering logic.
+
+The brands that appear most consistently in our MailMuse database — those sending regular, sustained email campaigns over months — have clearly invested in deliverability infrastructure. Sporadic senders and brands with erratic patterns often struggle to maintain the sender reputation needed for reliable inbox placement.
+
+## Authentication: Your First Line of Defense
+
+Email authentication is non-negotiable. Three protocols form the foundation:
+
+### SPF (Sender Policy Framework)
+
+SPF tells receiving mail servers which IP addresses are authorized to send email on your domain's behalf. Without it, your emails are far more likely to land in spam.
+
+- **Publish an SPF record** in your DNS settings listing all services that send email for your domain — your ESP, transactional email provider, and any other sending sources
+- **Avoid exceeding 10 DNS lookups** in your SPF record, a common mistake when using multiple sending services
+- **Review and update** your SPF record whenever you change email service providers
+
+### DKIM (DomainKeys Identified Mail)
+
+DKIM adds a cryptographic signature to your emails, verifying they were not altered in transit. Every major ESP provides DKIM signing — make sure it is properly configured.
+
+### DMARC (Domain-based Message Authentication)
+
+DMARC ties SPF and DKIM together with a policy that tells receivers what to do when authentication fails. Start with a monitoring policy (p=none), review reports, then progressively tighten to quarantine and eventually reject.
+
+Brands in every category from [Beauty & Personal Care](/industry/beauty-and-personal-care) to [Electronics & Gadgets](/industry/electronics-and-gadgets) benefit equally from proper authentication. This is not optional regardless of your industry or brand size.
+
+## List Hygiene: Quality Over Quantity
+
+A large email list means nothing if half the addresses are inactive, invalid, or unengaged. Poor list hygiene directly damages sender reputation.
+
+### Practical List Hygiene Steps
+
+1. **Remove hard bounces immediately** — Every hard bounce signals to ISPs that you are sending to bad addresses
+2. **Suppress consistently unengaged subscribers** — If someone has not opened or clicked in 90 to 120 days, move them to a re-engagement segment before removing them entirely
+3. **Validate new addresses at signup** — Implement double opt-in or real-time email validation to catch typos and fake addresses before they enter your list
+4. **Monitor complaint rates** — Keep spam complaint rates below 0.1%. Rising complaints are an early warning signal
+5. **Watch for spam traps** — Purchased or scraped lists almost always contain spam trap addresses that will devastate your reputation
+
+Our analysis of [re-engagement email strategies](/blog/re-engagement-email-strategies) shows that the most disciplined brands actively prune their lists rather than clinging to inflated subscriber counts.
+
+## Content Optimization for Deliverability
+
+What you put in your emails affects whether they reach the inbox:
+
+### Subject Lines
+
+- **Avoid excessive capitalization** — "MASSIVE SALE TODAY ONLY" triggers spam filters
+- **Limit exclamation marks** — One is acceptable; three is a red flag
+- **Be honest** — Misleading subject lines generate complaints, which tank deliverability
+- **Test against spam filters** — Most ESPs offer pre-send spam scoring tools
+
+### Body Content
+
+- **Maintain a healthy text-to-image ratio** — Emails that are entirely images with no text are suspicious to filters
+- **Avoid URL shorteners** — Spammers use shortened links to mask destinations. Use full, clean URLs
+- **Include a plain-text version** — Always send multipart emails with both HTML and plain text
+- **Keep code clean** — Messy HTML, especially copied from Microsoft Word, can trigger filters
+
+### Technical Elements
+
+- **Unsubscribe link** — Make it prominent and functional. One-click unsubscribe is increasingly expected and now required by Gmail and Yahoo
+- **Physical address** — Required by law in many jurisdictions and expected by spam filters
+- **Consistent From name and address** — Changing your sender identity frequently confuses both subscribers and filters
+
+## Sender Reputation Management
+
+Your sender reputation is a score that ISPs assign based on your sending behavior. It determines inbox placement more than any single email's content.
+
+### Building and Maintaining Reputation
+
+- **Warm up new IPs and domains gradually** — Start with small volumes to your most engaged subscribers and scale up over weeks
+- **Send consistently** — Erratic volume spikes look suspicious. The brands we track on MailMuse with the steadiest sending cadences tend to be the ones with the longest continuous presence in our database
+- **Segment by engagement** — Send more frequently to engaged subscribers and less to inactive ones. This improves your aggregate metrics
+- **Monitor blacklists** — Regularly check services like MXToolbox to ensure your sending IPs and domains are not listed
+
+Brands like [Nykaa](/brand/Nykaa) and [boAt](/brand/boAt) maintain remarkably consistent sending volumes, which is a strong indicator of healthy sender reputation management practices.
+
+## Monitoring and Diagnostics
+
+Deliverability is not a set-and-forget configuration. Monitor these metrics regularly:
+
+- **Inbox placement rate** — Use seed list testing to measure actual inbox delivery across major providers
+- **Bounce rate** — Track both hard and soft bounces. Hard bounce rates above 2% signal list quality problems
+- **Spam complaint rate** — Stay below 0.1% at all costs
+- **Unsubscribe rate** — A healthy unsubscribe rate (below 0.5%) is actually better than low unsubscribes with high spam complaints
+
+## Actionable Takeaways
+
+1. **Implement SPF, DKIM, and DMARC** if you have not already — this is the single highest-impact action
+2. **Audit your list quarterly** — Remove hard bounces, suppress unengaged subscribers, validate questionable addresses
+3. **Maintain consistent sending volume** — Avoid dramatic spikes or drops in email frequency
+4. **Test before sending** — Use spam scoring tools and seed list testing to catch issues before they affect your reputation
+5. **Study consistent senders** — Use [MailMuse](/browse) to identify brands with steady sending patterns and reverse-engineer their deliverability practices
+
+Deliverability is invisible when it works and devastating when it fails. Invest in the infrastructure now, and every email you send — from [sale emails](/types/sale-emails) to product launches — will perform better as a result.

@@ -1,0 +1,72 @@
+import type { Metadata } from "next";
+import Header from "../../components/Header";
+import JsonLd from "../../components/JsonLd";
+import Breadcrumb from "../../components/Breadcrumb";
+import Content from "./content.mdx";
+
+export const metadata: Metadata = {
+  title: "How D2C Brands Use Loyalty Emails to Boost Retention",
+  description:
+    "Points updates, tier upgrades, and exclusive access — how Indian D2C brands use loyalty emails to drive repeat purchases and reduce churn.",
+  openGraph: {
+    title: "How D2C Brands Use Loyalty Emails to Boost Retention",
+    description:
+      "Points updates, tier upgrades, and exclusive access — how Indian D2C brands use loyalty emails to drive repeat purchases and reduce churn.",
+    type: "article",
+    siteName: "MailMuse",
+    url: "https://www.mailmuse.in/blog/loyalty-program-emails",
+  },
+  twitter: {
+    card: "summary",
+    title: "How D2C Brands Use Loyalty Emails to Boost Retention",
+    description:
+      "Points updates, tier upgrades, and exclusive access — how Indian D2C brands use loyalty emails to drive repeat purchases and reduce churn.",
+  },
+  alternates: {
+    canonical: "https://www.mailmuse.in/blog/loyalty-program-emails",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: "How D2C Brands Use Loyalty Emails to Boost Retention",
+  datePublished: "2026-01-26",
+  author: { "@type": "Organization", name: "MailMuse" },
+  publisher: {
+    "@type": "Organization",
+    name: "MailMuse",
+    url: "https://www.mailmuse.in",
+  },
+  url: "https://www.mailmuse.in/blog/loyalty-program-emails",
+};
+
+export default function Post() {
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
+      <JsonLd data={jsonLd} />
+      <Header />
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "32px 24px" }}>
+        <Breadcrumb
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Blog", href: "/blog" },
+            { label: "How D2C Brands Use Loyalty Emails to Boost Retention" },
+          ]}
+        />
+        <p
+          style={{
+            fontSize: 13,
+            color: "var(--color-tertiary)",
+            margin: "0 0 16px",
+          }}
+        >
+          Published January 26, 2026
+        </p>
+        <article>
+          <Content />
+        </article>
+      </div>
+    </div>
+  );
+}
