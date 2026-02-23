@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { INDUSTRIES } from "./lib/constants";
 import { industryToSlug } from "./lib/industry-utils";
 import { getAllTypeSlugs } from "./lib/type-utils";
+import { brandPairToSlug } from "./lib/compare-utils";
 import { posts } from "./blog/posts";
 
 const API_BASE =
@@ -59,11 +60,11 @@ export async function generateSitemaps() {
   return sitemaps;
 }
 
-export default async function sitemap({
-  id,
-}: {
-  id: number;
+export default async function sitemap(props: {
+  id: Promise<string>;
 }): Promise<MetadataRoute.Sitemap> {
+  const id = Number(await props.id);
+
   // Sitemap 0: static pages + all brands + types + compare + campaigns
   if (id === 0) {
     const entries: MetadataRoute.Sitemap = [
@@ -159,10 +160,10 @@ export default async function sitemap({
     try {
       const pairsRes = await fetchWithTimeout(`${API_BASE}/seo/compare/pairs`);
       if (pairsRes.ok) {
-        const pairs: { slug: string }[] = await pairsRes.json();
+        const pairs: { brand_a: string; brand_b: string }[] = await pairsRes.json();
         for (const pair of pairs) {
           entries.push({
-            url: `${SITE_URL}/compare/${pair.slug}`,
+            url: `${SITE_URL}/compare/${brandPairToSlug(pair.brand_a, pair.brand_b)}`,
             lastModified: new Date(),
             changeFrequency: "weekly",
             priority: 0.7,
@@ -177,7 +178,7 @@ export default async function sitemap({
     try {
       const campaignsRes = await fetchWithTimeout(`${API_BASE}/seo/campaigns`);
       if (campaignsRes.ok) {
-        const campaigns: { slug: string }[] = await campaignsRes.json();
+        const campaigns: { slug: string; year: number }[] = await campaignsRes.json();
         entries.push({
           url: `${SITE_URL}/campaigns`,
           lastModified: new Date(),
@@ -186,7 +187,7 @@ export default async function sitemap({
         });
         for (const campaign of campaigns) {
           entries.push({
-            url: `${SITE_URL}/campaigns/${campaign.slug}`,
+            url: `${SITE_URL}/campaigns/${campaign.slug}-${campaign.year}`,
             lastModified: new Date(),
             changeFrequency: "monthly",
             priority: 0.7,

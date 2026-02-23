@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
 import SeoEmailLink from "../../components/SeoEmailLink";
-import { slugToBrandPair } from "../../lib/compare-utils";
+import { slugToBrandPair, brandPairToSlug } from "../../lib/compare-utils";
 import { industryToSlug } from "../../lib/industry-utils";
 import { typeToSlug } from "../../lib/type-utils";
 
@@ -65,8 +65,8 @@ export async function generateStaticParams() {
       next: { revalidate: 86400 },
     });
     if (!res.ok) return [];
-    const pairs: { slug: string }[] = await res.json();
-    return pairs.map((p) => ({ slug: p.slug }));
+    const pairs: { brand_a: string; brand_b: string }[] = await res.json();
+    return pairs.map((p) => ({ slug: brandPairToSlug(p.brand_a, p.brand_b) }));
   } catch {
     return [];
   }
@@ -293,13 +293,13 @@ export default async function ComparePage({
         </div>
 
         {/* Subject Line Examples */}
-        {(a.sample_subjects.length > 0 || b.sample_subjects.length > 0) && (
+        {((a.sample_subjects?.length ?? 0) > 0 || (b.sample_subjects?.length ?? 0) > 0) && (
           <div style={cardStyle}>
             <h2 style={headingStyle}>Subject Line Examples</h2>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
               <div>
                 <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-accent)", margin: "0 0 12px" }}>{a.name}</h3>
-                {a.sample_subjects.slice(0, 5).map((subj, i) => (
+                {(a.sample_subjects || []).slice(0, 5).map((subj, i) => (
                   <div key={i} style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-secondary)", padding: "6px 0", borderBottom: "1px solid var(--color-border)" }}>
                     &ldquo;{subj}&rdquo;
                   </div>
@@ -307,7 +307,7 @@ export default async function ComparePage({
               </div>
               <div>
                 <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-accent)", margin: "0 0 12px" }}>{b.name}</h3>
-                {b.sample_subjects.slice(0, 5).map((subj, i) => (
+                {(b.sample_subjects || []).slice(0, 5).map((subj, i) => (
                   <div key={i} style={{ fontSize: 13, lineHeight: 1.5, color: "var(--color-secondary)", padding: "6px 0", borderBottom: "1px solid var(--color-border)" }}>
                     &ldquo;{subj}&rdquo;
                   </div>
@@ -318,14 +318,14 @@ export default async function ComparePage({
         )}
 
         {/* Recent Emails */}
-        {(a.recent_emails.length > 0 || b.recent_emails.length > 0) && (
+        {((a.recent_emails?.length ?? 0) > 0 || (b.recent_emails?.length ?? 0) > 0) && (
           <div style={cardStyle}>
             <h2 style={headingStyle}>Recent Emails</h2>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
               <div>
                 <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-accent)", margin: "0 0 12px" }}>{a.name}</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {a.recent_emails.slice(0, 5).map((email) => (
+                  {(a.recent_emails || []).slice(0, 5).map((email) => (
                     <SeoEmailLink
                       key={email.id}
                       id={email.id}
@@ -339,7 +339,7 @@ export default async function ComparePage({
               <div>
                 <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--color-accent)", margin: "0 0 12px" }}>{b.name}</h3>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  {b.recent_emails.slice(0, 5).map((email) => (
+                  {(b.recent_emails || []).slice(0, 5).map((email) => (
                     <SeoEmailLink
                       key={email.id}
                       id={email.id}
