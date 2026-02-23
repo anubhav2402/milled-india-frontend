@@ -3,8 +3,7 @@ import EmailPageClient from "./EmailPageClient";
 import EmailSeoContent from "./EmailSeoContent";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
+import { apiFetch } from "../../lib/api-fetch";
 
 type EmailSeoData = {
   id: number;
@@ -39,15 +38,7 @@ type EmailSeoData = {
 };
 
 async function fetchEmailSeoData(id: string): Promise<EmailSeoData | null> {
-  try {
-    const res = await fetch(`${API_BASE}/seo/email/${id}`, {
-      next: { revalidate: 3600 },
-    });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+  return apiFetch<EmailSeoData>(`/seo/email/${id}`);
 }
 
 export async function generateMetadata({

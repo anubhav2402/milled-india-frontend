@@ -3,10 +3,7 @@ import Link from "next/link";
 import Header from "../components/Header";
 import JsonLd from "../components/JsonLd";
 import Breadcrumb from "../components/Breadcrumb";
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://milled-india-api.onrender.com";
+import { apiFetch } from "../lib/api-fetch";
 
 type Campaign = {
   festival: string;
@@ -37,15 +34,7 @@ export const metadata: Metadata = {
 };
 
 async function fetchCampaigns(): Promise<Campaign[]> {
-  try {
-    const res = await fetch(`${API_BASE}/seo/campaigns`, {
-      next: { revalidate: 3600 },
-    });
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
+  return (await apiFetch<Campaign[]>("/seo/campaigns")) ?? [];
 }
 
 export default async function CampaignsIndex() {

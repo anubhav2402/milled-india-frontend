@@ -6,10 +6,7 @@ import Breadcrumb from "../../components/Breadcrumb";
 import SeoEmailLink from "../../components/SeoEmailLink";
 import { slugToIndustry, industryToSlug } from "../../lib/industry-utils";
 import { typeToSlug } from "../../lib/type-utils";
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://milled-india-api.onrender.com";
+import { apiFetch } from "../../lib/api-fetch";
 
 type IndustrySeoData = {
   industry: string;
@@ -36,16 +33,9 @@ type IndustrySeoData = {
 async function fetchIndustryData(
   industry: string
 ): Promise<IndustrySeoData | null> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/seo/industry/${encodeURIComponent(industry)}`,
-      { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+  return apiFetch<IndustrySeoData>(
+    `/seo/industry/${encodeURIComponent(industry)}`
+  );
 }
 
 export async function generateMetadata({
@@ -101,8 +91,11 @@ export default async function IndustryPage({
           }}
         >
           <h2 style={{ fontSize: 20, color: "var(--color-primary)" }}>
-            Industry not found
+            Could not load industry data
           </h2>
+          <p style={{ fontSize: 14, color: "var(--color-tertiary)", margin: "8px 0 16px" }}>
+            This may be a temporary issue. Try refreshing the page.
+          </p>
           <Link href="/industry" style={{ color: "var(--color-accent)" }}>
             Browse all industries
           </Link>

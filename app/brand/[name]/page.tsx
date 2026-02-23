@@ -5,10 +5,7 @@ import BrandRecentEmails from "./BrandRecentEmails";
 import RelatedBrands from "./RelatedBrands";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://milled-india-api.onrender.com";
+import { apiFetch } from "../../lib/api-fetch";
 
 export type BrandSeoData = {
   brand: string;
@@ -39,16 +36,7 @@ export type BrandSeoData = {
 async function fetchBrandData(
   brandName: string
 ): Promise<BrandSeoData | null> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/seo/brand/${encodeURIComponent(brandName)}`,
-      { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+  return apiFetch<BrandSeoData>(`/seo/brand/${encodeURIComponent(brandName)}`);
 }
 
 export async function generateMetadata({

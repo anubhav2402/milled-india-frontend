@@ -7,10 +7,7 @@ import SeoEmailLink from "../../components/SeoEmailLink";
 import { slugToBrandPair } from "../../lib/compare-utils";
 import { industryToSlug } from "../../lib/industry-utils";
 import { typeToSlug } from "../../lib/type-utils";
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://milled-india-api.onrender.com";
+import { apiFetch } from "../../lib/api-fetch";
 
 type BrandSide = {
   name: string;
@@ -47,16 +44,9 @@ async function fetchCompareData(
   brandA: string,
   brandB: string
 ): Promise<CompareData | null> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/seo/compare/${encodeURIComponent(brandA)}/${encodeURIComponent(brandB)}`,
-      { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+  return apiFetch<CompareData>(
+    `/seo/compare/${encodeURIComponent(brandA)}/${encodeURIComponent(brandB)}`
+  );
 }
 
 export async function generateMetadata({
@@ -115,7 +105,10 @@ export default async function ComparePage({
       <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
         <Header />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center" }}>
-          <h2 style={{ fontSize: 20, color: "var(--color-primary)" }}>Comparison not available</h2>
+          <h2 style={{ fontSize: 20, color: "var(--color-primary)" }}>Could not load comparison data</h2>
+          <p style={{ fontSize: 14, color: "var(--color-tertiary)", margin: "8px 0 16px" }}>
+            This may be a temporary issue. Try refreshing the page.
+          </p>
           <Link href="/brands" style={{ color: "var(--color-accent)" }}>Browse all brands</Link>
         </div>
       </div>

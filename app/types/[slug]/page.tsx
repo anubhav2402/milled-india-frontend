@@ -7,10 +7,7 @@ import SeoEmailLink from "../../components/SeoEmailLink";
 import { slugToType } from "../../lib/type-utils";
 import { industryToSlug } from "../../lib/industry-utils";
 import { TYPE_DESCRIPTIONS } from "../../lib/type-descriptions";
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://milled-india-api.onrender.com";
+import { apiFetch } from "../../lib/api-fetch";
 
 type TypeSeoData = {
   type: string;
@@ -39,15 +36,7 @@ type TypeSeoData = {
 };
 
 async function fetchTypeData(slug: string): Promise<TypeSeoData | null> {
-  try {
-    const res = await fetch(`${API_BASE}/seo/types/${slug}`, {
-      next: { revalidate: 3600 },
-    });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+  return apiFetch<TypeSeoData>(`/seo/types/${slug}`);
 }
 
 export async function generateMetadata({
@@ -101,8 +90,11 @@ export default async function TypePage({
           }}
         >
           <h2 style={{ fontSize: 20, color: "var(--color-primary)" }}>
-            Email type not found
+            Could not load email type data
           </h2>
+          <p style={{ fontSize: 14, color: "var(--color-tertiary)", margin: "8px 0 16px" }}>
+            This may be a temporary issue. Try refreshing the page.
+          </p>
           <Link href="/types" style={{ color: "var(--color-accent)" }}>
             Browse all email types
           </Link>

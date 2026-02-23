@@ -6,10 +6,7 @@ import Breadcrumb from "../../components/Breadcrumb";
 import SeoEmailLink from "../../components/SeoEmailLink";
 import { festivalSlugToName } from "../../lib/festival-utils";
 import { industryToSlug } from "../../lib/industry-utils";
-
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://milled-india-api.onrender.com";
+import { apiFetch } from "../../lib/api-fetch";
 
 type CampaignData = {
   festival: string;
@@ -46,16 +43,7 @@ async function fetchCampaignData(
   festivalSlug: string,
   year: number
 ): Promise<CampaignData | null> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/seo/campaigns/${festivalSlug}/${year}`,
-      { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  }
+  return apiFetch<CampaignData>(`/seo/campaigns/${festivalSlug}/${year}`);
 }
 
 export async function generateMetadata({
@@ -113,7 +101,10 @@ export default async function CampaignPage({
       <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
         <Header />
         <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center" }}>
-          <h2 style={{ fontSize: 20, color: "var(--color-primary)" }}>Campaign data not available</h2>
+          <h2 style={{ fontSize: 20, color: "var(--color-primary)" }}>Could not load campaign data</h2>
+          <p style={{ fontSize: 14, color: "var(--color-tertiary)", margin: "8px 0 16px" }}>
+            This may be a temporary issue. Try refreshing the page.
+          </p>
           <Link href="/campaigns" style={{ color: "var(--color-accent)" }}>Browse all campaigns</Link>
         </div>
       </div>
