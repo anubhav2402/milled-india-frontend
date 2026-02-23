@@ -58,19 +58,6 @@ async function fetchCampaignData(
   }
 }
 
-export async function generateStaticParams() {
-  try {
-    const res = await fetch(`${API_BASE}/seo/campaigns`, {
-      next: { revalidate: 86400 },
-    });
-    if (!res.ok) return [];
-    const campaigns: { slug: string; year: number }[] = await res.json();
-    return campaigns.map((c) => ({ slug: `${c.slug}-${c.year}` }));
-  } catch {
-    return [];
-  }
-}
-
 export async function generateMetadata({
   params,
 }: {

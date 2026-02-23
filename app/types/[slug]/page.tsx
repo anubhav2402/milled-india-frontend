@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
 import SeoEmailLink from "../../components/SeoEmailLink";
-import { slugToType, getAllTypeSlugs } from "../../lib/type-utils";
+import { slugToType } from "../../lib/type-utils";
 import { industryToSlug } from "../../lib/industry-utils";
 import { TYPE_DESCRIPTIONS } from "../../lib/type-descriptions";
 
@@ -48,10 +48,6 @@ async function fetchTypeData(slug: string): Promise<TypeSeoData | null> {
   } catch {
     return null;
   }
-}
-
-export async function generateStaticParams() {
-  return getAllTypeSlugs().map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

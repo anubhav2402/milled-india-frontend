@@ -4,7 +4,7 @@ import Header from "../../components/Header";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
 import SeoEmailLink from "../../components/SeoEmailLink";
-import { slugToBrandPair, brandPairToSlug } from "../../lib/compare-utils";
+import { slugToBrandPair } from "../../lib/compare-utils";
 import { industryToSlug } from "../../lib/industry-utils";
 import { typeToSlug } from "../../lib/type-utils";
 
@@ -56,19 +56,6 @@ async function fetchCompareData(
     return await res.json();
   } catch {
     return null;
-  }
-}
-
-export async function generateStaticParams() {
-  try {
-    const res = await fetch(`${API_BASE}/seo/compare/pairs`, {
-      next: { revalidate: 86400 },
-    });
-    if (!res.ok) return [];
-    const pairs: { brand_a: string; brand_b: string }[] = await res.json();
-    return pairs.map((p) => ({ slug: brandPairToSlug(p.brand_a, p.brand_b) }));
-  } catch {
-    return [];
   }
 }
 
