@@ -17,7 +17,7 @@ type IndustrySeoData = {
   total_emails: number;
   brands: string[];
   top_brands: { brand: string; email_count: number }[];
-  top_campaign_types: string[];
+  top_campaign_types: { type: string; count: number; percentage: number }[];
   recent_emails: {
     id: number;
     subject: string;
@@ -166,7 +166,7 @@ export default async function IndustryPage({
       ? [
           {
             question: `What types of emails do ${industry} brands send?`,
-            answer: `The most common email types in ${industry} are: ${data.top_campaign_types.join(", ")}. Browse each type to see real examples from leading brands.`,
+            answer: `The most common email types in ${industry} are: ${data.top_campaign_types.map((t) => t.type).join(", ")}. Browse each type to see real examples from leading brands.`,
           },
         ]
       : []),
@@ -420,14 +420,14 @@ export default async function IndustryPage({
               Popular Email Types in {industry}
             </h2>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: "var(--color-secondary)", margin: "0 0 16px" }}>
-              {industry} brands most commonly send {data.top_campaign_types.slice(0, 3).join(", ")} emails.
+              {industry} brands most commonly send {data.top_campaign_types.slice(0, 3).map((t) => t.type).join(", ")} emails.
               Explore each campaign type to see real examples and best practices.
             </p>
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              {data.top_campaign_types.map((type) => (
+              {data.top_campaign_types.map((t) => (
                 <Link
-                  key={type}
-                  href={`/types/${typeToSlug(type)}`}
+                  key={t.type}
+                  href={`/types/${typeToSlug(t.type)}`}
                   style={{
                     padding: "8px 16px",
                     borderRadius: 8,
@@ -439,7 +439,7 @@ export default async function IndustryPage({
                     textDecoration: "none",
                   }}
                 >
-                  {type} Emails
+                  {t.type} Emails
                 </Link>
               ))}
             </div>
