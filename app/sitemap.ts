@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { INDUSTRIES } from "./lib/constants";
 import { industryToSlug } from "./lib/industry-utils";
+import { getAllTypeSlugs } from "./lib/type-utils";
 import { posts } from "./blog/posts";
 
 const API_BASE =
@@ -30,7 +31,7 @@ async function fetchWithTimeout(url: string): Promise<Response> {
 
 /**
  * Generate sitemap index entries.
- * Sitemap 0 = static pages + brands
+ * Sitemap 0 = static pages + brands + types + compare + campaigns
  * Sitemap 1..N = email pages in chunks of EMAILS_PER_SITEMAP
  */
 export async function generateSitemaps() {
@@ -63,7 +64,7 @@ export default async function sitemap({
 }: {
   id: number;
 }): Promise<MetadataRoute.Sitemap> {
-  // Sitemap 0: static pages + all brands
+  // Sitemap 0: static pages + all brands + types + compare + campaigns
   if (id === 0) {
     const entries: MetadataRoute.Sitemap = [
       {
@@ -104,6 +105,7 @@ export default async function sitemap({
       },
     ];
 
+    // Brand pages
     try {
       const brandsRes = await fetchWithTimeout(`${API_BASE}/brands`);
       if (brandsRes.ok) {
@@ -135,6 +137,64 @@ export default async function sitemap({
         changeFrequency: "weekly",
         priority: 0.8,
       });
+    }
+
+    // Email type pages
+    entries.push({
+      url: `${SITE_URL}/types`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
+    });
+    for (const slug of getAllTypeSlugs()) {
+      entries.push({
+        url: `${SITE_URL}/types/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.8,
+      });
+    }
+
+    // Comparison pages
+    try {
+      const pairsRes = await fetchWithTimeout(`${API_BASE}/seo/compare/pairs`);
+      if (pairsRes.ok) {
+        const pairs: { slug: string }[] = await pairsRes.json();
+        for (const pair of pairs) {
+          entries.push({
+            url: `${SITE_URL}/compare/${pair.slug}`,
+            lastModified: new Date(),
+            changeFrequency: "weekly",
+            priority: 0.7,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch compare pairs for sitemap:", e);
+    }
+
+    // Campaign pages
+    try {
+      const campaignsRes = await fetchWithTimeout(`${API_BASE}/seo/campaigns`);
+      if (campaignsRes.ok) {
+        const campaigns: { slug: string }[] = await campaignsRes.json();
+        entries.push({
+          url: `${SITE_URL}/campaigns`,
+          lastModified: new Date(),
+          changeFrequency: "weekly",
+          priority: 0.7,
+        });
+        for (const campaign of campaigns) {
+          entries.push({
+            url: `${SITE_URL}/campaigns/${campaign.slug}`,
+            lastModified: new Date(),
+            changeFrequency: "monthly",
+            priority: 0.7,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch campaigns for sitemap:", e);
     }
 
     // Blog pages

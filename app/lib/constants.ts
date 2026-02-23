@@ -28,6 +28,11 @@ export const CAMPAIGN_TYPES = [
   "Festive",
   "Loyalty",
   "Feedback",
+  "Back in Stock",
+  "Educational",
+  "Product Showcase",
+  "Promotional",
+  "Confirmation",
 ];
 
 export const CAMPAIGN_TYPE_COLORS: Record<string, string> = {
@@ -41,4 +46,9 @@ export const CAMPAIGN_TYPE_COLORS: Record<string, string> = {
   Festive: "#f97316",
   Loyalty: "#14b8a6",
   Feedback: "#84cc16",
+  "Back in Stock": "#0891b2",
+  Educational: "#7c3aed",
+  "Product Showcase": "#059669",
+  Promotional: "#dc2626",
+  Confirmation: "#4f46e5",
 };

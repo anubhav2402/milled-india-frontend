@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import BrandPageClient from "./BrandPageClient";
 import BrandSeoContent from "./BrandSeoContent";
+import BrandRecentEmails from "./BrandRecentEmails";
 import RelatedBrands from "./RelatedBrands";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
@@ -9,27 +10,38 @@ const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   "https://milled-india-api.onrender.com";
 
-type BrandAnalytics = {
+export type BrandSeoData = {
   brand: string;
-  total_emails: number | string;
-  primary_industry: string | null;
-  emails_per_week: number | string;
+  industry: string | null;
+  total_emails: number;
+  emails_per_week: number;
   first_email: string | null;
   last_email: string | null;
-  campaign_breakdown: Record<string, number | string>;
-  send_day_distribution: Record<string, number> | string;
-  send_time_distribution: Record<string, number> | string;
-  subject_line_stats:
-    | { avg_length: number; emoji_usage_rate: number; top_words: string[] }
-    | string;
+  campaign_breakdown: Record<string, number>;
+  send_day_distribution: Record<string, number>;
+  send_time_distribution: Record<string, number>;
+  subject_line_stats: {
+    avg_length: number;
+    emoji_usage_rate: number;
+    top_words: string[];
+    sample_subjects: string[];
+  };
+  recent_emails: {
+    id: number;
+    subject: string;
+    type: string;
+    received_at: string | null;
+  }[];
+  festive_campaigns: { festival: string; count: number; year: number }[];
+  related_brands: string[];
 };
 
 async function fetchBrandData(
   brandName: string
-): Promise<BrandAnalytics | null> {
+): Promise<BrandSeoData | null> {
   try {
     const res = await fetch(
-      `${API_BASE}/analytics/brand/${encodeURIComponent(brandName)}`,
+      `${API_BASE}/seo/brand/${encodeURIComponent(brandName)}`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) return null;
@@ -55,11 +67,8 @@ export async function generateMetadata({
     };
   }
 
-  const emailCount =
-    typeof data.total_emails === "number"
-      ? `${data.total_emails} emails tracked`
-      : "emails tracked";
-  const industry = data.primary_industry || "D2C";
+  const emailCount = `${data.total_emails} emails tracked`;
+  const industry = data.industry || "D2C";
   const title = `${brandName} Email Marketing Strategy & Campaigns | MailMuse`;
   const description = `See ${brandName}'s email marketing strategy. ${emailCount}. Browse ${industry} campaigns, subject lines, send frequency, and more on MailMuse.`;
 
@@ -152,12 +161,13 @@ export default async function BrandPage({
           ]}
         />
       </div>
-      <BrandPageClient serverAnalytics={data} />
+      <BrandPageClient />
       {data && (
         <>
-          <BrandSeoContent analytics={data} brandName={brandName} />
+          <BrandSeoContent data={data} brandName={brandName} />
+          <BrandRecentEmails emails={data.recent_emails} brandName={brandName} />
           <RelatedBrands
-            industry={data.primary_industry}
+            industry={data.industry}
             currentBrand={brandName}
           />
         </>

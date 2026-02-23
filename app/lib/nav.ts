@@ -7,6 +7,7 @@ export function getNavLinks(user: User | null): NavLink[] {
     { label: "Browse", href: "/browse" },
     { label: "Brands", href: "/brands" },
     { label: "Industries", href: "/industry" },
+    { label: "Email Types", href: "/types" },
     { label: "Analytics", href: "/analytics" },
     { label: "Blog", href: "/blog" },
   ];

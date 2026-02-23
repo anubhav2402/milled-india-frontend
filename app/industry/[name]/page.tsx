@@ -3,7 +3,9 @@ import Link from "next/link";
 import Header from "../../components/Header";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
+import SeoEmailLink from "../../components/SeoEmailLink";
 import { slugToIndustry, industryToSlug } from "../../lib/industry-utils";
+import { typeToSlug } from "../../lib/type-utils";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -16,6 +18,19 @@ type IndustrySeoData = {
   brands: string[];
   top_brands: { brand: string; email_count: number }[];
   top_campaign_types: string[];
+  recent_emails: {
+    id: number;
+    subject: string;
+    brand: string;
+    type: string;
+    received_at: string | null;
+  }[];
+  avg_emails_per_brand_per_week: number;
+  avg_subject_length: number;
+  emoji_usage_rate: number;
+  peak_send_day: string | null;
+  peak_send_time: string | null;
+  seasonal_activity: { month: string; count: number }[];
 };
 
 async function fetchIndustryData(
@@ -23,7 +38,7 @@ async function fetchIndustryData(
 ): Promise<IndustrySeoData | null> {
   try {
     const res = await fetch(
-      `${API_BASE}/industries/${encodeURIComponent(industry)}/seo`,
+      `${API_BASE}/seo/industry/${encodeURIComponent(industry)}`,
       { next: { revalidate: 3600 } }
     );
     if (!res.ok) return null;
@@ -143,11 +158,15 @@ export default async function IndustryPage({
       question: `How many ${industry} brands does MailMuse track?`,
       answer: `MailMuse currently tracks email campaigns from ${data.total_brands} ${industry} brands, with ${data.total_emails.toLocaleString()} total emails analyzed.`,
     },
+    {
+      question: `What are the email marketing benchmarks for ${industry}?`,
+      answer: `${industry} brands send an average of ${data.avg_emails_per_brand_per_week.toFixed(1)} emails per week with an average subject line length of ${Math.round(data.avg_subject_length)} characters. Emoji usage rate is ${data.emoji_usage_rate}%.${data.peak_send_day ? ` The most popular send day is ${data.peak_send_day}.` : ""}`,
+    },
     ...(data.top_campaign_types.length > 0
       ? [
           {
             question: `What types of emails do ${industry} brands send?`,
-            answer: `The most common email types in ${industry} are: ${data.top_campaign_types.join(", ")}.`,
+            answer: `The most common email types in ${industry} are: ${data.top_campaign_types.join(", ")}. Browse each type to see real examples from leading brands.`,
           },
         ]
       : []),
@@ -225,68 +244,29 @@ export default async function IndustryPage({
           {/* Stats row */}
           <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
             <div>
-              <div
-                style={{
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: "var(--color-accent)",
-                }}
-              >
-                {data.total_brands}
-              </div>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "var(--color-tertiary)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Brands
-              </div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "var(--color-accent)" }}>{data.total_brands}</div>
+              <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Brands</div>
             </div>
             <div>
-              <div
-                style={{
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: "var(--color-accent)",
-                }}
-              >
-                {data.total_emails.toLocaleString()}
-              </div>
-              <div
-                style={{
-                  fontSize: 12,
-                  color: "var(--color-tertiary)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                Emails Tracked
-              </div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "var(--color-accent)" }}>{data.total_emails.toLocaleString()}</div>
+              <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Emails Tracked</div>
             </div>
-            {data.top_campaign_types.length > 0 && (
+            {data.avg_emails_per_brand_per_week > 0 && (
               <div>
-                <div
-                  style={{
-                    fontSize: 24,
-                    fontWeight: 700,
-                    color: "var(--color-accent)",
-                  }}
-                >
-                  {data.top_campaign_types[0]}
-                </div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--color-tertiary)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  Top Campaign Type
-                </div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: "var(--color-accent)" }}>{data.avg_emails_per_brand_per_week.toFixed(1)}</div>
+                <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Emails/Brand/Week</div>
+              </div>
+            )}
+            {data.avg_subject_length > 0 && (
+              <div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: "var(--color-accent)" }}>{Math.round(data.avg_subject_length)}</div>
+                <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Avg Subject Length</div>
+              </div>
+            )}
+            {data.emoji_usage_rate > 0 && (
+              <div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: "var(--color-accent)" }}>{data.emoji_usage_rate}%</div>
+                <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Emoji Usage</div>
               </div>
             )}
           </div>
@@ -385,6 +365,157 @@ export default async function IndustryPage({
             );
           })}
         </div>
+
+        {/* Benchmarks Prose */}
+        <div
+          style={{
+            background: "white",
+            borderRadius: 14,
+            padding: "28px 32px",
+            border: "1px solid var(--color-border)",
+            marginBottom: 24,
+          }}
+        >
+          <h2
+            style={{
+              fontSize: 18,
+              fontWeight: 700,
+              color: "var(--color-primary)",
+              margin: "0 0 16px",
+              fontFamily: "var(--font-dm-serif)",
+            }}
+          >
+            {industry} Email Marketing Benchmarks
+          </h2>
+          <p style={{ fontSize: 15, lineHeight: 1.7, color: "var(--color-secondary)", margin: "0 0 12px" }}>
+            Based on our analysis of {data.total_emails.toLocaleString()} emails from {data.total_brands} {industry} brands,
+            the average brand in this industry sends approximately {data.avg_emails_per_brand_per_week.toFixed(1)} emails per week.
+            Subject lines average {Math.round(data.avg_subject_length)} characters, with {data.emoji_usage_rate}% of emails
+            using emojis in the subject line.
+            {data.peak_send_day && ` The most popular day to send emails is ${data.peak_send_day}.`}
+            {data.peak_send_time && ` Most emails are sent during the ${data.peak_send_time} time slot.`}
+          </p>
+        </div>
+
+        {/* Campaign Types */}
+        {data.top_campaign_types.length > 0 && (
+          <div
+            style={{
+              background: "white",
+              borderRadius: 14,
+              padding: "28px 32px",
+              border: "1px solid var(--color-border)",
+              marginBottom: 24,
+            }}
+          >
+            <h2
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: "var(--color-primary)",
+                margin: "0 0 16px",
+                fontFamily: "var(--font-dm-serif)",
+              }}
+            >
+              Popular Email Types in {industry}
+            </h2>
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: "var(--color-secondary)", margin: "0 0 16px" }}>
+              {industry} brands most commonly send {data.top_campaign_types.slice(0, 3).join(", ")} emails.
+              Explore each campaign type to see real examples and best practices.
+            </p>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {data.top_campaign_types.map((type) => (
+                <Link
+                  key={type}
+                  href={`/types/${typeToSlug(type)}`}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: 8,
+                    background: "var(--color-surface)",
+                    border: "1px solid var(--color-border)",
+                    color: "var(--color-accent)",
+                    fontSize: 13,
+                    fontWeight: 500,
+                    textDecoration: "none",
+                  }}
+                >
+                  {type} Emails
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Recent Emails */}
+        {data.recent_emails && data.recent_emails.length > 0 && (
+          <div
+            style={{
+              background: "white",
+              borderRadius: 14,
+              padding: "28px 32px",
+              border: "1px solid var(--color-border)",
+              marginBottom: 24,
+            }}
+          >
+            <h2
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: "var(--color-primary)",
+                margin: "0 0 16px",
+                fontFamily: "var(--font-dm-serif)",
+              }}
+            >
+              Recent {industry} Emails
+            </h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {data.recent_emails.map((email) => (
+                <SeoEmailLink
+                  key={email.id}
+                  id={email.id}
+                  subject={email.subject}
+                  brand={email.brand}
+                  type={email.type}
+                  received_at={email.received_at || undefined}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Seasonal Activity */}
+        {data.seasonal_activity && data.seasonal_activity.length > 0 && (() => {
+          const peak = data.seasonal_activity.reduce((a, b) => a.count > b.count ? a : b);
+          const peakMonth = new Date(peak.month + "-01").toLocaleDateString("en-US", { month: "long", year: "numeric" });
+          return (
+            <div
+              style={{
+                background: "white",
+                borderRadius: 14,
+                padding: "28px 32px",
+                border: "1px solid var(--color-border)",
+                marginBottom: 24,
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: 18,
+                  fontWeight: 700,
+                  color: "var(--color-primary)",
+                  margin: "0 0 16px",
+                  fontFamily: "var(--font-dm-serif)",
+                }}
+              >
+                Seasonal Email Patterns
+              </h2>
+              <p style={{ fontSize: 15, lineHeight: 1.7, color: "var(--color-secondary)", margin: 0 }}>
+                Email activity in {industry} peaks during {peakMonth} with {peak.count} emails sent.
+                This typically aligns with major Indian shopping festivals and seasonal campaigns.
+                Brands in this industry ramp up their email frequency during festive seasons to maximize engagement and sales.
+              </p>
+            </div>
+          );
+        })()}
 
         {/* FAQ */}
         {faqItems.length > 0 && (
