@@ -70,7 +70,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
           }}
         >
           <Badge variant="accent" style={{ marginBottom: 24 }}>
-            India&apos;s #1 D2C Email Intelligence Platform
+            The #1 D2C Email Intelligence Platform
           </Badge>
           <h1
             style={{
@@ -83,7 +83,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
               marginBottom: 20,
             }}
           >
-            Steal the email playbook of India&apos;s top D2C brands
+            Steal the email playbook of top D2C brands
           </h1>
           <p
             style={{
@@ -94,7 +94,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
               marginBottom: 32,
             }}
           >
-            See every email Mamaearth, boAt, Sugar Cosmetics and 150+ Indian
+            See every email Mamaearth, boAt, Sugar Cosmetics and 150+
             D2C brands send &mdash; subject lines, designs, timing, and
             strategy. Then edit and reuse them as your own templates.
           </p>
@@ -344,7 +344,7 @@ function BrandTrustBar({ brands }: { brands: string[] }) {
           marginBottom: 20,
         }}
       >
-        Tracking emails from {brands.length}+ Indian D2C brands including
+        Tracking emails from {brands.length}+ D2C brands including
       </p>
       <div
         style={{
@@ -661,7 +661,7 @@ function ProductPreview({
           }}
         >
           {[
-            `${totalEmails.toLocaleString("en-IN")}+ emails tracked`,
+            `${totalEmails.toLocaleString()}+ emails tracked`,
             `${brandCount}+ brands monitored`,
             "Updated daily",
           ].map((stat) => (
@@ -715,7 +715,7 @@ function ValuePillars() {
       ),
       title: "Spy on any brand\u2019s email strategy",
       description:
-        "Search 150+ Indian D2C brands by name, industry, or campaign type. See their full email history \u2014 from welcome flows to festive sale blasts.",
+        "Search 150+ D2C brands by name, industry, or campaign type. See their full email history \u2014 from welcome flows to festive sale blasts.",
       cta: "Browse by industry",
       href: "/industry",
     },
@@ -1418,7 +1418,7 @@ function PricingAnchor() {
                 margin: "0 0 20px",
               }}
             >
-              &#8377;{annualPrice.toLocaleString("en-IN")}/year{" "}
+              &#8377;{annualPrice.toLocaleString()}/year{" "}
               <span
                 style={{
                   color: "#16a34a",
@@ -1532,7 +1532,7 @@ function UrgencyStrip({
           marginBottom: 24,
         }}
       >
-        {totalEmails.toLocaleString("en-IN")}+ emails and counting &mdash; with{" "}
+        {totalEmails.toLocaleString()}+ emails and counting &mdash; with{" "}
         {brandCount}+ brands sending new campaigns daily
       </p>
       <Button href="/browse" variant="secondary" size="lg">
@@ -1575,7 +1575,7 @@ function FinalCTA() {
             lineHeight: 1.6,
           }}
         >
-          Join marketers at India&apos;s top D2C brands who use MailMuse to
+          Join marketers at top D2C brands who use MailMuse to
           write better emails, send smarter campaigns, and outperform
           competitors.
         </p>
