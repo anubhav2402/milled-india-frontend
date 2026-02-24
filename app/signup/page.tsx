@@ -170,10 +170,10 @@ export default function SignupPage() {
               100% FREE - No Credit Card Required
             </span>
             <h1 style={{ fontSize: 42, fontWeight: 700, color: "#0f172a", lineHeight: 1.2, margin: "0 0 16px 0" }}>
-              Unlock the secrets behind the best D2C email campaigns
+              Unlock the secrets behind the best email campaigns
             </h1>
             <p style={{ fontSize: 18, color: "#64748b", lineHeight: 1.6, margin: 0 }}>
-              Track 7,000+ real emails from 150+ D2C brands. See exactly what top brands send, when they send it, and what works.
+              Track 7,000+ real emails from 150+ brands. See exactly what top brands send, when they send it, and what works.
             </p>
           </div>
 

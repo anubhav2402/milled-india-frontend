@@ -5,18 +5,18 @@ import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
 
 export const metadata: Metadata = {
-  title: "How Top Indian D2C Brands Structure Sale Emails",
+  title: "How Top Brands Structure Sale Emails",
   description:
-    "Breaking down the anatomy of high-performing sale emails from brands like Nykaa, Mamaearth, and boAt.",
+    "Breaking down the anatomy of high-performing sale emails from leading brands.",
   alternates: {
     canonical:
       "https://www.mailmuse.in/blog/how-top-brands-structure-sale-emails",
   },
   openGraph: {
     type: "article",
-    title: "How Top Indian D2C Brands Structure Sale Emails",
+    title: "How Top Brands Structure Sale Emails",
     description:
-      "Anatomy of high-performing sale emails from leading D2C brands.",
+      "Anatomy of high-performing sale emails from leading brands.",
     url: "https://www.mailmuse.in/blog/how-top-brands-structure-sale-emails",
   },
 };
@@ -25,7 +25,7 @@ export default function Post() {
   const blogPostingLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: "How Top Indian D2C Brands Structure Sale Emails",
+    headline: "How Top Brands Structure Sale Emails",
     datePublished: "2026-02-25",
     author: {
       "@type": "Organization",

@@ -50,8 +50,8 @@ export async function generateMetadata({
 
   const brandCount = data?.total_brands || 0;
   const emailCount = data?.total_emails || 0;
-  const title = `Best ${typeName} Email Examples from Indian D2C Brands | MailMuse`;
-  const description = `Browse ${emailCount}+ real ${typeName.toLowerCase()} email examples from ${brandCount} top Indian D2C brands. See subject lines, designs, and strategies that work.`;
+  const title = `Best ${typeName} Email Examples from Top Brands | MailMuse`;
+  const description = `Browse ${emailCount}+ real ${typeName.toLowerCase()} email examples from ${brandCount} top brands. See subject lines, designs, and strategies that work.`;
 
   return {
     title,
@@ -121,7 +121,7 @@ export default async function TypePage({
     "@type": "CollectionPage",
     name: `${typeName} Email Examples`,
     url: pageUrl,
-    description: `Real ${typeName.toLowerCase()} email examples from ${data.total_brands} Indian D2C brands.`,
+    description: `Real ${typeName.toLowerCase()} email examples from ${data.total_brands} top brands.`,
   };
 
   const faqItems = desc?.faqItems || [];
@@ -186,7 +186,7 @@ export default async function TypePage({
               margin: "0 0 12px",
             }}
           >
-            {typeName} Email Examples from Indian D2C Brands
+            {typeName} Email Examples from Top Brands
           </h1>
           <div style={{ display: "flex", gap: 32, flexWrap: "wrap", marginBottom: 20 }}>
             <div>
@@ -214,7 +214,7 @@ export default async function TypePage({
           <div style={cardStyle}>
             <h2 style={headingStyle}>Best {typeName} Email Examples</h2>
             <p style={textStyle}>
-              Here are {data.example_emails.length} real {typeName.toLowerCase()} email examples from leading Indian D2C brands,
+              Here are {data.example_emails.length} real {typeName.toLowerCase()} email examples from leading brands,
               curated from our database of {data.total_emails.toLocaleString()} tracked emails.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

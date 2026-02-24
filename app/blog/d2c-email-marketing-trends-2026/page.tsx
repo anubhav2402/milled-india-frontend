@@ -5,18 +5,18 @@ import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
 
 export const metadata: Metadata = {
-  title: "D2C Email Marketing Trends to Watch in 2026",
+  title: "Email Marketing Trends to Watch in 2026",
   description:
-    "Key email marketing trends shaping Indian D2C brands — from hyper-personalization to AI-generated subject lines.",
+    "Key email marketing trends shaping top brands — from hyper-personalization to AI-generated subject lines.",
   alternates: {
     canonical:
       "https://www.mailmuse.in/blog/d2c-email-marketing-trends-2026",
   },
   openGraph: {
     type: "article",
-    title: "D2C Email Marketing Trends to Watch in 2026",
+    title: "Email Marketing Trends to Watch in 2026",
     description:
-      "Key email marketing trends shaping Indian D2C brands.",
+      "Key email marketing trends shaping top brands.",
     url: "https://www.mailmuse.in/blog/d2c-email-marketing-trends-2026",
   },
 };
@@ -25,7 +25,7 @@ export default function Post() {
   const blogPostingLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: "D2C Email Marketing Trends to Watch in 2026",
+    headline: "Email Marketing Trends to Watch in 2026",
     datePublished: "2026-02-20",
     author: {
       "@type": "Organization",
@@ -51,7 +51,7 @@ export default function Post() {
           items={[
             { label: "Home", href: "/" },
             { label: "Blog", href: "/blog" },
-            { label: "D2C Email Marketing Trends 2026" },
+            { label: "Email Marketing Trends 2026" },
           ]}
         />
         <div

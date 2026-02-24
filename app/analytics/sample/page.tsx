@@ -220,7 +220,7 @@ export default function SampleAnalyticsPage() {
                 Want this for any brand?
               </h2>
               <p style={{ fontSize: 16, color: "rgba(255,255,255,0.7)", marginBottom: 24, maxWidth: 480, margin: "0 auto 24px" }}>
-                Sign up free to unlock detailed analytics for 150+ D2C brands — campaign breakdowns, send timing, subject line insights, and more.
+                Sign up free to unlock detailed analytics for 150+ brands — campaign breakdowns, send timing, subject line insights, and more.
               </p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
                 <Link href="/signup" style={{

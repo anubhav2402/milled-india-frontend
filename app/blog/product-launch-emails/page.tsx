@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "How Indian D2C Brands Announce New Products via Email",
+  title: "How Top Brands Announce New Products via Email",
   description:
-    "Analyze new arrival email strategies from leading Indian D2C brands. Teaser sequences, launch day tactics, and follow-up approaches.",
+    "Analyze new arrival email strategies from leading brands. Teaser sequences, launch day tactics, and follow-up approaches.",
   openGraph: {
-    title: "How Indian D2C Brands Announce New Products via Email",
+    title: "How Top Brands Announce New Products via Email",
     description:
-      "Analyze new arrival email strategies from leading Indian D2C brands. Teaser sequences, launch day tactics, and follow-up approaches.",
+      "Analyze new arrival email strategies from leading brands. Teaser sequences, launch day tactics, and follow-up approaches.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/product-launch-emails",
   },
   twitter: {
     card: "summary",
-    title: "How Indian D2C Brands Announce New Products via Email",
+    title: "How Top Brands Announce New Products via Email",
     description:
-      "Analyze new arrival email strategies from leading Indian D2C brands. Teaser sequences, launch day tactics, and follow-up approaches.",
+      "Analyze new arrival email strategies from leading brands. Teaser sequences, launch day tactics, and follow-up approaches.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/product-launch-emails",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "How Indian D2C Brands Announce New Products via Email",
+  headline: "How Top Brands Announce New Products via Email",
   datePublished: "2026-02-09",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -52,7 +52,7 @@ export default function Post() {
             { label: "Home", href: "/" },
             { label: "Blog", href: "/blog" },
             {
-              label: "How Indian D2C Brands Announce New Products via Email",
+              label: "How Top Brands Announce New Products via Email",
             },
           ]}
         />

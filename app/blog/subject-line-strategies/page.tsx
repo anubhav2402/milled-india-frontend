@@ -6,9 +6,9 @@ import Breadcrumb from "../../components/Breadcrumb";
 
 export const metadata: Metadata = {
   title:
-    "Subject Line Strategies That Get Opens: Lessons from 7,000+ D2C Emails",
+    "Subject Line Strategies That Get Opens: Lessons from 7,000+ Brand Emails",
   description:
-    "Data-driven analysis of subject line patterns from 150+ Indian D2C brands. What length, emoji usage, and word choices drive opens.",
+    "Data-driven analysis of subject line patterns from 150+ top brands. What length, emoji usage, and word choices drive opens.",
   alternates: {
     canonical: "https://www.mailmuse.in/blog/subject-line-strategies",
   },
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     type: "article",
     title: "Subject Line Strategies That Get Opens",
     description:
-      "Data-driven subject line analysis from 7,000+ D2C emails.",
+      "Data-driven subject line analysis from 7,000+ brand emails.",
     url: "https://www.mailmuse.in/blog/subject-line-strategies",
   },
 };
@@ -26,7 +26,7 @@ export default function Post() {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline:
-      "Subject Line Strategies That Get Opens: Lessons from 7,000+ D2C Emails",
+      "Subject Line Strategies That Get Opens: Lessons from 7,000+ Brand Emails",
     datePublished: "2026-02-22",
     author: {
       "@type": "Organization",

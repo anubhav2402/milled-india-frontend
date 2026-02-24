@@ -70,7 +70,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
           }}
         >
           <Badge variant="accent" style={{ marginBottom: 24 }}>
-            The #1 D2C Email Intelligence Platform
+            The #1 Email Intelligence Platform
           </Badge>
           <h1
             style={{
@@ -83,7 +83,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
               marginBottom: 20,
             }}
           >
-            Steal the email playbook of top D2C brands
+            Steal the email playbook of top brands
           </h1>
           <p
             style={{
@@ -94,9 +94,9 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
               marginBottom: 32,
             }}
           >
-            See every email Mamaearth, boAt, Sugar Cosmetics and 150+
-            D2C brands send &mdash; subject lines, designs, timing, and
-            strategy. Then edit and reuse them as your own templates.
+            See every email from 150+ top brands &mdash; subject lines,
+            designs, timing, and strategy. Then edit and reuse them as
+            your own templates.
           </p>
 
           <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
@@ -344,7 +344,7 @@ function BrandTrustBar({ brands }: { brands: string[] }) {
           marginBottom: 20,
         }}
       >
-        Tracking emails from {brands.length}+ D2C brands including
+        Tracking emails from {brands.length}+ brands including
       </p>
       <div
         style={{
@@ -715,7 +715,7 @@ function ValuePillars() {
       ),
       title: "Spy on any brand\u2019s email strategy",
       description:
-        "Search 150+ D2C brands by name, industry, or campaign type. See their full email history \u2014 from welcome flows to festive sale blasts.",
+        "Search 150+ brands by name, industry, or campaign type. See their full email history \u2014 from welcome flows to sale blasts.",
       cta: "Browse by industry",
       href: "/industry",
     },
@@ -1147,7 +1147,7 @@ function SocialProof() {
         "\u201CI check MailMuse every Monday to see what subject lines Mamaearth and Sugar tested that week. Last month, I adapted their BOGO format and our open rates jumped 23%.\u201D",
     },
     {
-      role: "D2C Founder, Fashion",
+      role: "Founder, Fashion Brand",
       quote:
         "\u201CBefore MailMuse, I had no idea Zudio was sending 4 emails per week during sale season. Now I match their cadence and our revenue from email is up 2x.\u201D",
     },
@@ -1575,7 +1575,7 @@ function FinalCTA() {
             lineHeight: 1.6,
           }}
         >
-          Join marketers at top D2C brands who use MailMuse to
+          Join marketers at top brands who use MailMuse to
           write better emails, send smarter campaigns, and outperform
           competitors.
         </p>

@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "Beyond First Names: Advanced Email Personalization for D2C",
+  title: "Beyond First Names: Advanced Email Personalization for Brands",
   description:
-    "Move past basic personalization with behavioral segmentation, dynamic content, and data-driven targeting strategies used by leading Indian D2C brands.",
+    "Move past basic personalization with behavioral segmentation, dynamic content, and data-driven targeting strategies used by leading brands.",
   openGraph: {
-    title: "Beyond First Names: Advanced Email Personalization for D2C",
+    title: "Beyond First Names: Advanced Email Personalization for Brands",
     description:
-      "Move past basic personalization with behavioral segmentation, dynamic content, and data-driven targeting strategies used by leading Indian D2C brands.",
+      "Move past basic personalization with behavioral segmentation, dynamic content, and data-driven targeting strategies used by leading brands.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/email-personalization-guide",
   },
   twitter: {
     card: "summary",
-    title: "Beyond First Names: Advanced Email Personalization for D2C",
+    title: "Beyond First Names: Advanced Email Personalization for Brands",
     description:
-      "Move past basic personalization with behavioral segmentation, dynamic content, and data-driven targeting strategies used by leading Indian D2C brands.",
+      "Move past basic personalization with behavioral segmentation, dynamic content, and data-driven targeting strategies used by leading brands.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/email-personalization-guide",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "Beyond First Names: Advanced Email Personalization for D2C",
+  headline: "Beyond First Names: Advanced Email Personalization for Brands",
   datePublished: "2026-02-03",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -53,7 +53,7 @@ export default function Post() {
             { label: "Blog", href: "/blog" },
             {
               label:
-                "Beyond First Names: Advanced Email Personalization for D2C",
+                "Beyond First Names: Advanced Email Personalization for Brands",
             },
           ]}
         />

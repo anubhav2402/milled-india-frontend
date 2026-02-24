@@ -56,7 +56,7 @@ export async function generateMetadata({
   }
 
   const emailCount = `${data.total_emails} emails tracked`;
-  const industry = data.industry || "D2C";
+  const industry = data.industry || "Brand";
   const title = `${brandName} Email Marketing Strategy & Campaigns | MailMuse`;
   const description = `See ${brandName}'s email marketing strategy. ${emailCount}. Browse ${industry} campaigns, subject lines, send frequency, and more on MailMuse.`;
 

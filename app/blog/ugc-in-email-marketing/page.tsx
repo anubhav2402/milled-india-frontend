@@ -7,11 +7,11 @@ import Content from "./content.mdx";
 export const metadata: Metadata = {
   title: "Using Customer Reviews and UGC in Email Campaigns",
   description:
-    "How Indian D2C brands leverage user-generated content in emails to build trust, boost engagement, and drive social proof at scale.",
+    "How brands leverage user-generated content in emails to build trust, boost engagement, and drive social proof at scale.",
   openGraph: {
     title: "Using Customer Reviews and UGC in Email Campaigns",
     description:
-      "How Indian D2C brands leverage user-generated content in emails to build trust, boost engagement, and drive social proof at scale.",
+      "How brands leverage user-generated content in emails to build trust, boost engagement, and drive social proof at scale.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/ugc-in-email-marketing",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Using Customer Reviews and UGC in Email Campaigns",
     description:
-      "How Indian D2C brands leverage user-generated content in emails to build trust, boost engagement, and drive social proof at scale.",
+      "How brands leverage user-generated content in emails to build trust, boost engagement, and drive social proof at scale.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/ugc-in-email-marketing",

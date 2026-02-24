@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "The Complete Guide to Cart Abandonment Emails for Indian D2C",
+  title: "The Complete Guide to Cart Abandonment Emails",
   description:
-    "Recovery strategies and real examples from top Indian D2C brands. How to win back abandoned carts with timely, compelling emails.",
+    "Recovery strategies and real examples from top brands. How to win back abandoned carts with timely, compelling emails.",
   openGraph: {
-    title: "The Complete Guide to Cart Abandonment Emails for Indian D2C",
+    title: "The Complete Guide to Cart Abandonment Emails",
     description:
-      "Recovery strategies and real examples from top Indian D2C brands. How to win back abandoned carts with timely, compelling emails.",
+      "Recovery strategies and real examples from top brands. How to win back abandoned carts with timely, compelling emails.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/cart-abandonment-email-guide",
   },
   twitter: {
     card: "summary",
-    title: "The Complete Guide to Cart Abandonment Emails for Indian D2C",
+    title: "The Complete Guide to Cart Abandonment Emails",
     description:
-      "Recovery strategies and real examples from top Indian D2C brands. How to win back abandoned carts with timely, compelling emails.",
+      "Recovery strategies and real examples from top brands. How to win back abandoned carts with timely, compelling emails.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/cart-abandonment-email-guide",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "The Complete Guide to Cart Abandonment Emails for Indian D2C",
+  headline: "The Complete Guide to Cart Abandonment Emails",
   datePublished: "2026-02-13",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -53,7 +53,7 @@ export default function Post() {
             { label: "Blog", href: "/blog" },
             {
               label:
-                "The Complete Guide to Cart Abandonment Emails for Indian D2C",
+                "The Complete Guide to Cart Abandonment Emails",
             },
           ]}
         />

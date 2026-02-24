@@ -7,11 +7,11 @@ import Content from "./content.mdx";
 export const metadata: Metadata = {
   title: "End-of-Season Sale Emails: Planning, Timing, and Execution",
   description:
-    "How Indian D2C brands maximize revenue during EOSS periods. Multi-email sequences, discount strategies, and subject line formulas.",
+    "How brands maximize revenue during EOSS periods. Multi-email sequences, discount strategies, and subject line formulas.",
   openGraph: {
     title: "End-of-Season Sale Emails: Planning, Timing, and Execution",
     description:
-      "How Indian D2C brands maximize revenue during EOSS periods. Multi-email sequences, discount strategies, and subject line formulas.",
+      "How brands maximize revenue during EOSS periods. Multi-email sequences, discount strategies, and subject line formulas.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/end-of-season-sale-emails",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "End-of-Season Sale Emails: Planning, Timing, and Execution",
     description:
-      "How Indian D2C brands maximize revenue during EOSS periods. Multi-email sequences, discount strategies, and subject line formulas.",
+      "How brands maximize revenue during EOSS periods. Multi-email sequences, discount strategies, and subject line formulas.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/end-of-season-sale-emails",

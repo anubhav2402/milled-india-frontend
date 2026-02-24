@@ -7,11 +7,11 @@ import Content from "./content.mdx";
 export const metadata: Metadata = {
   title: "Email Deliverability: Getting Past the Inbox Gatekeepers",
   description:
-    "Practical deliverability tips for Indian D2C brands. Authentication, list hygiene, content optimization, and sender reputation management.",
+    "Practical deliverability tips for brands. Authentication, list hygiene, content optimization, and sender reputation management.",
   openGraph: {
     title: "Email Deliverability: Getting Past the Inbox Gatekeepers",
     description:
-      "Practical deliverability tips for Indian D2C brands. Authentication, list hygiene, content optimization, and sender reputation management.",
+      "Practical deliverability tips for brands. Authentication, list hygiene, content optimization, and sender reputation management.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/email-deliverability-tips",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Email Deliverability: Getting Past the Inbox Gatekeepers",
     description:
-      "Practical deliverability tips for Indian D2C brands. Authentication, list hygiene, content optimization, and sender reputation management.",
+      "Practical deliverability tips for brands. Authentication, list hygiene, content optimization, and sender reputation management.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/email-deliverability-tips",

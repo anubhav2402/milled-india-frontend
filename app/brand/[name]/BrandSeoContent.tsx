@@ -11,7 +11,7 @@ export default function BrandSeoContent({
   data: BrandSeoData;
   brandName: string;
 }) {
-  const industry = data.industry || "D2C";
+  const industry = data.industry || "Brand";
   const epw = data.emails_per_week;
   const totalEmails = data.total_emails;
 
@@ -150,7 +150,7 @@ export default function BrandSeoContent({
                   >
                     {sortedCampaigns[0][0]} email examples
                   </Link>{" "}
-                  from Indian D2C brands.
+                  from top brands.
                 </>
               )}
             </p>
@@ -214,7 +214,7 @@ export default function BrandSeoContent({
           <div style={{ ...cardStyle, marginBottom: 20 }}>
             <h2 style={headingStyle}>Festive Campaign Activity</h2>
             <p style={textStyle}>
-              {brandName} actively participates in Indian festive email
+              {brandName} actively participates in festive email
               campaigns.{" "}
               {data.festive_campaigns.length === 1
                 ? `During ${data.festive_campaigns[0].festival} ${data.festive_campaigns[0].year}, they sent ${data.festive_campaigns[0].count} targeted campaign emails.`

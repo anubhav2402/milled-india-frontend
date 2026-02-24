@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "How D2C Brands Use Loyalty Emails to Boost Retention",
+  title: "How Brands Use Loyalty Emails to Boost Retention",
   description:
-    "Points updates, tier upgrades, and exclusive access — how Indian D2C brands use loyalty emails to drive repeat purchases and reduce churn.",
+    "Points updates, tier upgrades, and exclusive access — how brands use loyalty emails to drive repeat purchases and reduce churn.",
   openGraph: {
-    title: "How D2C Brands Use Loyalty Emails to Boost Retention",
+    title: "How Brands Use Loyalty Emails to Boost Retention",
     description:
-      "Points updates, tier upgrades, and exclusive access — how Indian D2C brands use loyalty emails to drive repeat purchases and reduce churn.",
+      "Points updates, tier upgrades, and exclusive access — how brands use loyalty emails to drive repeat purchases and reduce churn.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/loyalty-program-emails",
   },
   twitter: {
     card: "summary",
-    title: "How D2C Brands Use Loyalty Emails to Boost Retention",
+    title: "How Brands Use Loyalty Emails to Boost Retention",
     description:
-      "Points updates, tier upgrades, and exclusive access — how Indian D2C brands use loyalty emails to drive repeat purchases and reduce churn.",
+      "Points updates, tier upgrades, and exclusive access — how brands use loyalty emails to drive repeat purchases and reduce churn.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/loyalty-program-emails",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "How D2C Brands Use Loyalty Emails to Boost Retention",
+  headline: "How Brands Use Loyalty Emails to Boost Retention",
   datePublished: "2026-01-26",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -51,7 +51,7 @@ export default function Post() {
           items={[
             { label: "Home", href: "/" },
             { label: "Blog", href: "/blog" },
-            { label: "How D2C Brands Use Loyalty Emails to Boost Retention" },
+            { label: "How Brands Use Loyalty Emails to Boost Retention" },
           ]}
         />
         <p

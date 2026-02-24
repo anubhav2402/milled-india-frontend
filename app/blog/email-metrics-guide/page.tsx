@@ -5,11 +5,11 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "The Email Metrics That Actually Matter for D2C Brands",
+  title: "The Email Metrics That Actually Matter for Brands",
   description:
     "Cut through vanity metrics. Focus on the email KPIs that drive revenue — open rates, click rates, conversion, and customer lifetime value.",
   openGraph: {
-    title: "The Email Metrics That Actually Matter for D2C Brands",
+    title: "The Email Metrics That Actually Matter for Brands",
     description:
       "Cut through vanity metrics. Focus on the email KPIs that drive revenue — open rates, click rates, conversion, and customer lifetime value.",
     type: "article",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "The Email Metrics That Actually Matter for D2C Brands",
+    title: "The Email Metrics That Actually Matter for Brands",
     description:
       "Cut through vanity metrics. Focus on the email KPIs that drive revenue — open rates, click rates, conversion, and customer lifetime value.",
   },
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "The Email Metrics That Actually Matter for D2C Brands",
+  headline: "The Email Metrics That Actually Matter for Brands",
   datePublished: "2026-01-10",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -53,7 +53,7 @@ export default function Post() {
             { label: "Blog", href: "/blog" },
             {
               label:
-                "The Email Metrics That Actually Matter for D2C Brands",
+                "The Email Metrics That Actually Matter for Brands",
             },
           ]}
         />

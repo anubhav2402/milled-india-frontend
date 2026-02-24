@@ -13,23 +13,23 @@ type Campaign = {
 };
 
 export const metadata: Metadata = {
-  title: "Indian D2C Festive Email Campaigns | MailMuse",
+  title: "Festive Email Campaigns | MailMuse",
   description:
-    "Explore festive email campaigns from top Indian D2C brands. Discover Diwali, Holi, Navratri, and other festival marketing strategies with real examples.",
+    "Explore festive email campaigns from top brands. Discover Diwali, Holi, Navratri, and other festival marketing strategies with real examples.",
   alternates: { canonical: "https://www.mailmuse.in/campaigns" },
   openGraph: {
-    title: "Indian D2C Festive Email Campaigns | MailMuse",
+    title: "Festive Email Campaigns | MailMuse",
     description:
-      "Explore festive email campaigns from top Indian D2C brands.",
+      "Explore festive email campaigns from top brands.",
     type: "website",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/campaigns",
   },
   twitter: {
     card: "summary",
-    title: "Indian D2C Festive Email Campaigns | MailMuse",
+    title: "Festive Email Campaigns | MailMuse",
     description:
-      "Explore festive email campaigns from top Indian D2C brands.",
+      "Explore festive email campaigns from top brands.",
   },
 };
 
@@ -87,7 +87,7 @@ export default async function CampaignsIndex() {
             Festive Email Campaigns
           </h1>
           <p style={{ fontSize: 16, color: "var(--color-secondary)", margin: 0, maxWidth: 680, lineHeight: 1.6 }}>
-            Indian D2C brands go all-out during festivals. Browse curated collections of
+            Brands go all-out during festivals. Browse curated collections of
             Diwali, Holi, Navratri, and other festive email campaigns to see how leading
             brands craft subject lines and promotional sequences for every major occasion.
           </p>

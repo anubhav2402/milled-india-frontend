@@ -151,7 +151,7 @@ export default function DashboardPage() {
               Follow brands to build your feed
             </h3>
             <p style={{ fontSize: 14, color: "var(--color-secondary)", marginBottom: 20 }}>
-              Follow your favorite D2C brands to see their latest email campaigns here.
+              Follow your favorite brands to see their latest email campaigns here.
             </p>
             <Link
               href="/brands"

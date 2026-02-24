@@ -142,7 +142,7 @@ export default function SwipeFilePage() {
                 Subject Line Swipe File
               </h1>
               <p style={{ fontSize: 14, color: "var(--color-secondary)", margin: 0 }}>
-                {loading ? "Loading..." : `${filtered.length} subject lines from top D2C brands`}
+                {loading ? "Loading..." : `${filtered.length} subject lines from top brands`}
               </p>
             </div>
 

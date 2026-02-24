@@ -6,16 +6,16 @@ import Breadcrumb from "../components/Breadcrumb";
 import { getAllTypes } from "../lib/type-utils";
 
 export const metadata: Metadata = {
-  title: "Email Types — D2C Email Campaign Examples by Category | MailMuse",
+  title: "Email Types — Email Campaign Examples by Category | MailMuse",
   description:
-    "Browse real email marketing examples by type: sale emails, welcome series, abandoned cart, newsletters, festive campaigns, and more from 150+ Indian D2C brands.",
+    "Browse real email marketing examples by type: sale emails, welcome series, abandoned cart, newsletters, festive campaigns, and more from 150+ top brands.",
   alternates: {
     canonical: "https://www.mailmuse.in/types",
   },
   openGraph: {
-    title: "D2C Email Campaign Examples by Type | MailMuse",
+    title: "Email Campaign Examples by Type | MailMuse",
     description:
-      "Browse email marketing examples by type from 150+ Indian D2C brands.",
+      "Browse email marketing examples by type from 150+ top brands.",
     url: "https://www.mailmuse.in/types",
     siteName: "MailMuse",
   },
@@ -98,7 +98,7 @@ export default function TypesIndexPage() {
               maxWidth: 700,
             }}
           >
-            Browse real email marketing examples from Indian D2C brands,
+            Browse real email marketing examples from top brands,
             organized by campaign type. See how top brands craft sale emails,
             welcome sequences, festive campaigns, and more.
           </p>

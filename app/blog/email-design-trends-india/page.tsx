@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "Email Design Trends Shaping Indian D2C in 2026",
+  title: "Email Design Trends Shaping Brand Marketing in 2026",
   description:
-    "Visual trends in D2C email marketing — from minimalist layouts to interactive elements. What works in the Indian market right now.",
+    "Visual trends in email marketing — from minimalist layouts to interactive elements. What works in the market right now.",
   openGraph: {
-    title: "Email Design Trends Shaping Indian D2C in 2026",
+    title: "Email Design Trends Shaping Brand Marketing in 2026",
     description:
-      "Visual trends in D2C email marketing — from minimalist layouts to interactive elements. What works in the Indian market right now.",
+      "Visual trends in email marketing — from minimalist layouts to interactive elements. What works in the market right now.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/email-design-trends-india",
   },
   twitter: {
     card: "summary",
-    title: "Email Design Trends Shaping Indian D2C in 2026",
+    title: "Email Design Trends Shaping Brand Marketing in 2026",
     description:
-      "Visual trends in D2C email marketing — from minimalist layouts to interactive elements. What works in the Indian market right now.",
+      "Visual trends in email marketing — from minimalist layouts to interactive elements. What works in the market right now.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/email-design-trends-india",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "Email Design Trends Shaping Indian D2C in 2026",
+  headline: "Email Design Trends Shaping Brand Marketing in 2026",
   datePublished: "2026-02-01",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -52,7 +52,7 @@ export default function Post() {
             { label: "Home", href: "/" },
             { label: "Blog", href: "/blog" },
             {
-              label: "Email Design Trends Shaping Indian D2C in 2026",
+              label: "Email Design Trends Shaping Brand Marketing in 2026",
             },
           ]}
         />

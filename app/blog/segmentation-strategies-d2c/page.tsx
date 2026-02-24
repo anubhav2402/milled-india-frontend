@@ -7,12 +7,12 @@ import Content from "./content.mdx";
 export const metadata: Metadata = {
   title: "Smart Segmentation: Sending the Right Email to the Right Customer",
   description:
-    "Move beyond batch-and-blast with data-driven segmentation strategies. How top Indian D2C brands personalize at scale.",
+    "Move beyond batch-and-blast with data-driven segmentation strategies. How top brands personalize at scale.",
   openGraph: {
     title:
       "Smart Segmentation: Sending the Right Email to the Right Customer",
     description:
-      "Move beyond batch-and-blast with data-driven segmentation strategies. How top Indian D2C brands personalize at scale.",
+      "Move beyond batch-and-blast with data-driven segmentation strategies. How top brands personalize at scale.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/segmentation-strategies-d2c",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title:
       "Smart Segmentation: Sending the Right Email to the Right Customer",
     description:
-      "Move beyond batch-and-blast with data-driven segmentation strategies. How top Indian D2C brands personalize at scale.",
+      "Move beyond batch-and-blast with data-driven segmentation strategies. How top brands personalize at scale.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/segmentation-strategies-d2c",

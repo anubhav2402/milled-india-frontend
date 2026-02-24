@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     q: "How many brands do you track?",
-    a: "We track 300+ D2C brands and growing. New brands are added every week based on user requests.",
+    a: "We track 300+ brands and growing. New brands are added every week based on user requests.",
   },
   {
     q: "How often is data updated?",
@@ -184,7 +184,7 @@ export default function PricingPage() {
             }}
           >
             Start free. Upgrade when you need the complete toolkit for tracking,
-            analyzing, and learning from the best D2C email campaigns.
+            analyzing, and learning from the best email campaigns.
           </p>
         </div>
 
@@ -200,7 +200,7 @@ export default function PricingPage() {
         >
           {[
             "10,000+ emails tracked",
-            "300+ D2C brands",
+            "300+ brands",
             "Updated daily",
           ].map((stat) => (
             <span

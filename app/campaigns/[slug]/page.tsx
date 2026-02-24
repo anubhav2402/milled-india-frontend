@@ -56,8 +56,8 @@ export async function generateMetadata({
   if (!parsed) return { title: "Campaign | MailMuse" };
 
   const festivalName = festivalSlugToName(parsed.festivalSlug);
-  const title = `${festivalName} ${parsed.year} Email Campaigns — Indian D2C Brands | MailMuse`;
-  const description = `Browse ${festivalName} ${parsed.year} email campaigns from top Indian D2C brands. See subject lines, industry breakdown, and campaign strategies.`;
+  const title = `${festivalName} ${parsed.year} Email Campaigns — Top Brands | MailMuse`;
+  const description = `Browse ${festivalName} ${parsed.year} email campaigns from top brands. See subject lines, industry breakdown, and campaign strategies.`;
 
   return {
     title,
@@ -219,7 +219,7 @@ export default async function CampaignPage({
             </div>
           </div>
           <p style={{ fontSize: 15, lineHeight: 1.7, color: "var(--color-secondary)", margin: 0 }}>
-            During {data.festival} {data.year}, {data.total_brands} Indian D2C brands collectively sent {data.total_emails} email campaigns.
+            During {data.festival} {data.year}, {data.total_brands} brands collectively sent {data.total_emails} email campaigns.
             {data.industry_breakdown.length > 0 && ` The ${data.industry_breakdown[0].industry} industry was most active with ${data.industry_breakdown[0].count} emails (${data.industry_breakdown[0].percentage}%).`}
             {" "}Subject lines averaged {Math.round(data.insights.avg_subject_length)} characters, with {data.insights.emoji_usage_rate}% using emojis.
             {data.insights.peak_send_day && ` Brands preferred sending on ${data.insights.peak_send_day}.`}

@@ -47,10 +47,10 @@ export async function generateMetadata({
   const industry = slugToIndustry(name);
   const data = await fetchIndustryData(industry);
 
-  const title = `${industry} Email Marketing — D2C Brand Campaigns | MailMuse`;
+  const title = `${industry} Email Marketing — Brand Campaigns | MailMuse`;
   const description = data
     ? `Explore email marketing strategies from ${data.total_brands} ${industry} brands. ${data.total_emails.toLocaleString()} emails tracked on MailMuse.`
-    : `Explore ${industry} D2C brand email marketing strategies on MailMuse.`;
+    : `Explore ${industry} brand email marketing strategies on MailMuse.`;
 
   return {
     title,
@@ -132,7 +132,7 @@ export default async function IndustryPage({
     "@type": "CollectionPage",
     name: `${industry} Email Marketing`,
     url: pageUrl,
-    description: `Email marketing strategies from ${data.total_brands} ${industry} D2C brands.`,
+    description: `Email marketing strategies from ${data.total_brands} ${industry} brands.`,
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: data.total_brands,
@@ -229,7 +229,7 @@ export default async function IndustryPage({
             }}
           >
             Explore email marketing strategies from {data.total_brands}{" "}
-            {industry} D2C brands. MailMuse has tracked{" "}
+            {industry} brands. MailMuse has tracked{" "}
             {data.total_emails.toLocaleString()} emails to help you benchmark
             and improve your campaigns.
           </p>
@@ -503,7 +503,7 @@ export default async function IndustryPage({
               </h2>
               <p style={{ fontSize: 15, lineHeight: 1.7, color: "var(--color-secondary)", margin: 0 }}>
                 Email activity in {industry} peaks during {peakMonth} with {peak.count} emails sent.
-                This typically aligns with major Indian shopping festivals and seasonal campaigns.
+                This typically aligns with major shopping festivals and seasonal campaigns.
                 Brands in this industry ramp up their email frequency during festive seasons to maximize engagement and sales.
               </p>
             </div>

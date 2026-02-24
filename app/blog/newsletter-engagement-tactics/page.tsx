@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "D2C Newsletter Strategies That Keep Subscribers Engaged",
+  title: "Newsletter Strategies That Keep Subscribers Engaged",
   description:
-    "How top Indian D2C brands use newsletters to build loyalty between purchases. Content mix, frequency, and engagement tactics that work.",
+    "How top brands use newsletters to build loyalty between purchases. Content mix, frequency, and engagement tactics that work.",
   openGraph: {
-    title: "D2C Newsletter Strategies That Keep Subscribers Engaged",
+    title: "Newsletter Strategies That Keep Subscribers Engaged",
     description:
-      "How top Indian D2C brands use newsletters to build loyalty between purchases. Content mix, frequency, and engagement tactics that work.",
+      "How top brands use newsletters to build loyalty between purchases. Content mix, frequency, and engagement tactics that work.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/newsletter-engagement-tactics",
   },
   twitter: {
     card: "summary",
-    title: "D2C Newsletter Strategies That Keep Subscribers Engaged",
+    title: "Newsletter Strategies That Keep Subscribers Engaged",
     description:
-      "How top Indian D2C brands use newsletters to build loyalty between purchases. Content mix, frequency, and engagement tactics that work.",
+      "How top brands use newsletters to build loyalty between purchases. Content mix, frequency, and engagement tactics that work.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/newsletter-engagement-tactics",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "D2C Newsletter Strategies That Keep Subscribers Engaged",
+  headline: "Newsletter Strategies That Keep Subscribers Engaged",
   datePublished: "2026-02-05",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -53,7 +53,7 @@ export default function Post() {
             { label: "Blog", href: "/blog" },
             {
               label:
-                "D2C Newsletter Strategies That Keep Subscribers Engaged",
+                "Newsletter Strategies That Keep Subscribers Engaged",
             },
           ]}
         />

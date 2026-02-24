@@ -7,11 +7,11 @@ import Content from "./content.mdx";
 export const metadata: Metadata = {
   title: "Building a Consistent Brand Voice Across Email Campaigns",
   description:
-    "How leading Indian D2C brands maintain a recognizable voice from welcome emails to sale announcements. Tone, language, and identity strategies.",
+    "How leading brands maintain a recognizable voice from welcome emails to sale announcements. Tone, language, and identity strategies.",
   openGraph: {
     title: "Building a Consistent Brand Voice Across Email Campaigns",
     description:
-      "How leading Indian D2C brands maintain a recognizable voice from welcome emails to sale announcements. Tone, language, and identity strategies.",
+      "How leading brands maintain a recognizable voice from welcome emails to sale announcements. Tone, language, and identity strategies.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/brand-voice-email-marketing",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Building a Consistent Brand Voice Across Email Campaigns",
     description:
-      "How leading Indian D2C brands maintain a recognizable voice from welcome emails to sale announcements. Tone, language, and identity strategies.",
+      "How leading brands maintain a recognizable voice from welcome emails to sale announcements. Tone, language, and identity strategies.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/brand-voice-email-marketing",

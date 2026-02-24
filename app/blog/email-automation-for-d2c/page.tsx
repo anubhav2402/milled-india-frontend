@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "Essential Email Automations Every D2C Brand Needs",
+  title: "Essential Email Automations Every Brand Needs",
   description:
-    "The must-have automated email flows for Indian D2C brands. From welcome sequences to win-back campaigns — set up once, convert forever.",
+    "The must-have automated email flows for brands. From welcome sequences to win-back campaigns — set up once, convert forever.",
   openGraph: {
-    title: "Essential Email Automations Every D2C Brand Needs",
+    title: "Essential Email Automations Every Brand Needs",
     description:
-      "The must-have automated email flows for Indian D2C brands. From welcome sequences to win-back campaigns — set up once, convert forever.",
+      "The must-have automated email flows for brands. From welcome sequences to win-back campaigns — set up once, convert forever.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/email-automation-for-d2c",
   },
   twitter: {
     card: "summary",
-    title: "Essential Email Automations Every D2C Brand Needs",
+    title: "Essential Email Automations Every Brand Needs",
     description:
-      "The must-have automated email flows for Indian D2C brands. From welcome sequences to win-back campaigns — set up once, convert forever.",
+      "The must-have automated email flows for brands. From welcome sequences to win-back campaigns — set up once, convert forever.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/email-automation-for-d2c",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "Essential Email Automations Every D2C Brand Needs",
+  headline: "Essential Email Automations Every Brand Needs",
   datePublished: "2026-01-28",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -52,7 +52,7 @@ export default function Post() {
             { label: "Home", href: "/" },
             { label: "Blog", href: "/blog" },
             {
-              label: "Essential Email Automations Every D2C Brand Needs",
+              label: "Essential Email Automations Every Brand Needs",
             },
           ]}
         />

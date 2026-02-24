@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "Why Mobile-First Email Design Is Non-Negotiable for D2C",
+  title: "Why Mobile-First Email Design Is Non-Negotiable for Brands",
   description:
-    "Over 70% of Indian D2C emails are opened on mobile. Design principles, layout strategies, and CTA placement for mobile-first email campaigns.",
+    "Over 70% of brand emails are opened on mobile. Design principles, layout strategies, and CTA placement for mobile-first email campaigns.",
   openGraph: {
-    title: "Why Mobile-First Email Design Is Non-Negotiable for D2C",
+    title: "Why Mobile-First Email Design Is Non-Negotiable for Brands",
     description:
-      "Over 70% of Indian D2C emails are opened on mobile. Design principles, layout strategies, and CTA placement for mobile-first email campaigns.",
+      "Over 70% of brand emails are opened on mobile. Design principles, layout strategies, and CTA placement for mobile-first email campaigns.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/mobile-first-email-design",
   },
   twitter: {
     card: "summary",
-    title: "Why Mobile-First Email Design Is Non-Negotiable for D2C",
+    title: "Why Mobile-First Email Design Is Non-Negotiable for Brands",
     description:
-      "Over 70% of Indian D2C emails are opened on mobile. Design principles, layout strategies, and CTA placement for mobile-first email campaigns.",
+      "Over 70% of brand emails are opened on mobile. Design principles, layout strategies, and CTA placement for mobile-first email campaigns.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/mobile-first-email-design",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "Why Mobile-First Email Design Is Non-Negotiable for D2C",
+  headline: "Why Mobile-First Email Design Is Non-Negotiable for Brands",
   datePublished: "2026-01-14",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -53,7 +53,7 @@ export default function Post() {
             { label: "Blog", href: "/blog" },
             {
               label:
-                "Why Mobile-First Email Design Is Non-Negotiable for D2C",
+                "Why Mobile-First Email Design Is Non-Negotiable for Brands",
             },
           ]}
         />

@@ -52,7 +52,7 @@ export async function generateMetadata({
   if (!data) {
     return {
       title: "Email | MailMuse",
-      description: "View email marketing campaigns from top D2C brands on MailMuse.",
+      description: "View email marketing campaigns from top brands on MailMuse.",
     };
   }
 

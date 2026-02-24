@@ -6,14 +6,14 @@ import Content from "./content.mdx";
 
 export const metadata: Metadata = {
   title:
-    "A/B Testing Your Emails: What Indian D2C Brands Should Test First",
+    "A/B Testing Your Emails: What Brands Should Test First",
   description:
-    "A practical guide to email A/B testing for Indian D2C brands. Subject lines, send times, CTAs — what to test and how to measure results.",
+    "A practical guide to email A/B testing for brands. Subject lines, send times, CTAs — what to test and how to measure results.",
   openGraph: {
     title:
-      "A/B Testing Your Emails: What Indian D2C Brands Should Test First",
+      "A/B Testing Your Emails: What Brands Should Test First",
     description:
-      "A practical guide to email A/B testing for Indian D2C brands. Subject lines, send times, CTAs — what to test and how to measure results.",
+      "A practical guide to email A/B testing for brands. Subject lines, send times, CTAs — what to test and how to measure results.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/ab-testing-email-campaigns",
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title:
-      "A/B Testing Your Emails: What Indian D2C Brands Should Test First",
+      "A/B Testing Your Emails: What Brands Should Test First",
     description:
-      "A practical guide to email A/B testing for Indian D2C brands. Subject lines, send times, CTAs — what to test and how to measure results.",
+      "A practical guide to email A/B testing for brands. Subject lines, send times, CTAs — what to test and how to measure results.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/ab-testing-email-campaigns",
@@ -34,7 +34,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   headline:
-    "A/B Testing Your Emails: What Indian D2C Brands Should Test First",
+    "A/B Testing Your Emails: What Brands Should Test First",
   datePublished: "2026-01-30",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -57,7 +57,7 @@ export default function Post() {
             { label: "Blog", href: "/blog" },
             {
               label:
-                "A/B Testing Your Emails: What Indian D2C Brands Should Test First",
+                "A/B Testing Your Emails: What Brands Should Test First",
             },
           ]}
         />

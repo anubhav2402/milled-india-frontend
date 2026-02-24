@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "Email Copywriting That Sells: Lessons from Top D2C Brands",
+  title: "Email Copywriting That Sells: Lessons from Top Brands",
   description:
-    "Copywriting patterns from high-performing Indian D2C emails. Subject lines, preview text, body copy, and CTAs that drive action.",
+    "Copywriting patterns from high-performing brand emails. Subject lines, preview text, body copy, and CTAs that drive action.",
   openGraph: {
-    title: "Email Copywriting That Sells: Lessons from Top D2C Brands",
+    title: "Email Copywriting That Sells: Lessons from Top Brands",
     description:
-      "Copywriting patterns from high-performing Indian D2C emails. Subject lines, preview text, body copy, and CTAs that drive action.",
+      "Copywriting patterns from high-performing brand emails. Subject lines, preview text, body copy, and CTAs that drive action.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/email-copywriting-d2c",
   },
   twitter: {
     card: "summary",
-    title: "Email Copywriting That Sells: Lessons from Top D2C Brands",
+    title: "Email Copywriting That Sells: Lessons from Top Brands",
     description:
-      "Copywriting patterns from high-performing Indian D2C emails. Subject lines, preview text, body copy, and CTAs that drive action.",
+      "Copywriting patterns from high-performing brand emails. Subject lines, preview text, body copy, and CTAs that drive action.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/email-copywriting-d2c",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "Email Copywriting That Sells: Lessons from Top D2C Brands",
+  headline: "Email Copywriting That Sells: Lessons from Top Brands",
   datePublished: "2026-01-18",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -53,7 +53,7 @@ export default function Post() {
             { label: "Blog", href: "/blog" },
             {
               label:
-                "Email Copywriting That Sells: Lessons from Top D2C Brands",
+                "Email Copywriting That Sells: Lessons from Top Brands",
             },
           ]}
         />

@@ -51,7 +51,7 @@ export default function BlogIndex() {
             margin: "0 0 32px",
           }}
         >
-          Data-driven insights on D2C email marketing.
+          Data-driven insights on email marketing.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>

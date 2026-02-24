@@ -7,11 +7,11 @@ import Content from "./content.mdx";
 export const metadata: Metadata = {
   title: "Win Back Inactive Subscribers: Re-engagement Email Strategies",
   description:
-    "Data-driven re-engagement tactics from Indian D2C brands. When to send, what to offer, and how to clean your list effectively.",
+    "Data-driven re-engagement tactics from top brands. When to send, what to offer, and how to clean your list effectively.",
   openGraph: {
     title: "Win Back Inactive Subscribers: Re-engagement Email Strategies",
     description:
-      "Data-driven re-engagement tactics from Indian D2C brands. When to send, what to offer, and how to clean your list effectively.",
+      "Data-driven re-engagement tactics from top brands. When to send, what to offer, and how to clean your list effectively.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/re-engagement-email-strategies",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "Win Back Inactive Subscribers: Re-engagement Email Strategies",
     description:
-      "Data-driven re-engagement tactics from Indian D2C brands. When to send, what to offer, and how to clean your list effectively.",
+      "Data-driven re-engagement tactics from top brands. When to send, what to offer, and how to clean your list effectively.",
   },
   alternates: {
     canonical:

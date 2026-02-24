@@ -5,22 +5,22 @@ import Breadcrumb from "../../components/Breadcrumb";
 import Content from "./content.mdx";
 
 export const metadata: Metadata = {
-  title: "Diwali & Festive Email Campaign Playbook for D2C Brands",
+  title: "Festive Email Campaign Playbook for Brands",
   description:
-    "How Indian D2C brands plan and execute festive email campaigns. Timing, sequencing, and subject line strategies for Diwali, Holi, and more.",
+    "How brands plan and execute festive email campaigns. Timing, sequencing, and subject line strategies for seasonal events and more.",
   openGraph: {
-    title: "Diwali & Festive Email Campaign Playbook for D2C Brands",
+    title: "Festive Email Campaign Playbook for Brands",
     description:
-      "How Indian D2C brands plan and execute festive email campaigns. Timing, sequencing, and subject line strategies for Diwali, Holi, and more.",
+      "How brands plan and execute festive email campaigns. Timing, sequencing, and subject line strategies for seasonal events and more.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/festive-email-campaign-playbook",
   },
   twitter: {
     card: "summary",
-    title: "Diwali & Festive Email Campaign Playbook for D2C Brands",
+    title: "Festive Email Campaign Playbook for Brands",
     description:
-      "How Indian D2C brands plan and execute festive email campaigns. Timing, sequencing, and subject line strategies for Diwali, Holi, and more.",
+      "How brands plan and execute festive email campaigns. Timing, sequencing, and subject line strategies for seasonal events and more.",
   },
   alternates: {
     canonical:
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: "Diwali & Festive Email Campaign Playbook for D2C Brands",
+  headline: "Festive Email Campaign Playbook for Brands",
   datePublished: "2026-02-11",
   author: { "@type": "Organization", name: "MailMuse" },
   publisher: {
@@ -54,7 +54,7 @@ export default function Post() {
             { label: "Blog", href: "/blog" },
             {
               label:
-                "Diwali & Festive Email Campaign Playbook for D2C Brands",
+                "Festive Email Campaign Playbook for Brands",
             },
           ]}
         />

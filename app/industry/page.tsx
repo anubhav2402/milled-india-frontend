@@ -7,9 +7,9 @@ import { INDUSTRIES } from "../lib/constants";
 import { industryToSlug } from "../lib/industry-utils";
 
 export const metadata: Metadata = {
-  title: "Industries — D2C Email Marketing by Category | MailMuse",
+  title: "Industries — Email Marketing by Category | MailMuse",
   description:
-    "Explore email marketing strategies across 13 D2C industries including Fashion, Beauty, Food & Beverages, and more.",
+    "Explore email marketing strategies across 13 industries including Fashion, Beauty, Food & Beverages, and more.",
   alternates: {
     canonical: "https://www.mailmuse.in/industry",
   },
@@ -63,7 +63,7 @@ export default function IndustryIndex() {
             maxWidth: 600,
           }}
         >
-          Explore how D2C brands approach email marketing across {INDUSTRIES.length}{" "}
+          Explore how brands approach email marketing across {INDUSTRIES.length}{" "}
           industries.
         </p>
 
