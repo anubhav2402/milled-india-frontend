@@ -19,6 +19,9 @@ function AccountContent() {
   const [subscription, setSubscription] = useState<{
     subscription_tier: string;
     is_pro: boolean;
+    effective_plan: string;
+    is_on_trial: boolean;
+    trial_ends_at: string | null;
     expires_at: string | null;
     razorpay_subscription_id: string | null;
   } | null>(null);
@@ -49,7 +52,7 @@ function AccountContent() {
   };
 
   const handleCancel = async () => {
-    if (!confirm("Are you sure you want to cancel your Pro subscription?")) return;
+    if (!confirm("Are you sure you want to cancel your subscription?")) return;
     setCancelling(true);
     try {
       const res = await fetch(`${API_BASE}/subscription/cancel`, {
@@ -159,7 +162,7 @@ function AccountContent() {
       {/* Subscription Section */}
       <div
         style={{
-          border: subscription?.is_pro
+          border: (subscription?.effective_plan ?? user?.effective_plan) !== "free"
             ? "2px solid var(--color-accent)"
             : "1px solid var(--color-border)",
           borderRadius: 12,
@@ -192,29 +195,44 @@ function AccountContent() {
               fontWeight: 600,
               padding: "4px 12px",
               borderRadius: 20,
-              background: subscription?.is_pro
+              background: (subscription?.effective_plan ?? user?.effective_plan) !== "free"
                 ? "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))"
                 : "var(--color-accent-light)",
-              color: subscription?.is_pro ? "white" : "var(--color-accent)",
+              color: (subscription?.effective_plan ?? user?.effective_plan) !== "free" ? "white" : "var(--color-accent)",
             }}
           >
-            {subscription?.is_pro ? "PRO" : "FREE"}
+            {(() => {
+              const plan = subscription?.effective_plan ?? user?.effective_plan ?? "free";
+              const onTrial = subscription?.is_on_trial ?? user?.is_on_trial;
+              const trialEnds = subscription?.trial_ends_at ?? user?.trial_ends_at;
+              if (onTrial && trialEnds) {
+                const daysLeft = Math.max(0, Math.ceil((new Date(trialEnds).getTime() - Date.now()) / 86400000));
+                return `PRO TRIAL · ${daysLeft}d left`;
+              }
+              return plan.toUpperCase();
+            })()}
           </span>
         </div>
 
         {loading ? (
           <div style={{ fontSize: 14, color: "var(--color-secondary)" }}>Loading...</div>
-        ) : subscription?.is_pro ? (
+        ) : (subscription?.effective_plan ?? user?.effective_plan) !== "free" ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div>
               <div style={{ fontSize: 12, color: "var(--color-tertiary)", marginBottom: 2 }}>
-                Plan
+                Current Plan
               </div>
               <div style={{ fontSize: 15, color: "var(--color-primary)", fontWeight: 500 }}>
-                MailMuse Pro
+                {(() => {
+                  const plan = subscription?.effective_plan ?? user?.effective_plan ?? "free";
+                  const names: Record<string, string> = { starter: "Starter", pro: "Pro", agency: "Agency" };
+                  const onTrial = subscription?.is_on_trial ?? user?.is_on_trial;
+                  const label = `MailMuse ${names[plan] || plan.charAt(0).toUpperCase() + plan.slice(1)}`;
+                  return onTrial ? `${label} (Trial)` : label;
+                })()}
               </div>
             </div>
-            {subscription.expires_at && (
+            {subscription?.expires_at && (
               <div>
                 <div style={{ fontSize: 12, color: "var(--color-tertiary)", marginBottom: 2 }}>
                   {subscription.razorpay_subscription_id
@@ -230,7 +248,7 @@ function AccountContent() {
                 </div>
               </div>
             )}
-            {subscription.razorpay_subscription_id && (
+            {subscription?.razorpay_subscription_id && (
               <button
                 onClick={handleCancel}
                 disabled={cancelling}
@@ -251,7 +269,7 @@ function AccountContent() {
                 {cancelling ? "Cancelling..." : "Cancel Subscription"}
               </button>
             )}
-            {!subscription.razorpay_subscription_id && (
+            {!subscription?.razorpay_subscription_id && (
               <div
                 style={{
                   fontSize: 13,
@@ -259,7 +277,7 @@ function AccountContent() {
                   fontStyle: "italic",
                 }}
               >
-                Subscription cancelled. Pro access continues until expiry.
+                Subscription cancelled. Access continues until expiry.
               </div>
             )}
           </div>

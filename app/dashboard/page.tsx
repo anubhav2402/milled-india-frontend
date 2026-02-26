@@ -108,6 +108,40 @@ export default function DashboardPage() {
       <Header activeRoute="/dashboard" />
 
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "32px 24px" }}>
+        {/* Trial Banner */}
+        {user?.is_on_trial && user.trial_ends_at && (
+          <div style={{
+            background: "linear-gradient(135deg, #f5f3ff, #ede9fe)",
+            border: "1px solid #c4b5fd",
+            borderRadius: 12,
+            padding: "16px 20px",
+            marginBottom: 24,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: 12,
+          }}>
+            <div>
+              <strong style={{ color: "#5b21b6" }}>Pro Trial Active</strong>
+              <span style={{ color: "#6d28d9", marginLeft: 8 }}>
+                {Math.max(0, Math.ceil((new Date(user.trial_ends_at).getTime() - Date.now()) / 86400000))} days remaining
+              </span>
+            </div>
+            <a href="/pricing" style={{
+              background: "#7c3aed",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: 8,
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}>
+              Upgrade Now
+            </a>
+          </div>
+        )}
+
         {/* Welcome */}
         <h1 style={{
           fontFamily: "var(--font-dm-serif)", fontSize: 28,

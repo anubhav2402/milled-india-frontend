@@ -14,7 +14,7 @@ export function getNavLinks(user: User | null): NavLink[] {
   if (user) {
     links.push({ label: "Saved", href: "/saved" });
   }
-  if (!user?.is_pro) {
+  if (!user || (user.effective_plan !== "pro" && user.effective_plan !== "agency") || user.is_on_trial) {
     links.push({ label: "Pricing", href: "/pricing" });
   }
   return links;

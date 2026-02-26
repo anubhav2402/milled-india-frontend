@@ -108,18 +108,22 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
           >
             {user ? (
               <>
-                {user.is_pro ? (
+                {user.effective_plan !== "free" ? (
                   <span
                     style={{
-                      fontSize: 11,
-                      fontWeight: 600,
+                      fontSize: 10,
+                      fontWeight: 700,
                       color: "white",
-                      background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                      padding: "4px 10px",
-                      borderRadius: 20,
+                      background: user.is_on_trial
+                        ? "linear-gradient(135deg, #8b5cf6, #a78bfa)"
+                        : "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
+                      padding: "2px 8px",
+                      borderRadius: 4,
+                      letterSpacing: "0.05em",
+                      textTransform: "uppercase" as const,
                     }}
                   >
-                    PRO
+                    {user.is_on_trial ? "TRIAL" : user.effective_plan.toUpperCase()}
                   </span>
                 ) : (
                   <Link
@@ -222,6 +226,22 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
         </div>
       </header>
 
+      {user?.is_on_trial && user.trial_ends_at && (
+        <div style={{
+          background: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+          color: "white",
+          textAlign: "center",
+          padding: "8px 16px",
+          fontSize: 13,
+          fontWeight: 500,
+        }}>
+          Pro trial: {Math.max(0, Math.ceil((new Date(user.trial_ends_at).getTime() - Date.now()) / 86400000))} days left{" "}
+          <Link href="/pricing" style={{ color: "white", fontWeight: 700, textDecoration: "underline", marginLeft: 8 }}>
+            Upgrade now
+          </Link>
+        </div>
+      )}
+
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div
@@ -293,18 +313,22 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
                   >
                     {user.name || user.email}
                   </span>
-                  {user.is_pro && (
+                  {user && user.effective_plan !== "free" && (
                     <span
                       style={{
-                        fontSize: 11,
-                        fontWeight: 600,
+                        fontSize: 10,
+                        fontWeight: 700,
                         color: "white",
-                        background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                        padding: "3px 10px",
-                        borderRadius: 20,
+                        background: user.is_on_trial
+                          ? "linear-gradient(135deg, #8b5cf6, #a78bfa)"
+                          : "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
+                        padding: "2px 8px",
+                        borderRadius: 4,
+                        letterSpacing: "0.05em",
+                        textTransform: "uppercase" as const,
                       }}
                     >
-                      PRO
+                      {user.is_on_trial ? "TRIAL" : user.effective_plan.toUpperCase()}
                     </span>
                   )}
                 </div>
@@ -326,7 +350,7 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
                   >
                     Account
                   </Link>
-                  {!user.is_pro && (
+                  {user?.effective_plan === "free" && (
                     <Link
                       href="/pricing"
                       onClick={() => setMobileMenuOpen(false)}

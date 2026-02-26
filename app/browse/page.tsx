@@ -793,8 +793,8 @@ function BrowseContent() {
             )}
           </div>
 
-          {/* 30-day archive banner for free users */}
-          {!user?.is_pro && (
+          {/* Archive limit banner for non-pro users */}
+          {user && user.effective_plan !== "pro" && user.effective_plan !== "agency" && (
             <div style={{
               background: "linear-gradient(135deg, #fff7f5, #fef3ee)",
               border: "1px solid #f5d0c5",
@@ -808,11 +808,13 @@ function BrowseContent() {
               gap: 12,
             }}>
               <span style={{ fontSize: 13, color: "var(--color-secondary)" }}>
-                Showing emails from the last 30 days.{" "}
+                {user.effective_plan === "free"
+                  ? "Showing emails from last 30 days. Upgrade to Starter for 6 months, or Pro for full archive."
+                  : "Showing emails from last 6 months. Upgrade to Pro for full archive access."}
+                {" "}
                 <Link href="/pricing" style={{ color: "var(--color-accent)", fontWeight: 600, textDecoration: "none" }}>
-                  Upgrade to Pro
-                </Link>{" "}
-                for full archive access.
+                  View Plans
+                </Link>
               </span>
             </div>
           )}

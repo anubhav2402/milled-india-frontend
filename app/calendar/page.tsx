@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Header from "../components/Header";
 import Badge from "../components/Badge";
-import AuthGate from "../components/AuthGate";
+import ProGate from "../components/ProGate";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE, CAMPAIGN_TYPE_COLORS } from "../lib/constants";
 
@@ -202,7 +202,7 @@ export default function CalendarPage() {
             }} />
           </div>
         ) : !isAuth ? (
-          <AuthGate previewRows={6}>
+          <ProGate feature="campaign_calendar" minPlan="pro" previewRows={6}>
             <div style={{ background: "white", borderRadius: 14, padding: 40, height: 400 }}>
               {/* Placeholder calendar */}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 8 }}>
@@ -220,7 +220,7 @@ export default function CalendarPage() {
                 ))}
               </div>
             </div>
-          </AuthGate>
+          </ProGate>
         ) : (
           <>
             {/* Calendar Grid */}

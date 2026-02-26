@@ -4,27 +4,77 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {
+  PLAN_LIMITS,
+  PLAN_PRICES,
+  PLAN_NAMES,
+  formatPrice,
+  type PlanTier,
+  type FeatureKey,
+  FEATURE_LABELS,
+} from "../lib/plans";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
   "https://milled-india-api.onrender.com";
 
-const features = [
-  { name: "Browse emails", free: "Last 30 days", pro: "Full archive" },
-  { name: "Analytics & benchmarks", free: false, pro: true },
-  { name: "Subject line database", free: false, pro: true },
-  { name: "Brand pages", free: "5 per day", pro: "Unlimited" },
-  { name: "Email HTML view", free: "10 per day", pro: "Unlimited" },
-  { name: "Follow brands", free: "Up to 3", pro: "Unlimited" },
-  { name: "Bookmarks", free: "Up to 10", pro: "Unlimited" },
-  { name: "Campaign calendar", free: false, pro: true },
-  { name: "Export data", free: false, pro: true },
+/* ── Feature rows displayed on each card ── */
+type FeatureRow = {
+  label: string;
+  values: Record<PlanTier, string | boolean>;
+};
+
+const featureRows: FeatureRow[] = [
+  {
+    label: "Archive",
+    values: { free: "30 days", starter: "6 months", pro: "Full archive", agency: "Full archive" },
+  },
+  {
+    label: "Email views/day",
+    values: { free: "20/day", starter: "75/day", pro: "Unlimited", agency: "Unlimited" },
+  },
+  {
+    label: "Brand pages/day",
+    values: { free: "5/day", starter: "25/day", pro: "Unlimited", agency: "Unlimited" },
+  },
+  {
+    label: "Collections",
+    values: { free: "5 (10 each)", starter: "15 (50 each)", pro: "Unlimited", agency: "Unlimited" },
+  },
+  {
+    label: "Search",
+    values: { free: "Basic keyword", starter: "Advanced filters", pro: "Full multi-param", agency: "Full" },
+  },
+  {
+    label: "Analytics",
+    values: { free: false, starter: "Send frequency", pro: "Full suite", agency: "Full suite" },
+  },
+  {
+    label: "Campaign calendar",
+    values: { free: false, starter: false, pro: true, agency: true },
+  },
+  {
+    label: "Template editor",
+    values: { free: "View only", starter: "Edit + 3 exports", pro: "Unlimited", agency: "Unlimited" },
+  },
+  {
+    label: "Brand alerts",
+    values: { free: false, starter: false, pro: "5", agency: "Unlimited" },
+  },
+  {
+    label: "Bulk export",
+    values: { free: false, starter: false, pro: false, agency: true },
+  },
+  {
+    label: "Reports",
+    values: { free: false, starter: false, pro: false, agency: true },
+  },
 ];
 
 const faqs = [
   {
     q: "Can I cancel anytime?",
-    a: "Yes. Cancel anytime from your account page. You keep Pro access until the end of your billing period.",
+    a: "Yes. Cancel anytime from your account page. You keep access until the end of your billing period.",
   },
   {
     q: "What payment methods do you accept?",
@@ -32,7 +82,7 @@ const faqs = [
   },
   {
     q: "Is there a free trial?",
-    a: "The Free plan lets you explore MailMuse with limited access. Upgrade when you're ready for full analytics.",
+    a: "Every new account gets a full 14-day Pro trial with no credit card required. After the trial, you can continue on the Free plan or upgrade to keep Pro features.",
   },
   {
     q: "How many brands do you track?",
@@ -40,13 +90,22 @@ const faqs = [
   },
   {
     q: "How often is data updated?",
-    a: "Daily — we capture every email as it's sent, so you always see the latest campaigns.",
+    a: "Daily \u2014 we capture every email as it\u2019s sent, so you always see the latest campaigns.",
   },
   {
     q: "Can I get a refund?",
-    a: "We offer a 7-day money-back guarantee. If you're not satisfied, contact us for a full refund.",
+    a: "We offer a 7-day money-back guarantee. If you\u2019re not satisfied, contact us for a full refund.",
   },
 ];
+
+const tiers: PlanTier[] = ["free", "starter", "pro", "agency"];
+
+const tierDescriptions: Record<PlanTier, string> = {
+  free: "Explore email marketing trends",
+  starter: "For growing marketers",
+  pro: "Full email marketing intelligence",
+  agency: "For teams and agencies",
+};
 
 export default function PricingPage() {
   const { user, token } = useAuth();
@@ -55,13 +114,19 @@ export default function PricingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    email: "",
+    company: "",
+    message: "",
+  });
+  const [contactSubmitted, setContactSubmitted] = useState(false);
 
-  const monthlyPrice = 2499;
-  const annualPrice = 19188;
-  const annualMonthly = Math.round(annualPrice / 12);
-  const dailyCost = Math.round(annualPrice / 365);
+  const currentPlan = user?.effective_plan;
 
-  const handleSubscribe = async () => {
+  /* ── Razorpay checkout ── */
+  const handleSubscribe = async (selectedTier: PlanTier) => {
     setError(null);
 
     if (!user) {
@@ -69,7 +134,7 @@ export default function PricingPage() {
       return;
     }
 
-    if (user.is_pro) return;
+    if (currentPlan === selectedTier) return;
 
     const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     if (!razorpayKey) {
@@ -87,7 +152,7 @@ export default function PricingPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ plan: billing }),
+        body: JSON.stringify({ plan: billing, tier: selectedTier }),
       });
 
       const data = await res.json();
@@ -98,12 +163,11 @@ export default function PricingPage() {
         return;
       }
 
-      // Open Razorpay checkout
       const options = {
         key: razorpayKey,
         subscription_id: data.subscription_id,
         name: "MailMuse",
-        description: `Pro ${billing === "monthly" ? "Monthly" : "Annual"} Plan`,
+        description: `${PLAN_NAMES[selectedTier]} ${billing === "monthly" ? "Monthly" : "Annual"} Plan`,
         handler: async (response: {
           razorpay_payment_id: string;
           razorpay_subscription_id: string;
@@ -115,14 +179,20 @@ export default function PricingPage() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(response),
+            body: JSON.stringify({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_subscription_id: response.razorpay_subscription_id,
+              razorpay_signature: response.razorpay_signature,
+              tier: selectedTier,
+              billing_cycle: billing,
+            }),
           });
 
           if (verifyRes.ok) {
             window.location.href = "/account?upgraded=true";
           } else {
             setError(
-              "Payment was received but verification failed. Please contact support — your payment is safe."
+              "Payment was received but verification failed. Please contact support \u2014 your payment is safe."
             );
           }
         },
@@ -148,6 +218,191 @@ export default function PricingPage() {
     }
   };
 
+  /* ── Contact sales form submit ── */
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      const res = await fetch(`${API_BASE}/contact-sales`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(contactForm),
+      });
+      if (res.ok) {
+        setContactSubmitted(true);
+      } else {
+        setError("Could not submit your request. Please try again.");
+      }
+    } catch {
+      setError("Network error. Please try again.");
+    }
+  };
+
+  /* ── Render feature value ── */
+  const renderFeatureValue = (value: string | boolean) => {
+    if (value === true) {
+      return <span style={{ color: "#22c55e", fontWeight: 600 }}>&#10003;</span>;
+    }
+    if (value === false) {
+      return <span style={{ color: "#ccc" }}>&times;</span>;
+    }
+    return <span>{value}</span>;
+  };
+
+  /* ── Get CTA for each tier ── */
+  const renderCTA = (tier: PlanTier) => {
+    const isCurrent = currentPlan === tier;
+
+    if (isCurrent) {
+      return (
+        <button
+          disabled
+          style={{
+            display: "block",
+            width: "100%",
+            textAlign: "center",
+            padding: "12px 24px",
+            borderRadius: 10,
+            border: "none",
+            background: "#22c55e",
+            color: "white",
+            cursor: "default",
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          Current Plan
+        </button>
+      );
+    }
+
+    if (tier === "free") {
+      return (
+        <Link
+          href={user ? "/browse" : "/signup"}
+          style={{
+            display: "block",
+            textAlign: "center",
+            padding: "12px 24px",
+            borderRadius: 10,
+            border: "1px solid var(--color-border)",
+            color: "var(--color-primary)",
+            textDecoration: "none",
+            fontSize: 14,
+            fontWeight: 500,
+          }}
+        >
+          Get Started Free
+        </Link>
+      );
+    }
+
+    if (tier === "agency") {
+      return (
+        <button
+          onClick={() => setShowContactForm(true)}
+          style={{
+            display: "block",
+            width: "100%",
+            textAlign: "center",
+            padding: "12px 24px",
+            borderRadius: 10,
+            border: "none",
+            background: "var(--color-primary)",
+            color: "white",
+            cursor: "pointer",
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          Contact Sales
+        </button>
+      );
+    }
+
+    // Starter and Pro
+    const isPro = tier === "pro";
+    return (
+      <button
+        onClick={() => handleSubscribe(tier)}
+        disabled={loading}
+        style={{
+          display: "block",
+          width: "100%",
+          textAlign: "center",
+          padding: "12px 24px",
+          borderRadius: 10,
+          border: "none",
+          background: isPro
+            ? "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))"
+            : "var(--color-primary)",
+          color: "white",
+          cursor: "pointer",
+          fontSize: 14,
+          fontWeight: 600,
+          opacity: loading ? 0.7 : 1,
+        }}
+      >
+        {loading ? "Processing..." : `Start ${PLAN_NAMES[tier]} Plan`}
+      </button>
+    );
+  };
+
+  /* ── Price display ── */
+  const renderPrice = (tier: PlanTier) => {
+    const prices = PLAN_PRICES[tier];
+    if (tier === "free") {
+      return (
+        <div style={{ marginBottom: 24 }}>
+          <span
+            style={{
+              fontSize: 36,
+              fontWeight: 700,
+              color: "var(--color-primary)",
+            }}
+          >
+            &#8377;0
+          </span>
+          <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
+            {" "}/forever
+          </span>
+        </div>
+      );
+    }
+
+    const monthlyAmount = prices.monthly;
+    const annualAmount = prices.annual;
+    const annualMonthly = Math.round(annualAmount / 12);
+
+    return (
+      <div style={{ marginBottom: 24 }}>
+        <span
+          style={{
+            fontSize: 36,
+            fontWeight: 700,
+            color: "var(--color-primary)",
+          }}
+        >
+          {formatPrice(billing === "monthly" ? monthlyAmount : annualMonthly)}
+        </span>
+        <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
+          {" "}/month
+        </span>
+        {billing === "annual" && (
+          <div
+            style={{
+              fontSize: 12,
+              color: "var(--color-secondary)",
+              marginTop: 4,
+            }}
+          >
+            Billed {formatPrice(annualAmount)}/year
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       {/* Razorpay script */}
@@ -155,13 +410,13 @@ export default function PricingPage() {
 
       <div
         style={{
-          maxWidth: 1000,
+          maxWidth: 1200,
           margin: "0 auto",
           padding: "60px 20px",
           fontFamily: "var(--font-inter)",
         }}
       >
-        {/* Header */}
+        {/* ── Header ── */}
         <div style={{ textAlign: "center", marginBottom: 20 }}>
           <h1
             style={{
@@ -183,12 +438,35 @@ export default function PricingPage() {
               marginInline: "auto",
             }}
           >
-            Start free. Upgrade when you need the complete toolkit for tracking,
-            analyzing, and learning from the best email campaigns.
+            Start free. Scale when you&apos;re ready.
           </p>
         </div>
 
-        {/* Social proof */}
+        {/* ── Trial banner ── */}
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: 24,
+            padding: "12px 20px",
+            background: "var(--color-accent-light)",
+            borderRadius: 10,
+            maxWidth: 600,
+            marginInline: "auto",
+          }}
+        >
+          <p
+            style={{
+              fontSize: 14,
+              color: "var(--color-primary)",
+              margin: 0,
+              fontWeight: 500,
+            }}
+          >
+            Every new account gets 14 days of full Pro access &mdash; no credit card required
+          </p>
+        </div>
+
+        {/* ── Social proof ── */}
         <div
           style={{
             display: "flex",
@@ -198,28 +476,26 @@ export default function PricingPage() {
             flexWrap: "wrap",
           }}
         >
-          {[
-            "10,000+ emails tracked",
-            "300+ brands",
-            "Updated daily",
-          ].map((stat) => (
-            <span
-              key={stat}
-              style={{
-                fontSize: 13,
-                color: "var(--color-secondary)",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-            >
-              <span style={{ color: "var(--color-accent)" }}>&#10003;</span>
-              {stat}
-            </span>
-          ))}
+          {["10,000+ emails tracked", "300+ brands", "Updated daily"].map(
+            (stat) => (
+              <span
+                key={stat}
+                style={{
+                  fontSize: 13,
+                  color: "var(--color-secondary)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <span style={{ color: "var(--color-accent)" }}>&#10003;</span>
+                {stat}
+              </span>
+            )
+          )}
         </div>
 
-        {/* Billing toggle */}
+        {/* ── Billing toggle ── */}
         <div
           style={{
             display: "flex",
@@ -273,29 +549,225 @@ export default function PricingPage() {
                 fontWeight: 600,
               }}
             >
-              Save 36%
+              Save 17%
             </span>
           </button>
         </div>
 
-        {/* Pricing cards */}
+        {/* ── Error banner ── */}
+        {error && (
+          <div
+            style={{
+              background: "#fef2f2",
+              border: "1px solid #fecaca",
+              borderRadius: 8,
+              padding: "10px 14px",
+              marginBottom: 24,
+              fontSize: 13,
+              color: "#991b1b",
+              lineHeight: 1.5,
+              maxWidth: 600,
+              marginInline: "auto",
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        {/* ── Pricing cards ── */}
         <div
           className="pricing-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 24,
-            maxWidth: 800,
-            margin: "0 auto 60px",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 20,
+            maxWidth: 1100,
+            margin: "0 auto 40px",
           }}
         >
-          {/* Free Plan */}
+          {tiers.map((tier) => {
+            const isPro = tier === "pro";
+            return (
+              <div
+                key={tier}
+                className={`pricing-card ${isPro ? "pricing-card-pro" : ""}`}
+                style={{
+                  border: isPro
+                    ? "2px solid var(--color-accent)"
+                    : "1px solid var(--color-border)",
+                  borderRadius: 16,
+                  padding: 28,
+                  background: "var(--color-surface, white)",
+                  position: "relative",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                {/* MOST POPULAR badge */}
+                {isPro && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: -12,
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      background:
+                        "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
+                      color: "white",
+                      fontSize: 11,
+                      fontWeight: 600,
+                      padding: "4px 14px",
+                      borderRadius: 20,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    MOST POPULAR
+                  </div>
+                )}
+
+                {/* Plan name */}
+                <h3
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 600,
+                    color: "var(--color-primary)",
+                    margin: "0 0 4px",
+                  }}
+                >
+                  {PLAN_NAMES[tier]}
+                </h3>
+                <p
+                  style={{
+                    fontSize: 13,
+                    color: "var(--color-secondary)",
+                    margin: "0 0 16px",
+                  }}
+                >
+                  {tierDescriptions[tier]}
+                </p>
+
+                {/* Price */}
+                {renderPrice(tier)}
+
+                {/* CTA */}
+                <div style={{ marginBottom: 20 }}>{renderCTA(tier)}</div>
+
+                {/* Feature list */}
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    margin: 0,
+                    flex: 1,
+                  }}
+                >
+                  {featureRows.map((row) => {
+                    const value = row.values[tier];
+                    const isAvailable = value !== false;
+                    return (
+                      <li
+                        key={row.label}
+                        style={{
+                          fontSize: 13,
+                          color: isAvailable
+                            ? "var(--color-secondary)"
+                            : "var(--color-muted, #999)",
+                          padding: "7px 0",
+                          borderBottom:
+                            "1px solid var(--color-border-light, #f0f0f0)",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <span style={{ width: 18, textAlign: "center", flexShrink: 0 }}>
+                          {renderFeatureValue(value)}
+                        </span>
+                        <span>
+                          {row.label}
+                          {typeof value === "string" && value !== "View only" && (
+                            <span
+                              style={{
+                                color: isAvailable
+                                  ? "var(--color-accent)"
+                                  : "var(--color-muted, #999)",
+                                marginLeft: 4,
+                                fontSize: 11,
+                                fontWeight: 500,
+                              }}
+                            >
+                              ({value})
+                            </span>
+                          )}
+                          {typeof value === "string" && value === "View only" && (
+                            <span
+                              style={{
+                                color: "var(--color-muted, #999)",
+                                marginLeft: 4,
+                                fontSize: 11,
+                              }}
+                            >
+                              ({value})
+                            </span>
+                          )}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Guarantee text ── */}
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: 60,
+            display: "flex",
+            justifyContent: "center",
+            gap: 24,
+            flexWrap: "wrap",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 13,
+              color: "var(--color-secondary)",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <span style={{ fontSize: 16 }}>&#128274;</span>
+            7-day money-back guarantee
+          </span>
+          <span
+            style={{
+              fontSize: 13,
+              color: "var(--color-secondary)",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <span style={{ fontSize: 16 }}>&#10003;</span>
+            Cancel anytime
+          </span>
+        </div>
+
+        {/* ── Agency contact form ── */}
+        {showContactForm && (
           <div
             style={{
+              maxWidth: 500,
+              margin: "0 auto 60px",
               border: "1px solid var(--color-border)",
               borderRadius: 16,
               padding: 32,
-              background: "white",
+              background: "var(--color-surface, white)",
             }}
           >
             <h3
@@ -303,284 +775,154 @@ export default function PricingPage() {
                 fontSize: 20,
                 fontWeight: 600,
                 color: "var(--color-primary)",
-                margin: "0 0 4px",
+                margin: "0 0 8px",
+                fontFamily: "var(--font-dm-serif)",
               }}
             >
-              Free
+              Contact Sales
             </h3>
             <p
               style={{
                 fontSize: 14,
                 color: "var(--color-secondary)",
-                margin: "0 0 20px",
-              }}
-            >
-              Explore email marketing trends
-            </p>
-            <div style={{ marginBottom: 24 }}>
-              <span
-                style={{
-                  fontSize: 36,
-                  fontWeight: 700,
-                  color: "var(--color-primary)",
-                }}
-              >
-                &#8377;0
-              </span>
-              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
-                {" "}
-                /forever
-              </span>
-            </div>
-            <Link
-              href={user ? "/browse" : "/signup"}
-              style={{
-                display: "block",
-                textAlign: "center",
-                padding: "12px 24px",
-                borderRadius: 10,
-                border: "1px solid var(--color-border)",
-                color: "var(--color-primary)",
-                textDecoration: "none",
-                fontSize: 14,
-                fontWeight: 500,
-                marginBottom: 24,
-              }}
-            >
-              {user ? "Current Plan" : "Get Started Free"}
-            </Link>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {features.map((f) => (
-                <li
-                  key={f.name}
-                  style={{
-                    fontSize: 14,
-                    color:
-                      f.free === false
-                        ? "var(--color-muted, #999)"
-                        : "var(--color-secondary)",
-                    padding: "8px 0",
-                    borderBottom: "1px solid var(--color-border-light, #f0f0f0)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  <span style={{ width: 18, textAlign: "center" }}>
-                    {f.free === false ? (
-                      <span style={{ color: "#ccc" }}>&times;</span>
-                    ) : (
-                      <span style={{ color: "#22c55e" }}>&#10003;</span>
-                    )}
-                  </span>
-                  <span>
-                    {f.name}
-                    {typeof f.free === "string" && (
-                      <span
-                        style={{
-                          color: "var(--color-muted, #999)",
-                          marginLeft: 4,
-                          fontSize: 12,
-                        }}
-                      >
-                        ({f.free})
-                      </span>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Pro Plan */}
-          <div
-            style={{
-              border: "2px solid var(--color-accent)",
-              borderRadius: 16,
-              padding: 32,
-              background: "white",
-              position: "relative",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                top: -12,
-                left: "50%",
-                transform: "translateX(-50%)",
-                background:
-                  "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                color: "white",
-                fontSize: 12,
-                fontWeight: 600,
-                padding: "4px 16px",
-                borderRadius: 20,
-              }}
-            >
-              MOST POPULAR
-            </div>
-            <h3
-              style={{
-                fontSize: 20,
-                fontWeight: 600,
-                color: "var(--color-primary)",
-                margin: "0 0 4px",
-              }}
-            >
-              Pro
-            </h3>
-            <p
-              style={{
-                fontSize: 14,
-                color: "var(--color-secondary)",
-                margin: "0 0 20px",
-              }}
-            >
-              Full email marketing intelligence
-            </p>
-            <div style={{ marginBottom: 24 }}>
-              <span
-                style={{
-                  fontSize: 36,
-                  fontWeight: 700,
-                  color: "var(--color-primary)",
-                }}
-              >
-                &#8377;
-                {billing === "monthly"
-                  ? monthlyPrice.toLocaleString("en-IN")
-                  : annualMonthly.toLocaleString("en-IN")}
-              </span>
-              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
-                {" "}
-                /month
-              </span>
-              {billing === "annual" && (
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "var(--color-secondary)",
-                    marginTop: 4,
-                  }}
-                >
-                  Billed &#8377;{annualPrice.toLocaleString("en-IN")}/year
-                  <span
-                    style={{
-                      marginLeft: 8,
-                      color: "var(--color-accent)",
-                      fontWeight: 500,
-                    }}
-                  >
-                    (just &#8377;{dailyCost}/day)
-                  </span>
-                </div>
-              )}
-            </div>
-            <button
-              onClick={handleSubscribe}
-              disabled={loading || user?.is_pro}
-              style={{
-                display: "block",
-                width: "100%",
-                textAlign: "center",
-                padding: "12px 24px",
-                borderRadius: 10,
-                border: "none",
-                background: user?.is_pro
-                  ? "#22c55e"
-                  : "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                color: "white",
-                cursor: user?.is_pro ? "default" : "pointer",
-                fontSize: 14,
-                fontWeight: 600,
-                marginBottom: 8,
-                opacity: loading ? 0.7 : 1,
-              }}
-            >
-              {user?.is_pro
-                ? "Current Plan"
-                : loading
-                ? "Processing..."
-                : billing === "annual"
-                ? "Start Pro Plan (Save 36%)"
-                : "Start Pro Plan"}
-            </button>
-
-            {/* Guarantee text */}
-            <p
-              style={{
-                fontSize: 12,
-                color: "var(--color-secondary)",
-                textAlign: "center",
                 margin: "0 0 24px",
               }}
             >
-              7-day money-back guarantee. Cancel anytime.
+              Tell us about your team and we&apos;ll get back to you within 24 hours.
             </p>
 
-            {/* Inline error */}
-            {error && (
+            {contactSubmitted ? (
               <div
                 style={{
-                  background: "#fef2f2",
-                  border: "1px solid #fecaca",
+                  background: "#f0fdf4",
+                  border: "1px solid #bbf7d0",
                   borderRadius: 8,
-                  padding: "10px 14px",
-                  marginBottom: 16,
-                  fontSize: 13,
-                  color: "#991b1b",
-                  lineHeight: 1.5,
+                  padding: "16px 20px",
+                  textAlign: "center",
                 }}
               >
-                {error}
-              </div>
-            )}
-
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {features.map((f) => (
-                <li
-                  key={f.name}
+                <p
                   style={{
-                    fontSize: 14,
-                    color: "var(--color-secondary)",
-                    padding: "8px 0",
-                    borderBottom: "1px solid var(--color-border-light, #f0f0f0)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
+                    fontSize: 15,
+                    color: "#166534",
+                    margin: 0,
+                    fontWeight: 500,
                   }}
                 >
-                  <span
+                  Thanks! We&apos;ll be in touch soon.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleContactSubmit}>
+                <div style={{ marginBottom: 14 }}>
+                  <input
+                    type="text"
+                    placeholder="Your name"
+                    required
+                    value={contactForm.name}
+                    onChange={(e) =>
+                      setContactForm({ ...contactForm, name: e.target.value })
+                    }
                     style={{
-                      width: 18,
-                      textAlign: "center",
-                      color: "var(--color-accent)",
+                      width: "100%",
+                      padding: "10px 14px",
+                      borderRadius: 8,
+                      border: "1px solid var(--color-border)",
+                      fontSize: 14,
+                      fontFamily: "var(--font-inter)",
+                      boxSizing: "border-box",
                     }}
-                  >
-                    &#10003;
-                  </span>
-                  <span>
-                    {f.name}
-                    {typeof f.pro === "string" && (
-                      <span
-                        style={{
-                          color: "var(--color-accent)",
-                          marginLeft: 4,
-                          fontSize: 12,
-                          fontWeight: 500,
-                        }}
-                      >
-                        ({f.pro})
-                      </span>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                  />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <input
+                    type="email"
+                    placeholder="Work email"
+                    required
+                    value={contactForm.email}
+                    onChange={(e) =>
+                      setContactForm({ ...contactForm, email: e.target.value })
+                    }
+                    style={{
+                      width: "100%",
+                      padding: "10px 14px",
+                      borderRadius: 8,
+                      border: "1px solid var(--color-border)",
+                      fontSize: 14,
+                      fontFamily: "var(--font-inter)",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div style={{ marginBottom: 14 }}>
+                  <input
+                    type="text"
+                    placeholder="Company name"
+                    required
+                    value={contactForm.company}
+                    onChange={(e) =>
+                      setContactForm({
+                        ...contactForm,
+                        company: e.target.value,
+                      })
+                    }
+                    style={{
+                      width: "100%",
+                      padding: "10px 14px",
+                      borderRadius: 8,
+                      border: "1px solid var(--color-border)",
+                      fontSize: 14,
+                      fontFamily: "var(--font-inter)",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <div style={{ marginBottom: 20 }}>
+                  <textarea
+                    placeholder="Tell us about your needs..."
+                    rows={4}
+                    required
+                    value={contactForm.message}
+                    onChange={(e) =>
+                      setContactForm({
+                        ...contactForm,
+                        message: e.target.value,
+                      })
+                    }
+                    style={{
+                      width: "100%",
+                      padding: "10px 14px",
+                      borderRadius: 8,
+                      border: "1px solid var(--color-border)",
+                      fontSize: 14,
+                      fontFamily: "var(--font-inter)",
+                      resize: "vertical",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  style={{
+                    width: "100%",
+                    padding: "12px 24px",
+                    borderRadius: 10,
+                    border: "none",
+                    background: "var(--color-primary)",
+                    color: "white",
+                    cursor: "pointer",
+                    fontSize: 14,
+                    fontWeight: 600,
+                  }}
+                >
+                  Submit
+                </button>
+              </form>
+            )}
           </div>
-        </div>
+        )}
 
-        {/* FAQ Section */}
+        {/* ── FAQ Section ── */}
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
           <h2
             style={{
@@ -643,13 +985,20 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Mobile responsive styles */}
+      {/* ── Mobile responsive styles ── */}
       <style>{`
+        @media (max-width: 1024px) {
+          .pricing-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            max-width: 700px !important;
+          }
+        }
         @media (max-width: 640px) {
           .pricing-grid {
             grid-template-columns: 1fr !important;
+            max-width: 400px !important;
           }
-          .pricing-grid > div:last-child {
+          .pricing-card-pro {
             order: -1;
           }
         }

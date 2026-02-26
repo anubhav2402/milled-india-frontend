@@ -2,13 +2,18 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
 
+import type { PlanTier } from "../lib/plans";
+
 // Types
 export type User = {
   id: number;
   email: string;
   name: string | null;
-  subscription_tier: "free" | "pro";
+  subscription_tier: PlanTier;
+  effective_plan: PlanTier;
   is_pro: boolean;
+  is_on_trial: boolean;
+  trial_ends_at: string | null;
 };
 
 type AuthContextType = {

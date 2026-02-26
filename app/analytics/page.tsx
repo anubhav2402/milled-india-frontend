@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Logo from "../components/Logo";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
+import BlurredOverlay from "../components/BlurredOverlay";
 
 type OverviewData = {
   total_emails: number | string;
@@ -205,6 +206,7 @@ export default function AnalyticsPage() {
               />
             </div>
 
+            <BlurredOverlay feature="analytics">
             {/* Two Column Layout */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 32 }}>
               {/* Industry Breakdown */}
@@ -485,6 +487,7 @@ export default function AnalyticsPage() {
                 </p>
               )}
             </div>
+            </BlurredOverlay>
           </>
         )}
       </main>
