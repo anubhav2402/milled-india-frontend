@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Logo from "../components/Logo";
 import { useAuth } from "../context/AuthContext";
@@ -27,16 +27,7 @@ declare global {
 }
 
 export default function SignupPage() {
-  return (
-    <Suspense>
-      <SignupContent />
-    </Suspense>
-  );
-}
-
-function SignupContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { user, register, googleLogin, isLoading } = useAuth();
 
   const [name, setName] = useState("");
@@ -45,74 +36,39 @@ function SignupContent() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const redirect = searchParams.get("redirect") || "/browse";
+  // Read redirect param from window.location (avoids useSearchParams + Suspense)
+  const getRedirect = () => {
+    if (typeof window === "undefined") return "/browse";
+    const params = new URLSearchParams(window.location.search);
+    return params.get("redirect") || "/browse";
+  };
 
   // Redirect if already logged in
   useEffect(() => {
     if (!isLoading && user) {
-      router.push(redirect);
+      router.push(getRedirect());
     }
-  }, [user, isLoading, router, redirect]);
+  }, [user, isLoading, router]);
 
-  // Initialize Google Sign-In
-  // Uses getElementById instead of useRef to survive Suspense remounts.
-  // Does not remove the script on cleanup — the GSI library is idempotent
-  // and removing it mid-remount causes the button to silently break.
+  const handleGoogleCallback = async (response: { credential: string }) => {
+    setError("");
+    setSubmitting(true);
+
+    const result = await googleLogin(response.credential);
+
+    if (result.success) {
+      router.push(getRedirect());
+    } else {
+      setError(result.error || "Google signup failed");
+    }
+
+    setSubmitting(false);
+  };
+
+  // Initialize Google Sign-In (same pattern as login page)
   useEffect(() => {
     const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     if (!googleClientId) return;
-
-    const handleGoogleCallback = async (response: { credential: string }) => {
-      setError("");
-      setSubmitting(true);
-
-      const result = await googleLogin(response.credential);
-
-      if (result.success) {
-        router.push(redirect);
-      } else {
-        setError(result.error || "Google signup failed");
-      }
-
-      setSubmitting(false);
-    };
-
-    const renderGoogleButton = () => {
-      if (!window.google) return;
-      const buttonDiv = document.getElementById("google-signup-button");
-      if (!buttonDiv) return;
-
-      window.google.accounts.id.initialize({
-        client_id: googleClientId,
-        callback: handleGoogleCallback,
-      });
-      window.google.accounts.id.renderButton(buttonDiv, {
-        theme: "outline",
-        size: "large",
-        width: 320,
-      });
-    };
-
-    // If the GSI script is already loaded (e.g. after Suspense remount),
-    // just re-render the button into the new DOM element.
-    if (window.google) {
-      renderGoogleButton();
-      return;
-    }
-
-    // Check if a GSI script tag already exists (from a prior mount that was
-    // unmounted by Suspense before the script finished loading).
-    const existingScript = document.querySelector(
-      'script[src="https://accounts.google.com/gsi/client"]'
-    );
-
-    if (existingScript) {
-      // Script is still loading — wait for it
-      existingScript.addEventListener("load", renderGoogleButton);
-      return () => {
-        existingScript.removeEventListener("load", renderGoogleButton);
-      };
-    }
 
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
@@ -121,13 +77,27 @@ function SignupContent() {
     document.body.appendChild(script);
 
     script.onload = () => {
-      renderGoogleButton();
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: googleClientId,
+          callback: handleGoogleCallback,
+        });
+
+        const buttonDiv = document.getElementById("google-signup-button");
+        if (buttonDiv) {
+          window.google.accounts.id.renderButton(buttonDiv, {
+            theme: "outline",
+            size: "large",
+            width: 320,
+          });
+        }
+      }
     };
 
-    // Intentionally NOT removing the script on cleanup.
-    // The GSI library is safe to keep loaded, and removing it during
-    // Suspense remounts is what caused the button to break.
-  }, [googleLogin, redirect, router]);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,7 +113,7 @@ function SignupContent() {
     const result = await register(email, password, name || undefined);
 
     if (result.success) {
-      router.push(redirect);
+      router.push(getRedirect());
     } else {
       setError(result.error || "Registration failed");
     }
