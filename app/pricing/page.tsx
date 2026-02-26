@@ -31,15 +31,15 @@ const featureRows: FeatureRow[] = [
   },
   {
     label: "Email views/day",
-    values: { free: "20/day", starter: "75/day", pro: "Unlimited", agency: "Unlimited" },
+    values: { free: "20", starter: "75", pro: "Unlimited", agency: "Unlimited" },
   },
   {
     label: "Brand pages/day",
-    values: { free: "5/day", starter: "25/day", pro: "Unlimited", agency: "Unlimited" },
+    values: { free: "5", starter: "25", pro: "Unlimited", agency: "Unlimited" },
   },
   {
     label: "Collections",
-    values: { free: "5 (10 each)", starter: "15 (50 each)", pro: "Unlimited", agency: "Unlimited" },
+    values: { free: "5 collections", starter: "15 collections", pro: "Unlimited", agency: "Unlimited" },
   },
   {
     label: "Search",
@@ -59,7 +59,7 @@ const featureRows: FeatureRow[] = [
   },
   {
     label: "Brand alerts",
-    values: { free: false, starter: false, pro: "5", agency: "Unlimited" },
+    values: { free: false, starter: false, pro: "5 alerts", agency: "Unlimited" },
   },
   {
     label: "Bulk export",
@@ -238,7 +238,7 @@ export default function PricingPage() {
     }
   };
 
-  /* ── Render feature value ── */
+  /* ── Render feature value (icon column only) ── */
   const renderFeatureValue = (value: string | boolean) => {
     if (value === true) {
       return <span style={{ color: "#22c55e", fontWeight: 600 }}>&#10003;</span>;
@@ -246,7 +246,8 @@ export default function PricingPage() {
     if (value === false) {
       return <span style={{ color: "#ccc" }}>&times;</span>;
     }
-    return <span>{value}</span>;
+    // String values get a checkmark in the icon column; the text shows in the label
+    return <span style={{ color: "#22c55e", fontWeight: 600 }}>&#10003;</span>;
   };
 
   /* ── Get CTA for each tier ── */
