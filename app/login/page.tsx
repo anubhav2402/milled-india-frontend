@@ -19,6 +19,7 @@ declare global {
             element: HTMLElement,
             config: { theme: string; size: string; width: number }
           ) => void;
+          prompt: () => void;
         };
       };
     };
