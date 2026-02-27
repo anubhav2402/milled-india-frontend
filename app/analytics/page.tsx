@@ -208,7 +208,7 @@ export default function AnalyticsPage() {
 
             <BlurredOverlay feature="analytics">
             {/* Two Column Layout */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 32 }}>
+            <div className="analytics-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 32 }}>
               {/* Industry Breakdown */}
               <div
                 style={{
@@ -341,6 +341,7 @@ export default function AnalyticsPage() {
               {/* Brand Selector */}
               <div style={{ marginBottom: 24 }}>
                 <select
+                  className="analytics-select"
                   value={selectedBrand}
                   onChange={(e) => setSelectedBrand(e.target.value)}
                   style={{
@@ -497,8 +498,12 @@ export default function AnalyticsPage() {
           to { transform: rotate(360deg); }
         }
         @media (max-width: 768px) {
-          main > div[style*="grid-template-columns: 1fr 1fr"] {
+          .analytics-grid {
             grid-template-columns: 1fr !important;
+          }
+          .analytics-select {
+            min-width: unset !important;
+            width: 100% !important;
           }
         }
       `}</style>

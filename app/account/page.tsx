@@ -74,6 +74,7 @@ function AccountContent() {
 
   return (
     <div
+      className="account-container"
       style={{
         maxWidth: 600,
         margin: "0 auto",
@@ -344,6 +345,13 @@ export default function AccountPage() {
       <Suspense fallback={<div style={{ padding: 40, textAlign: "center" }}>Loading...</div>}>
         <AccountContent />
       </Suspense>
+      <style>{`
+        @media (max-width: 640px) {
+          .account-container {
+            padding: 24px 16px !important;
+          }
+        }
+      `}</style>
     </>
   );
 }

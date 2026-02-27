@@ -694,6 +694,14 @@ function ProductPreview({
             display: none;
           }
         }
+        @media (max-width: 480px) {
+          .preview-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .preview-grid > div:nth-child(n+4) {
+            display: none;
+          }
+        }
       `}</style>
     </section>
   );

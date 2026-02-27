@@ -102,8 +102,18 @@ body {
   line-height: var(--line-height-normal);
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+input, select, textarea {
+  font-size: 16px; /* Prevents iOS auto-zoom on focus */
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* ========== TYPOGRAPHY UTILITIES ========== */
@@ -447,7 +457,7 @@ body {
   }
 
   .show-mobile {
-    display: block !important;
+    display: flex !important;
   }
 
   .email-detail-grid {
@@ -464,6 +474,10 @@ body {
     --text-hero: 32px;
     --text-h1: 28px;
     --text-h2: 22px;
+  }
+
+  .hide-small {
+    display: none !important;
   }
 }
 

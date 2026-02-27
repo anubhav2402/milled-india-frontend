@@ -239,7 +239,7 @@ export default function BrandPageClient({
 
         {/* Two-column layout: Emails + Insights sidebar */}
         <div
-          className="email-detail-grid"
+          className="email-detail-grid brand-layout"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 340px",
@@ -354,7 +354,7 @@ export default function BrandPageClient({
           </div>
 
           {/* Right: Insights Sidebar */}
-          <div style={{ position: "sticky", top: 80, display: "flex", flexDirection: "column", gap: 16 }}>
+          <div className="brand-sidebar" style={{ position: "sticky", top: 80, display: "flex", flexDirection: "column", gap: 16 }}>
             {/* Campaign Types */}
             {isAuthenticated ? (
               <>
@@ -450,7 +450,17 @@ export default function BrandPageClient({
         </div>
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 768px) {
+          .brand-layout {
+            grid-template-columns: 1fr !important;
+          }
+          .brand-sidebar {
+            width: 100% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

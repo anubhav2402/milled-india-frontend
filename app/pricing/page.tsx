@@ -357,7 +357,7 @@ export default function PricingPage() {
         <div style={{ marginBottom: 24 }}>
           <span
             style={{
-              fontSize: 36,
+              fontSize: "clamp(28px, 4vw, 36px)",
               fontWeight: 700,
               color: "var(--color-primary)",
             }}
@@ -410,6 +410,7 @@ export default function PricingPage() {
       <script src="https://checkout.razorpay.com/v1/checkout.js" async />
 
       <div
+        className="pricing-container"
         style={{
           maxWidth: 1200,
           margin: "0 auto",
@@ -421,7 +422,7 @@ export default function PricingPage() {
         <div style={{ textAlign: "center", marginBottom: 20 }}>
           <h1
             style={{
-              fontSize: 36,
+              fontSize: "clamp(28px, 4vw, 36px)",
               fontWeight: 700,
               color: "var(--color-primary)",
               margin: "0 0 12px",
@@ -997,10 +998,13 @@ export default function PricingPage() {
         @media (max-width: 640px) {
           .pricing-grid {
             grid-template-columns: 1fr !important;
-            max-width: 400px !important;
+            max-width: 92vw !important;
           }
           .pricing-card-pro {
             order: -1;
+          }
+          .pricing-container {
+            padding: 32px 16px !important;
           }
         }
       `}</style>

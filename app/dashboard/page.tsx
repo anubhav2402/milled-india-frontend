@@ -208,8 +208,8 @@ export default function DashboardPage() {
             ) : feedEmails.length === 0 ? (
               <p style={{ color: "var(--color-tertiary)", fontSize: 14 }}>No recent emails from followed brands.</p>
             ) : (
-              <div style={{
-                display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20,
+              <div className="dashboard-grid" style={{
+                display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20,
               }}>
                 {feedEmails.slice(0, 12).map((email) => (
                   <EmailCard
@@ -239,8 +239,8 @@ export default function DashboardPage() {
                 View all →
               </Link>
             </div>
-            <div style={{
-              display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20,
+            <div className="dashboard-grid" style={{
+              display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20,
             }}>
               {savedEmails.map((email) => (
                 <EmailCard
@@ -258,6 +258,14 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .dashboard-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

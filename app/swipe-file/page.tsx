@@ -151,7 +151,6 @@ export default function SwipeFilePage() {
               className="show-mobile"
               onClick={() => setShowFilters(!showFilters)}
               style={{
-                display: "none",
                 alignItems: "center",
                 gap: 6,
                 padding: "10px 14px",
@@ -189,17 +188,17 @@ export default function SwipeFilePage() {
             alignItems: "center",
           }}
         >
-          <select value={filterIndustry} onChange={(e) => setFilterIndustry(e.target.value)} style={selectStyle}>
+          <select className="swipe-select" value={filterIndustry} onChange={(e) => setFilterIndustry(e.target.value)} style={selectStyle}>
             <option value="">All Industries</option>
             {INDUSTRIES.map((i) => <option key={i} value={i}>{i}</option>)}
           </select>
 
-          <select value={filterType} onChange={(e) => setFilterType(e.target.value)} style={selectStyle}>
+          <select className="swipe-select" value={filterType} onChange={(e) => setFilterType(e.target.value)} style={selectStyle}>
             <option value="">All Types</option>
             {CAMPAIGN_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
 
-          <select value={filterBrand} onChange={(e) => setFilterBrand(e.target.value)} style={selectStyle}>
+          <select className="swipe-select" value={filterBrand} onChange={(e) => setFilterBrand(e.target.value)} style={selectStyle}>
             <option value="">All Brands</option>
             {brands.map((b) => <option key={b} value={b}>{b}</option>)}
           </select>
@@ -225,7 +224,7 @@ export default function SwipeFilePage() {
             Has Emoji
           </label>
 
-          <select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} style={selectStyle}>
+          <select className="swipe-select" value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} style={selectStyle}>
             <option value="newest">Newest first</option>
             <option value="shortest">Shortest first</option>
             <option value="longest">Longest first</option>
@@ -395,6 +394,15 @@ export default function SwipeFilePage() {
           </div>
         )}
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .swipe-select {
+            min-width: unset !important;
+            width: 100% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

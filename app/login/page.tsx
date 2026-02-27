@@ -126,7 +126,7 @@ export default function LoginPage() {
             <span style={{ fontFamily: "var(--font-dm-serif)", fontSize: 22, color: "var(--color-primary)" }}>Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em></span>
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <span style={{ fontSize: 14, color: "#64748b" }}>Don't have an account?</span>
+            <span className="login-header-text" style={{ fontSize: 14, color: "#64748b" }}>Don't have an account?</span>
             <Link
               href="/signup"
               style={{
@@ -292,6 +292,11 @@ export default function LoginPage() {
             flex-direction: column !important;
             gap: 16px !important;
             text-align: center !important;
+          }
+        }
+        @media (max-width: 500px) {
+          .login-header-text {
+            display: none !important;
           }
         }
       `}</style>

@@ -264,7 +264,7 @@ export default function SignupPage() {
 
           <h1
             style={{
-              fontSize: 38,
+              fontSize: "clamp(26px, 5vw, 38px)",
               fontWeight: 700,
               color: "var(--color-primary)",
               lineHeight: 1.2,
@@ -403,6 +403,7 @@ export default function SignupPage() {
 
           {/* Stats bar */}
           <div
+            className="signup-stats"
             style={{
               display: "flex",
               gap: 28,
@@ -440,6 +441,7 @@ export default function SignupPage() {
 
         {/* Right Side — Signup Form */}
         <div
+          className="signup-form-card"
           style={{
             backgroundColor: "white",
             borderRadius: 16,
@@ -800,6 +802,15 @@ export default function SignupPage() {
             grid-template-columns: 1fr !important;
             gap: 36px !important;
             padding: 32px 20px 48px !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .signup-form-card {
+            padding: 24px 16px !important;
+          }
+          .signup-stats {
+            flex-direction: column !important;
+            gap: 12px !important;
           }
         }
         @media (max-width: 500px) {

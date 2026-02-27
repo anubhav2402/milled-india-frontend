@@ -233,7 +233,7 @@ img[src=""] { display: none !important; }
 
       <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
         {/* Main grid: content + sidebar */}
-        <div className="email-detail-grid" style={{
+        <div className="email-detail-grid email-layout" style={{
           display: "grid",
           gridTemplateColumns: "1fr 300px",
           gap: 32,
@@ -404,7 +404,7 @@ img[src=""] { display: none !important; }
           </div>
 
           {/* Right: Brand Sidebar */}
-          <aside className="email-detail-sidebar">
+          <aside className="email-detail-sidebar email-sidebar">
             {email.brand && (
               <div style={{
                 backgroundColor: "white",
@@ -586,6 +586,20 @@ img[src=""] { display: none !important; }
         {/* Bottom spacing */}
         <div style={{ height: 48 }} />
       </main>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .email-layout {
+            grid-template-columns: 1fr !important;
+            flex-direction: column !important;
+          }
+          .email-sidebar {
+            width: 100% !important;
+            min-width: unset !important;
+            position: static !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
