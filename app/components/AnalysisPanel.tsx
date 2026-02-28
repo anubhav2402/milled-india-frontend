@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE } from "../lib/constants";
 import ScoreBadge from "./ScoreBadge";
@@ -39,23 +39,25 @@ function getBarColor(score: number): string {
 }
 
 export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState(false);
 
   const fetchAnalysis = async () => {
+    if (loading) return;
     setLoading(true);
     setError(null);
     try {
       const headers: Record<string, string> = {};
       if (token) headers["Authorization"] = `Bearer ${token}`;
       const res = await fetch(`${API_BASE}/emails/${emailId}/analysis`, { headers });
-      if (!res.ok) throw new Error(`Error ${res.status}`);
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(body || `Error ${res.status}`);
+      }
       const json = await res.json();
       setData(json);
-      setExpanded(true);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to load analysis");
     } finally {
@@ -63,55 +65,80 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
     }
   };
 
-  if (!expanded && !data) {
+  // Button state — not yet loaded
+  if (!data && !error) {
     return (
-      <button
-        onClick={fetchAnalysis}
-        disabled={loading}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          padding: "6px 14px",
-          fontSize: 12,
-          fontWeight: 500,
-          color: "#C2714A",
-          background: "#FEF7F3",
-          border: "1px solid #F0D5C5",
-          borderRadius: 8,
-          cursor: loading ? "wait" : "pointer",
-          transition: "all 150ms ease",
-        }}
-      >
-        {loading ? (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}>
-            <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
-            <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
-          </svg>
-        ) : (
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-          </svg>
-        )}
-        {loading ? "Analyzing..." : "Analyze Email"}
-      </button>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ padding: 12, fontSize: 13, color: "#ef4444", background: "#fef2f2", borderRadius: 8 }}>
-        {error}
+      <div style={{ marginTop: 16 }}>
+        <button
+          onClick={fetchAnalysis}
+          disabled={loading}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "8px 16px",
+            fontSize: 13,
+            fontWeight: 500,
+            color: "#C2714A",
+            background: "#FEF7F3",
+            border: "1px solid #F0D5C5",
+            borderRadius: 8,
+            cursor: loading ? "wait" : "pointer",
+            transition: "all 150ms ease",
+          }}
+        >
+          {loading ? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}>
+              <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+              <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
+            </svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          )}
+          {loading ? "Analyzing..." : "Analyze Email"}
+        </button>
       </div>
     );
   }
 
-  if (!data) return null;
+  // Error state
+  if (error) {
+    return (
+      <div style={{
+        marginTop: 16,
+        padding: 12,
+        fontSize: 13,
+        color: "#ef4444",
+        background: "#fef2f2",
+        borderRadius: 8,
+        border: "1px solid #fecaca",
+      }}>
+        {error}
+        <button
+          onClick={() => { setError(null); setData(null); }}
+          style={{
+            marginLeft: 12,
+            fontSize: 12,
+            color: "#C2714A",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            textDecoration: "underline",
+          }}
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
 
+  // Results panel
   return (
     <div
       style={{
-        background: "white",
+        background: "#f8fafc",
         border: "1px solid #e2e8f0",
         borderRadius: 12,
         padding: 20,
@@ -119,41 +146,26 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
       }}
     >
       {/* Header with overall score */}
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: data.dimensions ? 20 : 0 }}>
         <ScoreBadge score={data.overall_score} grade={data.overall_grade} size="md" />
-        <div>
+        <div style={{ flex: 1 }}>
           <div style={{ fontSize: 16, fontWeight: 600, color: "#0f172a" }}>
-            Email Score
+            Email Score: {data.overall_score}/100
           </div>
           <div style={{ fontSize: 13, color: "#64748b" }}>
-            Scored across 5 dimensions
+            {data.dimensions ? "Scored across 5 dimensions" : "Overall email quality score"}
           </div>
         </div>
-        <button
-          onClick={() => setExpanded(false)}
-          style={{
-            marginLeft: "auto",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: "#94a3b8",
-            fontSize: 18,
-          }}
-          title="Collapse"
-        >
-          &times;
-        </button>
       </div>
 
-      {/* Dimensions */}
-      {data.dimensions ? (
+      {/* Dimensions — full analysis for Starter+ */}
+      {data.dimensions && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {Object.entries(data.dimensions).map(([key, dim]) => {
             const meta = DIMENSION_META[key] || { label: key, icon: "" };
             const barColor = getBarColor(dim.score);
             return (
               <div key={key}>
-                {/* Dimension header */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                   <span style={{ fontSize: 13, fontWeight: 600, color: "#334155" }}>
                     {meta.icon} {meta.label}
@@ -162,8 +174,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
                     {dim.score} {dim.grade}
                   </span>
                 </div>
-                {/* Progress bar */}
-                <div style={{ height: 6, background: "#f1f5f9", borderRadius: 3, overflow: "hidden" }}>
+                <div style={{ height: 6, background: "#e2e8f0", borderRadius: 3, overflow: "hidden" }}>
                   <div
                     style={{
                       height: "100%",
@@ -174,11 +185,10 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
                     }}
                   />
                 </div>
-                {/* Findings */}
                 {dim.findings.length > 0 && (
-                  <ul style={{ margin: "6px 0 0 0", padding: "0 0 0 16px", listStyle: "none" }}>
+                  <ul style={{ margin: "6px 0 0 0", padding: 0, listStyle: "none" }}>
                     {dim.findings.map((f, i) => (
-                      <li key={i} style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6 }}>
+                      <li key={i} style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6, paddingLeft: 12 }}>
                         <span style={{ color: "#94a3b8", marginRight: 4 }}>&bull;</span>
                         {f}
                       </li>
@@ -189,18 +199,22 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
             );
           })}
         </div>
-      ) : data.gated ? (
+      )}
+
+      {/* Gated — free users see upgrade CTA */}
+      {!data.dimensions && data.gated && (
         <div
           style={{
-            padding: 24,
+            marginTop: 16,
+            padding: 20,
             textAlign: "center",
-            background: "#f8fafc",
+            background: "white",
             borderRadius: 8,
             border: "1px dashed #e2e8f0",
           }}
         >
           <div style={{ fontSize: 14, fontWeight: 500, color: "#475569", marginBottom: 8 }}>
-            Full analysis available on Starter+
+            Full breakdown available on Starter+
           </div>
           <div style={{ fontSize: 12, color: "#94a3b8", marginBottom: 12 }}>
             See detailed scores for Subject, Copy, CTA, Design & Strategy
@@ -221,7 +235,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
             Upgrade Now
           </a>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
