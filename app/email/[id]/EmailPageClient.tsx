@@ -9,6 +9,8 @@ import Button from "../../components/Button";
 import Header from "../../components/Header";
 import { useAuth } from "../../context/AuthContext";
 import { useBookmarks } from "../../hooks/useBookmarks";
+import AnalysisPanel from "../../components/AnalysisPanel";
+import GenerateButton from "../../components/GenerateButton";
 
 type Email = {
   id: number;
@@ -351,6 +353,11 @@ img[src=""] { display: none !important; }
                       </svg>
                       Use as Template
                     </Link>
+                    <GenerateButton
+                      emailId={email.id}
+                      emailSubject={email.subject}
+                      emailBrand={email.brand}
+                    />
                   </div>
                 </div>
 
@@ -384,6 +391,9 @@ img[src=""] { display: none !important; }
                     </>
                   )}
                 </div>
+
+                {/* Email Analysis Panel */}
+                <AnalysisPanel emailId={email.id} />
               </div>
 
               {/* Email body */}

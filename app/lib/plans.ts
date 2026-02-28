@@ -30,7 +30,9 @@ export type FeatureKey =
   | "bulk_export"
   | "downloadable_reports"
   | "follows"
-  | "bookmarks";
+  | "bookmarks"
+  | "email_analysis"
+  | "ai_generator";
 
 type LimitValue = number | string | boolean | null; // null = unlimited
 
@@ -52,6 +54,8 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
     downloadable_reports: false,
     follows: 3,
     bookmarks: 10,
+    email_analysis: "teaser",
+    ai_generator: false,
   },
   starter: {
     archive_days: 180,
@@ -70,6 +74,8 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
     downloadable_reports: false,
     follows: 10,
     bookmarks: 50,
+    email_analysis: "full",
+    ai_generator: false,
   },
   pro: {
     archive_days: null,
@@ -88,6 +94,8 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
     downloadable_reports: false,
     follows: null,
     bookmarks: null,
+    email_analysis: "full",
+    ai_generator: 10,
   },
   agency: {
     archive_days: null,
@@ -106,6 +114,8 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
     downloadable_reports: true,
     follows: null,
     bookmarks: null,
+    email_analysis: "full",
+    ai_generator: null,
   },
 };
 
@@ -205,4 +215,6 @@ export const FEATURE_LABELS: Record<FeatureKey, string> = {
   downloadable_reports: "Downloadable Reports",
   follows: "Brand Follows",
   bookmarks: "Bookmarks",
+  email_analysis: "Email Analysis",
+  ai_generator: "AI Email Generator",
 };
