@@ -3,13 +3,14 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Logo from "../components/Logo";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
+import { INDUSTRIES } from "../lib/constants";
 
 type BrandStats = {
   email_count: number | string;
   send_frequency: string;
+  industry?: string;
 };
 
 type BrandWithStats = {
@@ -19,19 +20,57 @@ type BrandWithStats = {
   industry?: string;
 };
 
+function parseFrequencyPerWeek(freq: string): number {
+  if (!freq || freq === "xx" || freq === "1x") return 0;
+  const num = parseInt(freq) || 0;
+  if (freq.includes("/day")) return num * 7;
+  if (freq.includes("/week")) return num;
+  if (freq.includes("/month")) return num / 4;
+  return 0;
+}
+
+function matchesFrequency(freq: string, filter: string): boolean {
+  if (filter === "all") return true;
+  const perWeek = parseFrequencyPerWeek(freq);
+  switch (filter) {
+    case "daily": return perWeek >= 7;
+    case "active": return perWeek >= 2 && perWeek < 7;
+    case "weekly": return perWeek >= 1 && perWeek < 2;
+    case "low": return perWeek < 1;
+    default: return true;
+  }
+}
+
+function matchesVolume(count: number | string, filter: string): boolean {
+  if (filter === "all") return true;
+  if (typeof count !== "number") return true; // don't filter masked stats
+  switch (filter) {
+    case "100+": return count >= 100;
+    case "50-99": return count >= 50 && count < 100;
+    case "20-49": return count >= 20 && count < 50;
+    case "<20": return count < 20;
+    default: return true;
+  }
+}
+
 export default function BrandsPage() {
   const router = useRouter();
   const { user, token, logout, isLoading: authLoading } = useAuth();
-  
+
   const [brands, setBrands] = useState<BrandWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [followedBrands, setFollowedBrands] = useState<Set<string>>(new Set());
   const [sortBy, setSortBy] = useState<"name" | "emails" | "frequency">("emails");
 
+  // Filter state
+  const [selectedIndustries, setSelectedIndustries] = useState<Set<string>>(new Set());
+  const [showFollowingOnly, setShowFollowingOnly] = useState(false);
+  const [frequencyFilter, setFrequencyFilter] = useState("all");
+  const [volumeFilter, setVolumeFilter] = useState("all");
+
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
-  // Fetch followed brands from API for logged-in users
   const fetchFollowedBrands = useCallback(async () => {
     if (!token) {
       setFollowedBrands(new Set());
@@ -51,7 +90,6 @@ export default function BrandsPage() {
     }
   }, [token, API_BASE]);
 
-  // Fetch brands and stats
   useEffect(() => {
     const fetchBrands = async () => {
       if (!API_BASE) return;
@@ -62,7 +100,6 @@ export default function BrandsPage() {
           headers.Authorization = `Bearer ${token}`;
         }
 
-        // Fetch both brands list and stats
         const [brandsRes, statsRes] = await Promise.all([
           fetch(`${API_BASE}/brands`),
           fetch(`${API_BASE}/brands/stats`, { headers }),
@@ -76,6 +113,7 @@ export default function BrandsPage() {
             name,
             email_count: stats[name]?.email_count ?? "xx",
             send_frequency: stats[name]?.send_frequency ?? "xx",
+            industry: stats[name]?.industry || undefined,
           }));
 
           setBrands(brandsWithStats);
@@ -90,20 +128,18 @@ export default function BrandsPage() {
     fetchBrands();
   }, [API_BASE, token]);
 
-  // Fetch followed brands when token changes
   useEffect(() => {
     fetchFollowedBrands();
   }, [fetchFollowedBrands]);
 
   const toggleFollow = async (brandName: string) => {
     if (!user) {
-      // Redirect to login
       router.push("/login");
       return;
     }
 
     const isCurrentlyFollowed = followedBrands.has(brandName);
-    
+
     try {
       const res = await fetch(`${API_BASE}/user/follows/${encodeURIComponent(brandName)}`, {
         method: isCurrentlyFollowed ? "DELETE" : "POST",
@@ -126,19 +162,45 @@ export default function BrandsPage() {
     }
   };
 
-  // Filter and sort brands
+  const toggleIndustry = (industry: string) => {
+    setSelectedIndustries((prev) => {
+      const updated = new Set(prev);
+      if (updated.has(industry)) {
+        updated.delete(industry);
+      } else {
+        updated.add(industry);
+      }
+      return updated;
+    });
+  };
+
+  const activeFilterCount =
+    selectedIndustries.size +
+    (showFollowingOnly ? 1 : 0) +
+    (frequencyFilter !== "all" ? 1 : 0) +
+    (volumeFilter !== "all" ? 1 : 0);
+
+  const clearAllFilters = () => {
+    setSelectedIndustries(new Set());
+    setShowFollowingOnly(false);
+    setFrequencyFilter("all");
+    setVolumeFilter("all");
+    setSearchQuery("");
+  };
+
+  // Filter and sort
   const filteredBrands = brands
-    .filter((brand) =>
-      brand.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    .filter((b) => b.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .filter((b) => selectedIndustries.size === 0 || selectedIndustries.has(b.industry || ""))
+    .filter((b) => !showFollowingOnly || followedBrands.has(b.name))
+    .filter((b) => matchesFrequency(b.send_frequency, frequencyFilter))
+    .filter((b) => matchesVolume(b.email_count, volumeFilter))
     .sort((a, b) => {
-      // Always put followed brands first
       const aFollowed = followedBrands.has(a.name);
       const bFollowed = followedBrands.has(b.name);
       if (aFollowed && !bFollowed) return -1;
       if (!aFollowed && bFollowed) return 1;
 
-      // Then sort by selected criteria
       if (sortBy === "name") {
         return a.name.localeCompare(b.name);
       } else if (sortBy === "emails") {
@@ -146,39 +208,33 @@ export default function BrandsPage() {
         const bCount = typeof b.email_count === "number" ? b.email_count : 0;
         return bCount - aCount;
       } else {
-        // Sort by frequency (extract number from string like "3x/week")
-        const aNum = typeof a.send_frequency === "string" ? parseInt(a.send_frequency) || 0 : 0;
-        const bNum = typeof b.send_frequency === "string" ? parseInt(b.send_frequency) || 0 : 0;
+        const aNum = parseFrequencyPerWeek(a.send_frequency);
+        const bNum = parseFrequencyPerWeek(b.send_frequency);
         return bNum - aNum;
       }
     });
 
   const isAuthenticated = !!user;
+  const hasActiveFilters = activeFilterCount > 0 || searchQuery.length > 0;
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
       <Header activeRoute="/brands" />
 
-      {/* Main Content */}
       <main style={{ maxWidth: 1400, margin: "0 auto", padding: "32px 24px" }}>
         {/* Page Header */}
-        <div style={{ marginBottom: 32 }}>
-          <h1
-            style={{
-              fontSize: 32,
-              fontWeight: 700,
-              color: "#0f172a",
-              margin: "0 0 8px 0",
-            }}
-          >
+        <div style={{ marginBottom: 24 }}>
+          <h1 style={{ fontSize: 32, fontWeight: 700, color: "#0f172a", margin: "0 0 8px 0" }}>
             Browse Brands
           </h1>
           <p style={{ fontSize: 16, color: "#64748b", margin: 0 }}>
-            Discover and follow {brands.length} brands to track their email campaigns
+            {hasActiveFilters
+              ? `Showing ${filteredBrands.length} of ${brands.length} brands`
+              : `Discover and follow ${brands.length} brands to track their email campaigns`}
           </p>
         </div>
 
-        {/* Login Banner for non-authenticated users */}
+        {/* Login Banner */}
         {!isAuthenticated && !authLoading && (
           <div
             style={{
@@ -219,12 +275,12 @@ export default function BrandsPage() {
           </div>
         )}
 
-        {/* Search and Sort */}
+        {/* Search and Sort Row */}
         <div
           style={{
             display: "flex",
-            gap: 16,
-            marginBottom: 24,
+            gap: 12,
+            marginBottom: 16,
             flexWrap: "wrap",
             alignItems: "center",
           }}
@@ -272,7 +328,7 @@ export default function BrandsPage() {
 
           {/* Sort */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 13, color: "#64748b" }}>Sort by:</span>
+            <span style={{ fontSize: 13, color: "#64748b" }}>Sort:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
@@ -293,21 +349,152 @@ export default function BrandsPage() {
             </select>
           </div>
 
-          {/* Following count */}
-          {followedBrands.size > 0 && (
-            <div
+          {/* Following toggle (only when logged in and following brands) */}
+          {isAuthenticated && followedBrands.size > 0 && (
+            <button
+              onClick={() => setShowFollowingOnly(!showFollowingOnly)}
               style={{
-                padding: "8px 14px",
-                backgroundColor: "#F5E6DC",
-                borderRadius: 8,
+                padding: "10px 16px",
                 fontSize: 13,
-                color: "#C2714A",
-                fontWeight: 500,
+                fontWeight: 600,
+                border: showFollowingOnly ? "2px solid #C2714A" : "1px solid #e2e8f0",
+                borderRadius: 10,
+                cursor: "pointer",
+                backgroundColor: showFollowingOnly ? "#FDF2EC" : "#fff",
+                color: showFollowingOnly ? "#C2714A" : "#64748b",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                whiteSpace: "nowrap",
               }}
             >
-              Following {followedBrands.size} brand{followedBrands.size !== 1 ? "s" : ""}
-            </div>
+              <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Following ({followedBrands.size})
+            </button>
           )}
+
+          {/* Clear all */}
+          {hasActiveFilters && (
+            <button
+              onClick={clearAllFilters}
+              style={{
+                padding: "10px 14px",
+                fontSize: 13,
+                fontWeight: 500,
+                border: "none",
+                borderRadius: 8,
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                color: "#ef4444",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Clear all{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+            </button>
+          )}
+        </div>
+
+        {/* Industry Pills */}
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            marginBottom: 16,
+            overflowX: "auto",
+            paddingBottom: 4,
+            WebkitOverflowScrolling: "touch",
+          }}
+          className="hide-scrollbar"
+        >
+          {INDUSTRIES.map((industry) => {
+            const isSelected = selectedIndustries.has(industry);
+            return (
+              <button
+                key={industry}
+                onClick={() => toggleIndustry(industry)}
+                style={{
+                  padding: "7px 14px",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  border: isSelected ? "2px solid #C2714A" : "1px solid #e2e8f0",
+                  borderRadius: 20,
+                  cursor: "pointer",
+                  backgroundColor: isSelected ? "#FDF2EC" : "#fff",
+                  color: isSelected ? "#C2714A" : "#64748b",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  transition: "all 0.15s",
+                }}
+              >
+                {industry}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Quick Filters Row */}
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            marginBottom: 24,
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
+          {/* Frequency filter */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ fontSize: 13, color: "#64748b" }}>Activity:</span>
+            <select
+              value={frequencyFilter}
+              onChange={(e) => setFrequencyFilter(e.target.value)}
+              style={{
+                padding: "8px 12px",
+                fontSize: 13,
+                color: frequencyFilter !== "all" ? "#C2714A" : "#0f172a",
+                fontWeight: frequencyFilter !== "all" ? 600 : 400,
+                border: frequencyFilter !== "all" ? "2px solid #C2714A" : "1px solid #e2e8f0",
+                borderRadius: 8,
+                backgroundColor: frequencyFilter !== "all" ? "#FDF2EC" : "#fff",
+                cursor: "pointer",
+                outline: "none",
+              }}
+            >
+              <option value="all">All</option>
+              <option value="daily">Daily (7+/week)</option>
+              <option value="active">Active (2-6x/week)</option>
+              <option value="weekly">Weekly (1x/week)</option>
+              <option value="low">Low (&lt;1x/week)</option>
+            </select>
+          </div>
+
+          {/* Volume filter */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ fontSize: 13, color: "#64748b" }}>Emails:</span>
+            <select
+              value={volumeFilter}
+              onChange={(e) => setVolumeFilter(e.target.value)}
+              style={{
+                padding: "8px 12px",
+                fontSize: 13,
+                color: volumeFilter !== "all" ? "#C2714A" : "#0f172a",
+                fontWeight: volumeFilter !== "all" ? 600 : 400,
+                border: volumeFilter !== "all" ? "2px solid #C2714A" : "1px solid #e2e8f0",
+                borderRadius: 8,
+                backgroundColor: volumeFilter !== "all" ? "#FDF2EC" : "#fff",
+                cursor: "pointer",
+                outline: "none",
+              }}
+            >
+              <option value="all">All</option>
+              <option value="100+">100+ emails</option>
+              <option value="50-99">50-99 emails</option>
+              <option value="20-49">20-49 emails</option>
+              <option value="<20">Under 20</option>
+            </select>
+          </div>
         </div>
 
         {/* Loading State */}
@@ -362,9 +549,26 @@ export default function BrandsPage() {
             }}
           >
             <p style={{ fontSize: 16, margin: "0 0 8px 0" }}>No brands found</p>
-            <p style={{ fontSize: 14, margin: 0 }}>
-              Try adjusting your search query
+            <p style={{ fontSize: 14, margin: "0 0 16px 0" }}>
+              Try adjusting your filters or search query
             </p>
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                style={{
+                  padding: "10px 20px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  backgroundColor: "#fff",
+                  color: "#C2714A",
+                }}
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         )}
       </main>
@@ -372,6 +576,13 @@ export default function BrandsPage() {
       <style>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </div>
@@ -393,7 +604,6 @@ function BrandCard({
   const brandInitial = brand.name.charAt(0).toUpperCase();
   const isMasked = brand.email_count === "xx";
 
-  // Generate a consistent color based on brand name
   const colors = [
     "#C2714A", "#6366f1", "#f59e0b", "#ec4899", "#8b5cf6",
     "#059669", "#3b82f6", "#ef4444", "#84cc16", "#0ea5e9",
@@ -442,7 +652,6 @@ function BrandCard({
         href={`/brand/${encodeURIComponent(brand.name)}`}
         style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none" }}
       >
-        {/* Brand Logo/Initial */}
         <div
           style={{
             width: 56,
@@ -461,7 +670,6 @@ function BrandCard({
           {brandInitial}
         </div>
 
-        {/* Brand Info */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <h3
             style={{
@@ -477,15 +685,21 @@ function BrandCard({
           >
             {brand.name}
           </h3>
-          <p
-            style={{
-              margin: "4px 0 0 0",
-              fontSize: 13,
-              color: isMasked ? "#94a3b8" : "#64748b",
-            }}
-          >
-            {isMasked ? "Login to see stats" : `${brand.email_count} emails`}
-          </p>
+          {brand.industry ? (
+            <p style={{ margin: "4px 0 0 0", fontSize: 12, color: "#94a3b8" }}>
+              {brand.industry}
+            </p>
+          ) : (
+            <p
+              style={{
+                margin: "4px 0 0 0",
+                fontSize: 13,
+                color: isMasked ? "#94a3b8" : "#64748b",
+              }}
+            >
+              {isMasked ? "Login to see stats" : `${brand.email_count} emails`}
+            </p>
+          )}
         </div>
       </Link>
 
