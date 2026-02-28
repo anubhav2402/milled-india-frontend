@@ -86,11 +86,16 @@ export default function AdminTweetsPage() {
       if (res.ok) {
         fetchTweets();
       } else {
-        const data = await res.json();
-        setError(data.detail || "Generation failed");
+        try {
+          const data = await res.json();
+          setError(data.detail || `Generation failed (${res.status})`);
+        } catch {
+          setError(`Generation failed — server returned ${res.status}`);
+        }
       }
-    } catch {
-      setError("Network error");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setError(`Network error: ${msg}. Is the backend running?`);
     } finally {
       setGenerating(false);
     }
@@ -142,11 +147,16 @@ export default function AdminTweetsPage() {
       if (res.ok) {
         fetchTweets();
       } else {
-        const data = await res.json();
-        setError(data.detail || "Post failed");
+        try {
+          const data = await res.json();
+          setError(data.detail || `Post failed (${res.status})`);
+        } catch {
+          setError(`Post failed — server returned ${res.status}`);
+        }
       }
-    } catch {
-      setError("Network error");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setError(`Network error: ${msg}`);
     } finally {
       setPosting(null);
     }
