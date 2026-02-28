@@ -216,7 +216,7 @@ export default function LoginPage() {
               />
             </div>
 
-            <div style={{ marginBottom: 24 }}>
+            <div style={{ marginBottom: 8 }}>
               <label style={{ display: "block", fontSize: 14, fontWeight: 500, color: "#374151", marginBottom: 6 }}>
                 Password
               </label>
@@ -240,6 +240,12 @@ export default function LoginPage() {
                 onBlur={(e) => (e.target.style.borderColor = "#e2e8f0")}
                 placeholder="Enter your password"
               />
+            </div>
+
+            <div style={{ textAlign: "right", marginBottom: 24 }}>
+              <Link href="/forgot-password" style={{ fontSize: 13, color: "#C2714A", textDecoration: "none", fontWeight: 500 }}>
+                Forgot password?
+              </Link>
             </div>
 
             <button
