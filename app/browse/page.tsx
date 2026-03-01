@@ -251,7 +251,10 @@ function Checkbox({
   count?: number;
 }) {
   return (
-    <label
+    <div
+      onClick={onChange}
+      role="checkbox"
+      aria-checked={checked}
       style={{
         display: "flex",
         alignItems: "center",
@@ -289,7 +292,7 @@ function Checkbox({
       {count !== undefined && (
         <span style={{ fontSize: 12, color: "var(--color-tertiary)" }}>{count}</span>
       )}
-    </label>
+    </div>
   );
 }
 
