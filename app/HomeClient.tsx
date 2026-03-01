@@ -117,9 +117,13 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
 
         {/* Right — Pinterest Masonry Feed */}
         <div
+          className="hero-masonry-wrap"
           style={{
             opacity: 0,
             animation: "fadeInUp 0.6s ease 0.2s forwards",
+            maxHeight: 560,
+            overflow: "hidden",
+            position: "relative",
           }}
         >
           <div
@@ -130,9 +134,9 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
             }}
           >
             {(() => {
-              const heights = [280, 180, 200, 260, 170, 240];
+              const heights = [420, 340, 360, 400];
               if (emails.length > 0) {
-                return emails.slice(0, 6).map((email, i) => (
+                return emails.slice(0, 4).map((email, i) => (
                   <div key={email.id} style={{ breakInside: "avoid", marginBottom: 12 }}>
                     <EmailCard
                       id={email.id}
@@ -141,19 +145,30 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
                       industry={email.industry || undefined}
                       received_at={email.received_at}
                       campaignType={email.type || undefined}
-                      compact
                       previewHeight={heights[i % heights.length]}
                     />
                   </div>
                 ));
               }
-              return heights.slice(0, 6).map((h, i) => (
+              return heights.map((h, i) => (
                 <div key={i} style={{ breakInside: "avoid", marginBottom: 12 }}>
-                  <EmailCardSkeleton compact previewHeight={h} />
+                  <EmailCardSkeleton previewHeight={h} />
                 </div>
               ));
             })()}
           </div>
+          {/* Fade-out at bottom for partial visibility effect */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 120,
+              background: "linear-gradient(transparent, #ffffff)",
+              pointerEvents: "none",
+            }}
+          />
         </div>
       </div>
 
@@ -165,16 +180,19 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
             gap: 40px !important;
             text-align: center;
           }
+          .hero-masonry-wrap {
+            max-height: 400px !important;
+          }
           .hero-cards {
             columns: 2 !important;
           }
         }
         @media (max-width: 480px) {
-          .hero-cards {
-            columns: 1 !important;
+          .hero-masonry-wrap {
+            max-height: 320px !important;
           }
-          .hero-cards > *:nth-child(n+3) {
-            display: none;
+          .hero-cards {
+            columns: 2 !important;
           }
         }
       `}</style>
@@ -260,160 +278,6 @@ function BrandTrustBar({ brands }: { brands: string[] }) {
   );
 }
 
-// ============================================================
-// SECTION 3: Live Product Preview — Show Don't Tell
-// ============================================================
-function ProductPreview({
-  emails,
-  totalEmails,
-  brandCount,
-}: {
-  emails: EmailPreview[];
-  totalEmails: number;
-  brandCount: number;
-}) {
-  return (
-    <section style={{ padding: "96px 24px", background: "white" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <Badge
-            variant="accent"
-            style={{ marginBottom: 16 }}
-          >
-            SEE IT IN ACTION
-          </Badge>
-          <h2
-            style={{
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: "clamp(28px, 4vw, 40px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              marginBottom: 16,
-            }}
-          >
-            Your competitors&apos; entire email strategy, one search away
-          </h2>
-          <p
-            style={{
-              fontSize: 17,
-              color: "var(--color-secondary)",
-              maxWidth: 560,
-              margin: "0 auto",
-              lineHeight: 1.6,
-            }}
-          >
-            Browse real campaigns by brand, industry, or email type. Every
-            subject line, design, and send time &mdash; tracked and organized
-            daily.
-          </p>
-        </div>
-
-        {/* Email preview grid — real cards like browse page */}
-        <div
-          className="preview-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-            gap: 16,
-          }}
-        >
-          {emails.length > 0
-            ? emails.slice(0, 8).map((email) => (
-                <EmailCard
-                  key={email.id}
-                  id={email.id}
-                  subject={email.subject}
-                  brand={email.brand || undefined}
-                  industry={email.industry || undefined}
-                  received_at={email.received_at}
-                  campaignType={email.type || undefined}
-                />
-              ))
-            : Array.from({ length: 8 }, (_, i) => (
-                <EmailCardSkeleton key={i} />
-              ))
-          }
-        </div>
-
-        {/* Browse all CTA */}
-        <div style={{ textAlign: "center", marginTop: 32 }}>
-          <Link
-            href="/browse"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "12px 28px",
-              fontSize: 15,
-              fontWeight: 600,
-              color: "white",
-              background: "var(--color-accent)",
-              borderRadius: 10,
-              textDecoration: "none",
-              transition: "opacity 150ms ease",
-            }}
-          >
-            Browse all emails &rarr;
-          </Link>
-        </div>
-
-        {/* Stat pills */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 24,
-            marginTop: 32,
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            `${totalEmails.toLocaleString()}+ emails tracked`,
-            `${brandCount}+ brands monitored`,
-            "Updated daily",
-          ].map((stat) => (
-            <span
-              key={stat}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                fontSize: 14,
-                fontWeight: 500,
-                color: "var(--color-secondary)",
-              }}
-            >
-              <span style={{ color: "var(--color-accent)", fontSize: 16 }}>
-                &#10003;
-              </span>
-              {stat}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .preview-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-          .preview-grid > *:nth-child(n+5) {
-            display: none;
-          }
-        }
-        @media (max-width: 480px) {
-          .preview-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .preview-grid > *:nth-child(n+3) {
-            display: none;
-          }
-        }
-      `}</style>
-    </section>
-  );
-}
 
 // ============================================================
 // SECTION 4: Value Pillars — Discover / Analyze / Create
@@ -974,9 +838,56 @@ function SocialProof() {
 // SECTION 7: Pricing Anchor
 // ============================================================
 function PricingAnchor() {
+  const plans = [
+    {
+      name: "Free",
+      price: "0",
+      period: "/forever",
+      features: ["Last 30 days of emails", "20 email views/day", "5 brand pages/day", "Basic search"],
+      cta: "Get Started Free",
+      ctaHref: "/signup",
+      variant: "secondary" as const,
+      highlight: false,
+    },
+    {
+      name: "Starter",
+      price: "599",
+      period: "/mo",
+      annual: "5,999/yr",
+      features: ["6 months of emails", "75 email views/day", "Advanced search", "3 HTML exports/mo"],
+      cta: "Start Starter",
+      ctaHref: "/pricing",
+      variant: "secondary" as const,
+      highlight: false,
+    },
+    {
+      name: "Pro",
+      price: "1,599",
+      period: "/mo",
+      annual: "15,999/yr",
+      savings: "Save 17%",
+      features: ["Full email archive", "Unlimited views & analytics", "Campaign calendar & alerts", "Template editor & export"],
+      cta: "Start Pro Plan",
+      ctaHref: "/pricing",
+      variant: "primary" as const,
+      highlight: true,
+    },
+    {
+      name: "Agency",
+      price: "3,999",
+      period: "/mo",
+      annual: "39,999/yr",
+      features: ["Everything in Pro", "10 team seats", "Bulk export & reports", "Unlimited AI generator"],
+      cta: "Start Agency",
+      ctaHref: "/pricing",
+      variant: "secondary" as const,
+      highlight: false,
+    },
+  ];
+
   return (
     <section style={{ padding: "96px 24px", background: "white" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <h2
             style={{
@@ -991,7 +902,7 @@ function PricingAnchor() {
             Start free. Scale when you&apos;re ready.
           </h2>
           <p style={{ fontSize: 17, color: "var(--color-secondary)", margin: "0 0 8px" }}>
-            Every new account gets 14 days of full Pro access — no credit card required.
+            Every new account gets 14 days of full Pro access &mdash; no credit card required.
           </p>
         </div>
 
@@ -999,281 +910,131 @@ function PricingAnchor() {
           className="pricing-anchor-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gap: 20,
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 16,
           }}
         >
-          {/* Free */}
-          <div
-            style={{
-              border: "1px solid var(--color-border)",
-              borderRadius: 16,
-              padding: 28,
-              background: "white",
-            }}
-          >
-            <h3
+          {plans.map((plan) => (
+            <div
+              key={plan.name}
               style={{
-                fontSize: 18,
-                fontWeight: 600,
-                color: "var(--color-primary)",
-                margin: "0 0 4px",
+                border: plan.highlight ? "2px solid var(--color-accent)" : "1px solid var(--color-border)",
+                borderRadius: 16,
+                padding: 24,
+                background: "white",
+                position: "relative",
               }}
             >
-              Free
-            </h3>
-            <div style={{ marginBottom: 16 }}>
-              <span
+              {plan.highlight && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -12,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
+                    color: "white",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    padding: "4px 14px",
+                    borderRadius: 20,
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  MOST POPULAR
+                </div>
+              )}
+              <h3
                 style={{
-                  fontSize: 32,
-                  fontWeight: 700,
+                  fontSize: 16,
+                  fontWeight: 600,
                   color: "var(--color-primary)",
+                  margin: "0 0 4px",
                 }}
               >
-                &#8377;0
-              </span>
-              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
-                {" "}/forever
-              </span>
-            </div>
-            <ul
-              style={{
-                listStyle: "none",
-                padding: 0,
-                margin: "0 0 20px",
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-              }}
-            >
-              {["Last 30 days of emails", "20 email views/day", "5 brand pages/day"].map(
-                (item) => (
+                {plan.name}
+              </h3>
+              <div style={{ marginBottom: 4 }}>
+                <span style={{ fontSize: 28, fontWeight: 700, color: "var(--color-primary)" }}>
+                  &#8377;{plan.price}
+                </span>
+                <span style={{ fontSize: 13, color: "var(--color-secondary)" }}>
+                  {plan.period}
+                </span>
+              </div>
+              {plan.annual && (
+                <p style={{ fontSize: 11, color: "var(--color-secondary)", margin: "0 0 12px" }}>
+                  &#8377;{plan.annual}
+                  {plan.savings && (
+                    <span style={{
+                      marginLeft: 6,
+                      color: "#16a34a",
+                      fontWeight: 600,
+                      background: "#dcfce7",
+                      padding: "2px 6px",
+                      borderRadius: 4,
+                      fontSize: 10,
+                    }}>
+                      {plan.savings}
+                    </span>
+                  )}
+                </p>
+              )}
+              {!plan.annual && <div style={{ height: 12 }} />}
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: "0 0 16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 6,
+                }}
+              >
+                {plan.features.map((item) => (
                   <li
                     key={item}
                     style={{
-                      fontSize: 13,
+                      fontSize: 12,
                       color: "var(--color-secondary)",
                       display: "flex",
                       alignItems: "center",
-                      gap: 8,
+                      gap: 6,
                     }}
                   >
-                    <span style={{ color: "#22c55e" }}>&#10003;</span>
+                    <span style={{ color: plan.highlight ? "var(--color-accent)" : "#22c55e", fontSize: 12 }}>&#10003;</span>
                     {item}
                   </li>
-                )
+                ))}
+              </ul>
+              <Button
+                href={plan.ctaHref}
+                variant={plan.variant}
+                fullWidth
+              >
+                {plan.cta}
+              </Button>
+              {plan.highlight && (
+                <p style={{ fontSize: 11, color: "var(--color-tertiary)", textAlign: "center", marginTop: 8, marginBottom: 0 }}>
+                  7-day money-back guarantee
+                </p>
               )}
-            </ul>
-            <Button href="/signup" variant="secondary" fullWidth>
-              Get Started Free
-            </Button>
-          </div>
-
-          {/* Pro (highlighted) */}
-          <div
-            style={{
-              border: "2px solid var(--color-accent)",
-              borderRadius: 16,
-              padding: 28,
-              background: "white",
-              position: "relative",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                top: -12,
-                left: "50%",
-                transform: "translateX(-50%)",
-                background:
-                  "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                color: "white",
-                fontSize: 11,
-                fontWeight: 600,
-                padding: "4px 14px",
-                borderRadius: 20,
-              }}
-            >
-              MOST POPULAR
             </div>
-            <h3
-              style={{
-                fontSize: 18,
-                fontWeight: 600,
-                color: "var(--color-primary)",
-                margin: "0 0 4px",
-              }}
-            >
-              Pro
-            </h3>
-            <div style={{ marginBottom: 4 }}>
-              <span
-                style={{
-                  fontSize: 32,
-                  fontWeight: 700,
-                  color: "var(--color-primary)",
-                }}
-              >
-                &#8377;1,599
-              </span>
-              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
-                {" "}/month
-              </span>
-            </div>
-            <p
-              style={{
-                fontSize: 12,
-                color: "var(--color-secondary)",
-                margin: "0 0 16px",
-              }}
-            >
-              &#8377;15,999/year{" "}
-              <span
-                style={{
-                  color: "#16a34a",
-                  fontWeight: 600,
-                  background: "#dcfce7",
-                  padding: "2px 6px",
-                  borderRadius: 4,
-                  fontSize: 11,
-                }}
-              >
-                Save 17%
-              </span>
-            </p>
-            <ul
-              style={{
-                listStyle: "none",
-                padding: 0,
-                margin: "0 0 20px",
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-              }}
-            >
-              {[
-                "Full email archive",
-                "Unlimited views & analytics",
-                "Campaign calendar & alerts",
-                "Template editor & export",
-              ].map((item) => (
-                <li
-                  key={item}
-                  style={{
-                    fontSize: 13,
-                    color: "var(--color-secondary)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  <span style={{ color: "var(--color-accent)" }}>&#10003;</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Button href="/pricing" fullWidth>
-              Start Pro Plan
-            </Button>
-            <p
-              style={{
-                fontSize: 11,
-                color: "var(--color-tertiary)",
-                textAlign: "center",
-                marginTop: 10,
-                marginBottom: 0,
-              }}
-            >
-              7-day money-back guarantee
-            </p>
-          </div>
-
-          {/* Starter */}
-          <div
-            style={{
-              border: "1px solid var(--color-border)",
-              borderRadius: 16,
-              padding: 28,
-              background: "white",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: 18,
-                fontWeight: 600,
-                color: "var(--color-primary)",
-                margin: "0 0 4px",
-              }}
-            >
-              Starter
-            </h3>
-            <div style={{ marginBottom: 4 }}>
-              <span
-                style={{
-                  fontSize: 32,
-                  fontWeight: 700,
-                  color: "var(--color-primary)",
-                }}
-              >
-                &#8377;599
-              </span>
-              <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
-                {" "}/month
-              </span>
-            </div>
-            <p
-              style={{
-                fontSize: 12,
-                color: "var(--color-secondary)",
-                margin: "0 0 16px",
-              }}
-            >
-              Perfect for getting started
-            </p>
-            <ul
-              style={{
-                listStyle: "none",
-                padding: 0,
-                margin: "0 0 20px",
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-              }}
-            >
-              {[
-                "6 months of emails",
-                "75 email views/day",
-                "Advanced search filters",
-                "3 HTML exports/month",
-              ].map((item) => (
-                <li
-                  key={item}
-                  style={{
-                    fontSize: 13,
-                    color: "var(--color-secondary)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
-                >
-                  <span style={{ color: "#22c55e" }}>&#10003;</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <Button href="/pricing" variant="secondary" fullWidth>
-              See All Plans
-            </Button>
-          </div>
+          ))}
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
+          .pricing-anchor-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 520px) {
           .pricing-anchor-grid {
             grid-template-columns: 1fr !important;
           }
-          .pricing-anchor-grid > div:nth-child(2) {
+          .pricing-anchor-grid > div:nth-child(3) {
             order: -1;
           }
         }
@@ -1483,13 +1244,8 @@ export function HomeClient() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
-      <HeroSection emails={recentEmails.slice(0, 6)} />
+      <HeroSection emails={recentEmails.slice(0, 4)} />
       <BrandTrustBar brands={brands} />
-      <ProductPreview
-        emails={recentEmails}
-        totalEmails={totalEmails}
-        brandCount={Math.max(brands.length, 10000)}
-      />
       <ValuePillars />
       <EditorShowcase />
       <SocialProof />
