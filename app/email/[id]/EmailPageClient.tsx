@@ -35,16 +35,6 @@ type RelatedEmail = {
   preview?: string;
 };
 
-function analyzeSubject(subject: string) {
-  const charCount = subject.length;
-  const wordCount = subject.split(/\s+/).filter(Boolean).length;
-  const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{200D}\u{20E3}]/gu;
-  const hasEmoji = emojiRegex.test(subject);
-  const hasQuestion = subject.includes("?");
-  const hasNumber = /\d/.test(subject);
-  return { charCount, wordCount, hasEmoji, hasQuestion, hasNumber };
-}
-
 const CopyIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -94,14 +84,12 @@ export default function EmailPageClient() {
 
   useEffect(() => {
     if (!email || !base) return;
-
     if (email.brand) {
       fetch(`${base}/emails?brand=${encodeURIComponent(email.brand)}&limit=5`)
         .then((r) => (r.ok ? r.json() : []))
         .then((data: RelatedEmail[]) => setBrandEmails(data.filter((e) => e.id !== email.id).slice(0, 4)))
         .catch(() => {});
     }
-
     if (email.type) {
       fetch(`${base}/emails?type=${encodeURIComponent(email.type)}&limit=5`)
         .then((r) => (r.ok ? r.json() : []))
@@ -201,7 +189,6 @@ img[src=""] { display: none !important; }
     );
   }
 
-  const subjectAnalysis = analyzeSubject(email.subject);
   const formattedDate = new Date(email.received_at).toLocaleDateString("en-IN", {
     weekday: "short", month: "short", day: "numeric", year: "numeric",
   });
@@ -210,23 +197,16 @@ img[src=""] { display: none !important; }
     <div style={{ minHeight: "100vh", backgroundColor: "var(--color-surface)" }}>
       <Header />
 
-      <main style={{ maxWidth: 900, margin: "0 auto", padding: "24px 24px 64px" }}>
+      <main style={{ maxWidth: 1280, margin: "0 auto", padding: "24px 24px 64px" }}>
         {/* Back nav */}
         <Link
           href="/browse"
+          className="back-link"
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            fontSize: 13,
-            fontWeight: 500,
-            color: "var(--color-secondary)",
-            textDecoration: "none",
-            marginBottom: 20,
-            transition: "color 150ms ease",
+            display: "inline-flex", alignItems: "center", gap: 6,
+            fontSize: 13, fontWeight: 500, color: "var(--color-secondary)",
+            textDecoration: "none", marginBottom: 20, transition: "color 150ms ease",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-accent)")}
-          onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-secondary)")}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
@@ -234,68 +214,55 @@ img[src=""] { display: none !important; }
           Back to Browse
         </Link>
 
-        {/* Email card */}
+        {/* Full-width header area */}
         <div style={{
           backgroundColor: "white",
-          borderRadius: 16,
+          borderRadius: "16px 16px 0 0",
           border: "1px solid var(--color-border)",
-          overflow: "hidden",
+          borderBottom: "none",
+          padding: "28px 32px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
         }}>
-          {/* Header section */}
-          <div style={{ padding: "28px 32px 0" }}>
-            {/* Top row: badges + date */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 8,
-              marginBottom: 20,
-            }}>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-                {email.brand && (
-                  <Link href={`/browse?brand=${encodeURIComponent(email.brand)}`} style={{ textDecoration: "none" }}>
-                    <Badge variant="accent" size="md">{email.brand}</Badge>
-                  </Link>
-                )}
-                {email.industry && <Badge variant="default" size="sm">{email.industry}</Badge>}
-                {email.type && <Badge variant="default" size="sm">{email.type}</Badge>}
-                {email.category && <Badge variant="default" size="sm">{email.category}</Badge>}
-              </div>
-              <time style={{ fontSize: 13, color: "var(--color-tertiary)", fontWeight: 500 }}>
-                {formattedDate}
-              </time>
+          {/* Subject line */}
+          <h1 style={{
+            margin: "0 0 16px",
+            fontFamily: "var(--font-dm-serif)",
+            fontSize: "clamp(24px, 3.5vw, 32px)",
+            fontWeight: 400,
+            color: "var(--color-primary)",
+            lineHeight: 1.3,
+          }}>
+            {email.subject}
+          </h1>
+
+          {/* Badges + date row */}
+          <div style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            flexWrap: "wrap", gap: 8, marginBottom: 12,
+          }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+              {email.brand && (
+                <Link href={`/browse?brand=${encodeURIComponent(email.brand)}`} style={{ textDecoration: "none" }}>
+                  <Badge variant="accent" size="md">{email.brand}</Badge>
+                </Link>
+              )}
+              {email.industry && <Badge variant="default" size="sm">{email.industry}</Badge>}
+              {email.type && <Badge variant="default" size="sm">{email.type}</Badge>}
+              {email.category && <Badge variant="default" size="sm">{email.category}</Badge>}
             </div>
+            <time style={{ fontSize: 13, color: "var(--color-tertiary)", fontWeight: 500 }}>
+              {formattedDate}
+            </time>
+          </div>
 
-            {/* Sender */}
+          {/* Sender + small actions */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
             {email.sender && (
-              <div style={{ fontSize: 13, color: "var(--color-secondary)", marginBottom: 12 }}>
+              <span style={{ fontSize: 13, color: "var(--color-secondary)" }}>
                 From: <span style={{ fontWeight: 500, color: "var(--color-primary)" }}>{email.sender}</span>
-              </div>
+              </span>
             )}
-
-            {/* Subject line */}
-            <h1 style={{
-              margin: "0 0 20px",
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: "clamp(24px, 3.5vw, 32px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              lineHeight: 1.3,
-            }}>
-              {email.subject}
-            </h1>
-
-            {/* Action toolbar */}
-            <div style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              flexWrap: "wrap",
-              paddingBottom: 20,
-              borderBottom: "1px solid var(--color-border)",
-            }}>
+            <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={copySubject}
                 title="Copy subject line"
@@ -303,17 +270,16 @@ img[src=""] { display: none !important; }
                 style={{
                   background: copied ? "#dcfce7" : "var(--color-surface)",
                   border: `1px solid ${copied ? "#86efac" : "var(--color-border)"}`,
-                  borderRadius: 8, padding: "8px 14px",
-                  cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
-                  fontSize: 13, fontWeight: 500,
+                  borderRadius: 8, padding: "6px 12px",
+                  cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 5,
+                  fontSize: 12, fontWeight: 500,
                   color: copied ? "#16a34a" : "var(--color-secondary)",
                   transition: "all 150ms ease",
                 }}
               >
                 {copied ? <CheckIcon /> : <CopyIcon />}
-                {copied ? "Copied!" : "Copy Subject"}
+                {copied ? "Copied!" : "Copy"}
               </button>
-
               {user && (
                 <button
                   onClick={() => toggleBookmark(Number(id))}
@@ -322,9 +288,9 @@ img[src=""] { display: none !important; }
                   style={{
                     background: isBookmarked(Number(id)) ? "#fef2f2" : "var(--color-surface)",
                     border: `1px solid ${isBookmarked(Number(id)) ? "#fecaca" : "var(--color-border)"}`,
-                    borderRadius: 8, padding: "8px 14px",
-                    cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
-                    fontSize: 13, fontWeight: 500,
+                    borderRadius: 8, padding: "6px 12px",
+                    cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 5,
+                    fontSize: 12, fontWeight: 500,
                     color: isBookmarked(Number(id)) ? "#ef4444" : "var(--color-secondary)",
                     transition: "all 150ms ease",
                   }}
@@ -335,177 +301,202 @@ img[src=""] { display: none !important; }
                   {isBookmarked(Number(id)) ? "Saved" : "Save"}
                 </button>
               )}
-
-              <Link
-                href={`/editor?id=${id}`}
-                className="email-action-btn"
-                style={{
-                  background: "var(--color-surface)",
-                  border: "1px solid var(--color-border)",
-                  borderRadius: 8, padding: "8px 14px",
-                  cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
-                  fontSize: 13, fontWeight: 500,
-                  color: "var(--color-secondary)",
-                  textDecoration: "none",
-                  transition: "all 150ms ease",
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                </svg>
-                Use as Template
-              </Link>
-
-              <GenerateButton
-                emailId={email.id}
-                emailSubject={email.subject}
-                emailBrand={email.brand}
-              />
-
-              {/* Spacer pushes brand link to right */}
-              <div style={{ flex: 1 }} />
-
-              {email.brand && (
-                <Link
-                  href={`/browse?brand=${encodeURIComponent(email.brand)}`}
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "var(--color-accent)",
-                    textDecoration: "none",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  All from {email.brand} →
-                </Link>
-              )}
             </div>
-          </div>
-
-          {/* Subject analysis + analysis panel */}
-          <div style={{ padding: "16px 32px 20px" }}>
-            <div style={{
-              display: "flex",
-              flexWrap: "wrap",
-              alignItems: "center",
-              gap: 12,
-              padding: "10px 16px",
-              background: "var(--color-surface)",
-              borderRadius: 10,
-              fontSize: 12,
-              color: "var(--color-secondary)",
-              fontWeight: 500,
-            }}>
-              <span>{subjectAnalysis.charCount} characters</span>
-              <span style={{ color: "var(--color-border)" }}>|</span>
-              <span>{subjectAnalysis.wordCount} words</span>
-              {subjectAnalysis.hasEmoji && (
-                <>
-                  <span style={{ color: "var(--color-border)" }}>|</span>
-                  <span style={{ color: "#92400e" }}>Has emoji</span>
-                </>
-              )}
-              {subjectAnalysis.hasQuestion && (
-                <>
-                  <span style={{ color: "var(--color-border)" }}>|</span>
-                  <span style={{ color: "#1e40af" }}>Question format</span>
-                </>
-              )}
-              {subjectAnalysis.hasNumber && (
-                <>
-                  <span style={{ color: "var(--color-border)" }}>|</span>
-                  <span style={{ color: "#065f46" }}>Contains numbers</span>
-                </>
-              )}
-            </div>
-
-            <AnalysisPanel emailId={email.id} />
-          </div>
-
-          {/* Email body */}
-          <div style={{
-            backgroundColor: "var(--color-surface)",
-            borderTop: "1px solid var(--color-border)",
-            padding: "20px 0",
-          }}>
-            <iframe
-              ref={iframeRef}
-              srcDoc={getIframeContent(email.html)}
-              style={{
-                width: "100%", height: iframeHeight,
-                border: "none", display: "block",
-                backgroundColor: "var(--color-surface)",
-              }}
-              title="Email content"
-              sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-            />
           </div>
         </div>
 
-        {/* Related emails section */}
-        {(brandEmails.length > 0 || similarEmails.length > 0) && (
-          <div className="related-sections" style={{
-            display: "grid",
-            gridTemplateColumns: brandEmails.length > 0 && similarEmails.length > 0 ? "1fr 1fr" : "1fr",
-            gap: 32,
-            marginTop: 48,
+        {/* 2-column grid: email preview + sidebar */}
+        <div className="email-grid" style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 340px",
+          gap: 0,
+          alignItems: "start",
+        }}>
+          {/* Left: Email preview */}
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "0 0 0 16px",
+            border: "1px solid var(--color-border)",
+            borderTop: "1px solid var(--color-border)",
+            overflow: "hidden",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
           }}>
-            {/* More from Brand */}
-            {brandEmails.length > 0 && (
-              <section>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-primary)", margin: 0 }}>
-                    More from {email.brand}
-                  </h2>
-                  <Link
-                    href={`/browse?brand=${encodeURIComponent(email.brand || "")}`}
-                    style={{ fontSize: 13, fontWeight: 500, color: "var(--color-accent)", textDecoration: "none" }}
-                  >
-                    View all →
-                  </Link>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {brandEmails.map((e) => (
-                    <CompactEmailCard key={e.id} email={e} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Similar Campaigns */}
-            {similarEmails.length > 0 && (
-              <section>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-primary)", margin: 0 }}>
-                    Similar {email.type} campaigns
-                  </h2>
-                  <Link
-                    href={`/browse?type=${encodeURIComponent(email.type || "")}`}
-                    style={{ fontSize: 13, fontWeight: 500, color: "var(--color-accent)", textDecoration: "none" }}
-                  >
-                    View all →
-                  </Link>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {similarEmails.map((e) => (
-                    <CompactEmailCard key={e.id} email={e} />
-                  ))}
-                </div>
-              </section>
-            )}
+            <div style={{ backgroundColor: "var(--color-surface)", padding: "20px 0" }}>
+              <iframe
+                ref={iframeRef}
+                srcDoc={getIframeContent(email.html)}
+                style={{
+                  width: "100%", height: iframeHeight,
+                  border: "none", display: "block",
+                  backgroundColor: "var(--color-surface)",
+                }}
+                title="Email content"
+                sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+              />
+            </div>
           </div>
-        )}
+
+          {/* Right: Sidebar */}
+          <aside className="email-sidebar" style={{ position: "sticky", top: 80 }}>
+            <div style={{
+              backgroundColor: "white",
+              borderRadius: "0 0 16px 0",
+              border: "1px solid var(--color-border)",
+              borderLeft: "none",
+              borderTop: "1px solid var(--color-border)",
+              overflow: "hidden",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+            }}>
+              {/* Brand card */}
+              {email.brand && (
+                <div style={{ padding: "20px 20px 16px", borderBottom: "1px solid var(--color-border)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: 12,
+                      background: "var(--color-accent-light)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontWeight: 700, fontSize: 18, color: "var(--color-accent)",
+                    }}>
+                      {email.brand[0]?.toUpperCase()}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 16, fontWeight: 600, color: "var(--color-primary)" }}>
+                        {email.brand}
+                      </div>
+                      {email.industry && (
+                        <div style={{ fontSize: 12, color: "var(--color-tertiary)" }}>
+                          {email.industry}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <Link
+                    href={`/browse?brand=${encodeURIComponent(email.brand)}`}
+                    style={{
+                      display: "block", textAlign: "center",
+                      fontSize: 13, fontWeight: 500, color: "var(--color-accent)",
+                      textDecoration: "none", padding: "8px 0",
+                      borderRadius: 8, background: "var(--color-surface)",
+                      transition: "all 150ms ease",
+                    }}
+                  >
+                    View all from {email.brand} →
+                  </Link>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--color-border)" }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 12 }}>
+                  Actions
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <Link
+                    href={`/editor?id=${id}`}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                      padding: "10px 16px",
+                      fontSize: 13, fontWeight: 600,
+                      color: "white",
+                      background: "var(--color-accent)",
+                      borderRadius: 10,
+                      textDecoration: "none",
+                      transition: "all 150ms ease",
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--color-accent-hover)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "var(--color-accent)")}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                    Use as Template
+                  </Link>
+                  <div className="sidebar-generate-btn">
+                    <GenerateButton
+                      emailId={email.id}
+                      emailSubject={email.subject}
+                      emailBrand={email.brand}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Analysis */}
+              <div style={{ padding: "16px 20px", borderBottom: (brandEmails.length > 0 || similarEmails.length > 0) ? "1px solid var(--color-border)" : "none" }}>
+                <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
+                  Analysis
+                </div>
+                <AnalysisPanel emailId={email.id} />
+              </div>
+
+              {/* More from Brand */}
+              {brandEmails.length > 0 && (
+                <div style={{ padding: "16px 20px", borderBottom: similarEmails.length > 0 ? "1px solid var(--color-border)" : "none" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      More from {email.brand}
+                    </div>
+                    <Link
+                      href={`/browse?brand=${encodeURIComponent(email.brand || "")}`}
+                      style={{ fontSize: 11, fontWeight: 500, color: "var(--color-accent)", textDecoration: "none" }}
+                    >
+                      View all →
+                    </Link>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {brandEmails.map((e) => (
+                      <SidebarEmailCard key={e.id} email={e} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Similar Campaigns */}
+              {similarEmails.length > 0 && (
+                <div style={{ padding: "16px 20px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      Similar {email.type}
+                    </div>
+                    <Link
+                      href={`/browse?type=${encodeURIComponent(email.type || "")}`}
+                      style={{ fontSize: 11, fontWeight: 500, color: "var(--color-accent)", textDecoration: "none" }}
+                    >
+                      View all →
+                    </Link>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {similarEmails.map((e) => (
+                      <SidebarEmailCard key={e.id} email={e} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </aside>
+        </div>
       </main>
 
       <style>{`
+        .back-link:hover { color: var(--color-accent) !important; }
         .email-action-btn:hover {
           border-color: var(--color-accent) !important;
           color: var(--color-accent) !important;
         }
-        @media (max-width: 640px) {
-          .related-sections {
+        .sidebar-generate-btn > button {
+          width: 100% !important;
+          justify-content: center !important;
+          padding: 10px 16px !important;
+          font-size: 13px !important;
+          border-radius: 10px !important;
+        }
+        @media (max-width: 868px) {
+          .email-grid {
             grid-template-columns: 1fr !important;
+          }
+          .email-sidebar {
+            position: static !important;
           }
         }
       `}</style>
@@ -513,7 +504,7 @@ img[src=""] { display: none !important; }
   );
 }
 
-function CompactEmailCard({ email }: { email: RelatedEmail }) {
+function SidebarEmailCard({ email }: { email: RelatedEmail }) {
   const formatDate = (date: string) => {
     const d = new Date(date);
     const now = new Date();
@@ -528,64 +519,34 @@ function CompactEmailCard({ email }: { email: RelatedEmail }) {
   return (
     <Link
       href={`/email/${email.id}`}
+      className="sidebar-email-card"
       style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        padding: "14px 16px",
-        background: "white",
-        borderRadius: 12,
-        border: "1px solid var(--color-border)",
-        textDecoration: "none",
-        color: "inherit",
-        transition: "all 150ms ease",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "var(--color-accent)";
-        e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.06)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "var(--color-border)";
-        e.currentTarget.style.boxShadow = "none";
+        display: "flex", alignItems: "center", gap: 10,
+        padding: "10px 12px",
+        borderRadius: 8,
+        textDecoration: "none", color: "inherit",
+        transition: "background 150ms ease",
       }}
     >
       <div style={{
-        width: 36, height: 36, borderRadius: 10,
+        width: 30, height: 30, borderRadius: 8, flexShrink: 0,
         background: "var(--color-accent-light)",
         display: "flex", alignItems: "center", justifyContent: "center",
-        fontWeight: 600, fontSize: 13, color: "var(--color-accent)", flexShrink: 0,
+        fontWeight: 600, fontSize: 11, color: "var(--color-accent)",
       }}>
         {email.brand?.[0]?.toUpperCase() || "?"}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
-          fontSize: 14, fontWeight: 500,
-          color: "var(--color-primary)", lineHeight: 1.4,
+          fontSize: 13, fontWeight: 500, color: "var(--color-primary)", lineHeight: 1.3,
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>
           {email.subject}
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 3 }}>
-          <span style={{ fontSize: 12, color: "var(--color-secondary)" }}>
-            {email.brand || "Unknown"}
-          </span>
-          <span style={{ fontSize: 10, color: "var(--color-border)" }}>&bull;</span>
-          <span style={{ fontSize: 12, color: "var(--color-tertiary)" }}>
-            {formatDate(email.received_at)}
-          </span>
-          {email.type && (
-            <>
-              <span style={{ fontSize: 10, color: "var(--color-border)" }}>&bull;</span>
-              <span style={{ fontSize: 11, color: "var(--color-tertiary)" }}>
-                {email.type}
-              </span>
-            </>
-          )}
+        <div style={{ fontSize: 11, color: "var(--color-tertiary)", marginTop: 2 }}>
+          {email.brand || "Unknown"} &middot; {formatDate(email.received_at)}
         </div>
       </div>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-tertiary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-        <polyline points="9 18 15 12 9 6" />
-      </svg>
     </Link>
   );
 }
