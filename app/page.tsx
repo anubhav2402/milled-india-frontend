@@ -33,51 +33,6 @@ export default function HomePage() {
     <>
       <HomeClient />
 
-      {/* Server-rendered SEO content section */}
-      <section
-        style={{
-          padding: "80px 24px",
-          background: "white",
-        }}
-      >
-        <div style={{ maxWidth: 800, margin: "0 auto" }}>
-          <h2
-            style={{
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: "clamp(28px, 4vw, 36px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              marginBottom: 24,
-              textAlign: "center",
-            }}
-          >
-            What is MailMuse?
-          </h2>
-          <p
-            style={{
-              fontSize: 17,
-              color: "var(--color-secondary)",
-              lineHeight: 1.8,
-              textAlign: "center",
-              maxWidth: 720,
-              margin: "0 auto",
-            }}
-          >
-            MailMuse is an email marketing intelligence platform that tracks and
-            analyzes email campaigns from over 150 brands across 13 industries.
-            Our database contains more than 7,000 real marketing emails —
-            including sale campaigns, welcome sequences, cart abandonment flows,
-            festive promotions, and newsletters. Marketers use MailMuse to study
-            competitor email strategies, benchmark their own performance, and
-            create new campaigns using our drag-and-drop template editor. Whether
-            you&apos;re planning a Diwali sale sequence or optimizing your
-            welcome flow, MailMuse gives you the competitive intelligence to make
-            data-driven decisions.
-          </p>
-        </div>
-      </section>
-
       {/* Server-rendered blog section for SEO */}
       <section
         style={{
