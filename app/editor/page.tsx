@@ -14,7 +14,7 @@ function EditorLoadingSkeleton() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#2d2d2d",
+        background: "#F5F0EB",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -25,14 +25,14 @@ function EditorLoadingSkeleton() {
           style={{
             width: 40,
             height: 40,
-            border: "3px solid #555",
+            border: "3px solid #E8E0D8",
             borderTopColor: "#C2714A",
             borderRadius: "50%",
             animation: "spin 1s linear infinite",
             margin: "0 auto 16px",
           }}
         />
-        <p style={{ color: "#aaa", fontSize: 14 }}>Loading editor...</p>
+        <p style={{ color: "#9D9490", fontSize: 14 }}>Loading editor...</p>
       </div>
     </div>
   );

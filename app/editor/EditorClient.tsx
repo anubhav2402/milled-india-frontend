@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import type { Editor } from "grapesjs";
+import type { Editor, Block } from "grapesjs";
 import { preprocessEmailHtml } from "./utils";
 import { API_BASE } from "../lib/constants";
 import Logo from "../components/Logo";
@@ -38,37 +38,6 @@ const GRAPESJS_THEME_CSS = `
 
   .gjs-cv-canvas {
     background-color: #F5F0EB !important;
-  }
-
-  /* Right panel (styles/traits) */
-  .gjs-pn-views-container {
-    background-color: #FFFFFF !important;
-    border-left: 1px solid #E8E0D8 !important;
-    box-shadow: none !important;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(194,113,74,0.2) transparent;
-  }
-
-  .gjs-pn-views {
-    background-color: #FFFFFF !important;
-    border-bottom: 1px solid #E8E0D8 !important;
-  }
-
-  .gjs-pn-btn {
-    color: #78716C !important;
-    border-radius: 6px !important;
-    transition: all 0.15s ease !important;
-  }
-
-  .gjs-pn-btn:hover {
-    color: #1C1917 !important;
-    background: rgba(194,113,74,0.08) !important;
-  }
-
-  .gjs-pn-btn.gjs-pn-active {
-    background-color: rgba(194,113,74,0.12) !important;
-    box-shadow: none !important;
-    color: #C2714A !important;
   }
 
   /* Content blocks */
@@ -294,6 +263,24 @@ const GRAPESJS_THEME_CSS = `
   .gjs-frame-wrapper {
     background: #F5F0EB !important;
   }
+
+  /* Panel buttons (for any GrapesJS-rendered panels) */
+  .gjs-pn-btn {
+    color: #78716C !important;
+    border-radius: 6px !important;
+    transition: all 0.15s ease !important;
+  }
+
+  .gjs-pn-btn:hover {
+    color: #1C1917 !important;
+    background: rgba(194,113,74,0.08) !important;
+  }
+
+  .gjs-pn-btn.gjs-pn-active {
+    background-color: rgba(194,113,74,0.12) !important;
+    box-shadow: none !important;
+    color: #C2714A !important;
+  }
 `;
 
 // ---------------------------------------------------------------------------
@@ -303,6 +290,43 @@ const isMac =
   typeof navigator !== "undefined" &&
   navigator.platform.toUpperCase().includes("MAC");
 const MOD = isMac ? "Cmd" : "Ctrl";
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+const AUTOSAVE_KEY = "mailmuse-editor-autosave";
+const AUTOSAVE_INTERVAL = 30000; // 30 seconds
+
+// Row block SVG icons
+const ROW_ICONS: Record<string, string> = {
+  "sect100": `<svg width="48" height="28" viewBox="0 0 48 28" fill="none"><rect x="2" y="4" width="44" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`,
+  "sect50": `<svg width="48" height="28" viewBox="0 0 48 28" fill="none"><rect x="2" y="4" width="20" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="26" y="4" width="20" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`,
+  "sect30": `<svg width="48" height="28" viewBox="0 0 48 28" fill="none"><rect x="2" y="4" width="12" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="18" y="4" width="12" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="34" y="4" width="12" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`,
+  "sect37": `<svg width="48" height="28" viewBox="0 0 48 28" fill="none"><rect x="2" y="4" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="20" y="4" width="26" height="20" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`,
+  "sect25": `<svg width="48" height="28" viewBox="0 0 48 28" fill="none"><rect x="2" y="4" width="9" height="20" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="14" y="4" width="9" height="20" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="26" y="4" width="9" height="20" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="38" y="4" width="8" height="20" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>`,
+};
+
+const ROW_LABELS: Record<string, string> = {
+  "sect100": "1 Column",
+  "sect50": "2 Columns",
+  "sect30": "3 Columns",
+  "sect37": "Sidebar",
+  "sect25": "4 Columns",
+};
+
+// Email-safe font options
+const FONT_OPTIONS = [
+  { value: "Arial, Helvetica, sans-serif", label: "Arial" },
+  { value: "Georgia, serif", label: "Georgia" },
+  { value: "'Times New Roman', Times, serif", label: "Times New Roman" },
+  { value: "Verdana, sans-serif", label: "Verdana" },
+  { value: "Tahoma, sans-serif", label: "Tahoma" },
+  { value: "'Courier New', monospace", label: "Courier New" },
+  { value: "'Trebuchet MS', sans-serif", label: "Trebuchet MS" },
+];
+
+// Block IDs that belong to the Rows category
+const ROW_BLOCK_IDS = ["sect100", "sect50", "sect30", "sect37", "sect25"];
 
 // ---------------------------------------------------------------------------
 // Main Component
@@ -325,7 +349,7 @@ export default function EditorClient() {
   const [isMobile, setIsMobile] = useState(false);
   const [editorReady, setEditorReady] = useState(false);
 
-  // New state
+  // Onboarding & UI state
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -345,9 +369,31 @@ export default function EditorClient() {
   >([]);
   const [templatesLoading, setTemplatesLoading] = useState(false);
 
-  // Refs for one-time tooltips
+  // New state for BEEfree UX
+  const [leftTab, setLeftTab] = useState<"content" | "rows">("content");
+  const [selectedComponent, setSelectedComponent] = useState<any>(null);
+  const [structureVisible, setStructureVisible] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [previewHtml, setPreviewHtml] = useState("");
+  const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">(
+    "desktop"
+  );
+  const [previewDark, setPreviewDark] = useState(false);
+  const [autoSaveStatus, setAutoSaveStatus] = useState<
+    "idle" | "saving" | "saved"
+  >("idle");
+  const [showRestorePrompt, setShowRestorePrompt] = useState(false);
+  const [globalSettings, setGlobalSettings] = useState({
+    contentWidth: 600,
+    bgColor: "#ffffff",
+    fontFamily: "Arial, Helvetica, sans-serif",
+    linkColor: "#C2714A",
+  });
+
+  // Refs
   const firstSelectRef = useRef(false);
   const firstRteRef = useRef(false);
+  const pendingRestoreRef = useRef<any>(null);
 
   // ── Inject GrapesJS theme CSS ──
   useEffect(() => {
@@ -401,12 +447,50 @@ export default function EditorClient() {
     }
   }, [editorReady, loading, loadError]);
 
+  // ── Auto-save timer ──
+  useEffect(() => {
+    if (!editorInstance || !editorReady) return;
+    const interval = setInterval(() => {
+      try {
+        const data = editorInstance.getProjectData();
+        localStorage.setItem(
+          AUTOSAVE_KEY,
+          JSON.stringify({
+            data,
+            emailId: emailId || null,
+            timestamp: Date.now(),
+          })
+        );
+        setAutoSaveStatus("saved");
+        setHasUnsavedChanges(false);
+        setTimeout(() => setAutoSaveStatus("idle"), 2000);
+      } catch {}
+    }, AUTOSAVE_INTERVAL);
+    return () => clearInterval(interval);
+  }, [editorInstance, editorReady, emailId]);
+
+  // ── Restore check on load ──
+  useEffect(() => {
+    if (!editorInstance || !editorReady || emailId) return;
+    const saved = localStorage.getItem(AUTOSAVE_KEY);
+    if (saved) {
+      try {
+        const { data, timestamp } = JSON.parse(saved);
+        const age = Date.now() - timestamp;
+        if (age < 24 * 60 * 60 * 1000 && data) {
+          pendingRestoreRef.current = data;
+          setShowRestorePrompt(true);
+        }
+      } catch {}
+    }
+  }, [editorInstance, editorReady, emailId]);
+
   // ── Fetch templates for picker ──
   useEffect(() => {
     if (!showTemplatePicker || templates.length > 0) return;
     setTemplatesLoading(true);
     fetch(`${API_BASE}/emails?limit=12&offset=0`)
-      .then((res) => res.ok ? res.json() : Promise.reject())
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
       .then((data) => {
         const items = (data.emails || data || []).slice(0, 12);
         setTemplates(
@@ -487,18 +571,24 @@ export default function EditorClient() {
       });
 
       // Track unsaved changes
-      const markUnsaved = () => setHasUnsavedChanges(true);
+      const markUnsaved = () => {
+        setHasUnsavedChanges(true);
+        setAutoSaveStatus("idle");
+      };
       editor.on("component:update", markUnsaved);
       editor.on("component:add", markUnsaved);
       editor.on("component:remove", markUnsaved);
 
-      // Contextual tooltip: first component selection
-      editor.on("component:selected", () => {
+      // Track component selection for context-sensitive right sidebar
+      editor.on("component:selected", (component: any) => {
+        setSelectedComponent(component);
+
+        // Contextual tooltip: first component selection
         if (!firstSelectRef.current) {
           firstSelectRef.current = true;
           setTooltip({
             text: "Edit styles in the right panel \u2192",
-            x: window.innerWidth - 300,
+            x: window.innerWidth - 320,
             y: 120,
           });
           setTimeout(() => setTooltip(null), 4000);
@@ -506,6 +596,10 @@ export default function EditorClient() {
         // Dismiss onboarding on any selection
         setShowOnboarding(false);
         localStorage.setItem("mailmuse-editor-onboarding-seen", "1");
+      });
+
+      editor.on("component:deselected", () => {
+        setSelectedComponent(null);
       });
 
       // Contextual tooltip: first RTE activation
@@ -574,7 +668,7 @@ export default function EditorClient() {
       });
 
       // Add quick action buttons to component toolbar on selection
-      editor.on("component:selected", (component) => {
+      editor.on("component:selected", (component: any) => {
         if (!component) return;
         const toolbar = component.get("toolbar") || [];
         const hasClone = toolbar.some(
@@ -599,6 +693,73 @@ export default function EditorClient() {
               command: "tlb-move-down",
             },
           ]);
+        }
+      });
+
+      // Reclassify newsletter preset blocks into categories
+      const bm = editor.Blocks;
+      const contentBlockIds = [
+        "text",
+        "text-sect",
+        "image",
+        "button",
+        "quote",
+        "link",
+        "link-block",
+        "list-items",
+        "grid-items",
+      ];
+      const layoutBlockIds = ["divider"];
+
+      contentBlockIds.forEach((id) => {
+        const block = bm.get(id);
+        if (block) block.set("category", "Content");
+      });
+
+      layoutBlockIds.forEach((id) => {
+        const block = bm.get(id);
+        if (block) block.set("category", "Layout");
+      });
+
+      // Reclassify existing row blocks
+      ["sect100", "sect50", "sect30", "sect37"].forEach((id) => {
+        const block = bm.get(id);
+        if (block) {
+          block.set("category", "Rows");
+          if (ROW_LABELS[id]) block.set("label", ROW_LABELS[id]);
+          if (ROW_ICONS[id]) block.set("media", ROW_ICONS[id]);
+        }
+      });
+
+      // Add 4-column row block
+      bm.add("sect25", {
+        label: "4 Columns",
+        category: "Rows",
+        media: ROW_ICONS["sect25"],
+        content: `<table style="width:100%;margin:0 auto 10px auto;padding:5px 5px 5px 5px;" data-gjs-type="table">
+          <tr data-gjs-type="row">
+            <td style="width:25%;padding:0;vertical-align:top;" data-gjs-type="cell"></td>
+            <td style="width:25%;padding:0;vertical-align:top;" data-gjs-type="cell"></td>
+            <td style="width:25%;padding:0;vertical-align:top;" data-gjs-type="cell"></td>
+            <td style="width:25%;padding:0;vertical-align:top;" data-gjs-type="cell"></td>
+          </tr>
+        </table>`,
+      });
+
+      // Inject canvas iframe styling for centered email card
+      editor.on("load", () => {
+        const frame = editor.Canvas.getFrameEl();
+        const doc = frame?.contentDocument;
+        if (doc) {
+          const canvasStyle = doc.createElement("style");
+          canvasStyle.id = "mailmuse-canvas-style";
+          canvasStyle.textContent = `
+            body {
+              background: #F5F0EB !important;
+              min-height: 100vh;
+            }
+          `;
+          doc.head.appendChild(canvasStyle);
         }
       });
 
@@ -694,10 +855,88 @@ ${content}
     [editorInstance]
   );
 
+  const handleStructureToggle = useCallback(() => {
+    if (!editorInstance) return;
+    if (structureVisible) {
+      editorInstance.stopCommand("core:component-outline");
+    } else {
+      editorInstance.runCommand("core:component-outline");
+    }
+    setStructureVisible(!structureVisible);
+  }, [editorInstance, structureVisible]);
+
+  const handlePreview = useCallback(() => {
+    const html = getExportHtml();
+    setPreviewHtml(html);
+    setShowPreview(true);
+  }, [getExportHtml]);
+
+  const handleRestore = useCallback(() => {
+    if (pendingRestoreRef.current && editorInstance) {
+      editorInstance.loadProjectData(pendingRestoreRef.current);
+      setShowRestorePrompt(false);
+      pendingRestoreRef.current = null;
+    }
+  }, [editorInstance]);
+
+  const handleDismissRestore = useCallback(() => {
+    setShowRestorePrompt(false);
+    pendingRestoreRef.current = null;
+    localStorage.removeItem(AUTOSAVE_KEY);
+  }, []);
+
   const dismissOnboarding = useCallback(() => {
     setShowOnboarding(false);
     localStorage.setItem("mailmuse-editor-onboarding-seen", "1");
   }, []);
+
+  // ── Global settings handlers ──
+  const updateGlobalSetting = useCallback(
+    (key: string, value: string | number) => {
+      if (!editorInstance) return;
+      setGlobalSettings((prev) => ({ ...prev, [key]: value }));
+
+      const wrapper = editorInstance.getWrapper();
+      if (!wrapper) return;
+
+      switch (key) {
+        case "contentWidth":
+          wrapper.setStyle({
+            ...wrapper.getStyle(),
+            "max-width": `${value}px`,
+            margin: "0 auto",
+          });
+          break;
+        case "bgColor":
+          wrapper.setStyle({
+            ...wrapper.getStyle(),
+            "background-color": String(value),
+          });
+          break;
+        case "fontFamily":
+          wrapper.setStyle({
+            ...wrapper.getStyle(),
+            "font-family": String(value),
+          });
+          break;
+        case "linkColor": {
+          const frame = editorInstance.Canvas.getFrameEl();
+          const doc = frame?.contentDocument;
+          if (doc) {
+            let styleEl = doc.getElementById("mailmuse-link-color");
+            if (!styleEl) {
+              styleEl = doc.createElement("style");
+              styleEl.id = "mailmuse-link-color";
+              doc.head.appendChild(styleEl);
+            }
+            styleEl.textContent = `a { color: ${value} !important; }`;
+          }
+          break;
+        }
+      }
+    },
+    [editorInstance]
+  );
 
   // ── Mobile gate ──
   if (isMobile) {
@@ -800,19 +1039,6 @@ ${content}
           <span style={{ color: "#D6CFC7", fontSize: 14 }}>/</span>
           <span style={{ color: "#78716C", fontSize: 13, fontWeight: 500 }}>
             Template Editor
-            {hasUnsavedChanges && (
-              <span
-                style={{
-                  display: "inline-block",
-                  width: 6,
-                  height: 6,
-                  background: "#C2714A",
-                  borderRadius: "50%",
-                  marginLeft: 6,
-                  verticalAlign: "middle",
-                }}
-              />
-            )}
           </span>
           {emailMeta && (
             <>
@@ -831,9 +1057,17 @@ ${content}
               </span>
             </>
           )}
+          {/* Auto-save / unsaved indicator */}
+          <span style={{ fontSize: 11, color: "#9D9490", marginLeft: 4 }}>
+            {autoSaveStatus === "saved"
+              ? "\u2713 Saved"
+              : hasUnsavedChanges
+                ? "\u2022 Unsaved"
+                : ""}
+          </span>
         </div>
 
-        {/* Center: undo/redo + device preview */}
+        {/* Center: undo/redo + structure toggle + device preview */}
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <button
             onClick={handleUndo}
@@ -905,6 +1139,52 @@ ${content}
             }}
           />
 
+          {/* Structure toggle */}
+          <button
+            onClick={handleStructureToggle}
+            title="Toggle structure borders"
+            style={{
+              background: structureVisible
+                ? "rgba(194,113,74,0.1)"
+                : "none",
+              border: structureVisible
+                ? "1px solid rgba(194,113,74,0.3)"
+                : "1px solid transparent",
+              color: structureVisible ? "#C2714A" : "#9D9490",
+              cursor: "pointer",
+              padding: "5px 8px",
+              borderRadius: 6,
+              display: "flex",
+              alignItems: "center",
+              transition: "all 150ms ease",
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
+          </button>
+
+          <div
+            style={{
+              width: 1,
+              height: 20,
+              background: "#E8E0D8",
+              margin: "0 4px",
+            }}
+          />
+
           {(["Desktop", "Tablet", "Mobile"] as const).map((device) => (
             <button
               key={device}
@@ -972,7 +1252,7 @@ ${content}
           ))}
         </div>
 
-        {/* Right: shortcuts + export buttons */}
+        {/* Right: shortcuts + preview + export buttons */}
         <div
           style={{
             display: "flex",
@@ -1027,7 +1307,16 @@ ${content}
               transition: "all 150ms ease",
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <rect x="3" y="3" width="7" height="7" />
               <rect x="14" y="3" width="7" height="7" />
               <rect x="3" y="14" width="7" height="7" />
@@ -1035,6 +1324,7 @@ ${content}
             </svg>
             Templates
           </button>
+
           {emailId && (
             <Link
               href={`/email/${emailId}`}
@@ -1051,6 +1341,44 @@ ${content}
               Back to Email
             </Link>
           )}
+
+          {/* Preview button */}
+          <button
+            onClick={handlePreview}
+            disabled={!editorReady}
+            title="Preview email"
+            style={{
+              fontSize: 12,
+              color: "#57534E",
+              background: "none",
+              padding: "6px 12px",
+              border: "1px solid #E8E0D8",
+              borderRadius: 6,
+              cursor: editorReady ? "pointer" : "not-allowed",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              fontWeight: 500,
+              transition: "all 150ms ease",
+              opacity: editorReady ? 1 : 0.5,
+            }}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            Preview
+          </button>
+
           <button
             onClick={copyToClipboard}
             disabled={!editorReady}
@@ -1147,7 +1475,9 @@ ${content}
                 margin: "0 auto 12px",
               }}
             />
-            <p style={{ color: "#44403C", fontSize: 14, fontWeight: 500 }}>Almost ready...</p>
+            <p style={{ color: "#44403C", fontSize: 14, fontWeight: 500 }}>
+              Almost ready...
+            </p>
             <p style={{ color: "#9D9490", fontSize: 11, marginTop: 4 }}>
               Loading your template
             </p>
@@ -1204,6 +1534,61 @@ ${content}
             }}
           >
             Dismiss
+          </button>
+        </div>
+      )}
+
+      {/* ── Restore prompt ── */}
+      {showRestorePrompt && (
+        <div
+          style={{
+            position: "absolute",
+            top: 52,
+            left: 0,
+            right: 0,
+            background: "#FFF7F3",
+            padding: "10px 16px",
+            fontSize: 13,
+            textAlign: "center",
+            zIndex: 40,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+            borderBottom: "1px solid rgba(194,113,74,0.2)",
+          }}
+        >
+          <span style={{ color: "#44403C" }}>
+            You have an unsaved draft from a previous session.
+          </span>
+          <button
+            onClick={handleRestore}
+            style={{
+              background: "#C2714A",
+              border: "none",
+              color: "white",
+              borderRadius: 6,
+              padding: "4px 12px",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 500,
+            }}
+          >
+            Restore
+          </button>
+          <button
+            onClick={handleDismissRestore}
+            style={{
+              background: "none",
+              border: "1px solid #E8E0D8",
+              color: "#6B6560",
+              borderRadius: 6,
+              padding: "4px 12px",
+              cursor: "pointer",
+              fontSize: 13,
+            }}
+          >
+            Discard
           </button>
         </div>
       )}
@@ -1282,8 +1667,8 @@ ${content}
                 marginBottom: 24,
               }}
             >
-              Drag blocks from the left sidebar to add content. Click any element
-              to edit it and style it in the right panel.
+              Drag blocks from the left sidebar to add content. Click any
+              element to edit it and style it in the right panel.
             </p>
 
             <div
@@ -1428,23 +1813,66 @@ ${content}
             }}
           >
             <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ margin: "0 auto 12px", display: "block" }}>
-                <rect x="4" y="6" width="32" height="28" rx="3" stroke="#C2714A" strokeWidth="2.5" fill="none" />
+              <svg
+                width="40"
+                height="40"
+                viewBox="0 0 40 40"
+                fill="none"
+                style={{ margin: "0 auto 12px", display: "block" }}
+              >
+                <rect
+                  x="4"
+                  y="6"
+                  width="32"
+                  height="28"
+                  rx="3"
+                  stroke="#C2714A"
+                  strokeWidth="2.5"
+                  fill="none"
+                />
                 <path d="M4 14h32" stroke="#C2714A" strokeWidth="2.5" />
-                <rect x="8" y="18" width="10" height="6" rx="1" fill="#C2714A" opacity="0.2" />
-                <rect x="8" y="27" width="16" height="2" rx="1" fill="#C2714A" opacity="0.15" />
-                <rect x="22" y="18" width="10" height="6" rx="1" fill="#C2714A" opacity="0.2" />
+                <rect
+                  x="8"
+                  y="18"
+                  width="10"
+                  height="6"
+                  rx="1"
+                  fill="#C2714A"
+                  opacity="0.2"
+                />
+                <rect
+                  x="8"
+                  y="27"
+                  width="16"
+                  height="2"
+                  rx="1"
+                  fill="#C2714A"
+                  opacity="0.15"
+                />
+                <rect
+                  x="22"
+                  y="18"
+                  width="10"
+                  height="6"
+                  rx="1"
+                  fill="#C2714A"
+                  opacity="0.2"
+                />
               </svg>
-              <h2 style={{
-                fontFamily: "var(--font-dm-serif)",
-                fontSize: 20,
-                color: "#1C1917",
-                fontWeight: 400,
-                marginBottom: 6,
-              }}>
+              <h2
+                style={{
+                  fontFamily: "var(--font-dm-serif)",
+                  fontSize: 20,
+                  color: "#1C1917",
+                  fontWeight: 400,
+                  marginBottom: 6,
+                }}
+              >
                 Choose a template to start
               </h2>
-              <p style={{ fontSize: 13, color: "#6B6560", lineHeight: 1.5 }}>
+              <p
+                style={{ fontSize: 13, color: "#6B6560", lineHeight: 1.5 }}
+              >
                 Pick a real email to customize, or start with a blank canvas.
               </p>
             </div>
@@ -1466,39 +1894,75 @@ ${content}
                 transition: "all 150ms ease",
               }}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C2714A" strokeWidth="2" strokeLinecap="round">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#C2714A"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
               <div style={{ textAlign: "left" }}>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#1C1917" }}>Start from scratch</div>
-                <div style={{ fontSize: 12, color: "#6B6560" }}>Blank canvas with drag-and-drop blocks</div>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "#1C1917",
+                  }}
+                >
+                  Start from scratch
+                </div>
+                <div style={{ fontSize: 12, color: "#6B6560" }}>
+                  Blank canvas with drag-and-drop blocks
+                </div>
               </div>
             </button>
 
             {/* Template grid */}
             {templatesLoading ? (
               <div style={{ textAlign: "center", padding: "24px 0" }}>
-                <div style={{
-                  width: 24, height: 24,
-                  border: "2px solid #E8E0D8", borderTopColor: "#C2714A",
-                  borderRadius: "50%", animation: "spin 1s linear infinite",
-                  margin: "0 auto 8px",
-                }} />
-                <span style={{ fontSize: 12, color: "#9D9490" }}>Loading templates...</span>
+                <div
+                  style={{
+                    width: 24,
+                    height: 24,
+                    border: "2px solid #E8E0D8",
+                    borderTopColor: "#C2714A",
+                    borderRadius: "50%",
+                    animation: "spin 1s linear infinite",
+                    margin: "0 auto 8px",
+                  }}
+                />
+                <span style={{ fontSize: 12, color: "#9D9490" }}>
+                  Loading templates...
+                </span>
               </div>
             ) : templates.length > 0 ? (
               <>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#9D9490", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#9D9490",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                    marginBottom: 10,
+                  }}
+                >
                   Or start from a real email
                 </div>
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, 1fr)",
-                  gap: 8,
-                  maxHeight: 320,
-                  overflowY: "auto",
-                }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: 8,
+                    maxHeight: 320,
+                    overflowY: "auto",
+                  }}
+                >
                   {templates.map((t) => (
                     <button
                       key={t.id}
@@ -1513,42 +1977,83 @@ ${content}
                         transition: "all 150ms ease",
                       }}
                       onMouseEnter={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.borderColor = "#C2714A";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 2px 8px rgba(194,113,74,0.1)";
+                        (
+                          e.currentTarget as HTMLButtonElement
+                        ).style.borderColor = "#C2714A";
+                        (
+                          e.currentTarget as HTMLButtonElement
+                        ).style.boxShadow =
+                          "0 2px 8px rgba(194,113,74,0.1)";
                       }}
                       onMouseLeave={(e) => {
-                        (e.currentTarget as HTMLButtonElement).style.borderColor = "#E8E0D8";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+                        (
+                          e.currentTarget as HTMLButtonElement
+                        ).style.borderColor = "#E8E0D8";
+                        (
+                          e.currentTarget as HTMLButtonElement
+                        ).style.boxShadow = "none";
                       }}
                     >
-                      <div style={{
-                        display: "flex", alignItems: "center", gap: 8, marginBottom: 4,
-                      }}>
-                        <div style={{
-                          width: 24, height: 24, borderRadius: 6,
-                          background: "#C2714A", color: "white",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          fontSize: 11, fontWeight: 700, flexShrink: 0,
-                        }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          marginBottom: 4,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: 6,
+                            background: "#C2714A",
+                            color: "white",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            flexShrink: 0,
+                          }}
+                        >
                           {t.brand[0]?.toUpperCase() || "?"}
                         </div>
-                        <span style={{ fontSize: 12, fontWeight: 600, color: "#1C1917", textTransform: "capitalize" }}>
+                        <span
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 600,
+                            color: "#1C1917",
+                            textTransform: "capitalize",
+                          }}
+                        >
                           {t.brand}
                         </span>
                       </div>
-                      <div style={{
-                        fontSize: 12, color: "#6B6560",
-                        whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                      }}>
+                      <div
+                        style={{
+                          fontSize: 12,
+                          color: "#6B6560",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
                         {t.subject}
                       </div>
                       {t.type && (
-                        <span style={{
-                          display: "inline-block", marginTop: 4,
-                          fontSize: 10, fontWeight: 500,
-                          padding: "1px 6px", borderRadius: 4,
-                          background: "rgba(194,113,74,0.1)", color: "#C2714A",
-                        }}>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            marginTop: 4,
+                            fontSize: 10,
+                            fontWeight: 500,
+                            padding: "1px 6px",
+                            borderRadius: 4,
+                            background: "rgba(194,113,74,0.1)",
+                            color: "#C2714A",
+                          }}
+                        >
                           {t.type}
                         </span>
                       )}
@@ -1562,12 +2067,156 @@ ${content}
               <Link
                 href="/browse"
                 style={{
-                  fontSize: 13, fontWeight: 500, color: "#C2714A", textDecoration: "none",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "#C2714A",
+                  textDecoration: "none",
                 }}
               >
                 Browse all emails &rarr;
               </Link>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Preview Modal ── */}
+      {showPreview && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(28,25,23,0.6)",
+            zIndex: 100,
+            display: "flex",
+            flexDirection: "column",
+            animation: "fadeIn 0.2s ease",
+          }}
+        >
+          {/* Preview top bar */}
+          <div
+            style={{
+              height: 52,
+              background: "#FFFFFF",
+              borderBottom: "1px solid #E8E0D8",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "0 16px",
+              flexShrink: 0,
+            }}
+          >
+            <span
+              style={{
+                fontWeight: 600,
+                color: "#1C1917",
+                fontSize: 14,
+              }}
+            >
+              Preview
+            </span>
+            <div style={{ display: "flex", gap: 4 }}>
+              {(["desktop", "mobile"] as const).map((d) => (
+                <button
+                  key={d}
+                  onClick={() => setPreviewDevice(d)}
+                  style={{
+                    background:
+                      previewDevice === d
+                        ? "rgba(194,113,74,0.1)"
+                        : "none",
+                    border:
+                      previewDevice === d
+                        ? "1px solid rgba(194,113,74,0.3)"
+                        : "1px solid transparent",
+                    color:
+                      previewDevice === d ? "#C2714A" : "#9D9490",
+                    cursor: "pointer",
+                    padding: "5px 12px",
+                    borderRadius: 6,
+                    fontSize: 12,
+                    fontWeight: 500,
+                    transition: "all 150ms ease",
+                    textTransform: "capitalize",
+                  }}
+                >
+                  {d}
+                </button>
+              ))}
+              <div
+                style={{
+                  width: 1,
+                  height: 20,
+                  background: "#E8E0D8",
+                  margin: "0 4px",
+                  alignSelf: "center",
+                }}
+              />
+              <button
+                onClick={() => setPreviewDark(!previewDark)}
+                title="Toggle dark mode preview"
+                style={{
+                  background: previewDark
+                    ? "rgba(28,25,23,0.1)"
+                    : "none",
+                  border: previewDark
+                    ? "1px solid rgba(28,25,23,0.2)"
+                    : "1px solid transparent",
+                  color: previewDark ? "#1C1917" : "#9D9490",
+                  cursor: "pointer",
+                  padding: "5px 12px",
+                  borderRadius: 6,
+                  fontSize: 12,
+                  fontWeight: 500,
+                  transition: "all 150ms ease",
+                }}
+              >
+                {previewDark ? "Dark" : "Light"}
+              </button>
+            </div>
+            <button
+              onClick={() => setShowPreview(false)}
+              style={{
+                background: "none",
+                border: "1px solid #E8E0D8",
+                color: "#44403C",
+                cursor: "pointer",
+                padding: "6px 16px",
+                borderRadius: 6,
+                fontSize: 12,
+                fontWeight: 500,
+              }}
+            >
+              Close
+            </button>
+          </div>
+          {/* Preview content */}
+          <div
+            style={{
+              flex: 1,
+              background: previewDark ? "#1a1a1a" : "#F5F0EB",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              padding: 32,
+              overflowY: "auto",
+            }}
+          >
+            <iframe
+              srcDoc={previewHtml}
+              title="Email Preview"
+              style={{
+                width: previewDevice === "mobile" ? 375 : 700,
+                minHeight: "80vh",
+                border: "none",
+                background: "#FFFFFF",
+                borderRadius: 8,
+                boxShadow: previewDark
+                  ? "0 4px 24px rgba(0,0,0,0.4)"
+                  : "0 4px 24px rgba(0,0,0,0.1)",
+                transition: "width 300ms ease",
+              }}
+            />
           </div>
         </div>
       )}
@@ -1670,19 +2319,57 @@ ${content}
         </div>
       )}
 
-      {/* ── GrapesJS Editor ── */}
-      <GrapesJSEditor onReady={onEditorReady} />
+      {/* ── GrapesJS Editor with 3-column layout ── */}
+      <GrapesJSEditor
+        onReady={onEditorReady}
+        leftTab={leftTab}
+        onLeftTabChange={setLeftTab}
+        selectedComponent={selectedComponent}
+        globalSettings={globalSettings}
+        onGlobalSettingChange={updateGlobalSetting}
+      />
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Inner component: handles dynamic grapesjs imports
+// Inner component: handles dynamic grapesjs imports + 3-column layout
 // ---------------------------------------------------------------------------
-function GrapesJSEditor({ onReady }: { onReady: (editor: Editor) => void }) {
+function GrapesJSEditor({
+  onReady,
+  leftTab,
+  onLeftTabChange,
+  selectedComponent,
+  globalSettings,
+  onGlobalSettingChange,
+}: {
+  onReady: (editor: Editor) => void;
+  leftTab: "content" | "rows";
+  onLeftTabChange: (tab: "content" | "rows") => void;
+  selectedComponent: any;
+  globalSettings: {
+    contentWidth: number;
+    bgColor: string;
+    fontFamily: string;
+    linkColor: string;
+  };
+  onGlobalSettingChange: (key: string, value: string | number) => void;
+}) {
   const [GjsEditor, setGjsEditor] = useState<React.ComponentType<any> | null>(
     null
   );
+  const [GjsCanvas, setGjsCanvas] = useState<React.ComponentType<any> | null>(
+    null
+  );
+  const [GjsBlocksProvider, setGjsBlocksProvider] = useState<
+    React.ComponentType<any> | null
+  >(null);
+  const [GjsStylesProvider, setGjsStylesProvider] = useState<
+    React.ComponentType<any> | null
+  >(null);
+  const [GjsTraitsProvider, setGjsTraitsProvider] = useState<
+    React.ComponentType<any> | null
+  >(null);
   const [grapesjs, setGrapesjs] = useState<any>(null);
   const [newsletterPlugin, setNewsletterPlugin] = useState<any>(null);
 
@@ -1694,11 +2381,23 @@ function GrapesJSEditor({ onReady }: { onReady: (editor: Editor) => void }) {
     ]).then(([gjsModule, reactModule, presetModule]) => {
       setGrapesjs(gjsModule.default);
       setGjsEditor(() => reactModule.default);
+      setGjsCanvas(() => (reactModule as any).Canvas);
+      setGjsBlocksProvider(() => (reactModule as any).BlocksProvider);
+      setGjsStylesProvider(() => (reactModule as any).StylesProvider);
+      setGjsTraitsProvider(() => (reactModule as any).TraitsProvider);
       setNewsletterPlugin(() => presetModule.default);
     });
   }, []);
 
-  if (!GjsEditor || !grapesjs || !newsletterPlugin) {
+  if (
+    !GjsEditor ||
+    !GjsCanvas ||
+    !GjsBlocksProvider ||
+    !GjsStylesProvider ||
+    !GjsTraitsProvider ||
+    !grapesjs ||
+    !newsletterPlugin
+  ) {
     return (
       <div
         style={{
@@ -1721,7 +2420,9 @@ function GrapesJSEditor({ onReady }: { onReady: (editor: Editor) => void }) {
               margin: "0 auto 16px",
             }}
           />
-          <p style={{ color: "#44403C", fontSize: 14, fontWeight: 500 }}>Preparing editor...</p>
+          <p style={{ color: "#44403C", fontSize: 14, fontWeight: 500 }}>
+            Preparing editor...
+          </p>
           <p style={{ color: "#9D9490", fontSize: 11, marginTop: 4 }}>
             Loading design tools
           </p>
@@ -1731,39 +2432,503 @@ function GrapesJSEditor({ onReady }: { onReady: (editor: Editor) => void }) {
   }
 
   return (
-    <div style={{ flex: 1 }}>
-      <GjsEditor
-        grapesjs={grapesjs}
-        grapesjsCss="https://unpkg.com/grapesjs/dist/css/grapes.min.css"
-        options={{
-          height: "100%",
-          storageManager: false,
-          undoManager: { trackSelection: false },
-          canvas: { styles: [] },
-          deviceManager: {
-            devices: [
-              { name: "Desktop", width: "" },
-              { name: "Tablet", width: "768px" },
-              { name: "Mobile", width: "375px", widthMedia: "480px" },
-            ],
+    <GjsEditor
+      grapesjs={grapesjs}
+      grapesjsCss="https://unpkg.com/grapesjs/dist/css/grapes.min.css"
+      style={{ display: "flex", flex: 1, overflow: "hidden" }}
+      options={{
+        height: "100%",
+        storageManager: false,
+        undoManager: { trackSelection: false },
+        canvas: { styles: [] },
+        deviceManager: {
+          devices: [
+            { name: "Desktop", width: "" },
+            { name: "Tablet", width: "768px" },
+            { name: "Mobile", width: "375px", widthMedia: "480px" },
+          ],
+        },
+      }}
+      plugins={[newsletterPlugin]}
+      pluginsOpts={{
+        [newsletterPlugin]: {
+          inlineCss: true,
+          updateStyleManager: true,
+          showStylesOnChange: true,
+          showBlocksOnLoad: true,
+          cellStyle: {
+            "font-size": "14px",
+            "font-family": "Arial, Helvetica, sans-serif",
+            color: "#333333",
           },
+        },
+      }}
+      onEditor={onReady}
+    >
+      {/* ── LEFT SIDEBAR ── */}
+      <div
+        style={{
+          width: 260,
+          flexShrink: 0,
+          background: "#FFFFFF",
+          borderRight: "1px solid #E8E0D8",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
         }}
-        plugins={[newsletterPlugin]}
-        pluginsOpts={{
-          [newsletterPlugin]: {
-            inlineCss: true,
-            updateStyleManager: true,
-            showStylesOnChange: true,
-            showBlocksOnLoad: true,
-            cellStyle: {
-              "font-size": "14px",
-              "font-family": "Arial, Helvetica, sans-serif",
-              color: "#333333",
-            },
-          },
+      >
+        {/* Tab bar */}
+        <div
+          style={{
+            display: "flex",
+            borderBottom: "1px solid #E8E0D8",
+            flexShrink: 0,
+          }}
+        >
+          {(["content", "rows"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => onLeftTabChange(tab)}
+              style={{
+                flex: 1,
+                padding: "10px 0",
+                background: "none",
+                border: "none",
+                borderBottom:
+                  leftTab === tab
+                    ? "2px solid #C2714A"
+                    : "2px solid transparent",
+                color: leftTab === tab ? "#C2714A" : "#78716C",
+                cursor: "pointer",
+                fontSize: 12,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+                transition: "all 150ms ease",
+              }}
+            >
+              {tab === "content" ? "Content" : "Rows"}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(194,113,74,0.2) transparent",
+          }}
+        >
+          <GjsBlocksProvider>
+            {(props: {
+              blocks: Block[];
+              dragStart: (block: Block, ev?: Event) => void;
+              dragStop: (cancel?: boolean) => void;
+            }) => {
+              const { blocks, dragStart, dragStop } = props;
+
+              const filteredBlocks =
+                leftTab === "rows"
+                  ? blocks.filter((b: Block) =>
+                      ROW_BLOCK_IDS.includes(b.getId())
+                    )
+                  : blocks.filter(
+                      (b: Block) => !ROW_BLOCK_IDS.includes(b.getId())
+                    );
+
+              if (filteredBlocks.length === 0) {
+                return (
+                  <div
+                    style={{
+                      padding: 24,
+                      textAlign: "center",
+                      color: "#9D9490",
+                      fontSize: 13,
+                    }}
+                  >
+                    {leftTab === "rows"
+                      ? "Drag a row layout onto the canvas to structure your email."
+                      : "Drag content blocks onto the canvas to build your email."}
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      leftTab === "rows" ? "1fr" : "1fr 1fr",
+                    gap: 8,
+                    padding: 12,
+                  }}
+                >
+                  {filteredBlocks.map((block: Block) => (
+                    <div
+                      key={block.getId()}
+                      draggable
+                      onDragStart={(e) =>
+                        dragStart(block, e.nativeEvent)
+                      }
+                      onDragEnd={() => dragStop(false)}
+                      style={{
+                        background: "#FAFAF9",
+                        border: "1px solid #E8E0D8",
+                        borderRadius: 8,
+                        padding:
+                          leftTab === "rows" ? "12px 16px" : "14px 8px",
+                        cursor: "grab",
+                        display: "flex",
+                        flexDirection:
+                          leftTab === "rows" ? "row" : "column",
+                        alignItems: "center",
+                        gap: leftTab === "rows" ? 12 : 6,
+                        justifyContent:
+                          leftTab === "rows" ? "flex-start" : "center",
+                        textAlign: leftTab === "rows" ? "left" : "center",
+                        transition: "all 150ms ease",
+                        minHeight: leftTab === "rows" ? "auto" : 72,
+                        boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                      }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLDivElement;
+                        el.style.borderColor = "#C2714A";
+                        el.style.boxShadow =
+                          "0 2px 8px rgba(194,113,74,0.12)";
+                        el.style.background = "#FFF7F3";
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLDivElement;
+                        el.style.borderColor = "#E8E0D8";
+                        el.style.boxShadow =
+                          "0 1px 2px rgba(0,0,0,0.04)";
+                        el.style.background = "#FAFAF9";
+                      }}
+                    >
+                      <div
+                        style={{ color: "#78716C", flexShrink: 0 }}
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            block.getMedia() ||
+                            `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`,
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 500,
+                          color: "#57534E",
+                        }}
+                      >
+                        {block.getLabel()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              );
+            }}
+          </GjsBlocksProvider>
+        </div>
+      </div>
+
+      {/* ── CENTER CANVAS ── */}
+      <GjsCanvas
+        style={{
+          flex: 1,
+          background: "#F5F0EB",
         }}
-        onEditor={onReady}
       />
-    </div>
+
+      {/* ── RIGHT SIDEBAR ── */}
+      <div
+        style={{
+          width: 280,
+          flexShrink: 0,
+          background: "#FFFFFF",
+          borderLeft: "1px solid #E8E0D8",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: "12px 16px",
+            borderBottom: "1px solid #E8E0D8",
+            fontSize: 12,
+            fontWeight: 600,
+            color: "#1C1917",
+            textTransform: "uppercase",
+            letterSpacing: "0.05em",
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          {selectedComponent ? (
+            <>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#C2714A"
+                strokeWidth="2"
+              >
+                <circle cx="13.5" cy="6.5" r="2.5" />
+                <path d="M17 2A5 5 0 0 0 7.5 7.5L2 22l14.5-5.5A5 5 0 0 0 22 7a5 5 0 0 0-5-5z" />
+              </svg>
+              Properties
+            </>
+          ) : (
+            <>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#C2714A"
+                strokeWidth="2"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+              </svg>
+              Settings
+            </>
+          )}
+        </div>
+
+        {/* Content */}
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(194,113,74,0.2) transparent",
+          }}
+        >
+          {selectedComponent ? (
+            <>
+              <GjsStylesProvider>
+                {({ Container }: { Container: React.ComponentType }) => (
+                  <Container />
+                )}
+              </GjsStylesProvider>
+              <GjsTraitsProvider>
+                {({ Container }: { Container: React.ComponentType }) => (
+                  <Container />
+                )}
+              </GjsTraitsProvider>
+            </>
+          ) : (
+            /* Global Settings Panel */
+            <div style={{ padding: 16 }}>
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "#9D9490",
+                  marginBottom: 16,
+                  lineHeight: 1.5,
+                }}
+              >
+                Select a component on the canvas to edit its properties, or
+                configure global email settings below.
+              </p>
+
+              {/* Content Width */}
+              <div style={{ marginBottom: 20 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#44403C",
+                    marginBottom: 6,
+                  }}
+                >
+                  Content Width
+                </label>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <input
+                    type="range"
+                    min={400}
+                    max={800}
+                    step={10}
+                    value={globalSettings.contentWidth}
+                    onChange={(e) =>
+                      onGlobalSettingChange(
+                        "contentWidth",
+                        Number(e.target.value)
+                      )
+                    }
+                    style={{
+                      flex: 1,
+                      accentColor: "#C2714A",
+                      cursor: "pointer",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "#6B6560",
+                      fontFamily: "monospace",
+                      minWidth: 42,
+                    }}
+                  >
+                    {globalSettings.contentWidth}px
+                  </span>
+                </div>
+              </div>
+
+              {/* Background Color */}
+              <div style={{ marginBottom: 20 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#44403C",
+                    marginBottom: 6,
+                  }}
+                >
+                  Background Color
+                </label>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <input
+                    type="color"
+                    value={globalSettings.bgColor}
+                    onChange={(e) =>
+                      onGlobalSettingChange("bgColor", e.target.value)
+                    }
+                    style={{
+                      width: 32,
+                      height: 32,
+                      border: "1px solid #E8E0D8",
+                      borderRadius: 6,
+                      cursor: "pointer",
+                      padding: 2,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "#6B6560",
+                      fontFamily: "monospace",
+                    }}
+                  >
+                    {globalSettings.bgColor}
+                  </span>
+                </div>
+              </div>
+
+              {/* Font Family */}
+              <div style={{ marginBottom: 20 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#44403C",
+                    marginBottom: 6,
+                  }}
+                >
+                  Default Font
+                </label>
+                <select
+                  value={globalSettings.fontFamily}
+                  onChange={(e) =>
+                    onGlobalSettingChange("fontFamily", e.target.value)
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "8px 10px",
+                    border: "1px solid #E8E0D8",
+                    borderRadius: 6,
+                    background: "#FAFAF9",
+                    color: "#1C1917",
+                    fontSize: 13,
+                    cursor: "pointer",
+                    fontFamily: globalSettings.fontFamily,
+                  }}
+                >
+                  {FONT_OPTIONS.map((f) => (
+                    <option
+                      key={f.value}
+                      value={f.value}
+                      style={{ fontFamily: f.value }}
+                    >
+                      {f.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Link Color */}
+              <div style={{ marginBottom: 20 }}>
+                <label
+                  style={{
+                    display: "block",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#44403C",
+                    marginBottom: 6,
+                  }}
+                >
+                  Link Color
+                </label>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <input
+                    type="color"
+                    value={globalSettings.linkColor}
+                    onChange={(e) =>
+                      onGlobalSettingChange("linkColor", e.target.value)
+                    }
+                    style={{
+                      width: 32,
+                      height: 32,
+                      border: "1px solid #E8E0D8",
+                      borderRadius: 6,
+                      cursor: "pointer",
+                      padding: 2,
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "#6B6560",
+                      fontFamily: "monospace",
+                    }}
+                  >
+                    {globalSettings.linkColor}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </GjsEditor>
   );
 }
