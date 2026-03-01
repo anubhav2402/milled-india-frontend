@@ -140,10 +140,11 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
                     industry={email.industry || undefined}
                     received_at={email.received_at}
                     campaignType={email.type || undefined}
+                    compact
                   />
                 ))
               : Array.from({ length: 4 }, (_, i) => (
-                  <EmailCardSkeleton key={i} />
+                  <EmailCardSkeleton key={i} compact />
                 ))
             }
           </div>
@@ -1476,7 +1477,7 @@ export function HomeClient() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
-      <HeroSection emails={recentEmails.slice(0, 3)} />
+      <HeroSection emails={recentEmails.slice(0, 4)} />
       <BrandTrustBar brands={brands} />
       <ProductPreview
         emails={recentEmails}

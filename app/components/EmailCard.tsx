@@ -14,6 +14,7 @@ type EmailCardProps = {
   sendFrequency?: string;
   campaignType?: string;
   showPreview?: boolean;
+  compact?: boolean;
   isBookmarked?: boolean;
   onToggleBookmark?: (id: number) => void;
 };
@@ -28,6 +29,7 @@ export default function EmailCard({
   sendFrequency,
   campaignType,
   showPreview = true,
+  compact = false,
   isBookmarked,
   onToggleBookmark,
 }: EmailCardProps) {
@@ -107,7 +109,7 @@ export default function EmailCard({
       style={{
         display: "block",
         backgroundColor: "#fff",
-        borderRadius: 14,
+        borderRadius: compact ? 10 : 14,
         overflow: "hidden",
         textDecoration: "none",
         color: "inherit",
@@ -124,7 +126,7 @@ export default function EmailCard({
       {/* Full-bleed Preview */}
       <div
         style={{
-          height: 420,
+          height: compact ? 220 : 420,
           backgroundColor: "#f8fafc",
           position: "relative",
           overflow: "hidden",
@@ -283,12 +285,12 @@ export default function EmailCard({
 }
 
 // Skeleton version for loading states
-export function EmailCardSkeleton() {
+export function EmailCardSkeleton({ compact = false }: { compact?: boolean }) {
   return (
     <div
       style={{
         backgroundColor: "#fff",
-        borderRadius: 14,
+        borderRadius: compact ? 10 : 14,
         overflow: "hidden",
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.04)",
       }}
@@ -296,7 +298,7 @@ export function EmailCardSkeleton() {
       {/* Full preview skeleton */}
       <div
         style={{
-          height: 420,
+          height: compact ? 220 : 420,
           background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
           backgroundSize: "200% 100%",
           animation: "shimmer 1.5s infinite",
