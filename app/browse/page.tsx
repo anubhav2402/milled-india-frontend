@@ -30,19 +30,23 @@ type BrandStats = {
 };
 
 const INDUSTRIES = [
+  "Apparel & Accessories",
+  "Baby & Kids",
   "Beauty & Personal Care",
-  "Women's Fashion",
-  "Men's Fashion",
-  "Food & Beverages",
-  "Travel & Hospitality",
-  "Electronics & Gadgets",
-  "Home & Living",
-  "Health & Wellness",
-  "Finance & Fintech",
-  "Kids & Baby",
-  "Sports & Fitness",
+  "Books, Art & Stationery",
+  "Business & B2B Retail",
+  "Electronics & Tech",
   "Entertainment",
-  "General Retail",
+  "Finance & Fintech",
+  "Food & Beverage",
+  "General / Department Store",
+  "Gifts & Lifestyle",
+  "Health, Fitness & Wellness",
+  "Home & Living",
+  "Luxury & High-End Goods",
+  "Pets",
+  "Tools, Auto & DIY",
+  "Travel & Outdoors",
 ];
 
 const DATE_FILTERS = [
