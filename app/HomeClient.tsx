@@ -478,7 +478,7 @@ function EditorShowcase() {
             }}
           >
             {[
-              "Works with any email from our 7,000+ archive",
+              "Works with any email from our 100,000+ archive",
               "Drag-and-drop \u2014 no code required",
               "Export as HTML or copy to clipboard",
               "Mobile-responsive preview built in",

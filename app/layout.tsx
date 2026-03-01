@@ -32,19 +32,19 @@ export const metadata: Metadata = {
     default: "MailMuse — Email Marketing Intelligence for Brands",
     template: "%s | MailMuse",
   },
-  description: "Track 7,000+ real emails from 150+ brands across 13 industries. See what top brands send, when they send it, and what works.",
+  description: "Track 100,000+ real emails from 10,000+ brands across 17 industries. See what top brands send, when they send it, and what works.",
   metadataBase: new URL("https://www.mailmuse.in"),
   openGraph: {
     type: "website",
     siteName: "MailMuse",
     title: "MailMuse — Email Marketing Intelligence for Brands",
-    description: "Track 7,000+ real emails from 150+ brands. Competitive intelligence for email marketers.",
+    description: "Track 100,000+ real emails from 10,000+ brands. Competitive intelligence for email marketers.",
     url: "https://www.mailmuse.in",
   },
   twitter: {
     card: "summary_large_image",
     title: "MailMuse — Email Marketing Intelligence",
-    description: "Track 7,000+ real emails from 150+ brands across 13 industries.",
+    description: "Track 100,000+ real emails from 10,000+ brands across 17 industries.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in",
@@ -85,7 +85,7 @@ export default function RootLayout({
             url: "https://www.mailmuse.in",
             logo: "https://www.mailmuse.in/icon.svg",
             description:
-              "Email marketing intelligence platform that tracks and analyzes campaigns from 150+ brands across 13 industries.",
+              "Email marketing intelligence platform that tracks and analyzes campaigns from 10,000+ brands across 17 industries.",
             sameAs: [],
           }}
         />
@@ -96,7 +96,7 @@ export default function RootLayout({
             name: "MailMuse",
             url: "https://www.mailmuse.in",
             description:
-              "Email marketing intelligence platform. Browse 7,000+ real emails from 150+ brands. Analyze competitor strategies, subject lines, send frequency, and campaign types. Use any email as an editable template.",
+              "Email marketing intelligence platform. Browse 100,000+ real emails from 10,000+ brands. Analyze competitor strategies, subject lines, send frequency, and campaign types. Use any email as an editable template.",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
             offers: {

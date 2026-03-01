@@ -6,11 +6,11 @@ import { posts } from "./blog/posts";
 export const metadata: Metadata = {
   title: "MailMuse — Email Marketing Intelligence for Brands",
   description:
-    "Browse 7,000+ real emails from 150+ brands across 13 industries. Analyze competitor email strategies, subject lines, send timing, and campaign types. Use any email as a reusable template.",
+    "Browse 100,000+ real emails from 10,000+ brands across 17 industries. Analyze competitor email strategies, subject lines, send timing, and campaign types. Use any email as a reusable template.",
   openGraph: {
     title: "MailMuse — Email Marketing Intelligence for Brands",
     description:
-      "Browse 7,000+ real emails from 150+ brands across 13 industries. Analyze competitor email strategies, subject lines, send timing, and campaign types. Use any email as a reusable template.",
+      "Browse 100,000+ real emails from 10,000+ brands across 17 industries. Analyze competitor email strategies, subject lines, send timing, and campaign types. Use any email as a reusable template.",
     url: "https://www.mailmuse.in",
     siteName: "MailMuse",
     type: "website",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "MailMuse — Email Marketing Intelligence for Brands",
     description:
-      "Browse 7,000+ real emails from 150+ brands across 13 industries. Analyze competitor email strategies, subject lines, send timing, and campaign types. Use any email as a reusable template.",
+      "Browse 100,000+ real emails from 10,000+ brands across 17 industries. Analyze competitor email strategies, subject lines, send timing, and campaign types. Use any email as a reusable template.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in",

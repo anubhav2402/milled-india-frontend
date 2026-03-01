@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     template: "%s | MailMuse Blog",
   },
   description:
-    "Expert analysis and trends in email marketing. Data-driven insights from 7,000+ emails across 150+ brands.",
+    "Expert analysis and trends in email marketing. Data-driven insights from 100,000+ emails across 10,000+ brands.",
   alternates: {
     canonical: "https://www.mailmuse.in/blog",
   },

@@ -82,11 +82,11 @@ const faqs = [
   },
   {
     q: "Is there a free trial?",
-    a: "Every new account gets a full 14-day Pro trial with no credit card required. After the trial, you can continue on the Free plan or upgrade to keep Pro features.",
+    a: "Every new account gets a 7-day Starter trial with no credit card required. After the trial, you can continue on the Free plan or upgrade to keep your features.",
   },
   {
     q: "How many brands do you track?",
-    a: "We track 300+ brands and growing. New brands are added every week based on user requests.",
+    a: "We track 10,000+ brands and growing. New brands are added every week based on user requests.",
   },
   {
     q: "How often is data updated?",
@@ -478,7 +478,7 @@ export default function PricingPage() {
             flexWrap: "wrap",
           }}
         >
-          {["10,000+ emails tracked", "300+ brands", "Updated daily"].map(
+          {["100,000+ emails tracked", "10,000+ brands", "Updated daily"].map(
             (stat) => (
               <span
                 key={stat}

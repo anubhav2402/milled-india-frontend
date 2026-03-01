@@ -7,11 +7,11 @@ import Content from "./content.mdx";
 export const metadata: Metadata = {
   title: "How to Build a Welcome Email Sequence That Converts",
   description:
-    "Data-backed best practices for welcome emails from 150+ top brands. Timing, content, and strategies that turn new subscribers into customers.",
+    "Data-backed best practices for welcome emails from 10,000+ top brands. Timing, content, and strategies that turn new subscribers into customers.",
   openGraph: {
     title: "How to Build a Welcome Email Sequence That Converts",
     description:
-      "Data-backed best practices for welcome emails from 150+ top brands. Timing, content, and strategies that turn new subscribers into customers.",
+      "Data-backed best practices for welcome emails from 10,000+ top brands. Timing, content, and strategies that turn new subscribers into customers.",
     type: "article",
     siteName: "MailMuse",
     url: "https://www.mailmuse.in/blog/welcome-email-best-practices",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     card: "summary",
     title: "How to Build a Welcome Email Sequence That Converts",
     description:
-      "Data-backed best practices for welcome emails from 150+ top brands. Timing, content, and strategies that turn new subscribers into customers.",
+      "Data-backed best practices for welcome emails from 10,000+ top brands. Timing, content, and strategies that turn new subscribers into customers.",
   },
   alternates: {
     canonical: "https://www.mailmuse.in/blog/welcome-email-best-practices",

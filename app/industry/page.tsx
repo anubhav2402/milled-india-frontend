@@ -9,7 +9,7 @@ import { industryToSlug } from "../lib/industry-utils";
 export const metadata: Metadata = {
   title: "Industries — Email Marketing by Category | MailMuse",
   description:
-    "Explore email marketing strategies across 13 industries including Fashion, Beauty, Food & Beverages, and more.",
+    "Explore email marketing strategies across 17 industries including Fashion, Beauty, Food & Beverage, and more.",
   alternates: {
     canonical: "https://www.mailmuse.in/industry",
   },

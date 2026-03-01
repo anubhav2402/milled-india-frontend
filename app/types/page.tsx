@@ -8,14 +8,14 @@ import { getAllTypes } from "../lib/type-utils";
 export const metadata: Metadata = {
   title: "Email Types — Email Campaign Examples by Category | MailMuse",
   description:
-    "Browse real email marketing examples by type: sale emails, welcome series, abandoned cart, newsletters, festive campaigns, and more from 150+ top brands.",
+    "Browse real email marketing examples by type: sale emails, welcome series, abandoned cart, newsletters, festive campaigns, and more from 10,000+ top brands.",
   alternates: {
     canonical: "https://www.mailmuse.in/types",
   },
   openGraph: {
     title: "Email Campaign Examples by Type | MailMuse",
     description:
-      "Browse email marketing examples by type from 150+ top brands.",
+      "Browse email marketing examples by type from 10,000+ top brands.",
     url: "https://www.mailmuse.in/types",
     siteName: "MailMuse",
   },
@@ -111,7 +111,7 @@ export default function TypesIndexPage() {
               maxWidth: 700,
             }}
           >
-            Each type page includes real examples from 150+ brands, subject line
+            Each type page includes real examples from 10,000+ brands, subject line
             patterns, send timing benchmarks, and campaign analysis. Use any
             email as a starting point in our drag-and-drop template editor.
           </p>

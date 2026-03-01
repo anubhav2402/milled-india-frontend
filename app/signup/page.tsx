@@ -282,7 +282,7 @@ export default function SignupPage() {
               margin: "0 0 36px",
             }}
           >
-            Track 8,000+ real emails from 300+ brands. Decode subject lines,
+            Track 100,000+ real emails from 10,000+ brands. Decode subject lines,
             send times, and campaign strategies that actually convert.
           </p>
 
@@ -313,7 +313,7 @@ export default function SignupPage() {
                   </svg>
                 ),
                 title: "Full email archive",
-                desc: "Every campaign from 300+ brands, captured daily with full HTML and subject lines",
+                desc: "Every campaign from 10,000+ brands, captured daily with full HTML and subject lines",
               },
               {
                 icon: (
@@ -412,8 +412,8 @@ export default function SignupPage() {
             }}
           >
             {[
-              { value: "8,000+", label: "Emails tracked" },
-              { value: "300+", label: "Brands" },
+              { value: "100,000+", label: "Emails tracked" },
+              { value: "10,000+", label: "Brands" },
               { value: "Daily", label: "Updates" },
             ].map((stat, i) => (
               <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 6 }}>

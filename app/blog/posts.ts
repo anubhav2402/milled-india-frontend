@@ -18,10 +18,10 @@ export const posts: BlogPost[] = [
   {
     slug: "subject-line-strategies",
     title:
-      "Subject Line Strategies That Get Opens: Lessons from 7,000+ D2C Emails",
+      "Subject Line Strategies That Get Opens: Lessons from 100,000+ D2C Emails",
     date: "2026-02-22",
     description:
-      "Data-driven analysis of subject line patterns from 150+ Indian D2C brands. What length, emoji usage, and word choices drive opens.",
+      "Data-driven analysis of subject line patterns from 10,000+ Indian D2C brands. What length, emoji usage, and word choices drive opens.",
     tags: ["subject-lines", "data-analysis"],
   },
   {
@@ -37,7 +37,7 @@ export const posts: BlogPost[] = [
     title: "How to Build a Welcome Email Sequence That Converts",
     date: "2026-02-15",
     description:
-      "Data-backed best practices for welcome emails from 150+ Indian D2C brands. Timing, content, and strategies that turn new subscribers into customers.",
+      "Data-backed best practices for welcome emails from 10,000+ Indian D2C brands. Timing, content, and strategies that turn new subscribers into customers.",
     tags: ["welcome-emails", "automation", "d2c"],
   },
   {

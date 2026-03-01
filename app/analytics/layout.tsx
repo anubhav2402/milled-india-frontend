@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Email Analytics & Benchmarks | MailMuse",
   description:
-    "Email marketing analytics and benchmarks from 150+ brands. Send frequency, subject line trends, campaign type breakdowns, and competitive intelligence.",
+    "Email marketing analytics and benchmarks from 10,000+ brands. Send frequency, subject line trends, campaign type breakdowns, and competitive intelligence.",
   alternates: {
     canonical: "https://www.mailmuse.in/analytics",
   },
