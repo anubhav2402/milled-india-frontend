@@ -115,7 +115,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
           </p>
         </div>
 
-        {/* Right — Email Preview Cards */}
+        {/* Right — Pinterest Masonry Feed */}
         <div
           style={{
             opacity: 0,
@@ -125,28 +125,34 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
           <div
             className="hero-cards"
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 12,
+              columns: 2,
+              columnGap: 12,
             }}
           >
-            {emails.length > 0
-              ? emails.slice(0, 4).map((email) => (
-                  <EmailCard
-                    key={email.id}
-                    id={email.id}
-                    subject={email.subject}
-                    brand={email.brand || undefined}
-                    industry={email.industry || undefined}
-                    received_at={email.received_at}
-                    campaignType={email.type || undefined}
-                    compact
-                  />
-                ))
-              : Array.from({ length: 4 }, (_, i) => (
-                  <EmailCardSkeleton key={i} compact />
-                ))
-            }
+            {(() => {
+              const heights = [280, 180, 200, 260, 170, 240];
+              if (emails.length > 0) {
+                return emails.slice(0, 6).map((email, i) => (
+                  <div key={email.id} style={{ breakInside: "avoid", marginBottom: 12 }}>
+                    <EmailCard
+                      id={email.id}
+                      subject={email.subject}
+                      brand={email.brand || undefined}
+                      industry={email.industry || undefined}
+                      received_at={email.received_at}
+                      campaignType={email.type || undefined}
+                      compact
+                      previewHeight={heights[i % heights.length]}
+                    />
+                  </div>
+                ));
+              }
+              return heights.slice(0, 6).map((h, i) => (
+                <div key={i} style={{ breakInside: "avoid", marginBottom: 12 }}>
+                  <EmailCardSkeleton compact previewHeight={h} />
+                </div>
+              ));
+            })()}
           </div>
         </div>
       </div>
@@ -160,12 +166,12 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
             text-align: center;
           }
           .hero-cards {
-            grid-template-columns: 1fr 1fr !important;
+            columns: 2 !important;
           }
         }
         @media (max-width: 480px) {
           .hero-cards {
-            grid-template-columns: 1fr !important;
+            columns: 1 !important;
           }
           .hero-cards > *:nth-child(n+3) {
             display: none;
@@ -1477,7 +1483,7 @@ export function HomeClient() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
-      <HeroSection emails={recentEmails.slice(0, 4)} />
+      <HeroSection emails={recentEmails.slice(0, 6)} />
       <BrandTrustBar brands={brands} />
       <ProductPreview
         emails={recentEmails}
