@@ -209,7 +209,7 @@ export default function DashboardPage() {
               <p style={{ color: "var(--color-tertiary)", fontSize: 14 }}>No recent emails from followed brands.</p>
             ) : (
               <div className="dashboard-grid" style={{
-                display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20,
+                display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 20,
               }}>
                 {feedEmails.slice(0, 12).map((email) => (
                   <EmailCard
@@ -240,7 +240,7 @@ export default function DashboardPage() {
               </Link>
             </div>
             <div className="dashboard-grid" style={{
-              display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20,
+              display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 20,
             }}>
               {savedEmails.map((email) => (
                 <EmailCard

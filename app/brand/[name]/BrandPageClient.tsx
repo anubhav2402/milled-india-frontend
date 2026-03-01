@@ -293,7 +293,7 @@ export default function BrandPageClient({
                 {filteredEmails.length > 0 ? (
                   <div style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
                     gap: 16,
                   }}>
                     {filteredEmails.slice(0, 12).map((email) => (

@@ -121,194 +121,153 @@ export default function EmailCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Preview Area */}
-      {showPreview && (
-        <div
-          style={{
-            height: 320,
-            backgroundColor: "#f8fafc",
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          {/* Campaign Type Badge */}
-          {campaignType && (
-            <div style={{ position: "absolute", top: 12, left: 12, zIndex: 10 }}>
-              <Badge variant="accent">{campaignType}</Badge>
-            </div>
-          )}
+      {/* Full-bleed Preview */}
+      <div
+        style={{
+          height: 420,
+          backgroundColor: "#f8fafc",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Campaign Type Badge */}
+        {campaignType && (
+          <div style={{ position: "absolute", top: 8, left: 8, zIndex: 10 }}>
+            <Badge variant="accent">{campaignType}</Badge>
+          </div>
+        )}
 
-          {/* Bookmark Button */}
-          {onToggleBookmark && (
-            <button
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleBookmark(id); }}
-              style={{
-                position: "absolute", top: 12, right: 12, zIndex: 10,
-                width: 32, height: 32, borderRadius: 8,
-                background: isBookmarked ? "rgba(239,68,68,0.1)" : "rgba(255,255,255,0.9)",
-                border: "none", cursor: "pointer",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                backdropFilter: "blur(4px)", transition: "all 150ms ease",
-              }}
-              title={isBookmarked ? "Remove bookmark" : "Bookmark"}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill={isBookmarked ? "#ef4444" : "none"} stroke={isBookmarked ? "#ef4444" : "#64748b"} strokeWidth="2">
-                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
-              </svg>
-            </button>
-          )}
+        {/* Bookmark Button */}
+        {onToggleBookmark && (
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleBookmark(id); }}
+            style={{
+              position: "absolute", top: 8, right: 8, zIndex: 10,
+              width: 28, height: 28, borderRadius: 7,
+              background: isBookmarked ? "rgba(239,68,68,0.1)" : "rgba(255,255,255,0.9)",
+              border: "none", cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              backdropFilter: "blur(4px)", transition: "all 150ms ease",
+            }}
+            title={isBookmarked ? "Remove bookmark" : "Bookmark"}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill={isBookmarked ? "#ef4444" : "none"} stroke={isBookmarked ? "#ef4444" : "#64748b"} strokeWidth="2">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+            </svg>
+          </button>
+        )}
 
-          {html ? (
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "300%",
-                height: "300%",
-                transform: "scale(0.333)",
-                transformOrigin: "top left",
-                pointerEvents: "none",
-              }}
-            >
-              <iframe
-                srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_blank"><style>body{margin:0;padding:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}img{max-width:100%;height:auto;}</style></head><body>${html}</body></html>`}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  border: "none",
-                  display: "block",
-                }}
-                sandbox="allow-same-origin"
-                title={`Preview of ${subject}`}
-              />
-            </div>
-          ) : (
-            <div
+        {html ? (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "300%",
+              height: "300%",
+              transform: "scale(0.333)",
+              transformOrigin: "top left",
+              pointerEvents: "none",
+            }}
+          >
+            <iframe
+              srcDoc={`<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_blank"><style>body{margin:0;padding:0;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;}img{max-width:100%;height:auto;}</style></head><body>${html}</body></html>`}
               style={{
                 width: "100%",
                 height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexDirection: "column",
-                gap: 10,
-                background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
-                padding: "16px 20px",
+                border: "none",
+                display: "block",
               }}
-            >
-              {isLoading ? (
-                <div
-                  style={{
-                    width: 28,
-                    height: 28,
-                    border: "2px solid #e2e8f0",
-                    borderTopColor: "#C2714A",
-                    borderRadius: "50%",
-                    animation: "spin 1s linear infinite",
-                  }}
-                />
-              ) : preview ? (
-                /* Text preview fallback when HTML isn't loaded */
-                <div style={{
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  gap: 8,
-                }}>
-                  <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                  }}>
-                    <div style={{
-                      width: 28, height: 28, borderRadius: 7,
-                      background: "white", display: "flex",
-                      alignItems: "center", justifyContent: "center",
-                      fontWeight: 600, fontSize: 12, color: "#C2714A",
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.06)", flexShrink: 0,
-                    }}>
-                      {brandInitial}
-                    </div>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#0f172a" }}>
-                      {brand || "Unknown"}
-                    </span>
-                  </div>
-                  <p style={{
-                    margin: 0, fontSize: 13, color: "#64748b",
-                    lineHeight: 1.5,
-                    display: "-webkit-box", WebkitLineClamp: 4,
-                    WebkitBoxOrient: "vertical", overflow: "hidden",
-                  }}>
-                    {preview}
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: 12,
-                      background: "white",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 600,
-                      fontSize: 18,
-                      color: "#C2714A",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                    }}
-                  >
-                    {brandInitial}
-                  </div>
-                  <span style={{ fontSize: 12, color: "#94a3b8" }}>Email Preview</span>
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Bottom Bar */}
-      <div style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
-        <div
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: "#F5E6DC",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: 600,
-            fontSize: 12,
-            color: "#C2714A",
-            flexShrink: 0,
-          }}
-        >
-          {brandInitial}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+              sandbox="allow-same-origin"
+              title={`Preview of ${subject}`}
+            />
+          </div>
+        ) : (
           <div
             style={{
-              fontSize: 13,
-              fontWeight: 600,
-              color: "#0f172a",
-              textTransform: "capitalize",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              gap: 10,
+              background: "linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)",
             }}
           >
-            {brand || "Unknown"}
+            {isLoading ? (
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  border: "2px solid #e2e8f0",
+                  borderTopColor: "#C2714A",
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite",
+                }}
+              />
+            ) : (
+              <>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 11,
+                    background: "white",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: 600,
+                    fontSize: 16,
+                    color: "#C2714A",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                  }}
+                >
+                  {brandInitial}
+                </div>
+                <span style={{ fontSize: 12, color: "#94a3b8" }}>Loading preview...</span>
+              </>
+            )}
           </div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-          {industry && <Badge>{industry}</Badge>}
-          <span style={{ fontSize: 11, color: "#94a3b8", whiteSpace: "nowrap" }}>
+        )}
+
+        {/* Overlay bottom bar */}
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10,
+          background: "linear-gradient(transparent, rgba(0,0,0,0.55))",
+          padding: "20px 10px 8px",
+          display: "flex", alignItems: "center", gap: 6,
+        }}>
+          <div
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: 6,
+              background: "rgba(255,255,255,0.9)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 700,
+              fontSize: 10,
+              color: "#C2714A",
+              flexShrink: 0,
+            }}
+          >
+            {brandInitial}
+          </div>
+          <span style={{
+            fontSize: 12, fontWeight: 600, color: "#fff",
+            textTransform: "capitalize",
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+            flex: 1, minWidth: 0,
+            textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+          }}>
+            {brand || "Unknown"}
+          </span>
+          <span style={{
+            fontSize: 10, color: "rgba(255,255,255,0.8)", whiteSpace: "nowrap", flexShrink: 0,
+            textShadow: "0 1px 2px rgba(0,0,0,0.3)",
+          }}>
             {formatDate(received_at)}
           </span>
         </div>
@@ -334,50 +293,15 @@ export function EmailCardSkeleton() {
         boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.04)",
       }}
     >
-      {/* Preview skeleton */}
+      {/* Full preview skeleton */}
       <div
         style={{
-          height: 320,
+          height: 420,
           background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
           backgroundSize: "200% 100%",
           animation: "shimmer 1.5s infinite",
         }}
       />
-
-      {/* Bottom bar skeleton */}
-      <div style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
-        <div
-          style={{
-            width: 28,
-            height: 28,
-            borderRadius: 8,
-            background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-          }}
-        />
-        <div
-          style={{
-            width: 100,
-            height: 14,
-            borderRadius: 4,
-            background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-          }}
-        />
-        <div style={{ flex: 1 }} />
-        <div
-          style={{
-            width: 60,
-            height: 12,
-            borderRadius: 4,
-            background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-            backgroundSize: "200% 100%",
-            animation: "shimmer 1.5s infinite",
-          }}
-        />
-      </div>
 
       <style>{`
         @keyframes shimmer {

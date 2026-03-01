@@ -50,7 +50,7 @@ export default function EmailList({ initialEmails }: { initialEmails: Email[] })
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
         gap: 24,
       }}
     >

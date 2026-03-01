@@ -89,7 +89,7 @@ export default function SavedPage() {
 
         {loading ? (
           <div className="saved-grid" style={{
-            display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20,
+            display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 20,
           }}>
             {Array.from({ length: 4 }).map((_, i) => (
               <EmailCardSkeleton key={i} />
@@ -120,7 +120,7 @@ export default function SavedPage() {
           </div>
         ) : (
           <div className="saved-grid" style={{
-            display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20,
+            display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 20,
           }}>
             {emails.map((email) => (
               <EmailCard
