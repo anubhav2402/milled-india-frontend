@@ -107,7 +107,7 @@ export default function IndustryIndex() {
                 color: "var(--color-secondary)",
               }}
             >
-              {INDUSTRIES.length} industries tracked with 150+ brands total
+              {INDUSTRIES.length} industries tracked
             </li>
             <li
               style={{

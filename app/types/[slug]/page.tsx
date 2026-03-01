@@ -194,10 +194,6 @@ export default async function TypePage({
               <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Emails</div>
             </div>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: "var(--color-accent)" }}>{data.total_brands}</div>
-              <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Brands</div>
-            </div>
-            <div>
               <div style={{ fontSize: 24, fontWeight: 700, color: "var(--color-accent)" }}>{data.avg_subject_length}</div>
               <div style={{ fontSize: 12, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Avg Subject Length</div>
             </div>
