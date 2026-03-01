@@ -115,189 +115,38 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
           </p>
         </div>
 
-        {/* Right — Product Preview Mock */}
+        {/* Right — Email Preview Cards */}
         <div
           style={{
             opacity: 0,
             animation: "fadeInUp 0.6s ease 0.2s forwards",
           }}
         >
-          <Link href="/browse" style={{ textDecoration: "none" }}>
-            <div
-              style={{
-                background: "white",
-                borderRadius: 16,
-                border: "1px solid var(--color-border)",
-                boxShadow:
-                  "0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04)",
-                overflow: "hidden",
-                transition: "transform 200ms ease, box-shadow 200ms ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.boxShadow =
-                  "0 24px 48px rgba(0, 0, 0, 0.12), 0 12px 24px rgba(0, 0, 0, 0.06)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04)";
-              }}
-            >
-              {/* Mock browser chrome */}
-              <div
-                style={{
-                  padding: "12px 16px",
-                  background: "#f8f8f8",
-                  borderBottom: "1px solid var(--color-border)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                }}
-              >
-                <div style={{ display: "flex", gap: 6 }}>
-                  <div
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "50%",
-                      background: "#ff5f57",
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "50%",
-                      background: "#ffbd2e",
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "50%",
-                      background: "#28c840",
-                    }}
-                  />
-                </div>
-                <div
-                  style={{
-                    flex: 1,
-                    background: "white",
-                    borderRadius: 6,
-                    padding: "6px 12px",
-                    fontSize: 12,
-                    color: "var(--color-tertiary)",
-                    textAlign: "center",
-                  }}
-                >
-                  mailmuse.in/browse
-                </div>
-              </div>
-
-              {/* Email cards */}
-              <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 12 }}>
-                {(emails.length > 0
-                  ? emails.slice(0, 3)
-                  : [
-                      { id: 1, brand: "Mamaearth", subject: "FLAT 40% OFF on your favourites!", type: "Sale", industry: "Beauty & Personal Care", received_at: new Date().toISOString() },
-                      { id: 2, brand: "boAt", subject: "New Launch: Airdopes 500 ANC", type: "New Arrival", industry: "Electronics & Gadgets", received_at: new Date().toISOString() },
-                      { id: 3, brand: "Sugar Cosmetics", subject: "Your welcome gift is inside", type: "Welcome", industry: "Beauty & Personal Care", received_at: new Date().toISOString() },
-                    ]
-                ).map((email) => (
-                  <div
+          <div
+            className="hero-cards"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 12,
+            }}
+          >
+            {emails.length > 0
+              ? emails.slice(0, 4).map((email) => (
+                  <EmailCard
                     key={email.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 12,
-                      padding: 12,
-                      borderRadius: 10,
-                      border: "1px solid var(--color-border)",
-                      background: "var(--color-surface)",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 8,
-                        background: "var(--color-accent)",
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {(email.brand || "?")[0]}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          marginBottom: 2,
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontSize: 13,
-                            fontWeight: 600,
-                            color: "var(--color-primary)",
-                          }}
-                        >
-                          {email.brand || "Brand"}
-                        </span>
-                        <span
-                          style={{
-                            fontSize: 11,
-                            color: "var(--color-tertiary)",
-                          }}
-                        >
-                          {timeAgo(email.received_at)}
-                        </span>
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 13,
-                          color: "var(--color-secondary)",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {email.subject}
-                      </div>
-                      {email.type && (
-                        <span
-                          style={{
-                            display: "inline-block",
-                            marginTop: 4,
-                            fontSize: 10,
-                            fontWeight: 500,
-                            padding: "2px 8px",
-                            borderRadius: 20,
-                            background:
-                              (CAMPAIGN_TYPE_COLORS[email.type] || "#6366f1") +
-                              "18",
-                            color:
-                              CAMPAIGN_TYPE_COLORS[email.type] || "#6366f1",
-                          }}
-                        >
-                          {email.type}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Link>
+                    id={email.id}
+                    subject={email.subject}
+                    brand={email.brand || undefined}
+                    industry={email.industry || undefined}
+                    received_at={email.received_at}
+                    campaignType={email.type || undefined}
+                  />
+                ))
+              : Array.from({ length: 4 }, (_, i) => (
+                  <EmailCardSkeleton key={i} />
+                ))
+            }
+          </div>
         </div>
       </div>
 
@@ -308,6 +157,17 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
             grid-template-columns: 1fr !important;
             gap: 40px !important;
             text-align: center;
+          }
+          .hero-cards {
+            grid-template-columns: 1fr 1fr !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-cards {
+            grid-template-columns: 1fr !important;
+          }
+          .hero-cards > *:nth-child(n+3) {
+            display: none;
           }
         }
       `}</style>

@@ -108,6 +108,48 @@ export default function AnalyticsPage() {
   }, [selectedBrand, API_BASE, token]);
 
   const isAuthenticated = !!user;
+  const isAdmin = !!user?.is_admin;
+
+  // Gate: admin only
+  if (!authLoading && (!isAuthenticated || !isAdmin)) {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
+        <Header activeRoute="/analytics" />
+        <div style={{
+          maxWidth: 480,
+          margin: "80px auto",
+          padding: "40px 32px",
+          textAlign: "center",
+          background: "white",
+          borderRadius: 16,
+          border: "1px solid #e2e8f0",
+        }}>
+          <div style={{ fontSize: 40, marginBottom: 16 }}>🔒</div>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: "#0f172a", margin: "0 0 8px" }}>
+            Admin Access Only
+          </h1>
+          <p style={{ fontSize: 15, color: "#64748b", margin: "0 0 24px", lineHeight: 1.5 }}>
+            The analytics dashboard is restricted to admin accounts.
+          </p>
+          <Link
+            href="/"
+            style={{
+              display: "inline-block",
+              padding: "10px 24px",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#fff",
+              backgroundColor: "#C2714A",
+              textDecoration: "none",
+              borderRadius: 8,
+            }}
+          >
+            Go to Homepage
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc" }}>
@@ -123,50 +165,6 @@ export default function AnalyticsPage() {
             Insights and benchmarks from {overview?.total_emails || "..."} emails across {overview?.total_brands || "..."} brands
           </p>
         </div>
-
-        {/* Login Banner */}
-        {!isAuthenticated && !authLoading && (
-          <div
-            style={{
-              backgroundColor: "#fef3c7",
-              border: "1px solid #f59e0b",
-              borderRadius: 12,
-              padding: "16px 20px",
-              marginBottom: 24,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 16,
-            }}
-          >
-            <div>
-              <p style={{ margin: 0, fontSize: 15, fontWeight: 500, color: "#92400e" }}>
-                Login to unlock full analytics
-              </p>
-              <p style={{ margin: "4px 0 0 0", fontSize: 13, color: "#a16207" }}>
-                See detailed stats, campaign breakdowns, and timing insights.{" "}
-                <Link href="/analytics/sample" style={{ color: "#92400e", fontWeight: 600, textDecoration: "underline" }}>
-                  Preview a sample report
-                </Link>
-              </p>
-            </div>
-            <Link
-              href="/login"
-              style={{
-                padding: "10px 20px",
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#fff",
-                backgroundColor: "#f59e0b",
-                textDecoration: "none",
-                borderRadius: 8,
-              }}
-            >
-              Login to Unlock
-            </Link>
-          </div>
-        )}
 
         {loading ? (
           <div style={{ display: "flex", justifyContent: "center", padding: 60 }}>

@@ -8,9 +8,11 @@ export function getNavLinks(user: User | null): NavLink[] {
     { label: "Brands", href: "/brands" },
     { label: "Industries", href: "/industry" },
     { label: "Email Types", href: "/types" },
-    { label: "Analytics", href: "/analytics" },
     { label: "Blog", href: "/blog" },
   ];
+  if (user?.is_admin) {
+    links.push({ label: "Analytics", href: "/analytics" });
+  }
   if (user) {
     links.push({ label: "Saved", href: "/saved" });
   }

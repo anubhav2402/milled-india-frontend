@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, DM_Serif_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import JsonLd from "./components/JsonLd";
+import AnnouncementBar from "./components/AnnouncementBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,11 +83,33 @@ export default function RootLayout({
             "@type": "Organization",
             name: "MailMuse",
             url: "https://www.mailmuse.in",
+            logo: "https://www.mailmuse.in/icon.svg",
             description:
-              "Track 7,000+ real emails from 150+ brands across 13 industries.",
+              "Email marketing intelligence platform that tracks and analyzes campaigns from 150+ brands across 13 industries.",
+            sameAs: [],
+          }}
+        />
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            name: "MailMuse",
+            url: "https://www.mailmuse.in",
+            description:
+              "Email marketing intelligence platform. Browse 7,000+ real emails from 150+ brands. Analyze competitor strategies, subject lines, send frequency, and campaign types. Use any email as an editable template.",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            offers: {
+              "@type": "Offer",
+              price: "0",
+              priceCurrency: "INR",
+              description:
+                "Free forever plan with 10 email views per day. Pro plan for unlimited access.",
+            },
           }}
         />
         <AuthProvider>
+          <AnnouncementBar />
           {children}
         </AuthProvider>
       </body>

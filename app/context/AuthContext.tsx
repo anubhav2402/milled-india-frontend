@@ -14,6 +14,7 @@ export type User = {
   is_pro: boolean;
   is_on_trial: boolean;
   trial_ends_at: string | null;
+  is_admin: boolean;
 };
 
 type AuthContextType = {
