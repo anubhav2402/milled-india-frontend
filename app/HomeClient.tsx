@@ -7,7 +7,7 @@ import Header from "./components/Header";
 import Button from "./components/Button";
 import Badge from "./components/Badge";
 import Card from "./components/Card";
-import EmailCard from "./components/EmailCard";
+import EmailCard, { EmailCardSkeleton } from "./components/EmailCard";
 import { CAMPAIGN_TYPE_COLORS } from "./lib/constants";
 
 const API_BASE =
@@ -451,36 +451,22 @@ function ProductPreview({
             gap: 16,
           }}
         >
-          {(emails.length > 0
-            ? emails.slice(0, 8)
-            : Array.from({ length: 8 }, (_, i) => ({
-                id: i,
-                brand: ["Mamaearth", "boAt", "Sugar", "Lenskart", "Nykaa", "Bewakoof", "Zomato", "Myntra"][i],
-                subject: [
-                  "FLAT 40% OFF everything!",
-                  "New Launch: Airdopes 500",
-                  "Welcome to Sugar!",
-                  "Your frames are waiting",
-                  "Hot Pink Friday Sale",
-                  "Weekend Steals Inside",
-                  "Your order is confirmed",
-                  "End of Season Sale",
-                ][i],
-                type: ["Sale", "New Arrival", "Welcome", "Re-engagement", "Sale", "Promotional", "Transactional", "Sale"][i],
-                industry: "General",
-                received_at: new Date().toISOString(),
-              }))
-          ).map((email) => (
-            <EmailCard
-              key={email.id}
-              id={email.id}
-              subject={email.subject}
-              brand={email.brand || undefined}
-              industry={email.industry || undefined}
-              received_at={email.received_at}
-              campaignType={email.type || undefined}
-            />
-          ))}
+          {emails.length > 0
+            ? emails.slice(0, 8).map((email) => (
+                <EmailCard
+                  key={email.id}
+                  id={email.id}
+                  subject={email.subject}
+                  brand={email.brand || undefined}
+                  industry={email.industry || undefined}
+                  received_at={email.received_at}
+                  campaignType={email.type || undefined}
+                />
+              ))
+            : Array.from({ length: 8 }, (_, i) => (
+                <EmailCardSkeleton key={i} />
+              ))
+          }
         </div>
 
         {/* Browse all CTA */}
@@ -1609,7 +1595,7 @@ export function HomeClient() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_BASE}/emails?limit=6`).then((r) =>
+      fetch(`${API_BASE}/emails?limit=8`).then((r) =>
         r.ok ? r.json() : []
       ),
       fetch(`${API_BASE}/brands`).then((r) => (r.ok ? r.json() : [])),
@@ -1619,7 +1605,7 @@ export function HomeClient() {
     ])
       .then(([emails, brandsData, countData]) => {
         setRecentEmails(
-          (emails as EmailPreview[]).slice(0, 6)
+          (emails as EmailPreview[]).slice(0, 8)
         );
         setBrands(brandsData as string[]);
         setTotalEmails(Math.max((countData as { total: number }).total || 100000, 100000));
