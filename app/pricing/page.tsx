@@ -136,7 +136,7 @@ export default function PricingPage() {
 
     if (currentPlan === selectedTier) return;
 
-    const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_SLvIYkuVsh4vIr";
     if (!razorpayKey) {
       setError(
         "Payment system is being set up. Please try again in a few minutes, or contact support."
