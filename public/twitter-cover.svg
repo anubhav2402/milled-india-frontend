@@ -1,0 +1,54 @@
+<svg width="1500" height="500" viewBox="0 0 1500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1500" height="500" fill="#FDF8F5"/>
+
+  <!-- Subtle pattern - floating envelope outlines -->
+  <g opacity="0.04" stroke="#C2714A" stroke-width="2" fill="none">
+    <rect x="80" y="60" width="60" height="42" rx="4"/>
+    <path d="M80 60L110 82L140 60"/>
+    <rect x="1320" y="380" width="60" height="42" rx="4"/>
+    <path d="M1320 380L1350 402L1380 380"/>
+    <rect x="1200" y="80" width="48" height="34" rx="3"/>
+    <path d="M1200 80L1224 98L1248 80"/>
+    <rect x="180" y="370" width="48" height="34" rx="3"/>
+    <path d="M180 370L204 388L228 370"/>
+    <rect x="1050" y="400" width="40" height="28" rx="3"/>
+    <path d="M1050 400L1070 414L1090 400"/>
+    <rect x="300" y="100" width="40" height="28" rx="3"/>
+    <path d="M300 100L320 114L340 100"/>
+  </g>
+
+  <!-- Main logo - envelope -->
+  <g transform="translate(520, 110)">
+    <rect x="0" y="0" width="80" height="56" rx="6" stroke="#C2714A" stroke-width="5" fill="none"/>
+    <path d="M0 0L40 32L80 0" stroke="#C2714A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </g>
+
+  <!-- Brand name -->
+  <text x="620" y="155" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="700" fill="#1a1a2e">Mail</text>
+  <text x="800" y="155" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="700" font-style="italic" fill="#C2714A">Muse</text>
+
+  <!-- Tagline -->
+  <text x="750" y="210" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#64748b" text-anchor="middle" letter-spacing="0.5">
+    Track 8,000+ email campaigns from 300+ brands worldwide
+  </text>
+
+  <!-- Accent line -->
+  <line x1="580" y1="240" x2="920" y2="240" stroke="#C2714A" stroke-width="2" opacity="0.3"/>
+
+  <!-- Bottom stats -->
+  <g font-family="system-ui, -apple-system, sans-serif" fill="#94a3b8" font-size="16">
+    <text x="620" y="280" text-anchor="middle">Campaign Archives</text>
+    <text x="750" y="280" text-anchor="middle">Subject Line Insights</text>
+    <text x="890" y="280" text-anchor="middle">Brand Analytics</text>
+  </g>
+  <g fill="#C2714A" opacity="0.5">
+    <circle cx="685" cy="276" r="2"/>
+    <circle cx="820" cy="276" r="2"/>
+  </g>
+
+  <!-- URL -->
+  <text x="750" y="340" font-family="system-ui, -apple-system, sans-serif" font-size="18" fill="#C2714A" text-anchor="middle" font-weight="600" letter-spacing="1">
+    mailmuse.in
+  </text>
+</svg>

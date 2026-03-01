@@ -1,0 +1,32 @@
+# MailMuse
+
+> MailMuse is an email marketing intelligence platform that tracks and analyzes email campaigns from 150+ top brands across 13 industries. Marketers use MailMuse to browse real email examples, analyze competitor strategies, and reuse campaigns as editable templates.
+
+## Core Features
+- Browse 7,000+ real marketing emails from top brands
+- Analyze competitor email strategies: send frequency, subject lines, campaign types
+- Use any email as a drag-and-drop editable template
+- Track festive and seasonal campaign timelines
+- Compare brands side-by-side
+
+## Core Pages
+- [Browse Emails](https://www.mailmuse.in/browse): Search and filter 7,000+ real marketing emails by brand, industry, or campaign type
+- [Brand Directory](https://www.mailmuse.in/brands): Email strategy profiles for 150+ brands with send frequency, campaign breakdowns, and subject line analytics
+- [Industry Categories](https://www.mailmuse.in/industry): Email campaigns organized by 13 industries including Fashion, Beauty, Food & Beverages, Electronics, and more
+- [Email Types](https://www.mailmuse.in/types): Campaign examples by type — sale emails, welcome series, abandoned cart, newsletters, festive campaigns, product launches, and more
+- [Campaign Calendar](https://www.mailmuse.in/campaigns): Festive and seasonal email campaign timelines across brands
+- [Analytics](https://www.mailmuse.in/analytics): Email marketing analytics, benchmarks, and competitive intelligence
+- [Pricing](https://www.mailmuse.in/pricing): Free forever plan with 10 email views/day, or Pro for unlimited access
+
+## Blog / Insights
+- [Blog](https://www.mailmuse.in/blog): Email marketing insights, strategy breakdowns, and data-driven reports
+- [Subject Line Strategies](https://www.mailmuse.in/blog/subject-line-strategies): Data analysis of subject line patterns from 7,000+ emails
+- [Welcome Email Best Practices](https://www.mailmuse.in/blog/welcome-email-best-practices): How to build welcome sequences that convert
+- [Cart Abandonment Guide](https://www.mailmuse.in/blog/cart-abandonment-email-guide): Recovery strategies with real brand examples
+- [Email Automation Guide](https://www.mailmuse.in/blog/email-automation-for-d2c): Essential automated email flows for brands
+
+## Comparison Pages
+- Compare any two brands' email strategies side-by-side at /compare/{brand-a-vs-brand-b}
+
+## Optional
+- [Full llms.txt specification](https://llmstxt.org/)

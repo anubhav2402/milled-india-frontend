@@ -94,7 +94,7 @@ export default function TypesIndexPage() {
               fontSize: 16,
               lineHeight: 1.6,
               color: "var(--color-secondary)",
-              margin: 0,
+              margin: "0 0 14px",
               maxWidth: 700,
             }}
           >
@@ -102,6 +102,106 @@ export default function TypesIndexPage() {
             organized by campaign type. See how top brands craft sale emails,
             welcome sequences, festive campaigns, and more.
           </p>
+          <p
+            style={{
+              fontSize: 16,
+              lineHeight: 1.6,
+              color: "var(--color-secondary)",
+              margin: 0,
+              maxWidth: 700,
+            }}
+          >
+            Each type page includes real examples from 150+ brands, subject line
+            patterns, send timing benchmarks, and campaign analysis. Use any
+            email as a starting point in our drag-and-drop template editor.
+          </p>
+        </div>
+
+        <div
+          style={{
+            background: "white",
+            borderRadius: 14,
+            padding: "24px 28px",
+            border: "1px solid var(--color-border)",
+            marginBottom: 24,
+          }}
+        >
+          <h2
+            style={{
+              fontSize: 16,
+              fontWeight: 700,
+              color: "var(--color-primary)",
+              margin: "0 0 16px",
+              fontFamily: "var(--font-dm-serif)",
+            }}
+          >
+            Popular Email Types
+          </h2>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+            }}
+          >
+            {[
+              {
+                name: "Sale",
+                description:
+                  "Discount announcements, flash sales, and limited-time offers that drive urgency and conversions.",
+              },
+              {
+                name: "Welcome",
+                description:
+                  "First-touch emails that introduce new subscribers to a brand and set the tone for future campaigns.",
+              },
+              {
+                name: "Abandoned Cart",
+                description:
+                  "Recovery emails that remind shoppers about items left in their cart and nudge them to complete the purchase.",
+              },
+              {
+                name: "Newsletter",
+                description:
+                  "Regular updates featuring curated content, product highlights, and brand stories to keep subscribers engaged.",
+              },
+              {
+                name: "Festive",
+                description:
+                  "Seasonal campaigns tied to holidays and festivals like Diwali, Holi, and end-of-season events.",
+              },
+            ].map((type) => (
+              <div
+                key={type.name}
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 10,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "var(--color-accent)",
+                    flexShrink: 0,
+                    minWidth: 110,
+                  }}
+                >
+                  {type.name}
+                </span>
+                <span
+                  style={{
+                    fontSize: 14,
+                    lineHeight: 1.5,
+                    color: "var(--color-secondary)",
+                  }}
+                >
+                  {type.description}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div

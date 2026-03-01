@@ -40,6 +40,101 @@ export default function BrandSeoContent({
       })
     : null;
 
+  // --- Email strategy analysis computations ---
+
+  // Strategy characterisation based on campaign mix
+  const saleTypes = ["Sale", "Promotion", "Flash Sale", "Clearance"];
+  const relationshipTypes = ["Welcome", "Newsletter", "Loyalty", "Thank You"];
+  const festiveTypes = ["Festive", "Festival", "Holiday"];
+  const salePct = sortedCampaigns.reduce(
+    (sum, [type, count]) =>
+      sum +
+      (saleTypes.some((s) => type.toLowerCase().includes(s.toLowerCase()))
+        ? campaignTotal > 0
+          ? (count / campaignTotal) * 100
+          : 0
+        : 0),
+    0
+  );
+  const relationshipPct = sortedCampaigns.reduce(
+    (sum, [type, count]) =>
+      sum +
+      (relationshipTypes.some((r) =>
+        type.toLowerCase().includes(r.toLowerCase())
+      )
+        ? campaignTotal > 0
+          ? (count / campaignTotal) * 100
+          : 0
+        : 0),
+    0
+  );
+  const festivePct = sortedCampaigns.reduce(
+    (sum, [type, count]) =>
+      sum +
+      (festiveTypes.some((f) => type.toLowerCase().includes(f.toLowerCase()))
+        ? campaignTotal > 0
+          ? (count / campaignTotal) * 100
+          : 0
+        : 0),
+    0
+  );
+
+  let strategyLabel = "balanced";
+  if (salePct > 40) strategyLabel = "promotion-heavy";
+  else if (relationshipPct > 40) strategyLabel = "relationship-building";
+  else if (festivePct > 25) strategyLabel = "seasonally-driven";
+  else if (sortedCampaigns.length >= 4) strategyLabel = "diversified";
+
+  // Frequency tier
+  let frequencyTier = "conservative";
+  if (epw >= 7) frequencyTier = "aggressive";
+  else if (epw >= 4) frequencyTier = "active";
+  else if (epw >= 2) frequencyTier = "moderate";
+
+  // Second-peak day for send timing analysis
+  const sortedDays = Object.entries(data.send_day_distribution).sort(
+    ([, a], [, b]) => b - a
+  );
+  const secondPeakDay = sortedDays[1]?.[0];
+  const totalDaySends = sortedDays.reduce((sum, [, v]) => sum + v, 0);
+  const peakDayPct =
+    peakDay && totalDaySends > 0
+      ? Math.round(
+          ((data.send_day_distribution[peakDay] || 0) / totalDaySends) * 100
+        )
+      : 0;
+
+  // Subject line benchmark comparisons
+  const avgSubjectBenchmark = 50;
+  const avgEmojiBenchmark = 20;
+  const subjectLengthDiff = stats.avg_length - avgSubjectBenchmark;
+  const emojiDiff = stats.emoji_usage_rate - avgEmojiBenchmark;
+
+  let subjectLengthVerdict = "right at the industry average";
+  if (subjectLengthDiff > 10) subjectLengthVerdict = "notably longer than average";
+  else if (subjectLengthDiff > 3)
+    subjectLengthVerdict = "slightly above average";
+  else if (subjectLengthDiff < -10)
+    subjectLengthVerdict = "considerably shorter than average";
+  else if (subjectLengthDiff < -3)
+    subjectLengthVerdict = "slightly below average";
+
+  let emojiVerdict = "in line with the typical benchmark";
+  if (emojiDiff > 15) emojiVerdict = "well above the industry norm";
+  else if (emojiDiff > 5) emojiVerdict = "moderately above average";
+  else if (emojiDiff < -15) emojiVerdict = "well below the industry norm";
+  else if (emojiDiff < -5) emojiVerdict = "below the typical benchmark";
+
+  // Festive campaign calendar insights
+  const uniqueFestivals = [
+    ...new Set(data.festive_campaigns.map((f) => f.festival)),
+  ];
+  const uniqueYears = [...new Set(data.festive_campaigns.map((f) => f.year))];
+  const totalFestiveEmails = data.festive_campaigns.reduce(
+    (sum, f) => sum + f.count,
+    0
+  );
+
   // Build FAQ items
   const faqItems: { question: string; answer: string }[] = [];
 
@@ -167,6 +262,87 @@ export default function BrandSeoContent({
           )}
         </div>
 
+        {/* Email Strategy Analysis */}
+        {sortedCampaigns.length > 0 && (
+          <div style={{ ...cardStyle, marginBottom: 20 }}>
+            <h2 style={headingStyle}>
+              {brandName}&apos;s Email Strategy Analysis
+            </h2>
+
+            {/* Strategy characterisation paragraph */}
+            <p style={textStyle}>
+              Based on our analysis of {totalEmails} emails, {brandName} employs
+              a <strong>{strategyLabel}</strong> email marketing strategy.{" "}
+              {salePct > 40
+                ? `Promotional and sale-driven emails make up roughly ${Math.round(salePct)}% of their campaigns, suggesting a strong focus on driving immediate conversions and revenue through discounts and offers.`
+                : relationshipPct > 40
+                ? `Relationship-oriented emails like newsletters and welcome sequences represent about ${Math.round(relationshipPct)}% of their output, indicating a priority on nurturing subscriber loyalty over hard selling.`
+                : festivePct > 25
+                ? `Seasonal and festive campaigns account for around ${Math.round(festivePct)}% of their emails, showing that ${brandName} heavily leverages cultural and seasonal moments to engage their audience.`
+                : `Their campaign mix spans ${sortedCampaigns.length} different email types, reflecting a well-rounded approach that balances promotions, content, and seasonal messaging.`}{" "}
+              With an average of {epw} emails per week, their cadence falls
+              into the <strong>{frequencyTier}</strong> tier
+              {frequencyTier === "conservative"
+                ? " — sending fewer than 2 emails weekly, which helps avoid subscriber fatigue but may limit touchpoints"
+                : frequencyTier === "moderate"
+                ? " — a measured pace of 2\u20134 emails per week that balances visibility with subscriber comfort"
+                : frequencyTier === "active"
+                ? " — maintaining 4\u20137 weekly touchpoints, which keeps the brand top-of-mind without overwhelming inboxes"
+                : " — an intensive 7+ emails per week cadence that maximises exposure, though it risks higher unsubscribe rates"}
+              .
+            </p>
+
+            {/* Send timing paragraph */}
+            {peakDay && (
+              <p style={textStyle}>
+                {brandName}&apos;s preferred send day is{" "}
+                <strong>{peakDay}</strong>
+                {peakDayPct > 0
+                  ? `, accounting for ${peakDayPct}% of all sends`
+                  : ""}
+                {secondPeakDay
+                  ? `, with ${secondPeakDay} as their second most active day`
+                  : ""}
+                .{" "}
+                {peakTime
+                  ? `Their peak sending window is the ${peakTime} slot, which `
+                  : "This "}
+                {peakTime &&
+                  (peakTime === "Morning"
+                    ? "targets subscribers early in the day when open rates tend to be highest for many industries."
+                    : peakTime === "Afternoon"
+                    ? "aims to catch subscribers during the midday break, a popular window for retail and lifestyle brands."
+                    : peakTime === "Evening"
+                    ? "reaches subscribers after work hours, aligning with peak online shopping periods."
+                    : "is an unconventional timing choice that may help the brand stand out in less crowded inboxes.")}
+                {!peakTime &&
+                  "Their send times are distributed throughout the day without a single dominant window."}
+              </p>
+            )}
+
+            {/* Subject line benchmarks paragraph */}
+            <p style={textStyle}>
+              {brandName}&apos;s subject lines average{" "}
+              <strong>{stats.avg_length} characters</strong>, which is{" "}
+              {subjectLengthVerdict} (industry benchmark: ~{avgSubjectBenchmark}{" "}
+              characters).{" "}
+              {subjectLengthDiff > 3
+                ? "Longer subject lines can convey more detail but risk getting truncated on mobile devices."
+                : subjectLengthDiff < -3
+                ? "Shorter subject lines improve mobile readability and can boost open rates through curiosity."
+                : "This length works well across both desktop and mobile email clients."}{" "}
+              Their emoji usage rate of{" "}
+              <strong>{stats.emoji_usage_rate}%</strong> is {emojiVerdict}{" "}
+              (~{avgEmojiBenchmark}% across brands).{" "}
+              {stats.emoji_usage_rate > avgEmojiBenchmark + 5
+                ? "Frequent emoji use can increase visual stand-out in the inbox, though overuse may appear less professional for certain audiences."
+                : stats.emoji_usage_rate < avgEmojiBenchmark - 5
+                ? "A lower emoji rate lends a more formal tone, which may resonate well with their target demographic."
+                : "This balanced approach keeps subject lines engaging without over-relying on visual gimmicks."}
+            </p>
+          </div>
+        )}
+
         {/* Subject Line Patterns */}
         {stats.sample_subjects.length > 0 && (
           <div style={{ ...cardStyle, marginBottom: 20 }}>
@@ -220,6 +396,41 @@ export default function BrandSeoContent({
                 ? `During ${data.festive_campaigns[0].festival} ${data.festive_campaigns[0].year}, they sent ${data.festive_campaigns[0].count} targeted campaign emails.`
                 : `Across recent festive seasons, ${brandName} has sent emails for ${data.festive_campaigns.map((f) => f.festival).join(", ")}.`}
             </p>
+
+            {/* Campaign Calendar insights */}
+            <p style={textStyle}>
+              {brandName}&apos;s festive calendar spans{" "}
+              <strong>
+                {uniqueFestivals.length}{" "}
+                {uniqueFestivals.length === 1 ? "festival" : "different festivals"}
+              </strong>
+              {uniqueYears.length > 1
+                ? ` across ${uniqueYears.length} years (${uniqueYears.sort().join(", ")})`
+                : uniqueYears.length === 1
+                ? ` in ${uniqueYears[0]}`
+                : ""}
+              , totalling {totalFestiveEmails} festive campaign emails.{" "}
+              {uniqueFestivals.length >= 3
+                ? `This broad seasonal participation indicates that ${brandName} treats festive marketing as a core part of their annual strategy, engaging customers across multiple cultural moments.`
+                : uniqueFestivals.length === 2
+                ? `By targeting two key seasonal events, ${brandName} focuses their festive efforts on the occasions most relevant to their audience.`
+                : `Concentrating on a single festive period allows ${brandName} to invest more creative effort into a focused seasonal push.`}
+              {" "}
+              {data.festive_campaigns.some((f) =>
+                ["Diwali", "Navratri", "Durga Puja", "Onam"].some((d) =>
+                  f.festival.toLowerCase().includes(d.toLowerCase())
+                )
+              )
+                ? "Their presence in major Indian festivals highlights a strategy tuned to the domestic market."
+                : data.festive_campaigns.some((f) =>
+                    ["Christmas", "Black Friday", "Cyber Monday", "New Year"].some(
+                      (w) => f.festival.toLowerCase().includes(w.toLowerCase())
+                    )
+                  )
+                ? "Their focus on global shopping events suggests a strategy aimed at an internationally-minded customer base."
+                : "Their festival selection reflects a tailored approach to seasonal consumer demand."}
+            </p>
+
             <div
               style={{
                 display: "flex",
@@ -253,6 +464,41 @@ export default function BrandSeoContent({
         {/* Internal Links */}
         <div style={{ ...cardStyle, marginBottom: 20 }}>
           <h2 style={headingStyle}>Explore More</h2>
+
+          {/* How Brand Compares paragraph */}
+          <p style={textStyle}>
+            {brandName} sends {epw} emails per week, putting them in the{" "}
+            <strong>{frequencyTier}</strong> tier for{" "}
+            {data.industry ? `${data.industry} brands` : "email marketers"}.{" "}
+            {frequencyTier === "aggressive"
+              ? "This places them among the most prolific senders in their category."
+              : frequencyTier === "active"
+              ? "This is an above-average sending frequency within their category."
+              : frequencyTier === "moderate"
+              ? "This is a typical frequency that balances engagement with inbox respect."
+              : "This conservative cadence is lower than most brands in the space."}{" "}
+            {data.industry ? (
+              <>
+                Browse other{" "}
+                <Link
+                  href={`/industry/${industryToSlug(data.industry)}`}
+                  style={{ color: "var(--color-accent)" }}
+                >
+                  {data.industry} brands
+                </Link>{" "}
+                to compare strategies
+                {data.related_brands.length > 0
+                  ? `, or see how ${brandName} stacks up directly against ${data.related_brands.slice(0, 2).join(" and ")}.`
+                  : "."}
+              </>
+            ) : (
+              <>
+                Explore more brands on MailMuse to benchmark email strategies
+                across industries.
+              </>
+            )}
+          </p>
+
           <div
             style={{
               display: "flex",

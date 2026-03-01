@@ -224,7 +224,7 @@ export default async function IndustryPage({
               fontSize: 16,
               lineHeight: 1.6,
               color: "var(--color-secondary)",
-              margin: "0 0 20px",
+              margin: "0 0 14px",
               maxWidth: 700,
             }}
           >
@@ -232,6 +232,20 @@ export default async function IndustryPage({
             {industry} brands. MailMuse has tracked{" "}
             {data.total_emails.toLocaleString()} emails to help you benchmark
             and improve your campaigns.
+          </p>
+          <p
+            style={{
+              fontSize: 16,
+              lineHeight: 1.6,
+              color: "var(--color-secondary)",
+              margin: "0 0 20px",
+              maxWidth: 700,
+            }}
+          >
+            {industry} brands on MailMuse send an average of{" "}
+            {data.avg_emails_per_brand_per_week.toFixed(1)} emails per week.
+            Browse real campaign examples, analyze subject line trends, and
+            compare strategies across {industry} brands.
           </p>
 
           {/* Stats row */}

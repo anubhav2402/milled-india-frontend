@@ -50,7 +50,7 @@ export default function IndustryIndex() {
             fontFamily: "var(--font-dm-serif)",
             fontSize: 28,
             color: "var(--color-primary)",
-            margin: "0 0 8px",
+            margin: "0 0 12px",
           }}
         >
           Email Marketing by Industry
@@ -58,14 +58,88 @@ export default function IndustryIndex() {
         <p
           style={{
             fontSize: 16,
+            lineHeight: 1.6,
             color: "var(--color-secondary)",
-            margin: "0 0 32px",
-            maxWidth: 600,
+            margin: "0 0 20px",
+            maxWidth: 700,
           }}
         >
           Explore how brands approach email marketing across {INDUSTRIES.length}{" "}
-          industries.
+          industries. Each industry page includes brand directories, campaign
+          breakdowns, send frequency benchmarks, subject line analytics, and real
+          email examples you can browse and reuse as templates.
         </p>
+
+        <div
+          style={{
+            background: "white",
+            borderRadius: 14,
+            padding: "24px 28px",
+            border: "1px solid var(--color-border)",
+            marginBottom: 32,
+          }}
+        >
+          <h2
+            style={{
+              fontSize: 16,
+              fontWeight: 700,
+              color: "var(--color-primary)",
+              margin: "0 0 14px",
+              fontFamily: "var(--font-dm-serif)",
+            }}
+          >
+            Key Insights
+          </h2>
+          <ul
+            style={{
+              margin: 0,
+              padding: "0 0 0 20px",
+              listStyle: "disc",
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            <li
+              style={{
+                fontSize: 14,
+                lineHeight: 1.5,
+                color: "var(--color-secondary)",
+              }}
+            >
+              {INDUSTRIES.length} industries tracked with 150+ brands total
+            </li>
+            <li
+              style={{
+                fontSize: 14,
+                lineHeight: 1.5,
+                color: "var(--color-secondary)",
+              }}
+            >
+              Average send frequency, top campaign types, and subject line trends
+              per industry
+            </li>
+            <li
+              style={{
+                fontSize: 14,
+                lineHeight: 1.5,
+                color: "var(--color-secondary)",
+              }}
+            >
+              Real email examples from every category — browse, analyze, and
+              reuse
+            </li>
+            <li
+              style={{
+                fontSize: 14,
+                lineHeight: 1.5,
+                color: "var(--color-secondary)",
+              }}
+            >
+              Updated daily with new campaigns
+            </li>
+          </ul>
+        </div>
 
         <div
           style={{
