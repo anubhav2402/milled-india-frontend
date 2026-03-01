@@ -16,6 +16,8 @@ type Tweet = {
   scheduled_for: string | null;
   posted_at: string | null;
   twitter_id: string | null;
+  thread_id: string | null;
+  thread_order: number | null;
   created_at: string | null;
   char_count: number;
 };
@@ -25,6 +27,7 @@ const TYPE_LABELS: Record<string, string> = {
   weekly_digest: "Weekly Roundup",
   brand_spotlight: "Brand Spotlight",
   subject_line_insight: "Subject Lines",
+  viral_thread: "Viral Thread",
 };
 
 const STATUS_COLORS: Record<string, string> = {
@@ -45,6 +48,7 @@ export default function AdminTweetsPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [posting, setPosting] = useState<number | null>(null);
+  const [postingThread, setPostingThread] = useState<string | null>(null);
 
   const headers = {
     "Content-Type": "application/json",
@@ -162,6 +166,32 @@ export default function AdminTweetsPage() {
     }
   };
 
+  const postThread = async (threadId: string) => {
+    setPostingThread(threadId);
+    setError(null);
+    try {
+      const res = await fetch(
+        `${API_BASE}/admin/tweets/thread/${threadId}/post`,
+        { method: "POST", headers }
+      );
+      if (res.ok) {
+        fetchTweets();
+      } else {
+        try {
+          const data = await res.json();
+          setError(data.detail || `Thread post failed (${res.status})`);
+        } catch {
+          setError(`Thread post failed — server returned ${res.status}`);
+        }
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      setError(`Network error: ${msg}`);
+    } finally {
+      setPostingThread(null);
+    }
+  };
+
   const deleteTweet = async (id: number) => {
     try {
       const res = await fetch(`${API_BASE}/admin/tweets/${id}`, {
@@ -173,6 +203,152 @@ export default function AdminTweetsPage() {
       setError("Network error");
     }
   };
+
+  // Approve all tweets in a thread at once
+  const approveThread = async (threadId: string) => {
+    const threadTweets = tweets.filter((t) => t.thread_id === threadId && t.status === "draft");
+    for (const t of threadTweets) {
+      await updateStatus(t.id, "approve");
+    }
+  };
+
+  // Group tweets: threads grouped together, standalone tweets as-is
+  const groupedTweets = (() => {
+    const threadMap = new Map<string, Tweet[]>();
+    const standalone: Tweet[] = [];
+
+    for (const t of tweets) {
+      if (t.thread_id) {
+        const existing = threadMap.get(t.thread_id) || [];
+        existing.push(t);
+        threadMap.set(t.thread_id, existing);
+      } else {
+        standalone.push(t);
+      }
+    }
+
+    // Sort thread tweets by thread_order
+    for (const [, threadTweets] of threadMap) {
+      threadTweets.sort((a, b) => (a.thread_order ?? 0) - (b.thread_order ?? 0));
+    }
+
+    // Build display list: threads first, then standalone
+    const items: Array<{ type: "thread"; threadId: string; tweets: Tweet[] } | { type: "single"; tweet: Tweet }> = [];
+
+    for (const [threadId, threadTweets] of threadMap) {
+      items.push({ type: "thread", threadId, tweets: threadTweets });
+    }
+    for (const t of standalone) {
+      items.push({ type: "single", tweet: t });
+    }
+
+    return items;
+  })();
+
+  const renderTweetCard = (tweet: Tweet, threadIndex?: number) => (
+    <div
+      key={tweet.id}
+      style={{
+        background: "var(--color-surface, white)",
+        border: "1px solid var(--color-border, #e5e5e5)",
+        borderRadius: threadIndex !== undefined ? 8 : 12,
+        padding: threadIndex !== undefined ? 14 : 18,
+        borderLeft: `4px solid ${STATUS_COLORS[tweet.status] || "#ccc"}`,
+      }}
+    >
+      {/* Header row */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {threadIndex !== undefined && (
+            <span style={{ fontSize: 11, fontWeight: 700, color: "var(--color-muted, #999)", minWidth: 22 }}>
+              {threadIndex + 1}/
+            </span>
+          )}
+          <span style={{
+            fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 4,
+            background: STATUS_COLORS[tweet.status] + "20",
+            color: STATUS_COLORS[tweet.status],
+            textTransform: "uppercase",
+          }}>
+            {tweet.status}
+          </span>
+          {threadIndex === undefined && (
+            <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 8px", borderRadius: 4, background: "var(--color-accent-light, #f5e6dc)", color: "var(--color-accent)" }}>
+              {TYPE_LABELS[tweet.tweet_type] || tweet.tweet_type}
+            </span>
+          )}
+        </div>
+        <div style={{ fontSize: 11, color: "var(--color-muted, #999)" }}>
+          {tweet.char_count}/280
+          {tweet.created_at && threadIndex === undefined
+            ? ` · ${new Date(tweet.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`
+            : ""}
+        </div>
+      </div>
+
+      {/* Content */}
+      {editingId === tweet.id ? (
+        <div style={{ marginBottom: 12 }}>
+          <textarea
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            maxLength={280}
+            style={{
+              width: "100%", padding: 12, borderRadius: 8,
+              border: "1px solid var(--color-border, #e5e5e5)",
+              fontSize: 14, fontFamily: "var(--font-inter)",
+              resize: "vertical", minHeight: 80, boxSizing: "border-box",
+            }}
+          />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6 }}>
+            <span style={{ fontSize: 12, color: editContent.length > 280 ? "#ef4444" : "var(--color-secondary)" }}>
+              {editContent.length}/280
+            </span>
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => setEditingId(null)} style={{ padding: "6px 12px", borderRadius: 6, border: "1px solid var(--color-border)", background: "transparent", fontSize: 12, cursor: "pointer" }}>
+                Cancel
+              </button>
+              <button
+                onClick={() => saveEdit(tweet.id)}
+                disabled={editContent.length > 280 || editContent.trim() === ""}
+                style={{ padding: "6px 12px", borderRadius: 6, border: "none", background: "var(--color-accent)", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <p style={{ fontSize: 14, color: "var(--color-primary)", lineHeight: 1.6, margin: "0 0 8px", whiteSpace: "pre-wrap" }}>
+          {tweet.content}
+        </p>
+      )}
+
+      {/* Posted link */}
+      {tweet.twitter_id && (
+        <a
+          href={`https://x.com/i/status/${tweet.twitter_id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ fontSize: 11, color: "var(--color-accent)", textDecoration: "none", display: "inline-block", marginBottom: 8 }}
+        >
+          View on X
+        </a>
+      )}
+
+      {/* Individual tweet actions */}
+      {tweet.status !== "posted" && editingId !== tweet.id && (
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
+          <button onClick={() => { setEditingId(tweet.id); setEditContent(tweet.content); }} style={{ padding: "4px 10px", borderRadius: 6, border: "1px solid var(--color-border)", background: "transparent", fontSize: 11, cursor: "pointer" }}>
+            Edit
+          </button>
+          <button onClick={() => deleteTweet(tweet.id)} style={{ padding: "4px 10px", borderRadius: 6, border: "1px solid #fecaca", background: "transparent", color: "#ef4444", fontSize: 11, cursor: "pointer" }}>
+            Delete
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
   if (!user) {
     return (
@@ -216,15 +392,28 @@ export default function AdminTweetsPage() {
             <option value="weekly_digest">Weekly Roundup</option>
             <option value="brand_spotlight">Brand Spotlight</option>
             <option value="subject_line_insight">Subject Line Insight</option>
+            <option value="viral_thread">Viral Thread</option>
           </select>
           <button
             onClick={generateDraft}
             disabled={generating}
-            style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: "var(--color-accent)", color: "white", fontSize: 14, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer", opacity: generating ? 0.6 : 1 }}
+            style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: genType === "viral_thread" ? "#7c3aed" : "var(--color-accent)", color: "white", fontSize: 14, fontWeight: 600, cursor: generating ? "not-allowed" : "pointer", opacity: generating ? 0.6 : 1 }}
           >
-            {generating ? "Generating..." : "Generate Draft"}
+            {generating
+              ? genType === "viral_thread"
+                ? "Generating Thread..."
+                : "Generating..."
+              : genType === "viral_thread"
+                ? "Generate Viral Thread"
+                : "Generate Draft"}
           </button>
         </div>
+        {genType === "viral_thread" && (
+          <p style={{ fontSize: 12, color: "var(--color-secondary)", marginTop: 10, marginBottom: 0, lineHeight: 1.5 }}>
+            Generates a 7-9 tweet thread using viral frameworks (Myth Buster, Contrarian Take, Bold Claim + Proof).
+            Queries the entire email database for surprising, counterintuitive insights. Uses Claude Sonnet for higher quality.
+          </p>
+        )}
       </div>
 
       {/* Filters */}
@@ -253,135 +442,107 @@ export default function AdminTweetsPage() {
       {/* Tweet list */}
       {loading ? (
         <div style={{ textAlign: "center", padding: 40, color: "var(--color-secondary)" }}>Loading...</div>
-      ) : tweets.length === 0 ? (
+      ) : groupedTweets.length === 0 ? (
         <div style={{ textAlign: "center", padding: 40, color: "var(--color-secondary)", fontSize: 14 }}>
           No tweets found. Generate a draft to get started.
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          {tweets.map((tweet) => (
-            <div
-              key={tweet.id}
-              style={{
-                background: "var(--color-surface, white)",
-                border: "1px solid var(--color-border, #e5e5e5)",
-                borderRadius: 12,
-                padding: 18,
-                borderLeft: `4px solid ${STATUS_COLORS[tweet.status] || "#ccc"}`,
-              }}
-            >
-              {/* Header row */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <span style={{
-                    fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 4,
-                    background: STATUS_COLORS[tweet.status] + "20",
-                    color: STATUS_COLORS[tweet.status],
-                    textTransform: "uppercase",
-                  }}>
-                    {tweet.status}
-                  </span>
-                  <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 8px", borderRadius: 4, background: "var(--color-accent-light, #f5e6dc)", color: "var(--color-accent)" }}>
-                    {TYPE_LABELS[tweet.tweet_type] || tweet.tweet_type}
-                  </span>
-                </div>
-                <div style={{ fontSize: 11, color: "var(--color-muted, #999)" }}>
-                  {tweet.created_at ? new Date(tweet.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
-                </div>
-              </div>
+          {groupedTweets.map((item) => {
+            if (item.type === "single") {
+              return renderTweetCard(item.tweet);
+            }
 
-              {/* Content */}
-              {editingId === tweet.id ? (
-                <div style={{ marginBottom: 12 }}>
-                  <textarea
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                    maxLength={280}
-                    style={{
-                      width: "100%", padding: 12, borderRadius: 8,
-                      border: "1px solid var(--color-border, #e5e5e5)",
-                      fontSize: 14, fontFamily: "var(--font-inter)",
-                      resize: "vertical", minHeight: 80, boxSizing: "border-box",
-                    }}
-                  />
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6 }}>
-                    <span style={{ fontSize: 12, color: editContent.length > 280 ? "#ef4444" : "var(--color-secondary)" }}>
-                      {editContent.length}/280
+            // Thread group
+            const threadTweets = item.tweets;
+            const allDraft = threadTweets.every((t) => t.status === "draft");
+            const allApproved = threadTweets.every((t) => t.status === "approved");
+            const allPosted = threadTweets.every((t) => t.status === "posted");
+            const threadStatus = allPosted ? "posted" : allApproved ? "approved" : allDraft ? "draft" : "mixed";
+
+            return (
+              <div
+                key={`thread-${item.threadId}`}
+                style={{
+                  background: "var(--color-surface, white)",
+                  border: "2px solid #7c3aed40",
+                  borderRadius: 14,
+                  padding: 20,
+                }}
+              >
+                {/* Thread header */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <span style={{
+                      fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 6,
+                      background: "#7c3aed15", color: "#7c3aed",
+                      textTransform: "uppercase", letterSpacing: "0.5px",
+                    }}>
+                      Thread · {threadTweets.length} tweets
                     </span>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button onClick={() => setEditingId(null)} style={{ padding: "6px 12px", borderRadius: 6, border: "1px solid var(--color-border)", background: "transparent", fontSize: 12, cursor: "pointer" }}>
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => saveEdit(tweet.id)}
-                        disabled={editContent.length > 280 || editContent.trim() === ""}
-                        style={{ padding: "6px 12px", borderRadius: 6, border: "none", background: "var(--color-accent)", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
-                      >
-                        Save
-                      </button>
-                    </div>
+                    <span style={{
+                      fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 4,
+                      background: STATUS_COLORS[threadStatus === "mixed" ? "draft" : threadStatus] + "20",
+                      color: STATUS_COLORS[threadStatus === "mixed" ? "draft" : threadStatus],
+                      textTransform: "uppercase",
+                    }}>
+                      {threadStatus}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--color-muted, #999)" }}>
+                    {threadTweets[0]?.created_at
+                      ? new Date(threadTweets[0].created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })
+                      : ""}
                   </div>
                 </div>
-              ) : (
-                <p style={{ fontSize: 14, color: "var(--color-primary)", lineHeight: 1.6, margin: "0 0 12px", whiteSpace: "pre-wrap" }}>
-                  {tweet.content}
-                </p>
-              )}
 
-              {/* Char count + posted info */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <span style={{ fontSize: 11, color: tweet.char_count > 280 ? "#ef4444" : "var(--color-muted, #999)" }}>
-                  {tweet.char_count}/280 chars
-                </span>
-                {tweet.twitter_id && (
-                  <a
-                    href={`https://x.com/i/status/${tweet.twitter_id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontSize: 11, color: "var(--color-accent)", textDecoration: "none" }}
-                  >
-                    View on X
-                  </a>
-                )}
-              </div>
-
-              {/* Actions */}
-              {tweet.status !== "posted" && editingId !== tweet.id && (
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {tweet.status === "draft" && (
-                    <>
-                      <button onClick={() => updateStatus(tweet.id, "approve")} style={{ padding: "6px 14px", borderRadius: 6, border: "none", background: "#3b82f6", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
-                        Approve
-                      </button>
-                      <button onClick={() => { setEditingId(tweet.id); setEditContent(tweet.content); }} style={{ padding: "6px 14px", borderRadius: 6, border: "1px solid var(--color-border)", background: "transparent", fontSize: 12, cursor: "pointer" }}>
-                        Edit
-                      </button>
-                      <button onClick={() => updateStatus(tweet.id, "reject")} style={{ padding: "6px 14px", borderRadius: 6, border: "1px solid #fecaca", background: "transparent", color: "#ef4444", fontSize: 12, cursor: "pointer" }}>
-                        Reject
-                      </button>
-                    </>
-                  )}
-                  {tweet.status === "approved" && (
-                    <button
-                      onClick={() => postTweet(tweet.id)}
-                      disabled={posting === tweet.id}
-                      style={{ padding: "6px 14px", borderRadius: 6, border: "none", background: "#22c55e", color: "white", fontSize: 12, fontWeight: 600, cursor: posting === tweet.id ? "not-allowed" : "pointer", opacity: posting === tweet.id ? 0.6 : 1 }}
-                    >
-                      {posting === tweet.id ? "Posting..." : "Post to X"}
-                    </button>
-                  )}
-                  {tweet.status === "rejected" && (
-                    <button onClick={() => updateStatus(tweet.id, "approve")} style={{ padding: "6px 14px", borderRadius: 6, border: "1px solid var(--color-border)", background: "transparent", fontSize: 12, cursor: "pointer" }}>
-                      Re-approve
-                    </button>
-                  )}
-                  <button onClick={() => deleteTweet(tweet.id)} style={{ padding: "6px 14px", borderRadius: 6, border: "1px solid #fecaca", background: "transparent", color: "#ef4444", fontSize: 12, cursor: "pointer" }}>
-                    Delete
-                  </button>
+                {/* Thread tweets */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {threadTweets.map((t, i) => renderTweetCard(t, i))}
                 </div>
-              )}
-            </div>
-          ))}
+
+                {/* Thread-level actions */}
+                <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
+                  {allDraft && (
+                    <button
+                      onClick={() => approveThread(item.threadId)}
+                      style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: "#3b82f6", color: "white", fontSize: 13, fontWeight: 600, cursor: "pointer" }}
+                    >
+                      Approve All
+                    </button>
+                  )}
+                  {allApproved && (
+                    <button
+                      onClick={() => postThread(item.threadId)}
+                      disabled={postingThread === item.threadId}
+                      style={{
+                        padding: "8px 18px", borderRadius: 8, border: "none",
+                        background: "#22c55e", color: "white", fontSize: 13, fontWeight: 600,
+                        cursor: postingThread === item.threadId ? "not-allowed" : "pointer",
+                        opacity: postingThread === item.threadId ? 0.6 : 1,
+                      }}
+                    >
+                      {postingThread === item.threadId ? "Posting Thread..." : "Post Thread to X"}
+                    </button>
+                  )}
+                  {allPosted && threadTweets[0]?.twitter_id && (
+                    <a
+                      href={`https://x.com/i/status/${threadTweets[0].twitter_id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        padding: "8px 18px", borderRadius: 8, border: "1px solid var(--color-border)",
+                        background: "transparent", color: "var(--color-accent)", fontSize: 13, fontWeight: 500,
+                        textDecoration: "none", display: "inline-block",
+                      }}
+                    >
+                      View Thread on X
+                    </a>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
