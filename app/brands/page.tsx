@@ -230,7 +230,7 @@ export default function BrandsPage() {
           <p style={{ fontSize: 16, color: "#64748b", margin: 0 }}>
             {hasActiveFilters
               ? `Showing ${filteredBrands.length} of ${brands.length} brands`
-              : `Discover and follow ${brands.length} brands to track their email campaigns`}
+              : `Discover and follow 10,000+ brands to track their email campaigns`}
           </p>
         </div>
 
