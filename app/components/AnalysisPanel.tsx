@@ -135,6 +135,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
   }
 
   // Results panel
+  if (!data) return null;
   return (
     <div
       style={{
