@@ -12,6 +12,7 @@ export function getNavLinks(user: User | null): NavLink[] {
   ];
   if (user?.is_admin) {
     links.push({ label: "Analytics", href: "/analytics" });
+    links.push({ label: "Admin", href: "/admin/dashboard" });
   }
   if (user) {
     links.push({ label: "Saved", href: "/saved" });
