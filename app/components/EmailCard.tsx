@@ -125,7 +125,7 @@ export default function EmailCard({
       {showPreview && (
         <div
           style={{
-            height: 180,
+            height: 320,
             backgroundColor: "#f8fafc",
             position: "relative",
             overflow: "hidden",
@@ -272,91 +272,45 @@ export default function EmailCard({
         </div>
       )}
 
-      {/* Content */}
-      <div style={{ padding: 20 }}>
-        {/* Brand Row */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: "#F5E6DC",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 600,
-              fontSize: 14,
-              color: "#C2714A",
-              flexShrink: 0,
-            }}
-          >
-            {brandInitial}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: "#0f172a",
-                textTransform: "capitalize",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {brand || "Unknown"}
-            </div>
-            <div style={{ fontSize: 12, color: "#94a3b8" }}>
-              {formatDate(received_at)}
-              {sendFrequency && ` · ${sendFrequency}`}
-            </div>
-          </div>
-        </div>
-
-        {/* Subject */}
-        <h3
+      {/* Bottom Bar */}
+      <div style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+        <div
           style={{
-            margin: "0 0 8px 0",
-            fontSize: 15,
+            width: 28,
+            height: 28,
+            borderRadius: 8,
+            background: "#F5E6DC",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             fontWeight: 600,
-            color: "#0f172a",
-            lineHeight: 1.4,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
+            fontSize: 12,
+            color: "#C2714A",
+            flexShrink: 0,
           }}
         >
-          {subject}
-        </h3>
-
-        {/* Preview Text */}
-        {preview && (
-          <p
+          {brandInitial}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div
             style={{
-              margin: "0 0 14px 0",
               fontSize: 13,
-              color: "#64748b",
-              lineHeight: 1.5,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
+              fontWeight: 600,
+              color: "#0f172a",
+              textTransform: "capitalize",
+              whiteSpace: "nowrap",
               overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
-            {preview}
-          </p>
-        )}
-
-        {/* Tags */}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {!showPreview && campaignType && (
-            <Badge variant="accent">{campaignType}</Badge>
-          )}
-          {industry && (
-            <Badge>{industry}</Badge>
-          )}
+            {brand || "Unknown"}
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+          {industry && <Badge>{industry}</Badge>}
+          <span style={{ fontSize: 11, color: "#94a3b8", whiteSpace: "nowrap" }}>
+            {formatDate(received_at)}
+          </span>
         </div>
       </div>
 
@@ -383,57 +337,20 @@ export function EmailCardSkeleton() {
       {/* Preview skeleton */}
       <div
         style={{
-          height: 180,
+          height: 320,
           background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
           backgroundSize: "200% 100%",
           animation: "shimmer 1.5s infinite",
         }}
       />
-      
-      {/* Content skeleton */}
-      <div style={{ padding: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-              backgroundSize: "200% 100%",
-              animation: "shimmer 1.5s infinite",
-            }}
-          />
-          <div style={{ flex: 1 }}>
-            <div
-              style={{
-                width: 100,
-                height: 14,
-                borderRadius: 4,
-                marginBottom: 6,
-                background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-                backgroundSize: "200% 100%",
-                animation: "shimmer 1.5s infinite",
-              }}
-            />
-            <div
-              style={{
-                width: 60,
-                height: 12,
-                borderRadius: 4,
-                background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-                backgroundSize: "200% 100%",
-                animation: "shimmer 1.5s infinite",
-              }}
-            />
-          </div>
-        </div>
-        
+
+      {/* Bottom bar skeleton */}
+      <div style={{ padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
         <div
           style={{
-            width: "90%",
-            height: 16,
-            borderRadius: 4,
-            marginBottom: 8,
+            width: 28,
+            height: 28,
+            borderRadius: 8,
             background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
             backgroundSize: "200% 100%",
             animation: "shimmer 1.5s infinite",
@@ -441,49 +358,25 @@ export function EmailCardSkeleton() {
         />
         <div
           style={{
-            width: "100%",
+            width: 100,
             height: 14,
             borderRadius: 4,
-            marginBottom: 6,
             background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
             backgroundSize: "200% 100%",
             animation: "shimmer 1.5s infinite",
           }}
         />
+        <div style={{ flex: 1 }} />
         <div
           style={{
-            width: "70%",
-            height: 14,
+            width: 60,
+            height: 12,
             borderRadius: 4,
-            marginBottom: 14,
             background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
             backgroundSize: "200% 100%",
             animation: "shimmer 1.5s infinite",
           }}
         />
-        
-        <div style={{ display: "flex", gap: 8 }}>
-          <div
-            style={{
-              width: 50,
-              height: 22,
-              borderRadius: 11,
-              background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-              backgroundSize: "200% 100%",
-              animation: "shimmer 1.5s infinite",
-            }}
-          />
-          <div
-            style={{
-              width: 80,
-              height: 22,
-              borderRadius: 11,
-              background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
-              backgroundSize: "200% 100%",
-              animation: "shimmer 1.5s infinite",
-            }}
-          />
-        </div>
       </div>
 
       <style>{`
