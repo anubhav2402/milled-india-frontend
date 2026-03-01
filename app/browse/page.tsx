@@ -777,13 +777,11 @@ function BrowseContent() {
             flexWrap: "wrap",
             gap: 12,
           }}>
-            <p style={{ fontSize: 14, color: "var(--color-secondary)", margin: 0 }}>
-              {loading ? "Loading..." : searching ? "Searching..." : (() => {
-                const hasFilters = debouncedQuery || selectedBrands.length > 0 || selectedCategories.length > 0 || selectedDate !== "all";
-                const count = hasFilters ? filteredEmails.length.toLocaleString() : (totalEmailCount !== null ? totalEmailCount.toLocaleString() : filteredEmails.length.toLocaleString());
-                return `${count} emails`;
-              })()}
-            </p>
+            {(loading || searching) && (
+              <p style={{ fontSize: 14, color: "var(--color-secondary)", margin: 0 }}>
+                {loading ? "Loading..." : "Searching..."}
+              </p>
+            )}
 
             {/* Active Filters */}
             {activeFilterCount > 0 && (
