@@ -5,16 +5,22 @@ import { useAuth } from "../context/AuthContext";
 import { API_BASE } from "../lib/constants";
 import ScoreBadge from "./ScoreBadge";
 
+type Finding = {
+  text: string;
+  type: "good" | "bad" | "neutral";
+};
+
 type DimensionResult = {
   score: number;
   grade: string;
-  findings: string[];
+  findings: Finding[];
 };
 
 type AnalysisData = {
   overall_score: number;
   overall_grade: string;
   dimensions: Record<string, DimensionResult> | null;
+  suggestions?: string[];
   gated?: boolean;
   required_plan?: string;
 };
@@ -36,6 +42,43 @@ function getBarColor(score: number): string {
   if (score >= 70) return "#3b82f6";
   if (score >= 60) return "#f59e0b";
   return "#ef4444";
+}
+
+function getGradeBgColor(score: number): string {
+  if (score >= 85) return "#dcfce7";
+  if (score >= 70) return "#dbeafe";
+  if (score >= 60) return "#fef3c7";
+  return "#fee2e2";
+}
+
+function FindingIcon({ type }: { type: string }) {
+  if (type === "good") {
+    return (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    );
+  }
+  if (type === "bad") {
+    return (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2 }}>
+        <circle cx="12" cy="12" r="10" />
+        <line x1="15" y1="9" x2="9" y2="15" />
+        <line x1="9" y1="9" x2="15" y2="15" />
+      </svg>
+    );
+  }
+  return (
+    <span style={{ width: 12, height: 12, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>
+      <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#94a3b8", display: "block" }} />
+    </span>
+  );
+}
+
+function findingColor(type: string): string {
+  if (type === "good") return "#15803d";
+  if (type === "bad") return "#dc2626";
+  return "#64748b";
 }
 
 export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
@@ -165,15 +208,29 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
           {Object.entries(data.dimensions).map(([key, dim]) => {
             const meta = DIMENSION_META[key] || { label: key, icon: "" };
             const barColor = getBarColor(dim.score);
+            const gradeBg = getGradeBgColor(dim.score);
             return (
               <div key={key}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                   <span style={{ fontSize: 13, fontWeight: 600, color: "#334155" }}>
                     {meta.icon} {meta.label}
                   </span>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: barColor }}>
-                    {dim.score} {dim.grade}
-                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: barColor }}>
+                      {dim.score}
+                    </span>
+                    <span style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      color: barColor,
+                      background: gradeBg,
+                      padding: "1px 6px",
+                      borderRadius: 4,
+                      lineHeight: "16px",
+                    }}>
+                      {dim.grade}
+                    </span>
+                  </div>
                 </div>
                 <div style={{ height: 6, background: "#e2e8f0", borderRadius: 3, overflow: "hidden" }}>
                   <div
@@ -187,18 +244,65 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
                   />
                 </div>
                 {dim.findings.length > 0 && (
-                  <ul style={{ margin: "6px 0 0 0", padding: 0, listStyle: "none" }}>
-                    {dim.findings.map((f, i) => (
-                      <li key={i} style={{ fontSize: 12, color: "#64748b", lineHeight: 1.6, paddingLeft: 12 }}>
-                        <span style={{ color: "#94a3b8", marginRight: 4 }}>&bull;</span>
-                        {f}
-                      </li>
-                    ))}
+                  <ul style={{ margin: "8px 0 0 0", padding: 0, listStyle: "none" }}>
+                    {dim.findings.map((f, i) => {
+                      const finding = typeof f === "string" ? { text: f, type: "neutral" as const } : f;
+                      return (
+                        <li key={i} style={{
+                          fontSize: 12,
+                          color: findingColor(finding.type),
+                          lineHeight: 1.6,
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 6,
+                          paddingLeft: 2,
+                        }}>
+                          <FindingIcon type={finding.type} />
+                          {finding.text}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Suggestions — How to Improve */}
+      {data.suggestions && data.suggestions.length > 0 && (
+        <div style={{
+          marginTop: 20,
+          padding: 16,
+          background: "#fffbeb",
+          border: "1px solid #fde68a",
+          borderRadius: 10,
+        }}>
+          <div style={{
+            display: "flex", alignItems: "center", gap: 8, marginBottom: 10,
+          }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 18h6" />
+              <path d="M10 22h4" />
+              <path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" />
+            </svg>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#92400e" }}>
+              How to Improve
+            </span>
+          </div>
+          <ol style={{ margin: 0, paddingLeft: 20 }}>
+            {data.suggestions.map((s, i) => (
+              <li key={i} style={{
+                fontSize: 12,
+                color: "#78350f",
+                lineHeight: 1.7,
+                marginBottom: i < data.suggestions!.length - 1 ? 4 : 0,
+              }}>
+                {s}
+              </li>
+            ))}
+          </ol>
         </div>
       )}
 
