@@ -54,16 +54,6 @@ export default function HomePage() {
             >
               Latest from the MailMuse Blog
             </h2>
-            <p
-              style={{
-                fontSize: 17,
-                color: "var(--color-secondary)",
-                maxWidth: 540,
-                margin: "0 auto",
-              }}
-            >
-              Data-driven insights from 7,000+ emails across 150+ brands
-            </p>
           </div>
 
           <div
