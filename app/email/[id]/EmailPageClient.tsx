@@ -425,7 +425,7 @@ img[src=""] { display: none !important; }
               {/* Analysis */}
               <div style={{ padding: "16px 20px", borderBottom: (brandEmails.length > 0 || similarEmails.length > 0) ? "1px solid var(--color-border)" : "none" }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
-                  Analysis
+                  AI Led Analysis
                 </div>
                 <AnalysisPanel emailId={email.id} />
               </div>

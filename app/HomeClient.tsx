@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import Button from "./components/Button";
 import Badge from "./components/Badge";
 import Card from "./components/Card";
+import EmailCard from "./components/EmailCard";
 import { CAMPAIGN_TYPE_COLORS } from "./lib/constants";
 
 const API_BASE =
@@ -94,7 +95,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
               marginBottom: 32,
             }}
           >
-            See every email from 150+ top brands &mdash; subject lines,
+            See every email from 10,000+ top brands &mdash; subject lines,
             designs, timing, and strategy. Then edit and reuse them as
             your own templates.
           </p>
@@ -406,7 +407,7 @@ function ProductPreview({
 }) {
   return (
     <section style={{ padding: "96px 24px", background: "white" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <Badge
             variant="accent"
@@ -441,214 +442,68 @@ function ProductPreview({
           </p>
         </div>
 
-        {/* Browser mock with email grid */}
-        <Link href="/browse" style={{ textDecoration: "none", display: "block" }}>
-          <div
+        {/* Email preview grid — real cards like browse page */}
+        <div
+          className="preview-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+            gap: 16,
+          }}
+        >
+          {(emails.length > 0
+            ? emails.slice(0, 8)
+            : Array.from({ length: 8 }, (_, i) => ({
+                id: i,
+                brand: ["Mamaearth", "boAt", "Sugar", "Lenskart", "Nykaa", "Bewakoof", "Zomato", "Myntra"][i],
+                subject: [
+                  "FLAT 40% OFF everything!",
+                  "New Launch: Airdopes 500",
+                  "Welcome to Sugar!",
+                  "Your frames are waiting",
+                  "Hot Pink Friday Sale",
+                  "Weekend Steals Inside",
+                  "Your order is confirmed",
+                  "End of Season Sale",
+                ][i],
+                type: ["Sale", "New Arrival", "Welcome", "Re-engagement", "Sale", "Promotional", "Transactional", "Sale"][i],
+                industry: "General",
+                received_at: new Date().toISOString(),
+              }))
+          ).map((email) => (
+            <EmailCard
+              key={email.id}
+              id={email.id}
+              subject={email.subject}
+              brand={email.brand || undefined}
+              industry={email.industry || undefined}
+              received_at={email.received_at}
+              campaignType={email.type || undefined}
+            />
+          ))}
+        </div>
+
+        {/* Browse all CTA */}
+        <div style={{ textAlign: "center", marginTop: 32 }}>
+          <Link
+            href="/browse"
             style={{
-              borderRadius: 16,
-              border: "1px solid var(--color-border)",
-              overflow: "hidden",
-              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.06)",
-              position: "relative",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "12px 28px",
+              fontSize: 15,
+              fontWeight: 600,
+              color: "white",
+              background: "var(--color-accent)",
+              borderRadius: 10,
+              textDecoration: "none",
+              transition: "opacity 150ms ease",
             }}
           >
-            {/* Chrome bar */}
-            <div
-              style={{
-                padding: "10px 16px",
-                background: "#f5f5f5",
-                borderBottom: "1px solid var(--color-border)",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              <div style={{ display: "flex", gap: 6 }}>
-                <div
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: "50%",
-                    background: "#ff5f57",
-                  }}
-                />
-                <div
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: "50%",
-                    background: "#ffbd2e",
-                  }}
-                />
-                <div
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: "50%",
-                    background: "#28c840",
-                  }}
-                />
-              </div>
-              <div
-                style={{
-                  flex: 1,
-                  background: "white",
-                  borderRadius: 6,
-                  padding: "5px 12px",
-                  fontSize: 12,
-                  color: "var(--color-tertiary)",
-                  textAlign: "center",
-                }}
-              >
-                mailmuse.in/browse
-              </div>
-            </div>
-
-            {/* Email grid */}
-            <div
-              className="preview-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 16,
-                padding: 20,
-                background: "var(--color-surface)",
-              }}
-            >
-              {(emails.length > 0
-                ? emails.slice(0, 6)
-                : Array.from({ length: 6 }, (_, i) => ({
-                    id: i,
-                    brand: ["Mamaearth", "boAt", "Sugar", "Lenskart", "Nykaa", "Bewakoof"][i],
-                    subject: [
-                      "FLAT 40% OFF everything!",
-                      "New Launch: Airdopes 500",
-                      "Welcome to Sugar!",
-                      "Your frames are waiting",
-                      "Hot Pink Friday Sale",
-                      "Weekend Steals Inside",
-                    ][i],
-                    type: ["Sale", "New Arrival", "Welcome", "Re-engagement", "Sale", "Promotional"][i],
-                    industry: "General",
-                    received_at: new Date().toISOString(),
-                  }))
-              ).map((email) => (
-                <div
-                  key={email.id}
-                  style={{
-                    background: "white",
-                    borderRadius: 10,
-                    padding: 14,
-                    border: "1px solid var(--color-border)",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      marginBottom: 8,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: 6,
-                        background: "var(--color-accent)",
-                        color: "white",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        flexShrink: 0,
-                      }}
-                    >
-                      {(email.brand || "?")[0]}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 600,
-                          color: "var(--color-primary)",
-                        }}
-                      >
-                        {email.brand || "Brand"}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 10,
-                          color: "var(--color-tertiary)",
-                        }}
-                      >
-                        {timeAgo(email.received_at)}
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "var(--color-primary)",
-                      marginBottom: 8,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {email.subject}
-                  </div>
-                  {email.type && (
-                    <span
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 500,
-                        padding: "2px 8px",
-                        borderRadius: 20,
-                        background:
-                          (CAMPAIGN_TYPE_COLORS[email.type] || "#6366f1") +
-                          "18",
-                        color:
-                          CAMPAIGN_TYPE_COLORS[email.type] || "#6366f1",
-                      }}
-                    >
-                      {email.type}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Gradient fade overlay */}
-            <div
-              style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 80,
-                background:
-                  "linear-gradient(transparent, rgba(250, 249, 247, 0.95))",
-                display: "flex",
-                alignItems: "flex-end",
-                justifyContent: "center",
-                paddingBottom: 16,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "var(--color-accent)",
-                }}
-              >
-                Browse all emails &rarr;
-              </span>
-            </div>
-          </div>
-        </Link>
+            Browse all emails &rarr;
+          </Link>
+        </div>
 
         {/* Stat pills */}
         <div
@@ -690,7 +545,7 @@ function ProductPreview({
           .preview-grid {
             grid-template-columns: repeat(2, 1fr) !important;
           }
-          .preview-grid > div:nth-child(n+5) {
+          .preview-grid > *:nth-child(n+5) {
             display: none;
           }
         }
@@ -698,7 +553,7 @@ function ProductPreview({
           .preview-grid {
             grid-template-columns: 1fr !important;
           }
-          .preview-grid > div:nth-child(n+4) {
+          .preview-grid > *:nth-child(n+3) {
             display: none;
           }
         }
@@ -723,7 +578,7 @@ function ValuePillars() {
       ),
       title: "Spy on any brand\u2019s email strategy",
       description:
-        "Search 150+ brands by name, industry, or campaign type. See their full email history \u2014 from welcome flows to sale blasts.",
+        "Search 10,000+ brands by name, industry, or campaign type. See their full email history \u2014 from welcome flows to sale blasts.",
       cta: "Browse by industry",
       href: "/industry",
     },
@@ -1750,7 +1605,7 @@ function Footer() {
 export function HomeClient() {
   const [recentEmails, setRecentEmails] = useState<EmailPreview[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
-  const [totalEmails, setTotalEmails] = useState<number>(7000);
+  const [totalEmails, setTotalEmails] = useState<number>(100000);
 
   useEffect(() => {
     Promise.all([
@@ -1759,7 +1614,7 @@ export function HomeClient() {
       ),
       fetch(`${API_BASE}/brands`).then((r) => (r.ok ? r.json() : [])),
       fetch(`${API_BASE}/emails/count`).then((r) =>
-        r.ok ? r.json() : { total: 7000 }
+        r.ok ? r.json() : { total: 100000 }
       ),
     ])
       .then(([emails, brandsData, countData]) => {
@@ -1767,7 +1622,7 @@ export function HomeClient() {
           (emails as EmailPreview[]).slice(0, 6)
         );
         setBrands(brandsData as string[]);
-        setTotalEmails((countData as { total: number }).total || 7000);
+        setTotalEmails(Math.max((countData as { total: number }).total || 100000, 100000));
       })
       .catch(() => {});
   }, []);
@@ -1780,7 +1635,7 @@ export function HomeClient() {
       <ProductPreview
         emails={recentEmails}
         totalEmails={totalEmails}
-        brandCount={brands.length || 150}
+        brandCount={Math.max(brands.length, 10000)}
       />
       <ValuePillars />
       <EditorShowcase />
@@ -1788,7 +1643,7 @@ export function HomeClient() {
       <PricingAnchor />
       <UrgencyStrip
         totalEmails={totalEmails}
-        brandCount={brands.length || 150}
+        brandCount={Math.max(brands.length, 10000)}
       />
       <FinalCTA />
       <Footer />

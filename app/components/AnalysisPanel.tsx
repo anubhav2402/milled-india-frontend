@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { API_BASE } from "../lib/constants";
 import ScoreBadge from "./ScoreBadge";
@@ -86,6 +86,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const fetchAnalysis = async () => {
     if (loading) return;
@@ -101,6 +102,10 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
       }
       const json = await res.json();
       setData(json);
+      // Scroll to analysis results after a brief delay for render
+      setTimeout(() => {
+        panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to load analysis");
     } finally {
@@ -140,7 +145,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
               <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
             </svg>
           )}
-          {loading ? "Analyzing..." : "Analyze Email"}
+          {loading ? "Analyzing..." : "AI Led Analysis"}
         </button>
       </div>
     );
@@ -181,6 +186,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
   if (!data) return null;
   return (
     <div
+      ref={panelRef}
       style={{
         background: "#f8fafc",
         border: "1px solid #e2e8f0",

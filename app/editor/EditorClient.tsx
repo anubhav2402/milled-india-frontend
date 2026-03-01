@@ -227,6 +227,11 @@ export default function EditorClient() {
   } | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(!emailId);
+  const [templates, setTemplates] = useState<
+    { id: number; subject: string; brand: string; type: string | null }[]
+  >([]);
+  const [templatesLoading, setTemplatesLoading] = useState(false);
 
   // Refs for one-time tooltips
   const firstSelectRef = useRef(false);
@@ -284,6 +289,27 @@ export default function EditorClient() {
     }
   }, [editorReady, loading, loadError]);
 
+  // ── Fetch templates for picker ──
+  useEffect(() => {
+    if (!showTemplatePicker || templates.length > 0) return;
+    setTemplatesLoading(true);
+    fetch(`${API_BASE}/emails?limit=12&offset=0`)
+      .then((res) => res.ok ? res.json() : Promise.reject())
+      .then((data) => {
+        const items = (data.emails || data || []).slice(0, 12);
+        setTemplates(
+          items.map((e: any) => ({
+            id: e.id,
+            subject: e.subject || "Untitled",
+            brand: e.brand || "Unknown",
+            type: e.type || null,
+          }))
+        );
+      })
+      .catch(() => {})
+      .finally(() => setTemplatesLoading(false));
+  }, [showTemplatePicker, templates.length]);
+
   // ── Fetch & load email ──
   const fetchAndLoadEmail = useCallback(
     async (editor: Editor, id: string) => {
@@ -308,6 +334,16 @@ export default function EditorClient() {
       }
     },
     []
+  );
+
+  // ── Load a template from picker ──
+  const loadTemplate = useCallback(
+    (templateId: number) => {
+      if (!editorInstance) return;
+      setShowTemplatePicker(false);
+      fetchAndLoadEmail(editorInstance, String(templateId));
+    },
+    [editorInstance, fetchAndLoadEmail]
   );
 
   // ── Retry handler ──
@@ -860,6 +896,31 @@ ${content}
             ?
           </button>
 
+          <button
+            onClick={() => setShowTemplatePicker(true)}
+            title="Browse templates"
+            style={{
+              fontSize: 12,
+              color: "#999",
+              background: "none",
+              padding: "6px 12px",
+              border: "1px solid #444",
+              borderRadius: 6,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              transition: "all 150ms ease",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+            </svg>
+            Templates
+          </button>
           {emailId && (
             <Link
               href={`/email/${emailId}`}
@@ -1213,6 +1274,181 @@ ${content}
             <p style={{ fontSize: 11, color: "#9D9490", marginTop: 12 }}>
               Click anywhere or press any key to dismiss
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Template Picker ── */}
+      {showTemplatePicker && editorReady && !loading && (
+        <div
+          style={{
+            position: "absolute",
+            top: 52,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.75)",
+            zIndex: 45,
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "center",
+            paddingTop: 60,
+            overflow: "auto",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#FAF9F7",
+              borderRadius: 16,
+              padding: "32px 36px",
+              maxWidth: 640,
+              width: "92%",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+              animation: "scaleIn 0.25s ease",
+            }}
+          >
+            <div style={{ textAlign: "center", marginBottom: 24 }}>
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" style={{ margin: "0 auto 12px", display: "block" }}>
+                <rect x="4" y="6" width="32" height="28" rx="3" stroke="#C2714A" strokeWidth="2.5" fill="none" />
+                <path d="M4 14h32" stroke="#C2714A" strokeWidth="2.5" />
+                <rect x="8" y="18" width="10" height="6" rx="1" fill="#C2714A" opacity="0.2" />
+                <rect x="8" y="27" width="16" height="2" rx="1" fill="#C2714A" opacity="0.15" />
+                <rect x="22" y="18" width="10" height="6" rx="1" fill="#C2714A" opacity="0.2" />
+              </svg>
+              <h2 style={{
+                fontFamily: "var(--font-dm-serif)",
+                fontSize: 20,
+                color: "#1C1917",
+                fontWeight: 400,
+                marginBottom: 6,
+              }}>
+                Choose a template to start
+              </h2>
+              <p style={{ fontSize: 13, color: "#6B6560", lineHeight: 1.5 }}>
+                Pick a real email to customize, or start with a blank canvas.
+              </p>
+            </div>
+
+            {/* Start blank option */}
+            <button
+              onClick={() => setShowTemplatePicker(false)}
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                background: "#F5E6DC",
+                border: "2px dashed #D4A88A",
+                borderRadius: 10,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                marginBottom: 16,
+                transition: "all 150ms ease",
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C2714A" strokeWidth="2" strokeLinecap="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              <div style={{ textAlign: "left" }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: "#1C1917" }}>Start from scratch</div>
+                <div style={{ fontSize: 12, color: "#6B6560" }}>Blank canvas with drag-and-drop blocks</div>
+              </div>
+            </button>
+
+            {/* Template grid */}
+            {templatesLoading ? (
+              <div style={{ textAlign: "center", padding: "24px 0" }}>
+                <div style={{
+                  width: 24, height: 24,
+                  border: "2px solid #e2e8f0", borderTopColor: "#C2714A",
+                  borderRadius: "50%", animation: "spin 1s linear infinite",
+                  margin: "0 auto 8px",
+                }} />
+                <span style={{ fontSize: 12, color: "#9D9490" }}>Loading templates...</span>
+              </div>
+            ) : templates.length > 0 ? (
+              <>
+                <div style={{ fontSize: 12, fontWeight: 600, color: "#9D9490", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10 }}>
+                  Or start from a real email
+                </div>
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gap: 8,
+                  maxHeight: 320,
+                  overflowY: "auto",
+                }}>
+                  {templates.map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => loadTemplate(t.id)}
+                      style={{
+                        padding: "12px 14px",
+                        background: "white",
+                        border: "1px solid #E8E0D8",
+                        borderRadius: 10,
+                        cursor: "pointer",
+                        textAlign: "left",
+                        transition: "all 150ms ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.borderColor = "#C2714A";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 2px 8px rgba(194,113,74,0.15)";
+                      }}
+                      onMouseLeave={(e) => {
+                        (e.currentTarget as HTMLButtonElement).style.borderColor = "#E8E0D8";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+                      }}
+                    >
+                      <div style={{
+                        display: "flex", alignItems: "center", gap: 8, marginBottom: 4,
+                      }}>
+                        <div style={{
+                          width: 24, height: 24, borderRadius: 6,
+                          background: "#C2714A", color: "white",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          fontSize: 11, fontWeight: 700, flexShrink: 0,
+                        }}>
+                          {t.brand[0]?.toUpperCase() || "?"}
+                        </div>
+                        <span style={{ fontSize: 12, fontWeight: 600, color: "#1C1917", textTransform: "capitalize" }}>
+                          {t.brand}
+                        </span>
+                      </div>
+                      <div style={{
+                        fontSize: 12, color: "#6B6560",
+                        whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                      }}>
+                        {t.subject}
+                      </div>
+                      {t.type && (
+                        <span style={{
+                          display: "inline-block", marginTop: 4,
+                          fontSize: 10, fontWeight: 500,
+                          padding: "1px 6px", borderRadius: 4,
+                          background: "rgba(194,113,74,0.1)", color: "#C2714A",
+                        }}>
+                          {t.type}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : null}
+
+            <div style={{ textAlign: "center", marginTop: 16 }}>
+              <Link
+                href="/browse"
+                style={{
+                  fontSize: 13, fontWeight: 500, color: "#C2714A", textDecoration: "none",
+                }}
+              >
+                Browse all emails &rarr;
+              </Link>
+            </div>
           </div>
         </div>
       )}

@@ -52,6 +52,24 @@ const DATE_FILTERS = [
   { label: "Last 90 Days", value: "90" },
 ];
 
+const EMAIL_TYPES = [
+  "Sale",
+  "Welcome",
+  "Newsletter",
+  "New Arrival",
+  "Abandoned Cart",
+  "Re-engagement",
+  "Festive",
+  "Loyalty",
+  "Promotional",
+  "Product Showcase",
+  "Back in Stock",
+  "Educational",
+  "Order Update",
+  "Feedback",
+  "Confirmation",
+];
+
 const ITEMS_PER_PAGE = 24;
 
 // Search Icon
@@ -581,6 +599,7 @@ function BrowseContent() {
   const [selectedBrands, setSelectedBrands] = useState<string[]>(brandFromUrl ? [brandFromUrl] : []);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>(industryFromUrl ? [industryFromUrl] : []);
   const [selectedDate, setSelectedDate] = useState("all");
+  const [selectedType, setSelectedType] = useState<string | null>(null);
 
   // Debounce search query (400ms)
   useEffect(() => {
@@ -656,6 +675,7 @@ function BrowseContent() {
   const filteredEmails = emails.filter((email) => {
     if (selectedBrands.length > 1 && !selectedBrands.includes(email.brand || "")) return false;
     if (selectedIndustries.length > 1 && !selectedIndustries.includes(email.industry || "")) return false;
+    if (selectedType && email.type !== selectedType) return false;
 
     if (selectedDate !== "all") {
       const days = parseInt(selectedDate);
@@ -696,11 +716,12 @@ function BrowseContent() {
     setSelectedBrands([]);
     setSelectedIndustries([]);
     setSelectedDate("all");
+    setSelectedType(null);
     setSearchQuery("");
     setDisplayCount(ITEMS_PER_PAGE);
   };
 
-  const activeFilterCount = selectedBrands.length + selectedIndustries.length + (selectedDate !== "all" ? 1 : 0);
+  const activeFilterCount = selectedBrands.length + selectedIndustries.length + (selectedDate !== "all" ? 1 : 0) + (selectedType ? 1 : 0);
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
@@ -731,6 +752,56 @@ function BrowseContent() {
 
         {/* Main Content */}
         <main style={{ flex: 1, minWidth: 0 }}>
+          {/* Email Type Quick Filters */}
+          <div style={{
+            display: "flex",
+            gap: 8,
+            marginBottom: 16,
+            overflowX: "auto",
+            paddingBottom: 4,
+            scrollbarWidth: "none",
+          }}>
+            <button
+              onClick={() => { setSelectedType(null); setDisplayCount(ITEMS_PER_PAGE); }}
+              style={{
+                padding: "6px 14px",
+                fontSize: 13,
+                fontWeight: 500,
+                borderRadius: 20,
+                border: `1px solid ${!selectedType ? "var(--color-accent)" : "var(--color-border)"}`,
+                background: !selectedType ? "var(--color-accent)" : "white",
+                color: !selectedType ? "white" : "var(--color-secondary)",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                transition: "all 150ms ease",
+                flexShrink: 0,
+              }}
+            >
+              All Types
+            </button>
+            {EMAIL_TYPES.map((type) => (
+              <button
+                key={type}
+                onClick={() => { setSelectedType(selectedType === type ? null : type); setDisplayCount(ITEMS_PER_PAGE); }}
+                style={{
+                  padding: "6px 14px",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  borderRadius: 20,
+                  border: `1px solid ${selectedType === type ? "var(--color-accent)" : "var(--color-border)"}`,
+                  background: selectedType === type ? "var(--color-accent)" : "white",
+                  color: selectedType === type ? "white" : "var(--color-secondary)",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "all 150ms ease",
+                  flexShrink: 0,
+                }}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+
           {/* Results Header */}
           <div style={{
             display: "flex",
