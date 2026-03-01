@@ -62,6 +62,26 @@ const featureRows: FeatureRow[] = [
     values: { free: false, starter: false, pro: "5 alerts", agency: "Unlimited" },
   },
   {
+    label: "Brand follows",
+    values: { free: "3", starter: "10", pro: "Unlimited", agency: "Unlimited" },
+  },
+  {
+    label: "Bookmarks",
+    values: { free: "10", starter: "50", pro: "Unlimited", agency: "Unlimited" },
+  },
+  {
+    label: "Emails per collection",
+    values: { free: "10", starter: "50", pro: "Unlimited", agency: "Unlimited" },
+  },
+  {
+    label: "Email analysis",
+    values: { free: "Score only", starter: "Full breakdown", pro: "Full breakdown", agency: "Full breakdown" },
+  },
+  {
+    label: "AI email generator",
+    values: { free: false, starter: false, pro: "10/month", agency: "Unlimited" },
+  },
+  {
     label: "Bulk export",
     values: { free: false, starter: false, pro: false, agency: true },
   },
