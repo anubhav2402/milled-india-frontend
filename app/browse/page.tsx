@@ -8,7 +8,7 @@ import EmailCard, { EmailCardSkeleton } from "../components/EmailCard";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
 import Input from "../components/Input";
-import { API_BASE } from "../lib/constants";
+import { API_BASE, INDUSTRIES, SUBCATEGORIES } from "../lib/constants";
 import { useAuth } from "../context/AuthContext";
 import { getNavLinks } from "../lib/nav";
 
@@ -19,6 +19,7 @@ type Email = {
   preview?: string;
   type?: string;
   industry?: string;
+  category?: string;
   received_at: string;
 };
 
@@ -28,26 +29,6 @@ type BrandStats = {
     send_frequency: string;
   };
 };
-
-const INDUSTRIES = [
-  "Apparel & Accessories",
-  "Baby & Kids",
-  "Beauty & Personal Care",
-  "Books, Art & Stationery",
-  "Business & B2B Retail",
-  "Electronics & Tech",
-  "Entertainment",
-  "Finance & Fintech",
-  "Food & Beverage",
-  "General / Department Store",
-  "Gifts & Lifestyle",
-  "Health, Fitness & Wellness",
-  "Home & Living",
-  "Luxury & High-End Goods",
-  "Pets",
-  "Tools, Auto & DIY",
-  "Travel & Outdoors",
-];
 
 const DATE_FILTERS = [
   { label: "All Time", value: "all" },
@@ -319,6 +300,9 @@ function Sidebar({
   industries,
   selectedIndustries,
   toggleIndustry,
+  selectedCategories,
+  toggleCategory,
+  availableCategories,
   brands,
   selectedBrands,
   toggleBrand,
@@ -334,6 +318,9 @@ function Sidebar({
   industries: string[];
   selectedIndustries: string[];
   toggleIndustry: (i: string) => void;
+  selectedCategories: string[];
+  toggleCategory: (c: string) => void;
+  availableCategories: string[];
   brands: string[];
   selectedBrands: string[];
   toggleBrand: (b: string) => void;
@@ -348,7 +335,81 @@ function Sidebar({
     b.toLowerCase().includes(brandSearch.toLowerCase())
   );
 
-  const activeCount = selectedIndustries.length + selectedBrands.length + (selectedDate !== "all" ? 1 : 0);
+  const activeCount = selectedIndustries.length + selectedCategories.length + selectedBrands.length + (selectedDate !== "all" ? 1 : 0);
+
+  const filterContent = (
+    <>
+      {/* Industry Filter */}
+      <FilterSection title="Category">
+        <div style={{ maxHeight: 240, overflowY: "auto" }}>
+          {industries.map((industry) => (
+            <Checkbox
+              key={industry}
+              checked={selectedIndustries.includes(industry)}
+              onChange={() => toggleIndustry(industry)}
+              label={industry}
+            />
+          ))}
+        </div>
+      </FilterSection>
+
+      {/* Subcategory Filter — only show when industries are selected */}
+      {availableCategories.length > 0 && (
+        <FilterSection title="Subcategory">
+          <div style={{ maxHeight: 200, overflowY: "auto" }}>
+            {availableCategories.map((cat) => (
+              <Checkbox
+                key={cat}
+                checked={selectedCategories.includes(cat)}
+                onChange={() => toggleCategory(cat)}
+                label={cat}
+              />
+            ))}
+          </div>
+        </FilterSection>
+      )}
+
+      {/* Brand Filter */}
+      <FilterSection title="Brand">
+        <Input
+          type="search"
+          placeholder="Search brands..."
+          value={brandSearch}
+          onChange={(e) => setBrandSearch(e.target.value)}
+          size="sm"
+          style={{ marginBottom: 12 }}
+        />
+        <div style={{ maxHeight: 200, overflowY: "auto" }}>
+          {filteredBrands.slice(0, 30).map((brand) => (
+            <Checkbox
+              key={brand}
+              checked={selectedBrands.includes(brand)}
+              onChange={() => toggleBrand(brand)}
+              label={brand}
+              count={brandStats[brand]?.email_count}
+            />
+          ))}
+          {filteredBrands.length > 30 && (
+            <p style={{ fontSize: 12, color: "var(--color-tertiary)", margin: "8px 0 0" }}>
+              +{filteredBrands.length - 30} more brands
+            </p>
+          )}
+        </div>
+      </FilterSection>
+
+      {/* Date Filter */}
+      <FilterSection title="Date" defaultOpen={false}>
+        {DATE_FILTERS.map((filter) => (
+          <Checkbox
+            key={filter.value}
+            checked={selectedDate === filter.value}
+            onChange={() => setSelectedDate(filter.value)}
+            label={filter.label}
+          />
+        ))}
+      </FilterSection>
+    </>
+  );
 
   return (
     <>
@@ -367,7 +428,7 @@ function Sidebar({
         />
       )}
 
-      {/* Sidebar */}
+      {/* Desktop Sidebar */}
       <aside
         style={{
           width: 280,
@@ -406,59 +467,7 @@ function Sidebar({
           )}
         </div>
 
-        {/* Industry Filter */}
-        <FilterSection title="Industry">
-          <div style={{ maxHeight: 240, overflowY: "auto" }}>
-            {industries.map((industry) => (
-              <Checkbox
-                key={industry}
-                checked={selectedIndustries.includes(industry)}
-                onChange={() => toggleIndustry(industry)}
-                label={industry}
-              />
-            ))}
-          </div>
-        </FilterSection>
-
-        {/* Brand Filter */}
-        <FilterSection title="Brand">
-          <Input
-            type="search"
-            placeholder="Search brands..."
-            value={brandSearch}
-            onChange={(e) => setBrandSearch(e.target.value)}
-            size="sm"
-            style={{ marginBottom: 12 }}
-          />
-          <div style={{ maxHeight: 200, overflowY: "auto" }}>
-            {filteredBrands.slice(0, 30).map((brand) => (
-              <Checkbox
-                key={brand}
-                checked={selectedBrands.includes(brand)}
-                onChange={() => toggleBrand(brand)}
-                label={brand}
-                count={brandStats[brand]?.email_count}
-              />
-            ))}
-            {filteredBrands.length > 30 && (
-              <p style={{ fontSize: 12, color: "var(--color-tertiary)", margin: "8px 0 0" }}>
-                +{filteredBrands.length - 30} more brands
-              </p>
-            )}
-          </div>
-        </FilterSection>
-
-        {/* Date Filter */}
-        <FilterSection title="Date" defaultOpen={false}>
-          {DATE_FILTERS.map((filter) => (
-            <Checkbox
-              key={filter.value}
-              checked={selectedDate === filter.value}
-              onChange={() => setSelectedDate(filter.value)}
-              label={filter.label}
-            />
-          ))}
-        </FilterSection>
+        {filterContent}
       </aside>
 
       {/* Mobile Sidebar */}
@@ -503,51 +512,7 @@ function Sidebar({
           </button>
         </div>
 
-        {/* Same filter sections */}
-        <FilterSection title="Industry">
-          <div style={{ maxHeight: 200, overflowY: "auto" }}>
-            {industries.map((industry) => (
-              <Checkbox
-                key={industry}
-                checked={selectedIndustries.includes(industry)}
-                onChange={() => toggleIndustry(industry)}
-                label={industry}
-              />
-            ))}
-          </div>
-        </FilterSection>
-
-        <FilterSection title="Brand">
-          <Input
-            type="search"
-            placeholder="Search brands..."
-            value={brandSearch}
-            onChange={(e) => setBrandSearch(e.target.value)}
-            size="sm"
-            style={{ marginBottom: 12 }}
-          />
-          <div style={{ maxHeight: 160, overflowY: "auto" }}>
-            {filteredBrands.slice(0, 20).map((brand) => (
-              <Checkbox
-                key={brand}
-                checked={selectedBrands.includes(brand)}
-                onChange={() => toggleBrand(brand)}
-                label={brand}
-              />
-            ))}
-          </div>
-        </FilterSection>
-
-        <FilterSection title="Date" defaultOpen={false}>
-          {DATE_FILTERS.map((filter) => (
-            <Checkbox
-              key={filter.value}
-              checked={selectedDate === filter.value}
-              onChange={() => setSelectedDate(filter.value)}
-              label={filter.label}
-            />
-          ))}
-        </FilterSection>
+        {filterContent}
 
         {/* Apply Button */}
         <div style={{ marginTop: 24 }}>
@@ -583,6 +548,7 @@ function BrowseContent() {
   const { user } = useAuth();
   const brandFromUrl = searchParams.get("brand");
   const industryFromUrl = searchParams.get("industry");
+  const categoryFromUrl = searchParams.get("category");
   const queryFromUrl = searchParams.get("q");
 
   const [emails, setEmails] = useState<Email[]>([]);
@@ -602,8 +568,26 @@ function BrowseContent() {
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>(brandFromUrl ? [brandFromUrl] : []);
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>(industryFromUrl ? [industryFromUrl] : []);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(categoryFromUrl ? [categoryFromUrl] : []);
   const [selectedDate, setSelectedDate] = useState("all");
   const [selectedType, setSelectedType] = useState<string | null>(null);
+
+  // Compute available subcategories based on selected industries
+  const availableCategories = selectedIndustries.length > 0
+    ? Array.from(new Set(selectedIndustries.flatMap((ind) => SUBCATEGORIES[ind] || [])))
+    : [];
+
+  // Clear invalid subcategory selections when industry changes
+  useEffect(() => {
+    if (selectedCategories.length > 0 && availableCategories.length > 0) {
+      const valid = selectedCategories.filter((c) => availableCategories.includes(c));
+      if (valid.length !== selectedCategories.length) {
+        setSelectedCategories(valid);
+      }
+    } else if (selectedIndustries.length === 0 && selectedCategories.length > 0) {
+      setSelectedCategories([]);
+    }
+  }, [selectedIndustries]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Debounce search query (400ms)
   useEffect(() => {
@@ -613,15 +597,18 @@ function BrowseContent() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch emails
+  // Fetch emails — send all active filters to the API
   const fetchEmails = useCallback(async () => {
     const base = API_BASE;
 
     try {
       const params = new URLSearchParams();
       params.set("limit", "500");
+
+      // Send single-value filters to the API for server-side filtering
       if (selectedIndustries.length === 1) params.set("industry", selectedIndustries[0]);
       if (selectedBrands.length === 1) params.set("brand", selectedBrands[0]);
+      if (selectedCategories.length === 1) params.set("category", selectedCategories[0]);
       if (debouncedQuery) params.set("q", debouncedQuery);
 
       const res = await fetch(`${base}/emails?${params.toString()}`);
@@ -633,7 +620,7 @@ function BrowseContent() {
     } catch (error) {
       console.error("Failed to fetch emails:", error);
     }
-  }, [selectedIndustries, selectedBrands, debouncedQuery]);
+  }, [selectedIndustries, selectedBrands, selectedCategories, debouncedQuery]);
 
   // Fetch brands and total count
   const fetchBrands = useCallback(async () => {
@@ -675,10 +662,11 @@ function BrowseContent() {
     load();
   }, [fetchEmails, fetchBrands]);
 
-  // Filter emails client-side
+  // Filter emails client-side (for multi-select and type/date filters)
   const filteredEmails = emails.filter((email) => {
     if (selectedBrands.length > 1 && !selectedBrands.includes(email.brand || "")) return false;
     if (selectedIndustries.length > 1 && !selectedIndustries.includes(email.industry || "")) return false;
+    if (selectedCategories.length > 1 && !selectedCategories.includes(email.category || "")) return false;
     if (selectedType && email.type !== selectedType) return false;
 
     if (selectedDate !== "all") {
@@ -716,16 +704,24 @@ function BrowseContent() {
     setDisplayCount(ITEMS_PER_PAGE);
   };
 
+  const toggleCategory = (category: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+    );
+    setDisplayCount(ITEMS_PER_PAGE);
+  };
+
   const clearAllFilters = () => {
     setSelectedBrands([]);
     setSelectedIndustries([]);
+    setSelectedCategories([]);
     setSelectedDate("all");
     setSelectedType(null);
     setSearchQuery("");
     setDisplayCount(ITEMS_PER_PAGE);
   };
 
-  const activeFilterCount = selectedBrands.length + selectedIndustries.length + (selectedDate !== "all" ? 1 : 0) + (selectedType ? 1 : 0);
+  const activeFilterCount = selectedBrands.length + selectedIndustries.length + selectedCategories.length + (selectedDate !== "all" ? 1 : 0) + (selectedType ? 1 : 0);
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
@@ -743,6 +739,9 @@ function BrowseContent() {
           industries={INDUSTRIES}
           selectedIndustries={selectedIndustries}
           toggleIndustry={toggleIndustry}
+          selectedCategories={selectedCategories}
+          toggleCategory={toggleCategory}
+          availableCategories={availableCategories}
           brands={allBrands}
           selectedBrands={selectedBrands}
           toggleBrand={toggleBrand}
@@ -817,7 +816,7 @@ function BrowseContent() {
           }}>
             <p style={{ fontSize: 14, color: "var(--color-secondary)", margin: 0 }}>
               {loading ? "Loading..." : searching ? "Searching..." : (() => {
-                const hasFilters = debouncedQuery || selectedBrands.length > 0 || selectedIndustries.length > 0 || selectedDate !== "all";
+                const hasFilters = debouncedQuery || selectedBrands.length > 0 || selectedIndustries.length > 0 || selectedCategories.length > 0 || selectedDate !== "all";
                 const count = hasFilters ? filteredEmails.length.toLocaleString() : (totalEmailCount !== null ? totalEmailCount.toLocaleString() : filteredEmails.length.toLocaleString());
                 return `${count} emails`;
               })()}
@@ -831,6 +830,25 @@ function BrowseContent() {
                     {i}
                     <button
                       onClick={() => toggleIndustry(i)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        marginLeft: 6,
+                        cursor: "pointer",
+                        color: "inherit",
+                        padding: 0,
+                        lineHeight: 1,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </Badge>
+                ))}
+                {selectedCategories.map((c) => (
+                  <Badge key={c} variant="accent">
+                    {c}
+                    <button
+                      onClick={() => toggleCategory(c)}
                       style={{
                         background: "none",
                         border: "none",
