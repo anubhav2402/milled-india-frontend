@@ -9,21 +9,21 @@ import { API_BASE } from "../lib/constants";
 import Logo from "../components/Logo";
 
 // ---------------------------------------------------------------------------
-// GrapesJS Theme — MailMuse branded override
+// GrapesJS Theme — Light / BEEfree-inspired
 // ---------------------------------------------------------------------------
 const GRAPESJS_THEME_CSS = `
   :root {
-    --gjs-primary-color: #2A2522;
-    --gjs-secondary-color: #E8E0D8;
+    --gjs-primary-color: #FFFFFF;
+    --gjs-secondary-color: #1C1917;
     --gjs-tertiary-color: #C2714A;
     --gjs-quaternary-color: #E8956E;
-    --gjs-font-color: #E8E0D8;
-    --gjs-font-color-active: #FAF9F7;
-    --gjs-main-color: #2A2522;
-    --gjs-main-dark-color: rgba(0,0,0,0.25);
-    --gjs-secondary-dark-color: rgba(0,0,0,0.15);
-    --gjs-main-light-color: rgba(255,255,255,0.08);
-    --gjs-secondary-light-color: rgba(255,255,255,0.65);
+    --gjs-font-color: #44403C;
+    --gjs-font-color-active: #1C1917;
+    --gjs-main-color: #FFFFFF;
+    --gjs-main-dark-color: rgba(0,0,0,0.06);
+    --gjs-secondary-dark-color: rgba(0,0,0,0.04);
+    --gjs-main-light-color: rgba(0,0,0,0.03);
+    --gjs-secondary-light-color: rgba(0,0,0,0.5);
     --gjs-color-blue: #C2714A;
     --gjs-color-highlight: #E8956E;
   }
@@ -33,71 +33,97 @@ const GRAPESJS_THEME_CSS = `
   }
 
   .gjs-editor-cont {
-    background-color: #231F1D !important;
+    background-color: #F5F0EB !important;
   }
 
+  .gjs-cv-canvas {
+    background-color: #F5F0EB !important;
+  }
+
+  /* Right panel (styles/traits) */
   .gjs-pn-views-container {
-    background-color: #2A2522 !important;
-    border-left: 1px solid #3D3630 !important;
+    background-color: #FFFFFF !important;
+    border-left: 1px solid #E8E0D8 !important;
     box-shadow: none !important;
     scrollbar-width: thin;
-    scrollbar-color: rgba(194,113,74,0.3) transparent;
+    scrollbar-color: rgba(194,113,74,0.2) transparent;
   }
 
   .gjs-pn-views {
-    background-color: #2A2522 !important;
-    border-bottom-color: #3D3630 !important;
+    background-color: #FFFFFF !important;
+    border-bottom: 1px solid #E8E0D8 !important;
   }
 
   .gjs-pn-btn {
-    color: #9D9490 !important;
+    color: #78716C !important;
     border-radius: 6px !important;
     transition: all 0.15s ease !important;
   }
 
   .gjs-pn-btn:hover {
-    color: #E8E0D8 !important;
+    color: #1C1917 !important;
+    background: rgba(194,113,74,0.08) !important;
   }
 
   .gjs-pn-btn.gjs-pn-active {
-    background-color: rgba(194,113,74,0.15) !important;
+    background-color: rgba(194,113,74,0.12) !important;
     box-shadow: none !important;
     color: #C2714A !important;
   }
 
+  /* Content blocks */
   .gjs-block {
-    background-color: #332E2A !important;
-    border-color: #3D3630 !important;
-    color: #DDD6CC !important;
+    background-color: #FAFAF9 !important;
+    border: 1px solid #E8E0D8 !important;
+    color: #44403C !important;
     border-radius: 8px !important;
     transition: all 0.15s ease !important;
-    min-height: 80px !important;
+    min-height: 72px !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
   }
 
   .gjs-block:hover {
     border-color: #C2714A !important;
-    box-shadow: 0 2px 8px rgba(194,113,74,0.15) !important;
-    color: #FAF9F7 !important;
+    box-shadow: 0 2px 8px rgba(194,113,74,0.12) !important;
+    color: #1C1917 !important;
+    background-color: #FFF7F3 !important;
+  }
+
+  .gjs-block svg {
+    fill: #78716C !important;
+  }
+
+  .gjs-block:hover svg {
+    fill: #C2714A !important;
   }
 
   .gjs-block-label {
     font-family: 'Inter', sans-serif !important;
     font-size: 11px !important;
-  }
-
-  .gjs-title {
-    background-color: #2A2522 !important;
-    border-bottom: 1px solid #3D3630 !important;
-    color: #DDD6CC !important;
-    font-family: 'Inter', sans-serif !important;
     font-weight: 500 !important;
-    font-size: 12px !important;
+    color: #57534E !important;
   }
 
+  .gjs-block:hover .gjs-block-label {
+    color: #C2714A !important;
+  }
+
+  /* Section titles */
+  .gjs-title {
+    background-color: #FAFAF9 !important;
+    border-bottom: 1px solid #E8E0D8 !important;
+    color: #1C1917 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  /* Component toolbar */
   .gjs-toolbar {
     background-color: #C2714A !important;
     border-radius: 6px !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
     padding: 2px !important;
   }
 
@@ -111,14 +137,16 @@ const GRAPESJS_THEME_CSS = `
     background: rgba(255,255,255,0.2) !important;
   }
 
+  /* Selection highlights */
   .gjs-highlighter-sel {
     outline-color: #C2714A !important;
   }
 
   .gjs-highlighter {
-    outline-color: rgba(194,113,74,0.5) !important;
+    outline-color: rgba(194,113,74,0.4) !important;
   }
 
+  /* Component badge */
   .gjs-badge {
     background-color: #C2714A !important;
     color: white !important;
@@ -128,59 +156,143 @@ const GRAPESJS_THEME_CSS = `
     padding: 2px 6px !important;
   }
 
+  /* Style manager sectors */
   .gjs-sm-sector .gjs-title {
-    background-color: #332E2A !important;
-    border-color: #3D3630 !important;
+    background-color: #FAFAF9 !important;
+    border-color: #E8E0D8 !important;
   }
 
   .gjs-sm-sector .gjs-sm-properties {
-    background-color: #2A2522 !important;
+    background-color: #FFFFFF !important;
   }
 
+  /* Input fields */
   .gjs-field {
-    background-color: #332E2A !important;
-    border-color: #3D3630 !important;
+    background-color: #FAFAF9 !important;
+    border: 1px solid #E8E0D8 !important;
     border-radius: 6px !important;
-    color: #E8E0D8 !important;
+    color: #1C1917 !important;
     transition: border-color 0.15s ease !important;
   }
 
   .gjs-field:focus-within {
     border-color: #C2714A !important;
+    box-shadow: 0 0 0 2px rgba(194,113,74,0.1) !important;
   }
 
+  /* Layer names */
   .gjs-layer-name {
     font-family: 'Inter', sans-serif !important;
     font-size: 12px !important;
   }
 
+  /* Scrollbars */
   .gjs-editor-cont ::-webkit-scrollbar { width: 6px !important; }
   .gjs-editor-cont ::-webkit-scrollbar-track { background: transparent !important; }
   .gjs-editor-cont ::-webkit-scrollbar-thumb {
-    background-color: rgba(194,113,74,0.25) !important;
+    background-color: rgba(194,113,74,0.2) !important;
     border-radius: 3px !important;
   }
   .gjs-editor-cont ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(194,113,74,0.4) !important;
+    background-color: rgba(194,113,74,0.35) !important;
   }
 
+  /* Modals */
   .gjs-mdl-dialog {
-    background-color: #2A2522 !important;
+    background-color: #FFFFFF !important;
     border-radius: 12px !important;
-    border: 1px solid #3D3630 !important;
+    border: 1px solid #E8E0D8 !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important;
   }
 
   .gjs-mdl-header {
-    border-bottom-color: #3D3630 !important;
+    border-bottom-color: #E8E0D8 !important;
     font-family: 'Inter', sans-serif !important;
+    color: #1C1917 !important;
   }
 
+  /* Drop placeholder */
   .gjs-placeholder {
     border-color: #C2714A !important;
   }
 
   .gjs-resizer-h {
     border-color: #C2714A !important;
+  }
+
+  /* Blocks container - 2 column grid */
+  .gjs-blocks-cs {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+
+  /* Category headers in blocks */
+  .gjs-block-category .gjs-title {
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    color: #9D9490 !important;
+    font-weight: 600 !important;
+    padding: 10px 12px !important;
+  }
+
+  /* Layers panel */
+  .gjs-layers {
+    background-color: #FFFFFF !important;
+  }
+
+  .gjs-layer {
+    background-color: #FFFFFF !important;
+    border-bottom: 1px solid #F5F0EB !important;
+  }
+
+  .gjs-layer:hover {
+    background-color: #FFF7F3 !important;
+  }
+
+  /* Trait manager */
+  .gjs-trt-traits {
+    padding: 8px 12px !important;
+  }
+
+  .gjs-trt-trait {
+    padding: 6px 0 !important;
+  }
+
+  .gjs-label-wrp {
+    color: #57534E !important;
+    font-size: 12px !important;
+  }
+
+  /* RTE toolbar */
+  .gjs-rte-toolbar {
+    background: #FFFFFF !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    padding: 4px !important;
+  }
+
+  .gjs-rte-action {
+    color: #44403C !important;
+    border-radius: 4px !important;
+  }
+
+  .gjs-rte-action:hover {
+    background: rgba(194,113,74,0.1) !important;
+    color: #C2714A !important;
+  }
+
+  .gjs-rte-active {
+    background: rgba(194,113,74,0.15) !important;
+    color: #C2714A !important;
+  }
+
+  /* Canvas frame */
+  .gjs-frame-wrapper {
+    background: #F5F0EB !important;
   }
 `;
 
@@ -386,7 +498,7 @@ export default function EditorClient() {
           firstSelectRef.current = true;
           setTooltip({
             text: "Edit styles in the right panel \u2192",
-            x: window.innerWidth - 280,
+            x: window.innerWidth - 300,
             y: 120,
           });
           setTimeout(() => setTooltip(null), 4000);
@@ -593,7 +705,7 @@ ${content}
       <div
         style={{
           minHeight: "100vh",
-          background: "var(--color-surface)",
+          background: "#FAF9F7",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -608,14 +720,14 @@ ${content}
             fontFamily: "var(--font-dm-serif)",
             fontSize: 24,
             marginTop: 24,
-            color: "var(--color-primary)",
+            color: "#1C1917",
           }}
         >
           Desktop Required
         </h1>
         <p
           style={{
-            color: "var(--color-secondary)",
+            color: "#6B6560",
             maxWidth: 360,
             marginTop: 12,
             lineHeight: 1.6,
@@ -630,7 +742,7 @@ ${content}
             marginTop: 24,
             display: "inline-flex",
             padding: "12px 24px",
-            background: "var(--color-accent)",
+            background: "#C2714A",
             color: "white",
             borderRadius: 10,
             textDecoration: "none",
@@ -651,14 +763,15 @@ ${content}
       <div
         style={{
           height: 52,
-          background: "#1C1917",
-          borderBottom: "1px solid #333",
+          background: "#FFFFFF",
+          borderBottom: "1px solid #E8E0D8",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 16px",
           zIndex: 10,
           flexShrink: 0,
+          boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
         }}
       >
         {/* Left: logo + breadcrumb */}
@@ -677,15 +790,15 @@ ${content}
               style={{
                 fontFamily: "var(--font-dm-serif)",
                 fontSize: 16,
-                color: "#fff",
+                color: "#1C1917",
               }}
             >
               Mail{" "}
               <em style={{ fontStyle: "italic", color: "#C2714A" }}>Muse</em>
             </span>
           </Link>
-          <span style={{ color: "#555", fontSize: 14 }}>/</span>
-          <span style={{ color: "#aaa", fontSize: 13 }}>
+          <span style={{ color: "#D6CFC7", fontSize: 14 }}>/</span>
+          <span style={{ color: "#78716C", fontSize: 13, fontWeight: 500 }}>
             Template Editor
             {hasUnsavedChanges && (
               <span
@@ -703,10 +816,10 @@ ${content}
           </span>
           {emailMeta && (
             <>
-              <span style={{ color: "#555", fontSize: 14 }}>/</span>
+              <span style={{ color: "#D6CFC7", fontSize: 14 }}>/</span>
               <span
                 style={{
-                  color: "#999",
+                  color: "#9D9490",
                   fontSize: 12,
                   maxWidth: 200,
                   overflow: "hidden",
@@ -729,7 +842,7 @@ ${content}
             style={{
               background: "none",
               border: "none",
-              color: canUndo ? "#ddd" : "#555",
+              color: canUndo ? "#44403C" : "#D6CFC7",
               cursor: canUndo ? "pointer" : "not-allowed",
               padding: "6px 8px",
               borderRadius: 6,
@@ -759,7 +872,7 @@ ${content}
             style={{
               background: "none",
               border: "none",
-              color: canRedo ? "#ddd" : "#555",
+              color: canRedo ? "#44403C" : "#D6CFC7",
               cursor: canRedo ? "pointer" : "not-allowed",
               padding: "6px 8px",
               borderRadius: 6,
@@ -787,7 +900,7 @@ ${content}
             style={{
               width: 1,
               height: 20,
-              background: "#444",
+              background: "#E8E0D8",
               margin: "0 8px",
             }}
           />
@@ -800,13 +913,13 @@ ${content}
               style={{
                 background:
                   activeDevice === device
-                    ? "rgba(194,113,74,0.2)"
+                    ? "rgba(194,113,74,0.1)"
                     : "none",
                 border:
                   activeDevice === device
-                    ? "1px solid rgba(194,113,74,0.4)"
+                    ? "1px solid rgba(194,113,74,0.3)"
                     : "1px solid transparent",
-                color: activeDevice === device ? "#C2714A" : "#999",
+                color: activeDevice === device ? "#C2714A" : "#9D9490",
                 cursor: "pointer",
                 padding: "5px 8px",
                 borderRadius: 6,
@@ -874,12 +987,12 @@ ${content}
             title="Keyboard shortcuts"
             style={{
               background: showShortcuts
-                ? "rgba(194,113,74,0.2)"
+                ? "rgba(194,113,74,0.1)"
                 : "none",
               border: showShortcuts
-                ? "1px solid rgba(194,113,74,0.4)"
-                : "1px solid #444",
-              color: showShortcuts ? "#C2714A" : "#999",
+                ? "1px solid rgba(194,113,74,0.3)"
+                : "1px solid #E8E0D8",
+              color: showShortcuts ? "#C2714A" : "#9D9490",
               cursor: "pointer",
               padding: "5px 8px",
               borderRadius: 6,
@@ -901,15 +1014,16 @@ ${content}
             title="Browse templates"
             style={{
               fontSize: 12,
-              color: "#999",
+              color: "#57534E",
               background: "none",
               padding: "6px 12px",
-              border: "1px solid #444",
+              border: "1px solid #E8E0D8",
               borderRadius: 6,
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               gap: 5,
+              fontWeight: 500,
               transition: "all 150ms ease",
             }}
           >
@@ -926,11 +1040,12 @@ ${content}
               href={`/email/${emailId}`}
               style={{
                 fontSize: 12,
-                color: "#999",
+                color: "#57534E",
                 textDecoration: "none",
                 padding: "6px 12px",
-                border: "1px solid #444",
+                border: "1px solid #E8E0D8",
                 borderRadius: 6,
+                fontWeight: 500,
               }}
             >
               Back to Email
@@ -945,11 +1060,11 @@ ${content}
               padding: "8px 16px",
               borderRadius: 6,
               cursor: editorReady ? "pointer" : "not-allowed",
-              border: "1px solid #444",
+              border: "1px solid #E8E0D8",
               background:
-                exportState === "copied" ? "#166534" : "#333",
+                exportState === "copied" ? "#DCFCE7" : "#FFFFFF",
               color:
-                exportState === "copied" ? "#86efac" : "#eee",
+                exportState === "copied" ? "#166534" : "#44403C",
               transition: "all 150ms ease",
               opacity: editorReady ? 1 : 0.5,
             }}
@@ -961,7 +1076,7 @@ ${content}
             disabled={!editorReady}
             style={{
               fontSize: 12,
-              fontWeight: 500,
+              fontWeight: 600,
               padding: "8px 16px",
               borderRadius: 6,
               cursor: editorReady ? "pointer" : "not-allowed",
@@ -986,7 +1101,7 @@ ${content}
             left: 0,
             right: 0,
             height: 3,
-            background: "#333",
+            background: "#F5F0EB",
             zIndex: 55,
             overflow: "hidden",
           }}
@@ -1013,7 +1128,7 @@ ${content}
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.7)",
+            background: "rgba(245,240,235,0.9)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -1025,15 +1140,15 @@ ${content}
               style={{
                 width: 32,
                 height: 32,
-                border: "3px solid #555",
+                border: "3px solid #E8E0D8",
                 borderTopColor: "#C2714A",
                 borderRadius: "50%",
                 animation: "spin 1s linear infinite",
                 margin: "0 auto 12px",
               }}
             />
-            <p style={{ color: "#ccc", fontSize: 14 }}>Almost ready...</p>
-            <p style={{ color: "#777", fontSize: 11, marginTop: 4 }}>
+            <p style={{ color: "#44403C", fontSize: 14, fontWeight: 500 }}>Almost ready...</p>
+            <p style={{ color: "#9D9490", fontSize: 11, marginTop: 4 }}>
               Loading your template
             </p>
           </div>
@@ -1048,8 +1163,8 @@ ${content}
             top: 52,
             left: 0,
             right: 0,
-            background: "#7f1d1d",
-            color: "#fca5a5",
+            background: "#FEF2F2",
+            color: "#991B1B",
             padding: "10px 16px",
             fontSize: 13,
             textAlign: "center",
@@ -1058,15 +1173,16 @@ ${content}
             alignItems: "center",
             justifyContent: "center",
             gap: 12,
+            borderBottom: "1px solid #FECACA",
           }}
         >
           <span>{loadError}</span>
           <button
             onClick={retryLoadEmail}
             style={{
-              background: "rgba(255,255,255,0.15)",
-              border: "1px solid rgba(255,255,255,0.25)",
-              color: "#fca5a5",
+              background: "#FFFFFF",
+              border: "1px solid #FECACA",
+              color: "#991B1B",
               borderRadius: 6,
               padding: "4px 12px",
               cursor: "pointer",
@@ -1081,7 +1197,7 @@ ${content}
             style={{
               background: "none",
               border: "none",
-              color: "#fca5a5",
+              color: "#991B1B",
               textDecoration: "underline",
               cursor: "pointer",
               fontSize: 13,
@@ -1102,7 +1218,7 @@ ${content}
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.6)",
+            background: "rgba(28,25,23,0.5)",
             zIndex: 45,
             display: "flex",
             alignItems: "center",
@@ -1114,14 +1230,15 @@ ${content}
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: "#FAF9F7",
+              background: "#FFFFFF",
               borderRadius: 16,
               padding: "32px 40px",
               maxWidth: 480,
               width: "90%",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
               textAlign: "center",
               animation: "scaleIn 0.3s ease",
+              border: "1px solid #E8E0D8",
             }}
           >
             <svg
@@ -1165,8 +1282,8 @@ ${content}
                 marginBottom: 24,
               }}
             >
-              Click any text to edit it directly. Drag blocks from the sidebar
-              to add new content sections.
+              Drag blocks from the left sidebar to add content. Click any element
+              to edit it and style it in the right panel.
             </p>
 
             <div
@@ -1177,23 +1294,6 @@ ${content}
               }}
             >
               {[
-                {
-                  label: "Click text to edit",
-                  icon: (
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#C2714A"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                    </svg>
-                  ),
-                },
                 {
                   label: "Drag blocks to add",
                   icon: (
@@ -1211,6 +1311,23 @@ ${content}
                       <rect x="14" y="3" width="7" height="7" />
                       <rect x="3" y="14" width="7" height="7" />
                       <rect x="14" y="14" width="7" height="7" />
+                    </svg>
+                  ),
+                },
+                {
+                  label: "Click text to edit",
+                  icon: (
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#C2714A"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
                     </svg>
                   ),
                 },
@@ -1238,8 +1355,9 @@ ${content}
                   style={{
                     flex: 1,
                     padding: "14px 8px",
-                    background: "#F5E6DC",
+                    background: "#FFF7F3",
                     borderRadius: 10,
+                    border: "1px solid rgba(194,113,74,0.15)",
                   }}
                 >
                   <div style={{ marginBottom: 8 }}>{hint.icon}</div>
@@ -1287,7 +1405,7 @@ ${content}
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.75)",
+            background: "rgba(28,25,23,0.5)",
             zIndex: 45,
             display: "flex",
             alignItems: "flex-start",
@@ -1299,13 +1417,14 @@ ${content}
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: "#FAF9F7",
+              background: "#FFFFFF",
               borderRadius: 16,
               padding: "32px 36px",
               maxWidth: 640,
               width: "92%",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
               animation: "scaleIn 0.25s ease",
+              border: "1px solid #E8E0D8",
             }}
           >
             <div style={{ textAlign: "center", marginBottom: 24 }}>
@@ -1336,8 +1455,8 @@ ${content}
               style={{
                 width: "100%",
                 padding: "14px 16px",
-                background: "#F5E6DC",
-                border: "2px dashed #D4A88A",
+                background: "#FFF7F3",
+                border: "2px dashed rgba(194,113,74,0.35)",
                 borderRadius: 10,
                 cursor: "pointer",
                 display: "flex",
@@ -1362,7 +1481,7 @@ ${content}
               <div style={{ textAlign: "center", padding: "24px 0" }}>
                 <div style={{
                   width: 24, height: 24,
-                  border: "2px solid #e2e8f0", borderTopColor: "#C2714A",
+                  border: "2px solid #E8E0D8", borderTopColor: "#C2714A",
                   borderRadius: "50%", animation: "spin 1s linear infinite",
                   margin: "0 auto 8px",
                 }} />
@@ -1386,7 +1505,7 @@ ${content}
                       onClick={() => loadTemplate(t.id)}
                       style={{
                         padding: "12px 14px",
-                        background: "white",
+                        background: "#FAFAF9",
                         border: "1px solid #E8E0D8",
                         borderRadius: 10,
                         cursor: "pointer",
@@ -1395,7 +1514,7 @@ ${content}
                       }}
                       onMouseEnter={(e) => {
                         (e.currentTarget as HTMLButtonElement).style.borderColor = "#C2714A";
-                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 2px 8px rgba(194,113,74,0.15)";
+                        (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 2px 8px rgba(194,113,74,0.1)";
                       }}
                       onMouseLeave={(e) => {
                         (e.currentTarget as HTMLButtonElement).style.borderColor = "#E8E0D8";
@@ -1465,13 +1584,13 @@ ${content}
               position: "absolute",
               top: 48,
               right: 16,
-              background: "#2A2522",
-              border: "1px solid #3D3630",
+              background: "#FFFFFF",
+              border: "1px solid #E8E0D8",
               borderRadius: 12,
               padding: "16px 20px",
               zIndex: 56,
               width: 260,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
               animation: "fadeInDown 0.15s ease",
             }}
           >
@@ -1479,7 +1598,7 @@ ${content}
               style={{
                 fontFamily: "var(--font-dm-serif)",
                 fontSize: 14,
-                color: "#FAF9F7",
+                color: "#1C1917",
                 marginBottom: 12,
                 fontWeight: 400,
               }}
@@ -1502,20 +1621,20 @@ ${content}
                   justifyContent: "space-between",
                   alignItems: "center",
                   padding: "6px 0",
-                  borderBottom: "1px solid #3D3630",
+                  borderBottom: "1px solid #F5F0EB",
                 }}
               >
-                <span style={{ color: "#9D9490", fontSize: 12 }}>
+                <span style={{ color: "#6B6560", fontSize: 12 }}>
                   {action}
                 </span>
                 <kbd
                   style={{
-                    background: "#332E2A",
-                    border: "1px solid #3D3630",
+                    background: "#FAFAF9",
+                    border: "1px solid #E8E0D8",
                     borderRadius: 4,
                     padding: "2px 6px",
                     fontSize: 11,
-                    color: "#DDD6CC",
+                    color: "#44403C",
                     fontFamily: "monospace",
                   }}
                 >
@@ -1541,7 +1660,7 @@ ${content}
             fontSize: 13,
             fontWeight: 500,
             zIndex: 60,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
             animation: "fadeInDown 0.2s ease",
             pointerEvents: "none",
             whiteSpace: "nowrap",
@@ -1584,7 +1703,7 @@ function GrapesJSEditor({ onReady }: { onReady: (editor: Editor) => void }) {
       <div
         style={{
           flex: 1,
-          background: "#231F1D",
+          background: "#F5F0EB",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1595,15 +1714,15 @@ function GrapesJSEditor({ onReady }: { onReady: (editor: Editor) => void }) {
             style={{
               width: 40,
               height: 40,
-              border: "3px solid #555",
+              border: "3px solid #E8E0D8",
               borderTopColor: "#C2714A",
               borderRadius: "50%",
               animation: "spin 1s linear infinite",
               margin: "0 auto 16px",
             }}
           />
-          <p style={{ color: "#ccc", fontSize: 14 }}>Preparing editor...</p>
-          <p style={{ color: "#777", fontSize: 11, marginTop: 4 }}>
+          <p style={{ color: "#44403C", fontSize: 14, fontWeight: 500 }}>Preparing editor...</p>
+          <p style={{ color: "#9D9490", fontSize: 11, marginTop: 4 }}>
             Loading design tools
           </p>
         </div>
