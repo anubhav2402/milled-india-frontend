@@ -464,7 +464,7 @@ export default function PricingPage() {
               fontWeight: 500,
             }}
           >
-            Every new account gets 14 days of full Pro access &mdash; no credit card required
+            Every new account gets 7 days of full Starter access &mdash; no credit card required
           </p>
         </div>
 

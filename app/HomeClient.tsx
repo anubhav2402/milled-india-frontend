@@ -902,7 +902,7 @@ function PricingAnchor() {
             Start free. Scale when you&apos;re ready.
           </h2>
           <p style={{ fontSize: 17, color: "var(--color-secondary)", margin: "0 0 8px" }}>
-            Every new account gets 14 days of full Pro access &mdash; no credit card required.
+            Every new account gets 7 days of full Starter access &mdash; no credit card required.
           </p>
         </div>
 

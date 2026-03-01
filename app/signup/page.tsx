@@ -258,7 +258,7 @@ export default function SignupPage() {
                 color: "var(--color-accent)",
               }}
             >
-              14-day Pro trial included — no card required
+              7-day Starter trial included — no card required
             </span>
           </div>
 
@@ -459,7 +459,7 @@ export default function SignupPage() {
               textAlign: "center",
             }}
           >
-            Start your free Pro trial
+            Start your free Starter trial
           </h2>
           <p
             style={{
@@ -469,7 +469,7 @@ export default function SignupPage() {
               textAlign: "center",
             }}
           >
-            14 days of full Pro access. No credit card.
+            7 days of full Starter access. No credit card.
           </p>
 
           {/* Error Message */}
@@ -679,7 +679,7 @@ export default function SignupPage() {
                 flexWrap: "wrap",
               }}
             >
-              {["14-day Pro trial", "No credit card", "Cancel anytime"].map(
+              {["7-day Starter trial", "No credit card", "Cancel anytime"].map(
                 (text) => (
                   <span
                     key={text}
@@ -725,7 +725,7 @@ export default function SignupPage() {
                 letterSpacing: 0.5,
               }}
             >
-              Your Pro trial includes
+              Your Starter trial includes
             </div>
             <div
               style={{

@@ -235,7 +235,7 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
           fontSize: 13,
           fontWeight: 500,
         }}>
-          Pro trial: {Math.max(0, Math.ceil((new Date(user.trial_ends_at).getTime() - Date.now()) / 86400000))} days left{" "}
+          Starter trial: {Math.max(0, Math.ceil((new Date(user.trial_ends_at).getTime() - Date.now()) / 86400000))} days left{" "}
           <Link href="/pricing" style={{ color: "white", fontWeight: 700, textDecoration: "underline", marginLeft: 8 }}>
             Upgrade now
           </Link>
