@@ -542,7 +542,7 @@ function LoadingGrid() {
 // Main Browse Content
 function BrowseContent() {
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const brandFromUrl = searchParams.get("brand");
   const categoryFromUrl = searchParams.get("category");
   const queryFromUrl = searchParams.get("q");
@@ -589,7 +589,10 @@ function BrowseContent() {
       if (selectedType) params.set("type", selectedType);
       if (debouncedQuery) params.set("q", debouncedQuery);
 
-      const res = await fetch(`${base}/emails?${params.toString()}`);
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      const res = await fetch(`${base}/emails?${params.toString()}`, { headers });
       if (res.ok) {
         const data = await res.json();
         setEmails(data);
@@ -598,7 +601,7 @@ function BrowseContent() {
     } catch (error) {
       console.error("Failed to fetch emails:", error);
     }
-  }, [selectedBrands, selectedCategories, selectedType, selectedDate, debouncedQuery]);
+  }, [selectedBrands, selectedCategories, selectedType, selectedDate, debouncedQuery, token]);
 
   // Fetch brands and total count
   const fetchBrands = useCallback(async () => {
