@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import JsonLd from "./components/JsonLd";
 import AnnouncementBar from "./components/AnnouncementBar";
+import Footer from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,6 +112,7 @@ export default function RootLayout({
         <AuthProvider>
           <AnnouncementBar />
           {children}
+          <Footer />
         </AuthProvider>
       </body>
     </html>

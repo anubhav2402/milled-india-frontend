@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Logo from "./components/Logo";
 import Header from "./components/Header";
 import Button from "./components/Button";
 import Badge from "./components/Badge";
@@ -1138,82 +1137,6 @@ function FinalCTA() {
 }
 
 // ============================================================
-// SECTION 10: Footer
-// ============================================================
-function Footer() {
-  const links = [
-    { label: "Browse", href: "/browse" },
-    { label: "Brands", href: "/brand" },
-    { label: "Industries", href: "/industry" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "Blog", href: "/blog" },
-  ];
-
-  return (
-    <footer
-      style={{
-        padding: "48px 24px",
-        background: "#0f172a",
-        color: "white",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: 24,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Logo size={32} />
-          <span
-            style={{
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: 18,
-              color: "white",
-            }}
-          >
-            Mail{" "}
-            <em style={{ fontStyle: "italic", color: "#E8A882" }}>Muse</em>
-          </span>
-        </div>
-
-        <nav style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              style={{
-                fontSize: 13,
-                color: "rgba(255, 255, 255, 0.6)",
-                textDecoration: "none",
-                transition: "color 150ms ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "white";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "rgba(255, 255, 255, 0.6)";
-              }}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <p style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.4)" }}>
-          &copy; 2026 MailMuse. All rights reserved.
-        </p>
-      </div>
-    </footer>
-  );
-}
-
-// ============================================================
 // MAIN COMPONENT — Named Export
 // ============================================================
 export function HomeClient() {
@@ -1255,7 +1178,6 @@ export function HomeClient() {
         brandCount={Math.max(brands.length, 10000)}
       />
       <FinalCTA />
-      <Footer />
     </div>
   );
 }
