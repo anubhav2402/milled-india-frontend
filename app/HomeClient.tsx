@@ -735,124 +735,6 @@ function EditorShowcase() {
 }
 
 // ============================================================
-// SECTION 6: Social Proof — Scenario-Based Use Cases
-// ============================================================
-function SocialProof() {
-  const scenarios = [
-    {
-      role: "Email Marketer, Beauty Brand",
-      quote:
-        "\u201CI check MailMuse every Monday to see what subject lines Mamaearth and Sugar tested that week. Last month, I adapted their BOGO format and our open rates jumped 23%.\u201D",
-    },
-    {
-      role: "Founder, Fashion Brand",
-      quote:
-        "\u201CBefore MailMuse, I had no idea Zudio was sending 4 emails per week during sale season. Now I match their cadence and our revenue from email is up 2x.\u201D",
-    },
-    {
-      role: "Marketing Manager, Electronics",
-      quote:
-        "\u201CThe campaign calendar alone is worth Pro. I can see every competitor\u2019s festive campaign timeline and plan ours a month ahead.\u201D",
-    },
-    {
-      role: "Freelance Copywriter",
-      quote:
-        "\u201CI use the template editor to pitch clients. I pull a competitor\u2019s email, customize it with the client\u2019s brand, and share the HTML. Closes deals every time.\u201D",
-    },
-  ];
-
-  return (
-    <section style={{ padding: "96px 24px", background: "var(--color-surface)" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 64 }}>
-          <h2
-            style={{
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: "clamp(28px, 4vw, 36px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              marginBottom: 16,
-            }}
-          >
-            How marketers use MailMuse
-          </h2>
-          <p
-            style={{
-              fontSize: 17,
-              color: "var(--color-secondary)",
-              maxWidth: 500,
-              margin: "0 auto",
-            }}
-          >
-            Real use cases from the marketers, founders, and copywriters who use MailMuse daily.
-          </p>
-        </div>
-
-        <div
-          className="social-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 24,
-          }}
-        >
-          {scenarios.map((scenario, idx) => (
-            <div
-              key={idx}
-              style={{
-                background: "white",
-                borderRadius: 14,
-                padding: 28,
-                borderLeft: "4px solid var(--color-accent)",
-                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
-              }}
-            >
-              <Badge
-                variant="accent"
-                size="sm"
-                style={{ marginBottom: 16 }}
-              >
-                {scenario.role}
-              </Badge>
-              <p
-                style={{
-                  fontSize: 15,
-                  color: "var(--color-primary)",
-                  lineHeight: 1.7,
-                  fontStyle: "italic",
-                  margin: "0 0 12px",
-                }}
-              >
-                {scenario.quote}
-              </p>
-              <p
-                style={{
-                  fontSize: 11,
-                  color: "var(--color-tertiary)",
-                  fontStyle: "italic",
-                  margin: 0,
-                }}
-              >
-                Composite scenario based on common use cases
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .social-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-// ============================================================
 // SECTION 7: Pricing Anchor
 // ============================================================
 function PricingAnchor() {
@@ -1062,51 +944,6 @@ function PricingAnchor() {
 }
 
 // ============================================================
-// SECTION 8: Urgency Strip
-// ============================================================
-function UrgencyStrip({
-  totalEmails,
-  brandCount,
-}: {
-  totalEmails: number;
-  brandCount: number;
-}) {
-  return (
-    <section
-      style={{
-        padding: "40px 24px",
-        background: "var(--color-primary)",
-        textAlign: "center",
-      }}
-    >
-      <p
-        style={{
-          fontSize: 18,
-          fontWeight: 600,
-          color: "white",
-          marginBottom: 8,
-        }}
-      >
-        New emails added every day. Your competitors are already watching.
-      </p>
-      <p
-        style={{
-          fontSize: 14,
-          color: "rgba(255, 255, 255, 0.7)",
-          marginBottom: 24,
-        }}
-      >
-        {totalEmails.toLocaleString()}+ emails and counting &mdash; with{" "}
-        {brandCount}+ brands sending new campaigns daily
-      </p>
-      <Button href="/browse" variant="secondary" size="lg">
-        Browse Latest Emails
-      </Button>
-    </section>
-  );
-}
-
-// ============================================================
 // SECTION 9: Final CTA
 // ============================================================
 function FinalCTA() {
@@ -1162,7 +999,6 @@ export function HomeClient() {
   const [recentEmails, setRecentEmails] = useState<EmailPreview[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
   const [brandStats, setBrandStats] = useState<Record<string, { logo_url?: string | null }>>({});
-  const [totalEmails, setTotalEmails] = useState<number>(100000);
 
   useEffect(() => {
     Promise.all([
@@ -1170,17 +1006,13 @@ export function HomeClient() {
         r.ok ? r.json() : []
       ),
       fetch(`${API_BASE}/brands`).then((r) => (r.ok ? r.json() : [])),
-      fetch(`${API_BASE}/emails/count`).then((r) =>
-        r.ok ? r.json() : { total: 100000 }
-      ),
       fetch(`${API_BASE}/brands/stats`).then((r) => (r.ok ? r.json() : {})),
     ])
-      .then(([emails, brandsData, countData, statsData]) => {
+      .then(([emails, brandsData, statsData]) => {
         setRecentEmails(
           (emails as EmailPreview[]).slice(0, 8)
         );
         setBrands(brandsData as string[]);
-        setTotalEmails(Math.max((countData as { total: number }).total || 100000, 100000));
         setBrandStats(statsData as Record<string, { logo_url?: string | null }>);
       })
       .catch(() => {});
@@ -1193,12 +1025,7 @@ export function HomeClient() {
       <BrandTrustBar brands={brands} brandStats={brandStats} />
       <ValuePillars />
       <EditorShowcase />
-      <SocialProof />
       <PricingAnchor />
-      <UrgencyStrip
-        totalEmails={totalEmails}
-        brandCount={Math.max(brands.length, 10000)}
-      />
       <FinalCTA />
     </div>
   );
