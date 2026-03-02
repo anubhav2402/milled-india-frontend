@@ -232,7 +232,7 @@ function BrandTrustBar({ brands, brandStats }: { brands: string[]; brandStats: R
           marginBottom: 20,
         }}
       >
-        Tracking emails from {brands.length.toLocaleString()}+ brands including
+        Tracking emails from top brands including
       </p>
       <div
         style={{
