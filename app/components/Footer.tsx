@@ -220,7 +220,7 @@ export default function Footer() {
           &copy; 2026 MailMuse. All rights reserved.
         </p>
         <a
-          href="https://x.com/mailmuse_in"
+          href="https://x.com/mailmuse_01"
           target="_blank"
           rel="noopener noreferrer"
           style={{

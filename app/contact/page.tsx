@@ -68,7 +68,7 @@ export default function ContactPage() {
               Email
             </div>
             <a
-              href="mailto:hello@mailmuse.in"
+              href="mailto:anubhavgpt08@gmail.com"
               style={{
                 fontSize: 20,
                 fontFamily: "var(--font-dm-serif)",
@@ -76,7 +76,7 @@ export default function ContactPage() {
                 textDecoration: "none",
               }}
             >
-              hello@mailmuse.in
+              anubhavgpt08@gmail.com
             </a>
           </div>
 
@@ -94,7 +94,7 @@ export default function ContactPage() {
               Twitter / X
             </div>
             <a
-              href="https://x.com/mailmuse_in"
+              href="https://x.com/mailmuse_01"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -104,7 +104,7 @@ export default function ContactPage() {
                 textDecoration: "none",
               }}
             >
-              @mailmuse_in
+              @mailmuse_01
             </a>
           </div>
         </div>
