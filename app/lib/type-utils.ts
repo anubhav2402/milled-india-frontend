@@ -14,6 +14,9 @@ const TYPE_SLUG_MAP: Record<string, string> = {
   "product-showcase-emails": "Product Showcase",
   "promotional-emails": "Promotional",
   "confirmation-emails": "Confirmation",
+  "brand-story-emails": "Brand Story",
+  "event-invitation-emails": "Event / Invitation",
+  "referral-emails": "Referral",
 };
 
 const REVERSE_MAP: Record<string, string> = Object.fromEntries(
