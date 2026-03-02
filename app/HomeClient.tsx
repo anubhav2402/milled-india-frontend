@@ -7,6 +7,7 @@ import Button from "./components/Button";
 import Badge from "./components/Badge";
 import Card from "./components/Card";
 import EmailCard, { EmailCardSkeleton } from "./components/EmailCard";
+import BrandLogo from "./components/BrandLogo";
 import { CAMPAIGN_TYPE_COLORS } from "./lib/constants";
 
 const API_BASE =
@@ -202,10 +203,12 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
 // ============================================================
 // SECTION 2: Brand Trust Bar — Marquee Social Proof
 // ============================================================
-function BrandTrustBar({ brands }: { brands: string[] }) {
+function BrandTrustBar({ brands, brandStats }: { brands: string[]; brandStats: Record<string, { logo_url?: string | null }> }) {
   if (brands.length === 0) return null;
 
-  const displayBrands = brands.slice(0, 20);
+  // Filter to brands that have logos for the marquee
+  const brandsWithLogos = brands.filter((b) => brandStats[b]?.logo_url);
+  const displayBrands = (brandsWithLogos.length >= 15 ? brandsWithLogos : brands).slice(0, 25);
   // Double the list for seamless infinite scroll
   const marqueeItems = [...displayBrands, ...displayBrands];
 
@@ -229,7 +232,7 @@ function BrandTrustBar({ brands }: { brands: string[] }) {
           marginBottom: 20,
         }}
       >
-        Tracking emails from {brands.length}+ brands including
+        Tracking emails from {brands.length.toLocaleString()}+ brands including
       </p>
       <div
         style={{
@@ -244,23 +247,39 @@ function BrandTrustBar({ brands }: { brands: string[] }) {
           className="marquee-track"
           style={{
             display: "flex",
-            gap: 32,
+            gap: 24,
+            alignItems: "center",
             width: "max-content",
-            animation: "marqueeScroll 30s linear infinite",
+            animation: "marqueeScroll 35s linear infinite",
           }}
         >
           {marqueeItems.map((brand, i) => (
-            <span
+            <div
               key={`${brand}-${i}`}
               style={{
-                fontSize: 14,
-                fontWeight: 500,
-                color: "var(--color-secondary)",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
                 whiteSpace: "nowrap",
               }}
             >
-              {brand}
-            </span>
+              <BrandLogo
+                brandName={brand}
+                logoUrl={brandStats[brand]?.logo_url}
+                size={28}
+                borderRadius={7}
+              />
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "var(--color-secondary)",
+                  textTransform: "capitalize",
+                }}
+              >
+                {brand}
+              </span>
+            </div>
           ))}
         </div>
       </div>
@@ -1142,6 +1161,7 @@ function FinalCTA() {
 export function HomeClient() {
   const [recentEmails, setRecentEmails] = useState<EmailPreview[]>([]);
   const [brands, setBrands] = useState<string[]>([]);
+  const [brandStats, setBrandStats] = useState<Record<string, { logo_url?: string | null }>>({});
   const [totalEmails, setTotalEmails] = useState<number>(100000);
 
   useEffect(() => {
@@ -1153,13 +1173,15 @@ export function HomeClient() {
       fetch(`${API_BASE}/emails/count`).then((r) =>
         r.ok ? r.json() : { total: 100000 }
       ),
+      fetch(`${API_BASE}/brands/stats`).then((r) => (r.ok ? r.json() : {})),
     ])
-      .then(([emails, brandsData, countData]) => {
+      .then(([emails, brandsData, countData, statsData]) => {
         setRecentEmails(
           (emails as EmailPreview[]).slice(0, 8)
         );
         setBrands(brandsData as string[]);
         setTotalEmails(Math.max((countData as { total: number }).total || 100000, 100000));
+        setBrandStats(statsData as Record<string, { logo_url?: string | null }>);
       })
       .catch(() => {});
   }, []);
@@ -1168,7 +1190,7 @@ export function HomeClient() {
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
       <HeroSection emails={recentEmails.slice(0, 4)} />
-      <BrandTrustBar brands={brands} />
+      <BrandTrustBar brands={brands} brandStats={brandStats} />
       <ValuePillars />
       <EditorShowcase />
       <SocialProof />
