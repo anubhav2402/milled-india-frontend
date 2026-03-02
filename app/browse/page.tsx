@@ -27,6 +27,7 @@ type BrandStats = {
   [brand: string]: {
     email_count: number;
     send_frequency: string;
+    logo_url?: string | null;
   };
 };
 
@@ -901,6 +902,7 @@ function BrowseContent() {
                       received_at={email.received_at}
                       campaignType={email.type}
                       sendFrequency={email.brand ? brandStats[email.brand]?.send_frequency : undefined}
+                      logoUrl={email.brand ? brandStats[email.brand]?.logo_url : undefined}
                     />
                   </div>
                 ))}

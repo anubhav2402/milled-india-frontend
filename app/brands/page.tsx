@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "../components/Header";
+import BrandLogo from "../components/BrandLogo";
 import { useAuth } from "../context/AuthContext";
 import { INDUSTRIES } from "../lib/constants";
 
@@ -11,6 +12,7 @@ type BrandStats = {
   email_count: number | string;
   send_frequency: string;
   industry?: string;
+  logo_url?: string | null;
 };
 
 type BrandWithStats = {
@@ -18,6 +20,7 @@ type BrandWithStats = {
   email_count: number | string;
   send_frequency: string;
   industry?: string;
+  logo_url?: string | null;
 };
 
 function parseFrequencyPerWeek(freq: string): number {
@@ -114,6 +117,7 @@ export default function BrandsPage() {
             email_count: stats[name]?.email_count ?? "xx",
             send_frequency: stats[name]?.send_frequency ?? "xx",
             industry: stats[name]?.industry || undefined,
+            logo_url: stats[name]?.logo_url || null,
           }));
 
           setBrands(brandsWithStats);
@@ -601,7 +605,6 @@ function BrandCard({
   onToggleFollow: () => void;
   isAuthenticated: boolean;
 }) {
-  const brandInitial = brand.name.charAt(0).toUpperCase();
   const isMasked = brand.email_count === "xx";
 
   const colors = [
@@ -652,23 +655,13 @@ function BrandCard({
         href={`/brand/${encodeURIComponent(brand.name)}`}
         style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none" }}
       >
-        <div
-          style={{
-            width: 56,
-            height: 56,
-            background: `linear-gradient(135deg, ${brandColor}20 0%, ${brandColor}10 100%)`,
-            borderRadius: 14,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: 700,
-            color: brandColor,
-            fontSize: 24,
-            flexShrink: 0,
-          }}
-        >
-          {brandInitial}
-        </div>
+        <BrandLogo
+          brandName={brand.name}
+          logoUrl={brand.logo_url}
+          size={56}
+          borderRadius={14}
+          color={brandColor}
+        />
 
         <div style={{ flex: 1, minWidth: 0 }}>
           <h3

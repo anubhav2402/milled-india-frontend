@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandLogo from "../../components/BrandLogo";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -14,12 +15,17 @@ export default async function RelatedBrands({
   if (!industry) return null;
 
   let brands: string[] = [];
+  let brandStats: Record<string, { logo_url?: string | null }> = {};
   try {
-    const res = await fetch(
-      `${API_BASE}/brands/by-industry/${encodeURIComponent(industry)}`,
-      { next: { revalidate: 3600 } }
-    );
-    if (res.ok) brands = await res.json();
+    const [brandsRes, statsRes] = await Promise.all([
+      fetch(
+        `${API_BASE}/brands/by-industry/${encodeURIComponent(industry)}`,
+        { next: { revalidate: 3600 } }
+      ),
+      fetch(`${API_BASE}/brands/stats`, { next: { revalidate: 3600 } }),
+    ]);
+    if (brandsRes.ok) brands = await brandsRes.json();
+    if (statsRes.ok) brandStats = await statsRes.json();
   } catch {
     return null;
   }
@@ -84,23 +90,12 @@ export default async function RelatedBrands({
                 textTransform: "capitalize",
               }}
             >
-              <span
-                style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: 6,
-                  background: "var(--color-accent-light)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: "var(--color-accent)",
-                  flexShrink: 0,
-                }}
-              >
-                {brand.charAt(0).toUpperCase()}
-              </span>
+              <BrandLogo
+                brandName={brand}
+                logoUrl={brandStats[brand]?.logo_url}
+                size={24}
+                borderRadius={6}
+              />
               {brand}
             </Link>
           ))}

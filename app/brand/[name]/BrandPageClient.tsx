@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Badge from "../../components/Badge";
+import BrandLogo from "../../components/BrandLogo";
 import EmailCard from "../../components/EmailCard";
 import AuthGate from "../../components/AuthGate";
 import { useAuth } from "../../context/AuthContext";
@@ -23,6 +24,7 @@ type BrandAnalytics = {
   subject_line_stats:
     | { avg_length: number; emoji_usage_rate: number; top_words: string[] }
     | string;
+  logo_url?: string | null;
 };
 
 type EmailItem = {
@@ -161,15 +163,12 @@ export default function BrandPageClient({
           marginBottom: 24, border: "1px solid var(--color-border)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-            <div style={{
-              width: 52, height: 52, borderRadius: 14,
-              background: "var(--color-accent-light)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 22, fontWeight: 700, color: "var(--color-accent)",
-              flexShrink: 0,
-            }}>
-              {brandName.charAt(0).toUpperCase()}
-            </div>
+            <BrandLogo
+              brandName={brandName}
+              logoUrl={analytics.logo_url}
+              size={52}
+              borderRadius={14}
+            />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
                 <h1 style={{
@@ -306,6 +305,7 @@ export default function BrandPageClient({
                         industry={email.industry}
                         received_at={email.received_at}
                         campaignType={email.type}
+                        logoUrl={analytics?.logo_url}
                       />
                     ))}
                   </div>

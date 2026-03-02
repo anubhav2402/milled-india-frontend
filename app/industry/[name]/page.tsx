@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../components/Header";
+import BrandLogo from "../../components/BrandLogo";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
 import SeoEmailLink from "../../components/SeoEmailLink";
@@ -76,7 +77,10 @@ export default async function IndustryPage({
 }) {
   const { name } = await params;
   const industry = slugToIndustry(name);
-  const data = await fetchIndustryData(industry);
+  const [data, brandStats] = await Promise.all([
+    fetchIndustryData(industry),
+    apiFetch<Record<string, { logo_url?: string | null }>>("/brands/stats"),
+  ]);
 
   if (!data) {
     return (
@@ -317,23 +321,12 @@ export default async function IndustryPage({
                   transition: "all 150ms ease",
                 }}
               >
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 10,
-                    background: "var(--color-accent-light)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 16,
-                    fontWeight: 700,
-                    color: "var(--color-accent)",
-                    flexShrink: 0,
-                  }}
-                >
-                  {brand.charAt(0).toUpperCase()}
-                </div>
+                <BrandLogo
+                  brandName={brand}
+                  logoUrl={brandStats?.[brand]?.logo_url}
+                  size={40}
+                  borderRadius={10}
+                />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div
                     style={{

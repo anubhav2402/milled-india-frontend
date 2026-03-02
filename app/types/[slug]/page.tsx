@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../components/Header";
+import BrandLogo from "../../components/BrandLogo";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
 import SeoEmailLink from "../../components/SeoEmailLink";
@@ -75,7 +76,10 @@ export default async function TypePage({
 }) {
   const { slug } = await params;
   const typeName = slugToType(slug);
-  const data = await fetchTypeData(slug);
+  const [data, brandStats] = await Promise.all([
+    fetchTypeData(slug),
+    apiFetch<Record<string, { logo_url?: string | null }>>("/brands/stats"),
+  ]);
 
   if (!data) {
     return (
@@ -257,23 +261,12 @@ export default async function TypePage({
                     color: "inherit",
                   }}
                 >
-                  <div
-                    style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 8,
-                      background: "var(--color-accent-light)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 14,
-                      fontWeight: 700,
-                      color: "var(--color-accent)",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {brand.brand.charAt(0).toUpperCase()}
-                  </div>
+                  <BrandLogo
+                    brandName={brand.brand}
+                    logoUrl={brandStats?.[brand.brand]?.logo_url}
+                    size={32}
+                    borderRadius={8}
+                  />
                   <div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)" }}>
                       {brand.brand}

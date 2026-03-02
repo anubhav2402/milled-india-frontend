@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Badge from "./Badge";
+import BrandLogo from "./BrandLogo";
 import { useAuth } from "../context/AuthContext";
 
 type EmailCardProps = {
@@ -16,6 +17,7 @@ type EmailCardProps = {
   showPreview?: boolean;
   compact?: boolean;
   previewHeight?: number;
+  logoUrl?: string | null;
   isBookmarked?: boolean;
   onToggleBookmark?: (id: number) => void;
 };
@@ -32,6 +34,7 @@ export default function EmailCard({
   showPreview = true,
   compact = false,
   previewHeight,
+  logoUrl,
   isBookmarked,
   onToggleBookmark,
 }: EmailCardProps) {
@@ -42,8 +45,6 @@ export default function EmailCard({
   const cardRef = useRef<HTMLAnchorElement>(null);
   const { user, token } = useAuth();
 
-  const brandInitial = brand ? brand.charAt(0).toUpperCase() : "?";
-  
   // Format date as relative time
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -212,23 +213,13 @@ export default function EmailCard({
               />
             ) : (
               <>
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 11,
-                    background: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 600,
-                    fontSize: 16,
-                    color: "#C2714A",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-                  }}
-                >
-                  {brandInitial}
-                </div>
+                <BrandLogo
+                  brandName={brand || "?"}
+                  logoUrl={logoUrl}
+                  size={44}
+                  borderRadius={11}
+                  style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", background: "white" }}
+                />
                 <span style={{ fontSize: 12, color: "#94a3b8" }}>Loading preview...</span>
               </>
             )}
@@ -242,23 +233,13 @@ export default function EmailCard({
           padding: "20px 10px 8px",
           display: "flex", alignItems: "center", gap: 6,
         }}>
-          <div
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: 6,
-              background: "rgba(255,255,255,0.9)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 700,
-              fontSize: 10,
-              color: "#C2714A",
-              flexShrink: 0,
-            }}
-          >
-            {brandInitial}
-          </div>
+          <BrandLogo
+            brandName={brand || "?"}
+            logoUrl={logoUrl}
+            size={22}
+            borderRadius={6}
+            fallbackBg="rgba(255,255,255,0.9)"
+          />
           <span style={{
             fontSize: 12, fontWeight: 600, color: "#fff",
             textTransform: "capitalize",
