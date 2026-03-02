@@ -583,9 +583,10 @@ function BrowseContent() {
       const params = new URLSearchParams();
       params.set("limit", "500");
 
-      // Send single-value filters to the API for server-side filtering
+      // Send filters to the API for server-side filtering
       if (selectedBrands.length === 1) params.set("brand", selectedBrands[0]);
       if (selectedCategories.length === 1) params.set("category", selectedCategories[0]);
+      if (selectedType) params.set("type", selectedType);
       if (debouncedQuery) params.set("q", debouncedQuery);
 
       const res = await fetch(`${base}/emails?${params.toString()}`);
@@ -597,7 +598,7 @@ function BrowseContent() {
     } catch (error) {
       console.error("Failed to fetch emails:", error);
     }
-  }, [selectedBrands, selectedCategories, debouncedQuery]);
+  }, [selectedBrands, selectedCategories, selectedType, selectedDate, debouncedQuery]);
 
   // Fetch brands and total count
   const fetchBrands = useCallback(async () => {
