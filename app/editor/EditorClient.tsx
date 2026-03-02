@@ -328,6 +328,34 @@ const FONT_OPTIONS = [
 // Block IDs that belong to the Rows category
 const ROW_BLOCK_IDS = ["sect100", "sect50", "sect30", "sect37", "sect25"];
 
+// Custom icons for content blocks (cleaner than the newsletter preset defaults)
+const CONTENT_ICONS: Record<string, string> = {
+  "text": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>`,
+  "text-sect": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="14" x2="17" y2="14"/><line x1="3" y1="18" x2="13" y2="18"/></svg>`,
+  "image": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>`,
+  "button": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="5"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
+  "quote": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3z"/></svg>`,
+  "link": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>`,
+  "link-block": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>`,
+  "grid-items": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
+  "list-items": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>`,
+  "divider": `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="7" y2="6" opacity="0.3"/><line x1="3" y1="18" x2="7" y2="18" opacity="0.3"/></svg>`,
+};
+
+// Friendly labels for content blocks
+const CONTENT_LABELS: Record<string, string> = {
+  "text": "Text",
+  "text-sect": "Text Section",
+  "image": "Image",
+  "button": "Button",
+  "quote": "Quote",
+  "link": "Link",
+  "link-block": "Link Block",
+  "grid-items": "Grid Items",
+  "list-items": "List Items",
+  "divider": "Divider",
+};
+
 // ---------------------------------------------------------------------------
 // Main Component
 // ---------------------------------------------------------------------------
@@ -713,12 +741,20 @@ export default function EditorClient() {
 
       contentBlockIds.forEach((id) => {
         const block = bm.get(id);
-        if (block) block.set("category", "Content");
+        if (block) {
+          block.set("category", "Content");
+          if (CONTENT_ICONS[id]) block.set("media", CONTENT_ICONS[id]);
+          if (CONTENT_LABELS[id]) block.set("label", CONTENT_LABELS[id]);
+        }
       });
 
       layoutBlockIds.forEach((id) => {
         const block = bm.get(id);
-        if (block) block.set("category", "Layout");
+        if (block) {
+          block.set("category", "Layout");
+          if (CONTENT_ICONS[id]) block.set("media", CONTENT_ICONS[id]);
+          if (CONTENT_LABELS[id]) block.set("label", CONTENT_LABELS[id]);
+        }
       });
 
       // Reclassify existing row blocks
@@ -2608,18 +2644,27 @@ function GrapesJSEditor({
                       }}
                     >
                       <div
-                        style={{ color: "#78716C", flexShrink: 0 }}
+                        style={{
+                          color: "#78716C",
+                          flexShrink: 0,
+                          width: leftTab === "rows" ? 48 : 28,
+                          height: leftTab === "rows" ? 28 : 28,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
                         dangerouslySetInnerHTML={{
                           __html:
                             block.getMedia() ||
-                            `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`,
+                            `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`,
                         }}
                       />
                       <span
                         style={{
-                          fontSize: 11,
-                          fontWeight: 500,
-                          color: "#57534E",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: "#44403C",
+                          lineHeight: 1.2,
                         }}
                       >
                         {block.getLabel()}
