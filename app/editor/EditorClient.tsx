@@ -167,17 +167,196 @@ const GRAPESJS_THEME_CSS = `
   }
 
   /* Modals */
+  .gjs-mdl-container {
+    z-index: 200 !important;
+  }
+
   .gjs-mdl-dialog {
     background-color: #FFFFFF !important;
-    border-radius: 12px !important;
+    border-radius: 16px !important;
     border: 1px solid #E8E0D8 !important;
     box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important;
+    max-width: 520px !important;
+    width: 92% !important;
   }
 
   .gjs-mdl-header {
-    border-bottom-color: #E8E0D8 !important;
+    border-bottom: 1px solid #E8E0D8 !important;
     font-family: 'Inter', sans-serif !important;
     color: #1C1917 !important;
+    padding: 16px 20px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+  }
+
+  .gjs-mdl-title {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+  }
+
+  .gjs-mdl-btn-close {
+    font-size: 20px !important;
+    opacity: 0.5 !important;
+    transition: opacity 150ms ease !important;
+  }
+
+  .gjs-mdl-btn-close:hover {
+    opacity: 1 !important;
+  }
+
+  .gjs-mdl-content {
+    padding: 0 !important;
+  }
+
+  /* Asset Manager styling */
+  .gjs-am-assets-cont {
+    padding: 16px !important;
+    background: #FFFFFF !important;
+  }
+
+  .gjs-am-assets-header {
+    display: none !important;
+  }
+
+  .gjs-am-file-uploader {
+    background: #FFF7F3 !important;
+    border: 2px dashed rgba(194,113,74,0.35) !important;
+    border-radius: 12px !important;
+    padding: 28px 20px !important;
+    margin: 16px !important;
+    text-align: center !important;
+    transition: all 150ms ease !important;
+    float: none !important;
+    width: auto !important;
+  }
+
+  .gjs-am-file-uploader:hover {
+    border-color: #C2714A !important;
+    background: #FEF0E9 !important;
+  }
+
+  .gjs-am-file-uploader form {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .gjs-am-file-uploader #gjs-am-uploadFile {
+    padding: 10px 24px !important;
+    background: #C2714A !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: background 150ms ease !important;
+  }
+
+  .gjs-am-file-uploader #gjs-am-uploadFile:hover {
+    background: #A85E3A !important;
+  }
+
+  .gjs-am-add-field {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 8px !important;
+    background: #FAFAF9 !important;
+    font-size: 13px !important;
+    color: #1C1917 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .gjs-am-add-field:focus {
+    border-color: #C2714A !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(194,113,74,0.1) !important;
+  }
+
+  .gjs-btn-prim {
+    background: #C2714A !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 8px 20px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: background 150ms ease !important;
+  }
+
+  .gjs-btn-prim:hover {
+    background: #A85E3A !important;
+  }
+
+  .gjs-am-assets {
+    padding: 12px 16px !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+  }
+
+  .gjs-am-asset-image {
+    border: 1px solid #E8E0D8 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    transition: all 150ms ease !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .gjs-am-asset-image:hover {
+    border-color: #C2714A !important;
+    box-shadow: 0 2px 8px rgba(194,113,74,0.15) !important;
+  }
+
+  .gjs-am-preview-cont {
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    height: 80px !important;
+  }
+
+  .gjs-am-meta {
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+    color: #6B6560 !important;
+  }
+
+  .gjs-am-close {
+    display: none !important;
+  }
+
+  .gjs-am-highlight {
+    border-color: #C2714A !important;
+    box-shadow: 0 0 0 2px rgba(194,113,74,0.2) !important;
+  }
+
+  /* Hide selector/classes manager */
+  .gjs-clm-tags {
+    display: none !important;
+  }
+  .gjs-sm-sector__selector {
+    display: none !important;
+  }
+  .gjs-clm-sels-ctn {
+    display: none !important;
+  }
+  .gjs-clm-label-sel {
+    display: none !important;
+  }
+  [class*="gjs-clm"] {
+    display: none !important;
+  }
+  .gjs-sm-sectors .gjs-sm-sector:first-child .gjs-title:first-child {
+    /* Hide "classes" sector title if it appears */
   }
 
   /* Drop placeholder */
@@ -423,7 +602,7 @@ export default function EditorClient() {
   const firstRteRef = useRef(false);
   const pendingRestoreRef = useRef<any>(null);
 
-  // ── Inject GrapesJS theme CSS ──
+  // ── Inject GrapesJS theme CSS + hide layout chrome ──
   useEffect(() => {
     const styleId = "mailmuse-gjs-theme";
     if (document.getElementById(styleId)) return;
@@ -431,8 +610,24 @@ export default function EditorClient() {
     style.id = styleId;
     style.textContent = GRAPESJS_THEME_CSS;
     document.head.appendChild(style);
+
+    // Hide announcement bar and footer on the editor page for full-screen editing
+    document.body.style.overflow = "hidden";
+    const footer = document.querySelector("footer");
+    if (footer) (footer as HTMLElement).style.display = "none";
+    // The AnnouncementBar is the previous sibling of the editor's parent
+    const editorEl = document.getElementById("mailmuse-editor-root");
+    if (editorEl?.previousElementSibling) {
+      (editorEl.previousElementSibling as HTMLElement).style.display = "none";
+    }
+
     return () => {
       document.getElementById(styleId)?.remove();
+      document.body.style.overflow = "";
+      if (footer) (footer as HTMLElement).style.display = "";
+      if (editorEl?.previousElementSibling) {
+        (editorEl.previousElementSibling as HTMLElement).style.display = "";
+      }
     };
   }, []);
 
@@ -1033,7 +1228,7 @@ ${content}
 
   // ── Main render ──
   return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div id="mailmuse-editor-root" style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       {/* ── Top bar ── */}
       <div
         style={{
@@ -1703,7 +1898,7 @@ ${content}
                 marginBottom: 24,
               }}
             >
-              Drag blocks from the left sidebar to add content. Click any
+              Click or drag blocks from the left sidebar to add content. Click any
               element to edit it and style it in the right panel.
             </p>
 
@@ -1716,7 +1911,7 @@ ${content}
             >
               {[
                 {
-                  label: "Drag blocks to add",
+                  label: "Click or drag to add",
                   icon: (
                     <svg
                       width="24"
@@ -2123,7 +2318,7 @@ ${content}
             position: "fixed",
             inset: 0,
             background: "rgba(28,25,23,0.6)",
-            zIndex: 100,
+            zIndex: 9999,
             display: "flex",
             flexDirection: "column",
             animation: "fadeIn 0.2s ease",
@@ -2363,6 +2558,7 @@ ${content}
         selectedComponent={selectedComponent}
         globalSettings={globalSettings}
         onGlobalSettingChange={updateGlobalSetting}
+        editorInstance={editorInstance}
       />
     </div>
   );
@@ -2378,6 +2574,7 @@ function GrapesJSEditor({
   selectedComponent,
   globalSettings,
   onGlobalSettingChange,
+  editorInstance,
 }: {
   onReady: (editor: Editor) => void;
   leftTab: "content" | "rows";
@@ -2390,6 +2587,7 @@ function GrapesJSEditor({
     linkColor: string;
   };
   onGlobalSettingChange: (key: string, value: string | number) => void;
+  editorInstance: Editor | null;
 }) {
   const [GjsEditor, setGjsEditor] = useState<React.ComponentType<any> | null>(
     null
@@ -2585,8 +2783,8 @@ function GrapesJSEditor({
                     }}
                   >
                     {leftTab === "rows"
-                      ? "Drag a row layout onto the canvas to structure your email."
-                      : "Drag content blocks onto the canvas to build your email."}
+                      ? "Click or drag a row layout to add it to your email."
+                      : "Click or drag content blocks to add them to your email."}
                   </div>
                 );
               }
@@ -2609,13 +2807,36 @@ function GrapesJSEditor({
                         dragStart(block, e.nativeEvent)
                       }
                       onDragEnd={() => dragStop(false)}
+                      onClick={() => {
+                        // Click-to-insert: add block at end of canvas or after selected component
+                        if (!editorInstance) return;
+                        const content = block.getContent();
+                        if (!content) return;
+                        const selected = editorInstance.getSelected();
+                        if (selected) {
+                          const parent = selected.parent();
+                          if (parent) {
+                            const index = parent.components().indexOf(selected);
+                            const added = parent.components().add(content, { at: index + 1 });
+                            const newComp = Array.isArray(added) ? added[0] : added;
+                            if (newComp) editorInstance.select(newComp);
+                          }
+                        } else {
+                          const wrapper = editorInstance.getWrapper();
+                          if (wrapper) {
+                            const added = wrapper.components().add(content);
+                            const newComp = Array.isArray(added) ? added[0] : added;
+                            if (newComp) editorInstance.select(newComp);
+                          }
+                        }
+                      }}
                       style={{
                         background: "#FAFAF9",
                         border: "1px solid #E8E0D8",
                         borderRadius: 8,
                         padding:
                           leftTab === "rows" ? "12px 16px" : "14px 8px",
-                        cursor: "grab",
+                        cursor: "pointer",
                         display: "flex",
                         flexDirection:
                           leftTab === "rows" ? "row" : "column",
