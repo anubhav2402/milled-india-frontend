@@ -39,6 +39,12 @@ const TYPE_LABELS: Record<string, string> = {
   newsjacking: "Newsjacking",
   subject_spotlight: "Subject Spotlight",
   follow_up_reply: "Follow-Up Reply",
+  reply_data_drop: "Data Drop Reply",
+  reply_contrarian: "Contrarian Reply",
+  reply_example: "Example Reply",
+  reply_quick_tip: "Quick Tip Reply",
+  reply_agree_amplify: "Agree+Amplify Reply",
+  reply_resource_drop: "Resource Drop Reply",
 };
 
 // Types grouped by category for the dropdown
@@ -137,7 +143,47 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const THREAD_TYPES = new Set(["viral_thread", "strategy_thread"]);
-const VARIANT_TYPES = new Set(["blog_promo", "engagement_bait", "newsjacking"]);
+const VARIANT_TYPES = new Set([
+  "blog_promo", "engagement_bait", "newsjacking",
+  "reply_data_drop", "reply_contrarian", "reply_example",
+  "reply_quick_tip", "reply_agree_amplify", "reply_resource_drop",
+]);
+
+const REPLY_STYLES = [
+  { value: "reply_data_drop", label: "Data Drop", emoji: "\u{1f4ca}", desc: "Reply with a surprising MailMuse stat that makes people think 'where did they get that data?'" },
+  { value: "reply_contrarian", label: "Contrarian", emoji: "\u{1f914}", desc: "Respectfully challenge with data. 'Our data across 600+ brands shows the opposite...'" },
+  { value: "reply_example", label: "Example", emoji: "\u{1f4e7}", desc: "Share a real brand email example that relates to their point." },
+  { value: "reply_quick_tip", label: "Quick Tip", emoji: "\u{1f4a1}", desc: "Add a specific tactical insight they can screenshot." },
+  { value: "reply_agree_amplify", label: "Agree + Amplify", emoji: "\u{1f525}", desc: "Agree and go deeper with data they didn't have." },
+  { value: "reply_resource_drop", label: "Resource Drop", emoji: "\u{1f517}", desc: "Only when someone asks for tools. Mentions MailMuse naturally." },
+];
+
+const REPLY_TYPE_SET = new Set([
+  "reply_data_drop", "reply_contrarian", "reply_example",
+  "reply_quick_tip", "reply_agree_amplify", "reply_resource_drop",
+  "smart_reply", "follow_up_reply",
+]);
+
+const TARGET_CATEGORIES = [
+  "Email Marketing Expert",
+  "D2C Founder",
+  "Ecommerce Influencer",
+  "Tool Founder",
+  "Marketing Agency",
+];
+
+type ReplyTarget = {
+  id: number;
+  handle: string;
+  display_name: string;
+  follower_count: number | null;
+  category: string;
+  notes: string | null;
+  is_active: boolean;
+  reply_count: number;
+  last_replied_at: string | null;
+  created_at: string | null;
+};
 
 // Type descriptions shown below the dropdown
 const TYPE_DESCRIPTIONS: Record<string, string> = {
@@ -171,6 +217,24 @@ export default function AdminTweetsPage() {
   const [editContent, setEditContent] = useState("");
   const [posting, setPosting] = useState<number | null>(null);
   const [postingThread, setPostingThread] = useState<string | null>(null);
+
+  // Tab state
+  const [activeTab, setActiveTab] = useState<"tweets" | "replies">("tweets");
+
+  // Reply Hub state
+  const [replyTargets, setReplyTargets] = useState<ReplyTarget[]>([]);
+  const [selectedTarget, setSelectedTarget] = useState("");
+  const [replyTweetText, setReplyTweetText] = useState("");
+  const [replyTweetUrl, setReplyTweetUrl] = useState("");
+  const [replyStyle, setReplyStyle] = useState("reply_data_drop");
+  const [replyGenerating, setReplyGenerating] = useState(false);
+  const [replyTweets, setReplyTweets] = useState<Tweet[]>([]);
+  const [replyLoading, setReplyLoading] = useState(false);
+  const [showTargetForm, setShowTargetForm] = useState(false);
+  const [targetCategory, setTargetCategory] = useState("all");
+  const [newTarget, setNewTarget] = useState({ handle: "", display_name: "", follower_count: "", category: "Email Marketing Expert", notes: "" });
+  const [showTargets, setShowTargets] = useState(true);
+  const [seeding, setSeeding] = useState(false);
 
   const headers = {
     "Content-Type": "application/json",
@@ -360,6 +424,116 @@ export default function AdminTweetsPage() {
     }
   };
 
+  // ── Reply Hub functions ──
+
+  const extractTweetId = (urlOrId: string): string => {
+    const trimmed = urlOrId.trim();
+    if (/^\d+$/.test(trimmed)) return trimmed;
+    const match = trimmed.match(/status\/(\d+)/);
+    return match ? match[1] : trimmed;
+  };
+
+  const fetchReplyTargets = async () => {
+    try {
+      const url = targetCategory === "all"
+        ? `${API_BASE}/admin/reply-targets?active_only=false`
+        : `${API_BASE}/admin/reply-targets?category=${encodeURIComponent(targetCategory)}&active_only=false`;
+      const res = await fetch(url, { headers });
+      if (res.ok) setReplyTargets(await res.json());
+    } catch { /* ignore */ }
+  };
+
+  const fetchReplyTweets = async () => {
+    setReplyLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/admin/tweets?limit=200`, { headers });
+      if (res.ok) {
+        const all: Tweet[] = await res.json();
+        setReplyTweets(all.filter((t) => REPLY_TYPE_SET.has(t.tweet_type)));
+      }
+    } catch { /* ignore */ }
+    finally { setReplyLoading(false); }
+  };
+
+  const generateReply = async () => {
+    if (!replyTweetText.trim()) { setError("Paste the tweet text to reply to"); return; }
+    setReplyGenerating(true);
+    setError(null);
+    const tweetId = replyTweetUrl ? extractTweetId(replyTweetUrl) : undefined;
+    const target = replyTargets.find((t) => t.handle === selectedTarget);
+    const body: Record<string, string> = { tweet_text: replyTweetText.trim() };
+    if (selectedTarget) body.author_handle = selectedTarget;
+    if (target?.category) body.target_category = target.category;
+    if (tweetId) body.reply_to_id = tweetId;
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/admin/tweets/generate?tweet_type=${replyStyle}`,
+        { method: "POST", headers, body: JSON.stringify(body) }
+      );
+      if (res.ok) {
+        fetchReplyTweets();
+        setReplyTweetText("");
+        setReplyTweetUrl("");
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.detail || "Failed to generate reply");
+      }
+    } catch { setError("Network error"); }
+    finally { setReplyGenerating(false); }
+  };
+
+  const addTarget = async () => {
+    if (!newTarget.handle.trim() || !newTarget.display_name.trim()) {
+      setError("Handle and display name are required");
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/admin/reply-targets`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          ...newTarget,
+          follower_count: newTarget.follower_count ? parseInt(newTarget.follower_count) : null,
+        }),
+      });
+      if (res.ok) {
+        setNewTarget({ handle: "", display_name: "", follower_count: "", category: "Email Marketing Expert", notes: "" });
+        setShowTargetForm(false);
+        fetchReplyTargets();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setError(data.detail || "Failed to add target");
+      }
+    } catch { setError("Network error"); }
+  };
+
+  const deleteTarget = async (id: number) => {
+    try {
+      const res = await fetch(`${API_BASE}/admin/reply-targets/${id}`, { method: "DELETE", headers });
+      if (res.ok) fetchReplyTargets();
+    } catch { setError("Network error"); }
+  };
+
+  const seedTargets = async () => {
+    setSeeding(true);
+    try {
+      const res = await fetch(`${API_BASE}/admin/reply-targets/seed`, { method: "POST", headers });
+      if (res.ok) fetchReplyTargets();
+    } catch { setError("Network error"); }
+    finally { setSeeding(false); }
+  };
+
+  // Fetch reply hub data when tab switches
+  useEffect(() => {
+    if (activeTab === "replies" && token) {
+      fetchReplyTargets();
+      fetchReplyTweets();
+    }
+  }, [activeTab, token, targetCategory]);
+
+  // ── Grouping helpers ──
+
   // Determine if a grouped item is a thread (reply chain) or variants (alternatives)
   const getGroupType = (threadTweets: Tweet[]): "thread" | "variants" => {
     const tweetType = threadTweets[0]?.tweet_type || "";
@@ -548,15 +722,77 @@ export default function AdminTweetsPage() {
   const isThreadType = THREAD_TYPES.has(genType);
   const isVariantType = VARIANT_TYPES.has(genType);
 
+  // Group reply tweets for the Reply Hub queue
+  const replyGrouped = (() => {
+    const threadMap = new Map<string, Tweet[]>();
+    const standalone: Tweet[] = [];
+    for (const t of replyTweets) {
+      if (t.thread_id) {
+        const existing = threadMap.get(t.thread_id) || [];
+        existing.push(t);
+        threadMap.set(t.thread_id, existing);
+      } else {
+        standalone.push(t);
+      }
+    }
+    for (const [, tts] of threadMap) {
+      tts.sort((a, b) => (a.thread_order ?? 0) - (b.thread_order ?? 0));
+    }
+    const items: Array<
+      | { type: "variants"; threadId: string; tweets: Tweet[] }
+      | { type: "single"; tweet: Tweet }
+    > = [];
+    for (const [threadId, tts] of threadMap) {
+      items.push({ type: "variants", threadId, tweets: tts });
+    }
+    for (const t of standalone) {
+      items.push({ type: "single", tweet: t });
+    }
+    return items;
+  })();
+
+  const formatFollowers = (n: number | null) => {
+    if (!n) return "";
+    if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`;
+    if (n >= 1000) return `${Math.round(n / 1000)}K`;
+    return String(n);
+  };
+
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 20px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-primary)", margin: 0, fontFamily: "var(--font-dm-serif)" }}>
           Tweet Manager
         </h1>
         <Link href="/admin/dashboard" style={{ fontSize: 13, color: "var(--color-secondary)", textDecoration: "none" }}>
           Back to dashboard
         </Link>
+      </div>
+
+      {/* Tab navigation */}
+      <div style={{ display: "flex", gap: 0, marginBottom: 24, marginTop: 16, borderBottom: "2px solid var(--color-border, #e5e5e5)" }}>
+        {[
+          { key: "tweets" as const, label: "Content", color: "var(--color-accent)" },
+          { key: "replies" as const, label: "Reply Hub", color: "#7c3aed" },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            style={{
+              padding: "10px 24px",
+              fontSize: 14,
+              fontWeight: activeTab === tab.key ? 700 : 500,
+              color: activeTab === tab.key ? tab.color : "var(--color-secondary)",
+              background: "none",
+              border: "none",
+              borderBottom: activeTab === tab.key ? `2px solid ${tab.color}` : "2px solid transparent",
+              cursor: "pointer",
+              marginBottom: -2,
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Error */}
@@ -566,6 +802,295 @@ export default function AdminTweetsPage() {
           <button onClick={() => setError(null)} style={{ float: "right", background: "none", border: "none", cursor: "pointer", color: "#991b1b", fontWeight: 600 }}>x</button>
         </div>
       )}
+
+      {/* ═══ REPLY HUB TAB ═══ */}
+      {activeTab === "replies" && (
+        <>
+          {/* Reply Composer */}
+          <div style={{ background: "var(--color-surface, white)", border: "2px solid #7c3aed30", borderRadius: 12, padding: 20, marginBottom: 24 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#7c3aed", marginBottom: 16 }}>
+              Reply Composer
+            </div>
+
+            {/* Target account selector */}
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-secondary)", display: "block", marginBottom: 4 }}>
+                Target Account (optional)
+              </label>
+              <select
+                value={selectedTarget}
+                onChange={(e) => setSelectedTarget(e.target.value)}
+                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-inter)", boxSizing: "border-box" }}
+              >
+                <option value="">-- Select or type handle below --</option>
+                {replyTargets.map((t) => (
+                  <option key={t.id} value={t.handle}>
+                    @{t.handle} — {t.display_name} {t.follower_count ? `(${formatFollowers(t.follower_count)})` : ""} · {t.category}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Tweet text to reply to */}
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-secondary)", display: "block", marginBottom: 4 }}>
+                Tweet to reply to <span style={{ color: "#ef4444" }}>*</span>
+              </label>
+              <textarea
+                value={replyTweetText}
+                onChange={(e) => setReplyTweetText(e.target.value)}
+                placeholder="Paste the tweet text here..."
+                rows={4}
+                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-inter)", resize: "vertical", boxSizing: "border-box" }}
+              />
+            </div>
+
+            {/* Tweet URL/ID */}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-secondary)", display: "block", marginBottom: 4 }}>
+                Tweet URL or ID (for posting as a reply)
+              </label>
+              <input
+                type="text"
+                value={replyTweetUrl}
+                onChange={(e) => setReplyTweetUrl(e.target.value)}
+                placeholder="https://x.com/user/status/123... or just 123..."
+                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-inter)", boxSizing: "border-box" }}
+              />
+            </div>
+
+            {/* Reply style pills */}
+            <div style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-secondary)", display: "block", marginBottom: 8 }}>
+                Reply Style
+              </label>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {REPLY_STYLES.map((s) => (
+                  <button
+                    key={s.value}
+                    onClick={() => setReplyStyle(s.value)}
+                    style={{
+                      padding: "6px 14px",
+                      borderRadius: 20,
+                      border: replyStyle === s.value ? "2px solid #7c3aed" : "1px solid var(--color-border, #e5e5e5)",
+                      background: replyStyle === s.value ? "#7c3aed10" : "transparent",
+                      color: replyStyle === s.value ? "#7c3aed" : "var(--color-secondary)",
+                      fontSize: 12,
+                      fontWeight: replyStyle === s.value ? 700 : 500,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {s.emoji} {s.label}
+                  </button>
+                ))}
+              </div>
+              <p style={{ fontSize: 12, color: "var(--color-secondary)", marginTop: 8, lineHeight: 1.5, fontStyle: "italic" }}>
+                {REPLY_STYLES.find((s) => s.value === replyStyle)?.desc}
+              </p>
+            </div>
+
+            {/* Generate button */}
+            <button
+              onClick={generateReply}
+              disabled={replyGenerating}
+              style={{
+                padding: "10px 24px", borderRadius: 8, border: "none",
+                background: "#7c3aed", color: "white", fontSize: 14, fontWeight: 600,
+                cursor: replyGenerating ? "not-allowed" : "pointer",
+                opacity: replyGenerating ? 0.6 : 1,
+              }}
+            >
+              {replyGenerating ? "Generating 3 Variants..." : "Generate 3 Reply Variants"}
+            </button>
+          </div>
+
+          {/* Reply Queue */}
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--color-primary)", marginBottom: 14 }}>
+              Reply Queue ({replyTweets.length})
+            </div>
+            {replyLoading ? (
+              <div style={{ textAlign: "center", padding: 30, color: "var(--color-secondary)" }}>Loading...</div>
+            ) : replyGrouped.length === 0 ? (
+              <div style={{ textAlign: "center", padding: 30, color: "var(--color-secondary)", fontSize: 13 }}>
+                No replies generated yet. Use the composer above to get started.
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {replyGrouped.map((item) => {
+                  if (item.type === "single") {
+                    return renderTweetCard(item.tweet);
+                  }
+                  const variantTweets = item.tweets;
+                  return (
+                    <div
+                      key={`rg-${item.threadId}`}
+                      style={{
+                        background: "var(--color-surface, white)",
+                        border: "2px solid #7c3aed30",
+                        borderRadius: 14,
+                        padding: 20,
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, flexWrap: "wrap", gap: 8 }}>
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 6, background: "#7c3aed15", color: "#7c3aed", textTransform: "uppercase" }}>
+                            {variantTweets.length} variants
+                          </span>
+                          <span style={{ fontSize: 11, fontWeight: 500, padding: "3px 8px", borderRadius: 4, background: "#f5e6dc", color: "var(--color-accent)" }}>
+                            {TYPE_LABELS[variantTweets[0]?.tweet_type] || variantTweets[0]?.tweet_type}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 11, color: "var(--color-muted, #999)" }}>
+                          {variantTweets[0]?.created_at ? new Date(variantTweets[0].created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}
+                        </div>
+                      </div>
+                      <p style={{ fontSize: 12, color: "var(--color-secondary)", margin: "0 0 12px", fontStyle: "italic" }}>
+                        Pick your favorite variant. Approve and post individually.
+                      </p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                        {variantTweets.map((t) => renderTweetCard(t))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Target Accounts Panel */}
+          <div style={{ background: "var(--color-surface, white)", border: "1px solid var(--color-border, #e5e5e5)", borderRadius: 12, padding: 20 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: showTargets ? 16 : 0 }}>
+              <button
+                onClick={() => setShowTargets(!showTargets)}
+                style={{ fontSize: 15, fontWeight: 700, color: "var(--color-primary)", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              >
+                {showTargets ? "\u25BC" : "\u25B6"} Target Accounts ({replyTargets.length})
+              </button>
+              <div style={{ display: "flex", gap: 8 }}>
+                {replyTargets.length === 0 && (
+                  <button
+                    onClick={seedTargets}
+                    disabled={seeding}
+                    style={{ padding: "6px 14px", borderRadius: 8, border: "1px solid #7c3aed", background: "transparent", color: "#7c3aed", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+                  >
+                    {seeding ? "Seeding..." : "Seed 20 Accounts"}
+                  </button>
+                )}
+                <button
+                  onClick={() => setShowTargetForm(!showTargetForm)}
+                  style={{ padding: "6px 14px", borderRadius: 8, border: "none", background: "#7c3aed", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer" }}
+                >
+                  + Add
+                </button>
+              </div>
+            </div>
+
+            {showTargets && (
+              <>
+                {/* Add target form */}
+                {showTargetForm && (
+                  <div style={{ background: "#f9fafb", borderRadius: 8, padding: 14, marginBottom: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <input type="text" placeholder="@handle" value={newTarget.handle} onChange={(e) => setNewTarget({ ...newTarget, handle: e.target.value })}
+                        style={{ flex: 1, minWidth: 120, padding: "6px 10px", borderRadius: 6, border: "1px solid var(--color-border)", fontSize: 12 }} />
+                      <input type="text" placeholder="Display Name" value={newTarget.display_name} onChange={(e) => setNewTarget({ ...newTarget, display_name: e.target.value })}
+                        style={{ flex: 1, minWidth: 120, padding: "6px 10px", borderRadius: 6, border: "1px solid var(--color-border)", fontSize: 12 }} />
+                      <input type="text" placeholder="Followers (e.g. 50000)" value={newTarget.follower_count} onChange={(e) => setNewTarget({ ...newTarget, follower_count: e.target.value })}
+                        style={{ width: 120, padding: "6px 10px", borderRadius: 6, border: "1px solid var(--color-border)", fontSize: 12 }} />
+                    </div>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <select value={newTarget.category} onChange={(e) => setNewTarget({ ...newTarget, category: e.target.value })}
+                        style={{ padding: "6px 10px", borderRadius: 6, border: "1px solid var(--color-border)", fontSize: 12 }}>
+                        {TARGET_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                      <input type="text" placeholder="Notes (optional)" value={newTarget.notes} onChange={(e) => setNewTarget({ ...newTarget, notes: e.target.value })}
+                        style={{ flex: 1, padding: "6px 10px", borderRadius: 6, border: "1px solid var(--color-border)", fontSize: 12 }} />
+                      <button onClick={addTarget} style={{ padding: "6px 14px", borderRadius: 6, border: "none", background: "#7c3aed", color: "white", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Category filter */}
+                <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+                  {["all", ...TARGET_CATEGORIES].map((c) => (
+                    <button
+                      key={c}
+                      onClick={() => setTargetCategory(c)}
+                      style={{
+                        padding: "4px 10px", borderRadius: 14, fontSize: 11,
+                        border: targetCategory === c ? "none" : "1px solid var(--color-border)",
+                        background: targetCategory === c ? "#7c3aed" : "transparent",
+                        color: targetCategory === c ? "white" : "var(--color-secondary)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {c === "all" ? "All" : c}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Target list */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {replyTargets.map((t) => (
+                    <div
+                      key={t.id}
+                      style={{
+                        display: "flex", justifyContent: "space-between", alignItems: "center",
+                        padding: "10px 14px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)",
+                        background: t.is_active ? "transparent" : "#f9fafb",
+                      }}
+                    >
+                      <div>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: "var(--color-primary)" }}>
+                          @{t.handle}
+                        </span>
+                        <span style={{ fontSize: 12, color: "var(--color-secondary)", marginLeft: 8 }}>
+                          {t.display_name}
+                        </span>
+                        {t.follower_count && (
+                          <span style={{ fontSize: 11, color: "#7c3aed", marginLeft: 8, fontWeight: 600 }}>
+                            {formatFollowers(t.follower_count)}
+                          </span>
+                        )}
+                        <span style={{ fontSize: 10, color: "var(--color-muted)", marginLeft: 8, padding: "2px 6px", borderRadius: 4, background: "#f3f4f6" }}>
+                          {t.category}
+                        </span>
+                        {t.notes && (
+                          <span style={{ fontSize: 11, color: "var(--color-muted)", marginLeft: 8 }}>
+                            — {t.notes}
+                          </span>
+                        )}
+                        {t.reply_count > 0 && (
+                          <span style={{ fontSize: 10, color: "var(--color-muted)", marginLeft: 8 }}>
+                            Replied {t.reply_count}x
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => deleteTarget(t.id)}
+                        style={{ padding: "4px 8px", borderRadius: 4, border: "1px solid #fecaca", background: "transparent", color: "#ef4444", fontSize: 11, cursor: "pointer" }}
+                      >
+                        Del
+                      </button>
+                    </div>
+                  ))}
+                  {replyTargets.length === 0 && (
+                    <div style={{ textAlign: "center", padding: 20, color: "var(--color-secondary)", fontSize: 13 }}>
+                      No target accounts yet. Click &quot;Seed 20 Accounts&quot; to get started.
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* ═══ TWEET MANAGER TAB ═══ */}
+      {activeTab === "tweets" && (<>
 
       {/* Generate section */}
       <div style={{ background: "var(--color-surface, white)", border: "1px solid var(--color-border, #e5e5e5)", borderRadius: 12, padding: 20, marginBottom: 24 }}>
@@ -804,6 +1329,8 @@ export default function AdminTweetsPage() {
           })}
         </div>
       )}
+
+      </>)}
     </div>
   );
 }
