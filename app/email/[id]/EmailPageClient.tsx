@@ -246,9 +246,8 @@ img[src=""] { display: none !important; }
                   <Badge variant="accent" size="md">{email.brand}</Badge>
                 </Link>
               )}
-              {email.industry && <Badge variant="default" size="sm">{email.industry}</Badge>}
-              {email.type && <Badge variant="default" size="sm">{email.type}</Badge>}
               {email.category && <Badge variant="default" size="sm">{email.category}</Badge>}
+              {email.type && <Badge variant="default" size="sm">{email.type}</Badge>}
             </div>
             <time style={{ fontSize: 13, color: "var(--color-tertiary)", fontWeight: 500 }}>
               {formattedDate}

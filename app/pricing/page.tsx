@@ -98,7 +98,7 @@ const faqs = [
   },
   {
     q: "What payment methods do you accept?",
-    a: "We accept all major credit/debit cards, UPI, net banking, and wallets via Razorpay.",
+    a: "We accept all major credit/debit cards and popular payment methods via our payment gateway.",
   },
   {
     q: "Is there a free trial?",
@@ -382,7 +382,7 @@ export default function PricingPage() {
               color: "var(--color-primary)",
             }}
           >
-            &#8377;0
+            $0
           </span>
           <span style={{ fontSize: 14, color: "var(--color-secondary)" }}>
             {" "}/forever

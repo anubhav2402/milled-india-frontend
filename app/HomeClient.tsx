@@ -87,6 +87,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
             Steal the email playbook of top brands
           </h1>
           <p
+            className="hero-subtitle"
             style={{
               fontSize: "clamp(16px, 1.8vw, 18px)",
               color: "var(--color-secondary)",
@@ -100,7 +101,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
             your own templates.
           </p>
 
-          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <div className="hero-cta-row" style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
             <Button href="/browse" size="lg">
               Browse Emails Free
             </Button>
@@ -180,6 +181,13 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
             gap: 40px !important;
             text-align: center;
           }
+          .hero-subtitle {
+            margin-left: auto !important;
+            margin-right: auto !important;
+          }
+          .hero-cta-row {
+            justify-content: center !important;
+          }
           .hero-masonry-wrap {
             max-height: 400px !important;
           }
@@ -192,7 +200,7 @@ function HeroSection({ emails }: { emails: EmailPreview[] }) {
             max-height: 320px !important;
           }
           .hero-cards {
-            columns: 2 !important;
+            columns: 1 !important;
           }
         }
       `}</style>
@@ -676,6 +684,7 @@ function EditorShowcase() {
 
             {/* Right sidebar mock */}
             <div
+              className="editor-mock-sidebar"
               style={{
                 width: 100,
                 borderLeft: "1px solid #333",
@@ -729,6 +738,11 @@ function EditorShowcase() {
             gap: 40px !important;
           }
         }
+        @media (max-width: 480px) {
+          .editor-mock-sidebar {
+            display: none !important;
+          }
+        }
       `}</style>
     </section>
   );
@@ -751,9 +765,9 @@ function PricingAnchor() {
     },
     {
       name: "Starter",
-      price: "599",
+      price: "9",
       period: "/mo",
-      annual: "5,999/yr",
+      annual: "89/yr",
       features: ["6 months of emails", "75 email views/day", "Advanced search", "3 HTML exports/mo"],
       cta: "Start Starter",
       ctaHref: "/pricing",
@@ -762,9 +776,9 @@ function PricingAnchor() {
     },
     {
       name: "Pro",
-      price: "1,599",
+      price: "19",
       period: "/mo",
-      annual: "15,999/yr",
+      annual: "189/yr",
       savings: "Save 17%",
       features: ["Full email archive", "Unlimited views & analytics", "Campaign calendar & alerts", "Template editor & export"],
       cta: "Start Pro Plan",
@@ -774,9 +788,9 @@ function PricingAnchor() {
     },
     {
       name: "Agency",
-      price: "3,999",
+      price: "49",
       period: "/mo",
-      annual: "39,999/yr",
+      annual: "489/yr",
       features: ["Everything in Pro", "10 team seats", "Bulk export & reports", "Unlimited AI generator"],
       cta: "Start Agency",
       ctaHref: "/pricing",
@@ -856,7 +870,7 @@ function PricingAnchor() {
               </h3>
               <div style={{ marginBottom: 4 }}>
                 <span style={{ fontSize: 28, fontWeight: 700, color: "var(--color-primary)" }}>
-                  &#8377;{plan.price}
+                  ${plan.price}
                 </span>
                 <span style={{ fontSize: 13, color: "var(--color-secondary)" }}>
                   {plan.period}
@@ -864,7 +878,7 @@ function PricingAnchor() {
               </div>
               {plan.annual && (
                 <p style={{ fontSize: 11, color: "var(--color-secondary)", margin: "0 0 12px" }}>
-                  &#8377;{plan.annual}
+                  ${plan.annual}
                   {plan.savings && (
                     <span style={{
                       marginLeft: 6,
@@ -928,6 +942,7 @@ function PricingAnchor() {
         @media (max-width: 900px) {
           .pricing-anchor-grid {
             grid-template-columns: repeat(2, 1fr) !important;
+            gap: 24px !important;
           }
         }
         @media (max-width: 520px) {
@@ -936,6 +951,9 @@ function PricingAnchor() {
           }
           .pricing-anchor-grid > div:nth-child(3) {
             order: -1;
+          }
+          .pricing-anchor-grid > div {
+            margin-top: 8px;
           }
         }
       `}</style>

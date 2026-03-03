@@ -119,15 +119,15 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
   },
 };
 
-// Pricing constants (INR)
+// Pricing constants (USD)
 export const PLAN_PRICES: Record<
   PlanTier,
   { monthly: number; annual: number }
 > = {
   free: { monthly: 0, annual: 0 },
-  starter: { monthly: 599, annual: 5999 },
-  pro: { monthly: 1599, annual: 15999 },
-  agency: { monthly: 3999, annual: 39999 },
+  starter: { monthly: 9, annual: 89 },
+  pro: { monthly: 19, annual: 189 },
+  agency: { monthly: 49, annual: 489 },
 };
 
 // ── Helpers ──
@@ -191,10 +191,10 @@ export function getUpgradeTier(
   return null;
 }
 
-/** Format price for display (e.g. 1599 → "₹1,599") */
+/** Format price for display (e.g. 19 → "$19") */
 export function formatPrice(amount: number): string {
   if (amount === 0) return "Free";
-  return `₹${amount.toLocaleString("en-IN")}`;
+  return `$${amount.toLocaleString("en-US")}`;
 }
 
 /** Feature display names for upgrade prompts. */
