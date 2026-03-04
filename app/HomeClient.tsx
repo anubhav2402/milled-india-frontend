@@ -372,17 +372,36 @@ function HeroSection({
 // ============================================================
 // SECTION 2: Brand Trust Bar + Metrics
 // ============================================================
+// Top 20 brands by revenue/recognition in our database
+const TOP_BRANDS = [
+  "Uniqlo",
+  "Calvin Klein",
+  "Balenciaga",
+  "Givenchy",
+  "Mango",
+  "Net-A-Porter",
+  "Anthropologie",
+  "Mytheresa",
+  "AJIO",
+  "Fossil",
+  "Nykaa",
+  "Reformation",
+  "Zomato",
+  "Bobbi Brown Cosmetics",
+  "Kiehl'S Since 1851",
+  "Nyx Professional Makeup",
+  "Urban Decay",
+  "Innisfree",
+  "Caratlane, A Tanishq Partnership",
+  "Luisaviaroma",
+];
+
 function BrandTrustBar({
-  brands,
   brandStats,
 }: {
-  brands: string[];
   brandStats: Record<string, { logo_url?: string | null }>;
 }) {
-  if (brands.length === 0) return null;
-
-  const brandsWithLogos = brands.filter((b) => brandStats[b]?.logo_url);
-  const displayBrands = (brandsWithLogos.length >= 15 ? brandsWithLogos : brands).slice(0, 25);
+  const displayBrands = TOP_BRANDS;
   const marqueeItems = [...displayBrands, ...displayBrands];
 
   const metrics = [
@@ -577,7 +596,7 @@ function ProblemSection() {
             marginBottom: 48,
           }}
         >
-          Sound familiar?
+          MailMuse solves all three &mdash; in one platform
         </h2>
 
         <div
@@ -624,7 +643,7 @@ function ProblemSection() {
             marginTop: 40,
           }}
         >
-          MailMuse solves all three &mdash; in one platform.
+          Stop guessing. Start knowing.
         </p>
       </div>
 
@@ -1357,6 +1376,18 @@ function PricingAnchor() {
       highlight: false,
     },
     {
+      name: "Starter",
+      price: "9",
+      period: "/mo",
+      annual: "89/yr",
+      savings: "Save 18%",
+      features: ["6 months of emails", "75 email views/day", "Advanced filters", "Edit + 3 template exports"],
+      cta: "Start 7-Day Trial",
+      ctaHref: "/pricing",
+      variant: "secondary" as const,
+      highlight: false,
+    },
+    {
       name: "Pro",
       price: "19",
       period: "/mo",
@@ -1383,7 +1414,7 @@ function PricingAnchor() {
 
   return (
     <section style={{ padding: "96px 24px", background: "white" }}>
-      <div style={{ maxWidth: 960, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 16 }}>
           <h2
             style={{
@@ -1423,8 +1454,8 @@ function PricingAnchor() {
           className="pricing-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 20,
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 16,
           }}
         >
           {plans.map((plan) => (
@@ -1504,13 +1535,18 @@ function PricingAnchor() {
       </div>
 
       <style>{`
-        @media (max-width: 768px) {
+        @media (max-width: 960px) {
+          .pricing-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 640px) {
           .pricing-grid {
             grid-template-columns: 1fr !important;
             max-width: 400px !important;
             margin: 0 auto !important;
           }
-          .pricing-grid > div:nth-child(2) {
+          .pricing-grid > div:nth-child(3) {
             order: -1;
           }
         }
@@ -1608,7 +1644,6 @@ function FinalCTA() {
 // ============================================================
 export function HomeClient() {
   const [recentEmails, setRecentEmails] = useState<EmailPreview[]>([]);
-  const [brands, setBrands] = useState<string[]>([]);
   const [brandStats, setBrandStats] = useState<Record<string, { logo_url?: string | null }>>({});
 
   useEffect(() => {
@@ -1616,13 +1651,11 @@ export function HomeClient() {
       fetch(`${API_BASE}/emails?limit=8`).then((r) =>
         r.ok ? r.json() : []
       ),
-      fetch(`${API_BASE}/brands`).then((r) => (r.ok ? r.json() : [])),
       fetch(`${API_BASE}/brands/stats`).then((r) => (r.ok ? r.json() : {})),
     ])
-      .then(([emails, brandsData, statsData]) => {
+      .then(([emails, statsData]) => {
         const emailList = emails.emails || emails || [];
         setRecentEmails(emailList.slice(0, 8));
-        setBrands(brandsData as string[]);
         setBrandStats(statsData as Record<string, { logo_url?: string | null }>);
       })
       .catch(() => {});
@@ -1632,7 +1665,7 @@ export function HomeClient() {
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
       <HeroSection defaultEmails={recentEmails.slice(0, 6)} />
-      <BrandTrustBar brands={brands} brandStats={brandStats} />
+      <BrandTrustBar brandStats={brandStats} />
       <ProblemSection />
       <WorkflowSection />
       <AnalysisShowcase />
