@@ -145,7 +145,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
               <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
             </svg>
           )}
-          {loading ? "Analyzing..." : "AI Led Analysis"}
+          {loading ? "Analyzing..." : "Email Teardown by AI"}
         </button>
       </div>
     );
