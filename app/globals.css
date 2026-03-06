@@ -467,6 +467,20 @@ h1, h2, h3, h4, h5, h6, p, span, a {
   .email-detail-sidebar {
     order: 2;
   }
+
+  .browse-layout {
+    padding: 12px !important;
+    gap: 12px !important;
+  }
+
+  .browse-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .email-card-preview {
+    height: 260px !important;
+  }
 }
 
 @media (max-width: 480px) {

@@ -128,6 +128,7 @@ export default function EmailCard({
     >
       {/* Full-bleed Preview */}
       <div
+        className="email-card-preview"
         style={{
           height: previewHeight ?? (compact ? 220 : 420),
           backgroundColor: "#f8fafc",
@@ -280,6 +281,7 @@ export function EmailCardSkeleton({ compact = false, previewHeight }: { compact?
     >
       {/* Full preview skeleton */}
       <div
+        className="email-card-preview"
         style={{
           height: previewHeight ?? (compact ? 220 : 420),
           background: "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",

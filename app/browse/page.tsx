@@ -605,6 +605,7 @@ function Sidebar({
 function LoadingGrid() {
   return (
     <div
+      className="browse-grid"
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
@@ -784,7 +785,7 @@ function BrowseContent() {
         setSearchQuery={setSearchQuery}
       />
 
-      <div style={{ maxWidth: 1400, margin: "0 auto", padding: 24, display: "flex", gap: 24 }}>
+      <div className="browse-layout" style={{ maxWidth: 1400, margin: "0 auto", padding: 24, display: "flex", gap: 24 }}>
         <Sidebar
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
@@ -963,6 +964,7 @@ function BrowseContent() {
           ) : (
             <>
               <div
+                className="browse-grid"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
