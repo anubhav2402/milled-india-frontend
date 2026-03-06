@@ -183,7 +183,7 @@ export default function EmailCard({
                 border: "none",
                 display: "block",
               }}
-              sandbox="allow-same-origin"
+              sandbox=""
               title={`Preview of ${subject}`}
             />
           </div>

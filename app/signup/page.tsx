@@ -40,7 +40,10 @@ export default function SignupPage() {
   const getRedirect = () => {
     if (typeof window === "undefined") return "/browse";
     const params = new URLSearchParams(window.location.search);
-    return params.get("redirect") || "/browse";
+    const target = params.get("redirect") || "/browse";
+    // Only allow relative paths — block protocol-relative URLs and external redirects
+    if (target.startsWith("/") && !target.startsWith("//")) return target;
+    return "/browse";
   };
 
   // Redirect if already logged in

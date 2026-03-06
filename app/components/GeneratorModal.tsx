@@ -451,7 +451,7 @@ export default function GeneratorModal({ isOpen, onClose, emailId, emailSubject,
                     display: "block",
                   }}
                   title="Generated email preview"
-                  sandbox="allow-same-origin"
+                  sandbox=""
                 />
               </div>
 
