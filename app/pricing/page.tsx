@@ -39,10 +39,6 @@ const featureRows: FeatureRow[] = [
     values: { free: "5 collections", starter: "15 collections", pro: "Unlimited", agency: "Unlimited" },
   },
   {
-    label: "Search",
-    values: { free: "Basic keyword", starter: "Advanced filters", pro: "Full multi-param", agency: "Full" },
-  },
-  {
     label: "Analytics",
     values: { free: false, starter: "Send frequency", pro: "Full suite", agency: "Full suite" },
   },
@@ -57,18 +53,6 @@ const featureRows: FeatureRow[] = [
   {
     label: "Brand alerts",
     values: { free: false, starter: false, pro: "5 alerts", agency: "Unlimited" },
-  },
-  {
-    label: "Brand follows",
-    values: { free: "3", starter: "10", pro: "Unlimited", agency: "Unlimited" },
-  },
-  {
-    label: "Bookmarks",
-    values: { free: "10", starter: "50", pro: "Unlimited", agency: "Unlimited" },
-  },
-  {
-    label: "Emails per collection",
-    values: { free: "10", starter: "50", pro: "Unlimited", agency: "Unlimited" },
   },
   {
     label: "Email analysis",
@@ -145,7 +129,7 @@ export default function PricingPage() {
 
     if (currentPlan === selectedTier) return;
 
-    const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_live_SLvIYkuVsh4vIr";
+    const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     if (!razorpayKey) {
       setError(
         "Payment system is being set up. Please try again in a few minutes, or contact support."
