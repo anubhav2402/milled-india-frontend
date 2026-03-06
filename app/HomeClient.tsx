@@ -84,11 +84,11 @@ function HeroSection({
     }
     setSearching(true);
     setHasSearched(true);
-    fetch(`${API_BASE}/emails?q=${encodeURIComponent(q.trim())}&limit=6`)
+    fetch(`${API_BASE}/emails?q=${encodeURIComponent(q.trim())}&limit=9`)
       .then((r) => (r.ok ? r.json() : { emails: [] }))
       .then((data) => {
         const emails = data.emails || data || [];
-        setResults(emails.slice(0, 6));
+        setResults(emails.slice(0, 9));
       })
       .catch(() => setResults([]))
       .finally(() => setSearching(false));
@@ -106,7 +106,7 @@ function HeroSection({
     doSearch(q);
   };
 
-  const displayEmails = hasSearched ? results : defaultEmails.slice(0, 6);
+  const displayEmails = hasSearched ? results : defaultEmails.slice(0, 9);
 
   return (
     <section
@@ -271,15 +271,14 @@ function HeroSection({
             display: "flex",
             gap: 12,
             justifyContent: "center",
-            flexWrap: "wrap",
             marginBottom: 12,
           }}
         >
-          <Button href="/signup" size="lg">
+          <Button href="/signup" size="lg" className="hero-btn">
             Start Free Account
           </Button>
-          <Button href="/browse" size="lg" variant="outline">
-            Explore 100K+ Email Templates
+          <Button href="/browse" size="lg" variant="outline" className="hero-btn">
+            Browse All Emails
           </Button>
         </div>
 
@@ -318,12 +317,12 @@ function HeroSection({
                   campaignType={email.type || undefined}
                   logoUrl={logoUrlFromSender(email.sender)}
                   compact
-                  previewHeight={200}
+                  previewHeight={160}
                 />
               ))
             : searching
-              ? Array.from({ length: 6 }).map((_, i) => (
-                  <EmailCardSkeleton key={i} compact previewHeight={200} />
+              ? Array.from({ length: 9 }).map((_, i) => (
+                  <EmailCardSkeleton key={i} compact previewHeight={160} />
                 ))
               : hasSearched
                 ? (
@@ -331,8 +330,8 @@ function HeroSection({
                     No emails found for &ldquo;{query}&rdquo;. Try a different search.
                   </div>
                 )
-                : Array.from({ length: 6 }).map((_, i) => (
-                    <EmailCardSkeleton key={i} compact previewHeight={200} />
+                : Array.from({ length: 9 }).map((_, i) => (
+                    <EmailCardSkeleton key={i} compact previewHeight={160} />
                   ))
           }
         </div>
@@ -355,14 +354,19 @@ function HeroSection({
       </div>
 
       <style>{`
+        .hero-btn { min-width: 220px; }
         @media (max-width: 768px) {
           .hero-results-grid {
             grid-template-columns: repeat(2, 1fr) !important;
           }
           .hero-cta-row {
             flex-direction: column !important;
-            align-items: center !important;
+            align-items: stretch !important;
+            max-width: 320px !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
           }
+          .hero-btn { min-width: 0 !important; width: 100% !important; }
           .hero-pills {
             flex-wrap: nowrap !important;
             justify-content: flex-start !important;
@@ -375,7 +379,7 @@ function HeroSection({
         }
         @media (max-width: 480px) {
           .hero-results-grid {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: repeat(2, 1fr) !important;
           }
         }
       `}</style>
@@ -570,7 +574,7 @@ function ProblemSection() {
         </svg>
       ),
       title: "Hours lost to manual research",
-      body: "You subscribe to competitor newsletters, screenshot designs, and paste subject lines into spreadsheets. There has to be a better way.",
+      body: "Subscribing to competitors, screenshotting designs, pasting into spreadsheets. There has to be a better way.",
     },
     {
       icon: (
@@ -581,7 +585,7 @@ function ProblemSection() {
         </svg>
       ),
       title: "Flying blind on competitor strategy",
-      body: "You see one email at a time and have no idea about their send frequency, campaign calendar, or seasonal patterns.",
+      body: "One email at a time with no visibility into send frequency, campaign calendar, or seasonal patterns.",
     },
     {
       icon: (
@@ -593,7 +597,7 @@ function ProblemSection() {
         </svg>
       ),
       title: "Inspiration without execution",
-      body: "You find a great email but can\u2019t easily turn it into a template. Copy-pasting HTML breaks layouts, and rebuilding from scratch wastes hours.",
+      body: "Great emails everywhere but no way to reuse them. Copy-pasting HTML breaks layouts and rebuilding wastes hours.",
     },
   ];
 
@@ -673,55 +677,121 @@ function ProblemSection() {
 }
 
 // ============================================================
-// SECTION 4: Three-Step Workflow
+// SECTION 4: Three-Step Workflow with Product Mockups
 // ============================================================
+function BrowseMock() {
+  return (
+    <div style={{ background: "#1C1917", borderRadius: 12, padding: 14, width: "100%" }}>
+      <div style={{ background: "#333", borderRadius: 8, padding: "7px 10px", display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <span style={{ fontSize: 10, color: "#888" }}>Search brands...</span>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 5 }}>
+        {[{ clr: "#2d4a3e" }, { clr: "#4a2d3e" }, { clr: "#3e3a2d" }].map((c, i) => (
+          <div key={i} style={{ background: "#2a2725", borderRadius: 5, overflow: "hidden" }}>
+            <div style={{ height: 36, background: c.clr }} />
+            <div style={{ padding: "4px 5px" }}>
+              <div style={{ height: 3, background: "#444", borderRadius: 2, width: "80%", marginBottom: 3 }} />
+              <div style={{ height: 2, background: "#333", borderRadius: 2, width: "55%" }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
+        <span style={{ fontSize: 8, background: "rgba(194,113,74,0.2)", color: "#E8956E", padding: "2px 6px", borderRadius: 8 }}>Sale</span>
+        <span style={{ fontSize: 8, background: "#333", color: "#888", padding: "2px 6px", borderRadius: 8 }}>Welcome</span>
+        <span style={{ fontSize: 8, background: "#333", color: "#888", padding: "2px 6px", borderRadius: 8 }}>Newsletter</span>
+      </div>
+    </div>
+  );
+}
+
+function AnalysisMock() {
+  const bars = [
+    { label: "Subject", pct: 92 },
+    { label: "Copy", pct: 78 },
+    { label: "CTA", pct: 90 },
+    { label: "Design", pct: 72 },
+    { label: "Strategy", pct: 85 },
+  ];
+  return (
+    <div style={{ background: "#1C1917", borderRadius: 12, padding: 14, width: "100%" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        <div style={{ width: 40, height: 40, borderRadius: "50%", border: "2px solid #10b981", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1 }}>87</span>
+          <span style={{ fontSize: 8, color: "#10b981", fontWeight: 600 }}>A</span>
+        </div>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "white" }}>Flash Sale Email</div>
+          <div style={{ fontSize: 9, color: "#888" }}>Nykaa &middot; Sale Campaign</div>
+        </div>
+      </div>
+      {bars.map((d) => (
+        <div key={d.label} style={{ marginBottom: 5 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
+            <span style={{ fontSize: 9, color: "#888" }}>{d.label}</span>
+            <span style={{ fontSize: 9, color: "white", fontWeight: 600 }}>{d.pct}%</span>
+          </div>
+          <div style={{ height: 3, background: "#333", borderRadius: 2 }}>
+            <div style={{ height: "100%", width: `${d.pct}%`, background: d.pct >= 85 ? "#10b981" : d.pct >= 70 ? "#3b82f6" : "#f59e0b", borderRadius: 2 }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function EditorMock() {
+  return (
+    <div style={{ background: "#1C1917", borderRadius: 12, overflow: "hidden", width: "100%" }}>
+      <div style={{ padding: "6px 10px", borderBottom: "1px solid #333", display: "flex", gap: 4 }}>
+        <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#ff5f57" }} />
+        <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#ffbd2e" }} />
+        <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#28c840" }} />
+      </div>
+      <div style={{ padding: 10 }}>
+        <div style={{ background: "white", borderRadius: 6, padding: 10, maxWidth: 180, margin: "0 auto" }}>
+          <div style={{ background: "#C2714A", borderRadius: 4, padding: "8px 6px", textAlign: "center", marginBottom: 6 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: "white" }}>SUMMER SALE</div>
+            <div style={{ fontSize: 8, color: "rgba(255,255,255,0.8)" }}>Up to 50% off</div>
+          </div>
+          <div style={{ fontSize: 8, color: "#333", lineHeight: 1.4, marginBottom: 6 }}>Shop our biggest sale of the year...</div>
+          <div style={{ background: "#333", borderRadius: 3, padding: "5px 10px", textAlign: "center", fontSize: 8, fontWeight: 600, color: "white" }}>SHOP NOW</div>
+        </div>
+      </div>
+      <div style={{ padding: "5px 10px", borderTop: "1px solid #333", display: "flex", justifyContent: "center", gap: 5 }}>
+        <span style={{ fontSize: 8, background: "#C2714A", color: "white", padding: "2px 8px", borderRadius: 3, fontWeight: 500 }}>Use Template</span>
+        <span style={{ fontSize: 8, background: "#333", color: "#ccc", padding: "2px 6px", borderRadius: 3, fontWeight: 500 }}>Export</span>
+      </div>
+    </div>
+  );
+}
+
 function WorkflowSection() {
   const steps = [
     {
       num: "01",
       title: "Discover what competitors send",
-      body: "Search 10,000+ brands by name, industry, or campaign type. See their full email history \u2014 from welcome flows to flash sale blasts \u2014 with send timing and frequency data.",
+      body: "Search 10,000+ brands by name, industry, or campaign type. See their full email history with send timing and frequency data.",
       cta: "Browse emails free",
       href: "/browse",
-      icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#C2714A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="17" cy="17" r="10" />
-          <path d="M24 24l8 8" />
-          <rect x="12" y="13" width="10" height="2" rx="1" />
-          <rect x="12" y="18" width="7" height="2" rx="1" />
-        </svg>
-      ),
+      mock: <BrowseMock />,
     },
     {
       num: "02",
       title: "Decode what drives conversions",
-      body: "Every email gets AI-scored on 5 dimensions: Subject Line, Copy Quality, CTA Effectiveness, Design, and Strategy. Plus brand-level analytics on send frequency, timing patterns, and campaign mix.",
+      body: "Every email gets AI-scored on 5 dimensions: Subject Line, Copy Quality, CTA Effectiveness, Design, and Strategy.",
       cta: "See sample analysis",
       href: "/browse",
-      icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#C2714A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="6" y="24" width="6" height="10" rx="1" />
-          <rect x="17" y="16" width="6" height="18" rx="1" />
-          <rect x="28" y="8" width="6" height="26" rx="1" />
-          <path d="M6 8l10-2 10 4 8-4" />
-        </svg>
-      ),
+      mock: <AnalysisMock />,
     },
     {
       num: "03",
       title: "Edit any email as your template",
-      body: "Found a campaign you love? One click opens it in our drag-and-drop editor. Change text, swap images, update colors \u2014 export production-ready HTML for Klaviyo, Mailchimp, or any ESP.",
+      body: "One click opens any email in our drag-and-drop editor. Change text, swap images, update colors \u2014 export production-ready HTML.",
       cta: "Try the editor",
       href: "/editor",
-      icon: (
-        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" stroke="#C2714A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="6" y="6" width="28" height="28" rx="3" />
-          <path d="M14 20l4 4 8-8" />
-          <path d="M30 14h4" />
-          <path d="M30 20h4" />
-          <path d="M30 26h4" />
-        </svg>
-      ),
+      mock: <EditorMock />,
     },
   ];
 
@@ -742,7 +812,7 @@ function WorkflowSection() {
             From research to ready-to-send in 3 steps
           </h2>
           <p style={{ fontSize: 17, color: "var(--color-secondary)", maxWidth: 540, margin: "0 auto" }}>
-            Stop guessing. See exactly what top brands send, understand why it works, then make it your own.
+            See exactly what top brands send, understand why it works, then make it your own.
           </p>
         </div>
 
@@ -754,7 +824,7 @@ function WorkflowSection() {
                   className="workflow-step-inner"
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "auto 1fr auto",
+                    gridTemplateColumns: "60px 1fr 240px",
                     gap: 24,
                     alignItems: "center",
                   }}
@@ -767,7 +837,6 @@ function WorkflowSection() {
                       color: "var(--color-accent)",
                       opacity: 0.3,
                       lineHeight: 1,
-                      minWidth: 64,
                     }}
                   >
                     {step.num}
@@ -808,8 +877,8 @@ function WorkflowSection() {
                     </Link>
                   </div>
 
-                  {/* Icon */}
-                  <div className="workflow-step-icon" style={{ flexShrink: 0 }}>{step.icon}</div>
+                  {/* Product mockup */}
+                  <div className="workflow-step-mock">{step.mock}</div>
                 </div>
               </Card>
 
@@ -827,14 +896,15 @@ function WorkflowSection() {
       </div>
 
       <style>{`
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
           .workflow-step-inner {
             grid-template-columns: 1fr !important;
-            gap: 12px !important;
+            gap: 16px !important;
             text-align: center;
           }
-          .workflow-step-icon {
-            display: none !important;
+          .workflow-step-mock {
+            max-width: 280px;
+            margin: 0 auto;
           }
         }
       `}</style>
@@ -1662,14 +1732,14 @@ export function HomeClient() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_BASE}/emails?limit=8`).then((r) =>
+      fetch(`${API_BASE}/emails?limit=12`).then((r) =>
         r.ok ? r.json() : []
       ),
       fetch(`${API_BASE}/brands/stats`).then((r) => (r.ok ? r.json() : {})),
     ])
       .then(([emails, statsData]) => {
         const emailList = emails.emails || emails || [];
-        setRecentEmails(emailList.slice(0, 8));
+        setRecentEmails(emailList.slice(0, 12));
         setBrandStats(statsData as Record<string, { logo_url?: string | null }>);
       })
       .catch(() => {});
@@ -1678,7 +1748,7 @@ export function HomeClient() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
-      <HeroSection defaultEmails={recentEmails.slice(0, 6)} />
+      <HeroSection defaultEmails={recentEmails.slice(0, 9)} />
       <BrandTrustBar brandStats={brandStats} />
       <ProblemSection />
       <WorkflowSection />
