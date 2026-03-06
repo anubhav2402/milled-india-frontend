@@ -1058,9 +1058,6 @@ function BrowseContent() {
                   <Button variant="secondary" onClick={loadMore} loading={loadingMore}>
                     Load More
                   </Button>
-                  <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 12 }}>
-                    Showing {displayCount} of {filteredEmails.length}
-                  </p>
                 </div>
               )}
             </>
