@@ -973,9 +973,6 @@ function BrowseContent() {
                       </Link>
                     )}
                   </div>
-                  <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 16 }}>
-                    Showing {FREE_LIST_LIMIT} of {filteredEmails.length} emails
-                  </p>
                 </div>
               )}
 
