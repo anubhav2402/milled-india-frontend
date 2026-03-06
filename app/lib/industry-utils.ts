@@ -1,25 +1,28 @@
 const SLUG_MAP: Record<string, string> = {
+  "apparel-and-accessories": "Apparel & Accessories",
+  "baby-and-kids": "Baby & Kids",
   "beauty-and-personal-care": "Beauty & Personal Care",
-  "womens-fashion": "Women's Fashion",
-  "mens-fashion": "Men's Fashion",
-  "food-and-beverages": "Food & Beverages",
-  "travel-and-hospitality": "Travel & Hospitality",
-  "electronics-and-gadgets": "Electronics & Gadgets",
-  "home-and-living": "Home & Living",
-  "health-and-wellness": "Health & Wellness",
-  "finance-and-fintech": "Finance & Fintech",
-  "kids-and-baby": "Kids & Baby",
-  "sports-and-fitness": "Sports & Fitness",
+  "business-and-b2b-retail": "Business & B2B Retail",
+  "electronics-and-tech": "Electronics & Tech",
   entertainment: "Entertainment",
-  "general-retail": "General Retail",
+  "finance-and-fintech": "Finance & Fintech",
+  "food-and-beverage": "Food & Beverage",
+  "general-department-store": "General / Department Store",
+  "health-fitness-and-wellness": "Health, Fitness & Wellness",
+  "home-and-living": "Home & Living",
+  "luxury-and-high-end-goods": "Luxury & High-End Goods",
+  pets: "Pets",
+  "travel-and-outdoors": "Travel & Outdoors",
 };
 
 export function industryToSlug(industry: string): string {
   return industry
     .toLowerCase()
     .replace(/&/g, "and")
-    .replace(/'/g, "")
+    .replace(/[/']/g, "")
+    .replace(/,/g, "")
     .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
 }
 

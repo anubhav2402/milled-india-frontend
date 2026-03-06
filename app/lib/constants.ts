@@ -5,19 +5,16 @@ export const INDUSTRIES = [
   "Apparel & Accessories",
   "Baby & Kids",
   "Beauty & Personal Care",
-  "Books, Art & Stationery",
   "Business & B2B Retail",
   "Electronics & Tech",
   "Entertainment",
   "Finance & Fintech",
   "Food & Beverage",
   "General / Department Store",
-  "Gifts & Lifestyle",
   "Health, Fitness & Wellness",
   "Home & Living",
   "Luxury & High-End Goods",
   "Pets",
-  "Tools, Auto & DIY",
   "Travel & Outdoors",
 ];
 
@@ -37,11 +34,6 @@ export const SUBCATEGORIES: Record<string, string[]> = {
     "Bath & Body", "Beauty Tools & Devices", "Clean / Organic Beauty",
     "Fragrance / Perfume", "Grooming / Shaving", "Haircare",
     "Makeup / Cosmetics", "Oral Care", "Skincare", "Others",
-  ],
-  "Books, Art & Stationery": [
-    "Art Supplies", "Crafting & DIY Kits", "Educational / Academic",
-    "Fiction / Non-Fiction", "Journals & Planners",
-    "Notebooks / Writing Tools", "Others",
   ],
   "Business & B2B Retail": [
     "Corporate Gifts", "Office Supplies", "Packaging & Fulfillment",
@@ -67,11 +59,6 @@ export const SUBCATEGORIES: Record<string, string[]> = {
   "General / Department Store": [
     "Multi-Category Retail", "Online Marketplaces", "Flash Sale Retailers", "Others",
   ],
-  "Gifts & Lifestyle": [
-    "Eco-Friendly / Sustainable Products", "Gift Cards",
-    "Hobby & Craft Supplies", "Novelty & Fun Items", "Personalized Gifts",
-    "Seasonal / Holiday Gifts", "Subscription Boxes", "Others",
-  ],
   "Health, Fitness & Wellness": [
     "Fitness Equipment", "Mental Health / Meditation",
     "Personal Health Devices", "Supplements", "Vitamins & Nutrition",
@@ -89,10 +76,6 @@ export const SUBCATEGORIES: Record<string, string[]> = {
   "Pets": [
     "Pet Food", "Pet Apparel", "Pet Grooming", "Pet Health / Supplements",
     "Pet Toys", "Accessories", "Beds & Crates", "Others",
-  ],
-  "Tools, Auto & DIY": [
-    "Automotive Accessories", "Car Cleaning & Care", "Hand Tools",
-    "Hardware Supplies", "Home DIY Kits", "Lawn & Garden", "Power Tools", "Others",
   ],
   "Travel & Outdoors": [
     "Camping & Hiking Gear", "Coolers / Hydration",
