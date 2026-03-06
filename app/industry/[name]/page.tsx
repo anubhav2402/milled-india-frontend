@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../../components/Header";
 import BrandLogo from "../../components/BrandLogo";
+import BrandCarousels from "../../components/BrandCarousels";
 import JsonLd from "../../components/JsonLd";
 import Breadcrumb from "../../components/Breadcrumb";
 import SeoEmailLink from "../../components/SeoEmailLink";
@@ -282,6 +283,30 @@ export default async function IndustryPage({
             )}
           </div>
         </div>
+
+        {/* Brand Email Carousels */}
+        {data.top_brands.length > 0 && (
+          <div style={{ marginBottom: 32 }}>
+            <h2
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: "var(--color-primary)",
+                margin: "0 0 16px",
+                fontFamily: "var(--font-dm-serif)",
+              }}
+            >
+              Latest Emails from Top {industry} Brands
+            </h2>
+            <BrandCarousels
+              brands={data.top_brands.slice(0, 10).map((b) => ({
+                brand: b.brand,
+                email_count: b.email_count,
+                logo_url: brandStats?.[b.brand]?.logo_url,
+              }))}
+            />
+          </div>
+        )}
 
         {/* Brand grid */}
         <h2
