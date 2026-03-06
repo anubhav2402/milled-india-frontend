@@ -1256,14 +1256,14 @@ function UseCaseTabs() {
       benefits: [
         { title: "Pitch clients with competitor intelligence", body: "Show prospects exactly what their competitors send \u2014 instant credibility." },
         { title: "10 team seats on the Agency plan", body: "Give your whole team access to the email intelligence platform." },
-        { title: "Bulk export and reporting", body: "Download data and create client-ready reports with one click." },
+        { title: "Unlimited brand alerts and AI tools", body: "Monitor competitor sends in real time and generate campaigns with AI." },
         { title: "Build client campaigns faster", body: "Use templates from top brands as starting points for client work." },
       ],
       features: [
-        { name: "Bulk Export", icon: "&#128230;" },
+        { name: "Brand Alerts", icon: "&#128276;" },
         { name: "Team Seats (10)", icon: "&#128101;" },
-        { name: "Client Reports", icon: "&#128200;" },
         { name: "AI Generator", icon: "&#9889;" },
+        { name: "Full Archive", icon: "&#128218;" },
       ],
     },
   };
@@ -1488,7 +1488,7 @@ function PricingAnchor() {
       price: "49",
       period: "/mo",
       annual: "489/yr",
-      features: ["Everything in Pro", "10 team seats", "Bulk export & reports", "Unlimited AI generator"],
+      features: ["Everything in Pro", "10 team seats", "Unlimited brand alerts", "Unlimited AI generator"],
       cta: "Contact Sales",
       ctaHref: "/pricing",
       variant: "secondary" as const,

@@ -27,8 +27,6 @@ export type FeatureKey =
   | "alerts"
   | "seats"
   | "template_editor"
-  | "bulk_export"
-  | "downloadable_reports"
   | "follows"
   | "bookmarks"
   | "email_analysis"
@@ -50,8 +48,6 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
     alerts: 0,
     seats: 1,
     template_editor: "view_only",
-    bulk_export: false,
-    downloadable_reports: false,
     follows: 3,
     bookmarks: 10,
     email_analysis: "teaser",
@@ -70,8 +66,6 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
     alerts: 0,
     seats: 1,
     template_editor: "limited",
-    bulk_export: false,
-    downloadable_reports: false,
     follows: 10,
     bookmarks: 50,
     email_analysis: "full",
@@ -90,8 +84,6 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
     alerts: 5,
     seats: 3,
     template_editor: "unlimited",
-    bulk_export: false,
-    downloadable_reports: false,
     follows: null,
     bookmarks: null,
     email_analysis: "full",
@@ -110,8 +102,6 @@ export const PLAN_LIMITS: Record<PlanTier, Record<FeatureKey, LimitValue>> = {
     alerts: null,
     seats: 10,
     template_editor: "unlimited",
-    bulk_export: true,
-    downloadable_reports: true,
     follows: null,
     bookmarks: null,
     email_analysis: "full",
@@ -211,8 +201,6 @@ export const FEATURE_LABELS: Record<FeatureKey, string> = {
   alerts: "Brand Alerts",
   seats: "Team Seats",
   template_editor: "Template Editor",
-  bulk_export: "Bulk Export",
-  downloadable_reports: "Downloadable Reports",
   follows: "Brand Follows",
   bookmarks: "Bookmarks",
   email_analysis: "Email Analysis",

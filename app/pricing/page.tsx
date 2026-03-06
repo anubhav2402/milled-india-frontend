@@ -5,13 +5,10 @@ import { useAuth } from "../context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  PLAN_LIMITS,
   PLAN_PRICES,
   PLAN_NAMES,
   formatPrice,
   type PlanTier,
-  type FeatureKey,
-  FEATURE_LABELS,
 } from "../lib/plans";
 
 const API_BASE =
@@ -81,14 +78,6 @@ const featureRows: FeatureRow[] = [
     label: "AI email generator",
     values: { free: false, starter: false, pro: "10/month", agency: "Unlimited" },
   },
-  {
-    label: "Bulk export",
-    values: { free: false, starter: false, pro: false, agency: true },
-  },
-  {
-    label: "Reports",
-    values: { free: false, starter: false, pro: false, agency: true },
-  },
 ];
 
 const faqs = [
@@ -123,7 +112,7 @@ const tiers: PlanTier[] = ["free", "starter", "pro", "agency"];
 const tierDescriptions: Record<PlanTier, string> = {
   free: "Explore email marketing trends",
   starter: "For growing marketers",
-  pro: "Full email marketing intelligence",
+  pro: "Full email intelligence suite",
   agency: "For teams and agencies",
 };
 
@@ -313,7 +302,7 @@ export default function PricingPage() {
             fontWeight: 500,
           }}
         >
-          Get Started Free
+          Create Free Account
         </Link>
       );
     }
@@ -364,7 +353,7 @@ export default function PricingPage() {
           opacity: loading ? 0.7 : 1,
         }}
       >
-        {loading ? "Processing..." : `Start ${PLAN_NAMES[tier]} Plan`}
+        {loading ? "Processing..." : "Start 7-Day Trial"}
       </button>
     );
   };
@@ -449,7 +438,7 @@ export default function PricingPage() {
               fontFamily: "var(--font-dm-serif)",
             }}
           >
-            Unlock the full power of email intelligence
+            Start free. Upgrade when you see the value.
           </h1>
           <p
             style={{
@@ -460,7 +449,7 @@ export default function PricingPage() {
               marginInline: "auto",
             }}
           >
-            Start free. Scale when you&apos;re ready.
+            Every new account gets 7 days of full Starter access &mdash; no credit card required.
           </p>
         </div>
 
@@ -571,7 +560,7 @@ export default function PricingPage() {
                 fontWeight: 600,
               }}
             >
-              Save 17%
+              Save 18%
             </span>
           </button>
         </div>
