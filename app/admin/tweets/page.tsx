@@ -147,20 +147,42 @@ const VARIANT_TYPES = new Set([
   "blog_promo", "engagement_bait", "newsjacking",
   "reply_data_drop", "reply_contrarian", "reply_example",
   "reply_quick_tip", "reply_agree_amplify", "reply_resource_drop",
+  "quote_data_drop", "quote_contrarian", "quote_example",
+  "quote_quick_tip", "quote_agree_amplify", "quote_resource_drop",
 ]);
 
-const REPLY_STYLES = [
-  { value: "reply_data_drop", label: "Data Drop", emoji: "\u{1f4ca}", desc: "Reply with a surprising MailMuse stat that makes people think 'where did they get that data?'" },
-  { value: "reply_contrarian", label: "Contrarian", emoji: "\u{1f914}", desc: "Respectfully challenge with data. 'Our data across 600+ brands shows the opposite...'" },
-  { value: "reply_example", label: "Example", emoji: "\u{1f4e7}", desc: "Share a real brand email example that relates to their point." },
-  { value: "reply_quick_tip", label: "Quick Tip", emoji: "\u{1f4a1}", desc: "Add a specific tactical insight they can screenshot." },
-  { value: "reply_agree_amplify", label: "Agree + Amplify", emoji: "\u{1f525}", desc: "Agree and go deeper with data they didn't have." },
-  { value: "reply_resource_drop", label: "Resource Drop", emoji: "\u{1f517}", desc: "Only when someone asks for tools. Mentions MailMuse naturally." },
+// Shared styles for both Reply and Quote modes — value is the base style name
+const ENGAGEMENT_STYLES = [
+  { value: "data_drop", label: "Data Drop", emoji: "\u{1f4ca}",
+    replyDesc: "Reply with a surprising MailMuse stat that makes people think 'where did they get that data?'",
+    quoteDesc: "Quote tweet with surprising data. Longer, structured, value-packed for your timeline." },
+  { value: "contrarian", label: "Contrarian", emoji: "\u{1f914}",
+    replyDesc: "Respectfully challenge with data. 'Our data across 600+ brands shows the opposite...'",
+    quoteDesc: "Challenge the take with data your followers can learn from. Structured breakdown." },
+  { value: "example", label: "Example", emoji: "\u{1f4e7}",
+    replyDesc: "Share a real brand email example that relates to their point.",
+    quoteDesc: "Add a real brand example with analysis. Shows your followers proof." },
+  { value: "quick_tip", label: "Quick Tip", emoji: "\u{1f4a1}",
+    replyDesc: "Add a specific tactical insight they can screenshot.",
+    quoteDesc: "Add a tactical tip that makes your followers screenshot the quote tweet." },
+  { value: "agree_amplify", label: "Agree + Amplify", emoji: "\u{1f525}",
+    replyDesc: "Agree and go deeper with data they didn't have.",
+    quoteDesc: "Amplify with deeper data. Your followers get value, original author retweets." },
+  { value: "resource_drop", label: "Resource Drop", emoji: "\u{1f517}",
+    replyDesc: "Only when someone asks for tools. Mentions MailMuse naturally.",
+    quoteDesc: "Share MailMuse as a resource. Includes mailmuse.in link in every variant." },
 ];
+
+// Legacy compat: keep REPLY_STYLES for any other usage
+const REPLY_STYLES = ENGAGEMENT_STYLES.map((s) => ({
+  value: `reply_${s.value}`, label: s.label, emoji: s.emoji, desc: s.replyDesc,
+}));
 
 const REPLY_TYPE_SET = new Set([
   "reply_data_drop", "reply_contrarian", "reply_example",
   "reply_quick_tip", "reply_agree_amplify", "reply_resource_drop",
+  "quote_data_drop", "quote_contrarian", "quote_example",
+  "quote_quick_tip", "quote_agree_amplify", "quote_resource_drop",
   "smart_reply", "follow_up_reply",
 ]);
 
@@ -222,11 +244,12 @@ export default function AdminTweetsPage() {
   const [activeTab, setActiveTab] = useState<"tweets" | "replies">("tweets");
 
   // Reply Hub state
+  const [replyMode, setReplyMode] = useState<"reply" | "quote">("quote"); // default to quote for distribution
   const [replyTargets, setReplyTargets] = useState<ReplyTarget[]>([]);
   const [selectedTarget, setSelectedTarget] = useState("");
   const [replyTweetText, setReplyTweetText] = useState("");
   const [replyTweetUrl, setReplyTweetUrl] = useState("");
-  const [replyStyle, setReplyStyle] = useState("reply_data_drop");
+  const [replyStyle, setReplyStyle] = useState("data_drop"); // base style name (without reply_/quote_ prefix)
   const [replyGenerating, setReplyGenerating] = useState(false);
   const [replyTweets, setReplyTweets] = useState<Tweet[]>([]);
   const [replyLoading, setReplyLoading] = useState(false);
@@ -456,7 +479,7 @@ export default function AdminTweetsPage() {
   };
 
   const generateReply = async () => {
-    if (!replyTweetText.trim()) { setError("Paste the tweet text to reply to"); return; }
+    if (!replyTweetText.trim()) { setError("Paste the tweet text to engage with"); return; }
     setReplyGenerating(true);
     setError(null);
     const tweetId = replyTweetUrl ? extractTweetId(replyTweetUrl) : undefined;
@@ -466,9 +489,12 @@ export default function AdminTweetsPage() {
     if (target?.category) body.target_category = target.category;
     if (tweetId) body.reply_to_id = tweetId;
 
+    // Build the full tweet_type with reply_ or quote_ prefix
+    const fullType = `${replyMode}_${replyStyle}`;
+
     try {
       const res = await fetch(
-        `${API_BASE}/admin/tweets/generate?tweet_type=${replyStyle}`,
+        `${API_BASE}/admin/tweets/generate?tweet_type=${fullType}`,
         { method: "POST", headers, body: JSON.stringify(body) }
       );
       if (res.ok) {
@@ -806,11 +832,38 @@ export default function AdminTweetsPage() {
       {/* ═══ REPLY HUB TAB ═══ */}
       {activeTab === "replies" && (
         <>
-          {/* Reply Composer */}
+          {/* Engagement Composer */}
           <div style={{ background: "var(--color-surface, white)", border: "2px solid #7c3aed30", borderRadius: 12, padding: 20, marginBottom: 24 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#7c3aed", marginBottom: 16 }}>
-              Reply Composer
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#7c3aed" }}>
+                {replyMode === "quote" ? "Quote Tweet Composer" : "Reply Composer"}
+              </div>
+
+              {/* Reply / Quote Toggle */}
+              <div style={{ display: "flex", background: "#f3f4f6", borderRadius: 8, padding: 2 }}>
+                {(["reply", "quote"] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => setReplyMode(mode)}
+                    style={{
+                      padding: "6px 16px", borderRadius: 6, border: "none",
+                      fontSize: 12, fontWeight: 600, cursor: "pointer",
+                      background: replyMode === mode ? (mode === "quote" ? "#7c3aed" : "#3b82f6") : "transparent",
+                      color: replyMode === mode ? "white" : "var(--color-secondary)",
+                      transition: "all 150ms ease",
+                    }}
+                  >
+                    {mode === "reply" ? "Reply" : "Quote Tweet"}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {replyMode === "quote" && (
+              <div style={{ background: "#f5f3ff", border: "1px solid #e9d5ff", borderRadius: 8, padding: "10px 14px", marginBottom: 14, fontSize: 12, color: "#6d28d9", lineHeight: 1.5 }}>
+                Quote tweets appear on YOUR timeline — max reach with Premium. Longer format (200-280 chars), structured with data points and line breaks.
+              </div>
+            )}
 
             {/* Target account selector */}
             <div style={{ marginBottom: 14 }}>
@@ -831,10 +884,10 @@ export default function AdminTweetsPage() {
               </select>
             </div>
 
-            {/* Tweet text to reply to */}
+            {/* Tweet text */}
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-secondary)", display: "block", marginBottom: 4 }}>
-                Tweet to reply to <span style={{ color: "#ef4444" }}>*</span>
+                Tweet to {replyMode === "quote" ? "quote" : "reply to"} <span style={{ color: "#ef4444" }}>*</span>
               </label>
               <textarea
                 value={replyTweetText}
@@ -848,7 +901,7 @@ export default function AdminTweetsPage() {
             {/* Tweet URL/ID */}
             <div style={{ marginBottom: 16 }}>
               <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-secondary)", display: "block", marginBottom: 4 }}>
-                Tweet URL or ID (for posting as a reply)
+                Tweet URL or ID (for posting as {replyMode === "quote" ? "quote tweet" : "reply"})
               </label>
               <input
                 type="text"
@@ -859,13 +912,13 @@ export default function AdminTweetsPage() {
               />
             </div>
 
-            {/* Reply style pills */}
+            {/* Style pills */}
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-secondary)", display: "block", marginBottom: 8 }}>
-                Reply Style
+                {replyMode === "quote" ? "Quote Style" : "Reply Style"}
               </label>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {REPLY_STYLES.map((s) => (
+                {ENGAGEMENT_STYLES.map((s) => (
                   <button
                     key={s.value}
                     onClick={() => setReplyStyle(s.value)}
@@ -885,7 +938,7 @@ export default function AdminTweetsPage() {
                 ))}
               </div>
               <p style={{ fontSize: 12, color: "var(--color-secondary)", marginTop: 8, lineHeight: 1.5, fontStyle: "italic" }}>
-                {REPLY_STYLES.find((s) => s.value === replyStyle)?.desc}
+                {ENGAGEMENT_STYLES.find((s) => s.value === replyStyle)?.[replyMode === "quote" ? "quoteDesc" : "replyDesc"]}
               </p>
             </div>
 
@@ -900,7 +953,7 @@ export default function AdminTweetsPage() {
                 opacity: replyGenerating ? 0.6 : 1,
               }}
             >
-              {replyGenerating ? "Generating 3 Variants..." : "Generate 3 Reply Variants"}
+              {replyGenerating ? "Generating 3 Variants..." : `Generate 3 ${replyMode === "quote" ? "Quote" : "Reply"} Variants`}
             </button>
           </div>
 
