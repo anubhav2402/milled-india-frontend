@@ -440,7 +440,7 @@ img[src=""] { display: none !important; }
                   backgroundColor: "var(--color-surface)",
                 }}
                 title="Email content"
-                sandbox="allow-popups"
+                sandbox="allow-same-origin allow-popups"
               />
             </div>
           </div>
