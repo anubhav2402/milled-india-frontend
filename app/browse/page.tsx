@@ -173,27 +173,6 @@ function BrowseHeader({ searchQuery, setSearchQuery, filterCount, onOpenFilters 
           ))}
         </nav>
 
-        {/* Mobile Filter Button */}
-        <button
-          onClick={onOpenFilters}
-          className="show-mobile"
-          style={{
-            display: "none",
-            alignItems: "center",
-            gap: 6,
-            padding: "10px 14px",
-            background: filterCount > 0 ? "var(--color-accent)" : "var(--color-surface)",
-            color: filterCount > 0 ? "white" : "var(--color-secondary)",
-            border: filterCount > 0 ? "none" : "1px solid var(--color-border)",
-            borderRadius: 10,
-            fontSize: 14,
-            fontWeight: 500,
-            cursor: "pointer",
-          }}
-        >
-          <FilterIcon />
-          {filterCount > 0 && filterCount}
-        </button>
       </div>
     </header>
   );
@@ -347,14 +326,16 @@ function Sidebar({
     <>
       {/* Subcategory Filter */}
       <FilterSection title="Subcategory">
-        <Input
-          type="search"
-          placeholder="Search subcategories..."
-          value={categorySearch}
-          onChange={(e) => setCategorySearch(e.target.value)}
-          size="sm"
-          style={{ marginBottom: 12 }}
-        />
+        <div style={{ marginBottom: 12 }}>
+          <Input
+            type="search"
+            placeholder="Search subcategories..."
+            value={categorySearch}
+            onChange={(e) => setCategorySearch(e.target.value)}
+            size="sm"
+            style={{ padding: "10px 14px", fontSize: 13 }}
+          />
+        </div>
         <div style={{ maxHeight: 240, overflowY: "auto" }}>
           {filteredCategories.map((cat) => (
             <Checkbox
@@ -369,14 +350,16 @@ function Sidebar({
 
       {/* Brand Filter */}
       <FilterSection title="Brand">
-        <Input
-          type="search"
-          placeholder="Search brands..."
-          value={brandSearch}
-          onChange={(e) => setBrandSearch(e.target.value)}
-          size="sm"
-          style={{ marginBottom: 12 }}
-        />
+        <div style={{ marginBottom: 12 }}>
+          <Input
+            type="search"
+            placeholder="Search brands..."
+            value={brandSearch}
+            onChange={(e) => setBrandSearch(e.target.value)}
+            size="sm"
+            style={{ padding: "10px 14px", fontSize: 13 }}
+          />
+        </div>
         <div style={{ maxHeight: 200, overflowY: "auto" }}>
           {filteredBrands.slice(0, 30).map((brand) => (
             <Checkbox
@@ -991,6 +974,34 @@ function BrowseContent() {
           )}
         </main>
       </div>
+
+      {/* Floating mobile filter button — fixed at bottom */}
+      <button
+        onClick={() => setSidebarOpen(true)}
+        className="show-mobile"
+        style={{
+          display: "none",
+          position: "fixed",
+          bottom: 20,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 90,
+          alignItems: "center",
+          gap: 8,
+          padding: "12px 24px",
+          background: activeFilterCount > 0 ? "var(--color-accent)" : "#1C1917",
+          color: "white",
+          border: "none",
+          borderRadius: 50,
+          fontSize: 14,
+          fontWeight: 600,
+          cursor: "pointer",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
+        }}
+      >
+        <FilterIcon />
+        Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+      </button>
     </div>
   );
 }
