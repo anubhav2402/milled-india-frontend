@@ -18,9 +18,22 @@ interface EmailPreview {
   id: number;
   subject: string;
   brand: string | null;
+  sender: string | null;
   type: string | null;
   industry: string | null;
   received_at: string;
+}
+
+function logoUrlFromSender(sender: string | null | undefined): string | undefined {
+  if (!sender) return undefined;
+  const match = sender.match(/@([^\s>]+)/);
+  if (!match) return undefined;
+  const parts = match[1].split(".");
+  const domain =
+    parts.length > 2 && ["co", "com", "org", "net"].includes(parts[parts.length - 2])
+      ? parts.slice(-3).join(".")
+      : parts.slice(-2).join(".");
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 }
 
 // ============================================================
@@ -265,8 +278,8 @@ function HeroSection({
           <Button href="/signup" size="lg">
             Start Free Account
           </Button>
-          <Button href="/browse" size="lg" variant="ghost">
-            Browse Without Signing Up
+          <Button href="/browse" size="lg" variant="outline">
+            Explore 100K+ Email Templates
           </Button>
         </div>
 
@@ -303,6 +316,7 @@ function HeroSection({
                   industry={email.industry || undefined}
                   received_at={email.received_at}
                   campaignType={email.type || undefined}
+                  logoUrl={logoUrlFromSender(email.sender)}
                   compact
                   previewHeight={200}
                 />

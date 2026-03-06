@@ -4,7 +4,7 @@ import React from "react";
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "outline";
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   disabled?: boolean;
@@ -62,6 +62,11 @@ export default function Button({
       background: "transparent",
       color: "#475569",
     },
+    outline: {
+      background: "transparent",
+      color: "#C2714A",
+      border: "2px solid #C2714A",
+    },
   };
 
   const hoverStyles: Record<string, React.CSSProperties> = {
@@ -77,6 +82,11 @@ export default function Button({
     ghost: {
       background: "#f8fafc",
       color: "#0f172a",
+    },
+    outline: {
+      background: "rgba(194, 113, 74, 0.06)",
+      color: "#A85E3A",
+      borderColor: "#A85E3A",
     },
   };
 
