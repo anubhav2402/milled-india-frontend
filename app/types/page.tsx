@@ -3,6 +3,7 @@ import Link from "next/link";
 import Header from "../components/Header";
 import JsonLd from "../components/JsonLd";
 import Breadcrumb from "../components/Breadcrumb";
+import TypeCarousels from "../components/TypeCarousels";
 import { getAllTypes } from "../lib/type-utils";
 
 export const metadata: Metadata = {
@@ -204,72 +205,81 @@ export default function TypesIndexPage() {
           </div>
         </div>
 
+        {/* Email Preview Carousels */}
+        <TypeCarousels types={types} />
+
+        {/* Quick Navigation Grid */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: 16,
+            background: "white",
+            borderRadius: 14,
+            padding: "24px 28px",
+            border: "1px solid var(--color-border)",
           }}
         >
-          {types.map(({ name, slug }) => (
-            <Link
-              key={slug}
-              href={`/types/${slug}`}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                padding: "16px 20px",
-                background: "white",
-                borderRadius: 12,
-                border: "1px solid var(--color-border)",
-                textDecoration: "none",
-                color: "inherit",
-                transition: "all 150ms ease",
-              }}
-            >
-              <div
+          <h2
+            style={{
+              fontSize: 16,
+              fontWeight: 700,
+              color: "var(--color-primary)",
+              margin: "0 0 16px",
+              fontFamily: "var(--font-dm-serif)",
+            }}
+          >
+            All Email Types
+          </h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+              gap: 10,
+            }}
+          >
+            {types.map(({ name, slug }) => (
+              <Link
+                key={slug}
+                href={`/types/${slug}`}
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  background: "var(--color-accent-light)",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "var(--color-accent)",
-                  flexShrink: 0,
+                  gap: 10,
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  border: "1px solid var(--color-border)",
+                  textDecoration: "none",
+                  color: "inherit",
+                  transition: "all 150ms ease",
                 }}
               >
-                {TYPE_ICONS[name] || name.charAt(0)}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontSize: 14,
+                    width: 32,
+                    height: 32,
+                    borderRadius: 8,
+                    background: "var(--color-accent-light)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "var(--color-accent)",
+                    flexShrink: 0,
+                  }}
+                >
+                  {TYPE_ICONS[name] || name.charAt(0)}
+                </div>
+                <span
+                  style={{
+                    fontSize: 13,
                     fontWeight: 600,
                     color: "var(--color-primary)",
                   }}
                 >
-                  {name} Emails
-                </div>
-                <div style={{ fontSize: 12, color: "var(--color-tertiary)" }}>
-                  View examples & benchmarks
-                </div>
-              </div>
-              <span
-                style={{
-                  fontSize: 13,
-                  color: "var(--color-accent)",
-                  fontWeight: 500,
-                }}
-              >
-                View →
-              </span>
-            </Link>
-          ))}
+                  {name}
+                </span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>
