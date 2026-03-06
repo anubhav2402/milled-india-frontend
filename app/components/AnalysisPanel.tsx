@@ -82,11 +82,56 @@ function findingColor(type: string): string {
 }
 
 export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
-  const { token } = useAuth();
+  const { user, token } = useAuth();
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  // Gate: unauthenticated users must sign up first
+  if (!user) {
+    return (
+      <div style={{ marginTop: 16 }}>
+        <div style={{
+          padding: "16px 20px",
+          background: "#FEF7F3",
+          border: "1px solid #F0D5C5",
+          borderRadius: 10,
+          textAlign: "center",
+        }}>
+          <div style={{ fontSize: 14, fontWeight: 500, color: "#44403C", marginBottom: 6 }}>
+            AI-powered email teardown
+          </div>
+          <div style={{ fontSize: 12, color: "#78716C", marginBottom: 12, lineHeight: 1.5 }}>
+            Get scores for Subject, Copy, CTA, Design & Strategy. Sign up free to unlock.
+          </div>
+          <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+            <a
+              href="/signup"
+              style={{
+                display: "inline-block", padding: "7px 18px",
+                fontSize: 13, fontWeight: 500, color: "white",
+                background: "#C2714A", borderRadius: 8, textDecoration: "none",
+              }}
+            >
+              Sign up free
+            </a>
+            <a
+              href="/login"
+              style={{
+                display: "inline-block", padding: "7px 18px",
+                fontSize: 13, fontWeight: 500, color: "#78716C",
+                borderRadius: 8, textDecoration: "none",
+                border: "1px solid #E8E0D8",
+              }}
+            >
+              Log in
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const fetchAnalysis = async () => {
     if (loading) return;

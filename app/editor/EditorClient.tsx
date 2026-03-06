@@ -7,6 +7,7 @@ import type { Editor, Block } from "grapesjs";
 import { preprocessEmailHtml } from "./utils";
 import { API_BASE } from "../lib/constants";
 import Logo from "../components/Logo";
+import { useAuth } from "../context/AuthContext";
 
 // ---------------------------------------------------------------------------
 // GrapesJS Theme — Light / BEEfree-inspired
@@ -541,6 +542,7 @@ const CONTENT_LABELS: Record<string, string> = {
 export default function EditorClient() {
   const searchParams = useSearchParams();
   const emailId = searchParams.get("id");
+  const { user, isLoading: authLoading } = useAuth();
 
   // Existing state
   const [editorInstance, setEditorInstance] = useState<Editor | null>(null);
@@ -1168,6 +1170,88 @@ ${content}
     },
     [editorInstance]
   );
+
+  // ── Auth gate — signup required ──
+  if (!authLoading && !user) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "#FAF9F7",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 32,
+          textAlign: "center",
+        }}
+      >
+        <Logo size={48} />
+        <h1
+          style={{
+            fontFamily: "var(--font-dm-serif)",
+            fontSize: 28,
+            marginTop: 24,
+            color: "#1C1917",
+          }}
+        >
+          Template Editor
+        </h1>
+        <p
+          style={{
+            color: "#78716C",
+            fontSize: 15,
+            maxWidth: 400,
+            marginTop: 12,
+            lineHeight: 1.6,
+          }}
+        >
+          Sign up for a free account to use the drag-and-drop email editor. Edit any email from our archive as your own template.
+        </p>
+        <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
+          <a
+            href="/signup"
+            style={{
+              padding: "12px 28px",
+              fontSize: 15,
+              fontWeight: 600,
+              color: "white",
+              background: "#C2714A",
+              borderRadius: 10,
+              textDecoration: "none",
+            }}
+          >
+            Sign up free
+          </a>
+          <a
+            href="/login"
+            style={{
+              padding: "12px 28px",
+              fontSize: 15,
+              fontWeight: 600,
+              color: "#78716C",
+              borderRadius: 10,
+              textDecoration: "none",
+              border: "1px solid #E8E0D8",
+            }}
+          >
+            Log in
+          </a>
+        </div>
+        <a
+          href="/browse"
+          style={{
+            marginTop: 20,
+            fontSize: 13,
+            color: "#C2714A",
+            textDecoration: "none",
+          }}
+        >
+          Browse emails instead
+        </a>
+      </div>
+    );
+  }
 
   // ── Mobile gate ──
   if (isMobile) {

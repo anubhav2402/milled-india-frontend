@@ -48,6 +48,27 @@ const CheckIcon = () => (
   </svg>
 );
 
+const FREE_EMAIL_VIEW_LIMIT = 10;
+const VIEW_STORAGE_KEY = "mailmuse_email_views";
+
+function getViewedEmailIds(): number[] {
+  try {
+    const raw = localStorage.getItem(VIEW_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function recordEmailView(emailId: number): number {
+  const viewed = getViewedEmailIds();
+  if (!viewed.includes(emailId)) {
+    viewed.push(emailId);
+    try { localStorage.setItem(VIEW_STORAGE_KEY, JSON.stringify(viewed)); } catch {}
+  }
+  return viewed.length;
+}
+
 export default function EmailPageClient() {
   const params = useParams();
   const id = params?.id as string;
@@ -59,13 +80,34 @@ export default function EmailPageClient() {
   const [copied, setCopied] = useState(false);
   const [brandEmails, setBrandEmails] = useState<RelatedEmail[]>([]);
   const [similarEmails, setSimilarEmails] = useState<RelatedEmail[]>([]);
+  const [viewLimitReached, setViewLimitReached] = useState(false);
   const { user } = useAuth();
   const { isBookmarked, toggleBookmark } = useBookmarks();
 
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
+  // Check free view limit on mount
   useEffect(() => {
     if (!id) return;
+    const isFreeUser = !user || user.effective_plan === "free";
+    if (isFreeUser) {
+      const viewCount = recordEmailView(Number(id));
+      if (viewCount > FREE_EMAIL_VIEW_LIMIT) {
+        // Already viewed IDs include this one but we exceeded the limit
+        // Check if this specific email was viewed before the limit
+        const viewed = getViewedEmailIds();
+        const idx = viewed.indexOf(Number(id));
+        if (idx >= FREE_EMAIL_VIEW_LIMIT) {
+          setViewLimitReached(true);
+          setLoading(false);
+          return;
+        }
+      }
+    }
+  }, [id, user]);
+
+  useEffect(() => {
+    if (!id || viewLimitReached) return;
     const fetchEmail = async () => {
       try {
         if (!base) throw new Error("API URL not configured");
@@ -80,7 +122,7 @@ export default function EmailPageClient() {
       }
     };
     fetchEmail();
-  }, [id, base]);
+  }, [id, base, viewLimitReached]);
 
   useEffect(() => {
     if (!email || !base) return;
@@ -164,6 +206,74 @@ img[src=""] { display: none !important; }
               animation: "spin 1s linear infinite", margin: "0 auto 16px",
             }} />
             <p style={{ fontSize: 15, color: "var(--color-secondary)" }}>Loading email...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Free view limit gate
+  if (viewLimitReached) {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: "var(--color-surface)" }}>
+        <Header />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh", padding: 40 }}>
+          <div style={{ textAlign: "center", maxWidth: 440 }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 14,
+              background: "var(--color-accent-light)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              margin: "0 auto 20px",
+            }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0110 0v4" />
+              </svg>
+            </div>
+            <h1 style={{ fontSize: 24, fontWeight: 600, marginBottom: 12, color: "var(--color-primary)" }}>
+              {!user ? "Free preview limit reached" : "Upgrade to view more emails"}
+            </h1>
+            <p style={{ fontSize: 15, color: "var(--color-secondary)", marginBottom: 8, lineHeight: 1.6 }}>
+              {!user
+                ? `You've previewed ${FREE_EMAIL_VIEW_LIMIT} emails. Sign up for a free account to continue browsing.`
+                : `You've reached the ${FREE_EMAIL_VIEW_LIMIT} email view limit on the Free plan. Upgrade to unlock more.`}
+            </p>
+            <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginBottom: 24 }}>
+              Free accounts get 20 email views per day
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+              {!user ? (
+                <>
+                  <Link href="/signup" style={{
+                    fontSize: 15, fontWeight: 600, color: "white",
+                    background: "var(--color-accent)", textDecoration: "none",
+                    padding: "12px 28px", borderRadius: 10,
+                  }}>
+                    Sign up free
+                  </Link>
+                  <Link href="/login" style={{
+                    fontSize: 15, fontWeight: 600, color: "var(--color-secondary)",
+                    textDecoration: "none", padding: "12px 28px", borderRadius: 10,
+                    border: "1px solid var(--color-border)",
+                  }}>
+                    Log in
+                  </Link>
+                </>
+              ) : (
+                <Link href="/pricing" style={{
+                  fontSize: 15, fontWeight: 600, color: "white",
+                  background: "var(--color-accent)", textDecoration: "none",
+                  padding: "12px 28px", borderRadius: 10,
+                }}>
+                  View Plans
+                </Link>
+              )}
+            </div>
+            <div style={{ marginTop: 20 }}>
+              <Link href="/browse" style={{ fontSize: 13, color: "var(--color-accent)", textDecoration: "none" }}>
+                Back to Browse
+              </Link>
+            </div>
           </div>
         </div>
       </div>

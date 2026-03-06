@@ -56,7 +56,8 @@ const EMAIL_TYPES = [
   "Confirmation",
 ];
 
-const ITEMS_PER_PAGE = 24;
+const ITEMS_PER_PAGE = 40;
+const FREE_LIST_LIMIT = 25;
 
 // Search Icon
 const SearchIcon = () => (
@@ -660,7 +661,10 @@ function BrowseContent() {
     return true;
   });
 
-  const displayedEmails = filteredEmails.slice(0, displayCount);
+  const isFreeUser = !user || user.effective_plan === "free";
+  const maxDisplay = isFreeUser ? Math.min(displayCount, FREE_LIST_LIMIT) : displayCount;
+  const displayedEmails = filteredEmails.slice(0, maxDisplay);
+  const hitFreeLimit = isFreeUser && filteredEmails.length > FREE_LIST_LIMIT;
 
   const loadMore = () => {
     setLoadingMore(true);
@@ -912,8 +916,71 @@ function BrowseContent() {
                 ))}
               </div>
 
-              {/* Load More */}
-              {displayCount < filteredEmails.length && (
+              {/* Free user limit CTA */}
+              {hitFreeLimit && (
+                <div style={{
+                  textAlign: "center",
+                  marginTop: 40,
+                  padding: "40px 24px",
+                  background: "linear-gradient(to bottom, rgba(250,249,247,0.3), rgba(250,249,247,0.95))",
+                  borderRadius: 16,
+                  border: "1px solid var(--color-border)",
+                }}>
+                  <div style={{
+                    width: 48, height: 48, borderRadius: 12,
+                    background: "var(--color-accent-light)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    margin: "0 auto 16px",
+                  }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0110 0v4" />
+                    </svg>
+                  </div>
+                  <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-primary)", margin: "0 0 8px" }}>
+                    {!user ? "Sign up to see more emails" : "Upgrade to browse more"}
+                  </h3>
+                  <p style={{ fontSize: 14, color: "var(--color-secondary)", margin: "0 0 20px", lineHeight: 1.5 }}>
+                    {!user
+                      ? "Create a free account to browse beyond 25 emails and unlock filters, bookmarks, and more."
+                      : "Upgrade your plan to access the full email archive with unlimited browsing."}
+                  </p>
+                  <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                    {!user ? (
+                      <>
+                        <Link href="/signup" style={{
+                          fontSize: 14, fontWeight: 500, color: "white",
+                          background: "var(--color-accent)", textDecoration: "none",
+                          padding: "10px 24px", borderRadius: 10,
+                        }}>
+                          Sign up free
+                        </Link>
+                        <Link href="/login" style={{
+                          fontSize: 14, fontWeight: 500, color: "var(--color-secondary)",
+                          textDecoration: "none", padding: "10px 24px", borderRadius: 10,
+                          border: "1px solid var(--color-border)",
+                        }}>
+                          Log in
+                        </Link>
+                      </>
+                    ) : (
+                      <Link href="/pricing" style={{
+                        fontSize: 14, fontWeight: 500, color: "white",
+                        background: "var(--color-accent)", textDecoration: "none",
+                        padding: "10px 24px", borderRadius: 10,
+                      }}>
+                        View Plans
+                      </Link>
+                    )}
+                  </div>
+                  <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 16 }}>
+                    Showing {FREE_LIST_LIMIT} of {filteredEmails.length} emails
+                  </p>
+                </div>
+              )}
+
+              {/* Load More — only for logged-in non-free users */}
+              {!hitFreeLimit && displayCount < filteredEmails.length && (
                 <div style={{ textAlign: "center", marginTop: 40 }}>
                   <Button variant="secondary" onClick={loadMore} loading={loadingMore}>
                     Load More
