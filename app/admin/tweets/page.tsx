@@ -45,6 +45,10 @@ const TYPE_LABELS: Record<string, string> = {
   reply_quick_tip: "Quick Tip Reply",
   reply_agree_amplify: "Agree+Amplify Reply",
   reply_resource_drop: "Resource Drop Reply",
+  quote_counter_insight: "Counter-Insight QT",
+  quote_proof_of_concept: "Proof of Concept QT",
+  quote_playbook_addon: "Playbook Add-On QT",
+  quote_builders_perspective: "Builder's POV QT",
 };
 
 // Types grouped by category for the dropdown
@@ -147,42 +151,53 @@ const VARIANT_TYPES = new Set([
   "blog_promo", "engagement_bait", "newsjacking",
   "reply_data_drop", "reply_contrarian", "reply_example",
   "reply_quick_tip", "reply_agree_amplify", "reply_resource_drop",
-  "quote_data_drop", "quote_contrarian", "quote_example",
-  "quote_quick_tip", "quote_agree_amplify", "quote_resource_drop",
+  "quote_counter_insight", "quote_proof_of_concept",
+  "quote_playbook_addon", "quote_builders_perspective",
 ]);
 
-// Shared styles for both Reply and Quote modes — value is the base style name
-const ENGAGEMENT_STYLES = [
+// Reply styles (6 styles for reply mode)
+const REPLY_ONLY_STYLES = [
   { value: "data_drop", label: "Data Drop", emoji: "\u{1f4ca}",
-    replyDesc: "Reply with a surprising MailMuse stat that makes people think 'where did they get that data?'",
-    quoteDesc: "Quote tweet with surprising data. Longer, structured, value-packed for your timeline." },
+    desc: "Reply with a surprising MailMuse stat that makes people think 'where did they get that data?'" },
   { value: "contrarian", label: "Contrarian", emoji: "\u{1f914}",
-    replyDesc: "Respectfully challenge with data. 'Our data across 600+ brands shows the opposite...'",
-    quoteDesc: "Challenge the take with data your followers can learn from. Structured breakdown." },
+    desc: "Respectfully challenge with data. 'Our data across 600+ brands shows the opposite...'" },
   { value: "example", label: "Example", emoji: "\u{1f4e7}",
-    replyDesc: "Share a real brand email example that relates to their point.",
-    quoteDesc: "Add a real brand example with analysis. Shows your followers proof." },
+    desc: "Share a real brand email example that relates to their point." },
   { value: "quick_tip", label: "Quick Tip", emoji: "\u{1f4a1}",
-    replyDesc: "Add a specific tactical insight they can screenshot.",
-    quoteDesc: "Add a tactical tip that makes your followers screenshot the quote tweet." },
+    desc: "Add a specific tactical insight they can screenshot." },
   { value: "agree_amplify", label: "Agree + Amplify", emoji: "\u{1f525}",
-    replyDesc: "Agree and go deeper with data they didn't have.",
-    quoteDesc: "Amplify with deeper data. Your followers get value, original author retweets." },
+    desc: "Agree and go deeper with data they didn't have." },
   { value: "resource_drop", label: "Resource Drop", emoji: "\u{1f517}",
-    replyDesc: "Only when someone asks for tools. Mentions MailMuse naturally.",
-    quoteDesc: "Share MailMuse as a resource. Includes mailmuse.in link in every variant." },
+    desc: "Only when someone asks for tools. Mentions MailMuse naturally." },
 ];
 
+// Quote Tweet v2 styles (4 styles — pre-computed insights, longer format 500-1200 chars)
+const QUOTE_STYLES = [
+  { value: "counter_insight", label: "Counter-Insight", emoji: "\u{1f9e0}",
+    desc: "Challenge the take with real data. Trends, outlier brands, timing patterns. 500-1200 chars." },
+  { value: "proof_of_concept", label: "Proof of Concept", emoji: "\u{1f4cb}",
+    desc: "Prove or disprove with real examples — actual brand names, subject lines, preview text. 500-1200 chars." },
+  { value: "playbook_addon", label: "Playbook Add-On", emoji: "\u{1f4d6}",
+    desc: "Add to their framework with data-backed additions. Sequences, trends, outlier brands. 500-1200 chars." },
+  { value: "builders_perspective", label: "Builder's POV", emoji: "\u{1f6e0}\u{fe0f}",
+    desc: "Personal observations from building MailMuse. Authentic founder voice + mailmuse.in. 400-800 chars." },
+];
+
+// Combined for backward compat in display
+const ENGAGEMENT_STYLES = QUOTE_STYLES.map((s) => ({
+  ...s, replyDesc: s.desc, quoteDesc: s.desc,
+}));
+
 // Legacy compat: keep REPLY_STYLES for any other usage
-const REPLY_STYLES = ENGAGEMENT_STYLES.map((s) => ({
-  value: `reply_${s.value}`, label: s.label, emoji: s.emoji, desc: s.replyDesc,
+const REPLY_STYLES = REPLY_ONLY_STYLES.map((s) => ({
+  value: `reply_${s.value}`, label: s.label, emoji: s.emoji, desc: s.desc,
 }));
 
 const REPLY_TYPE_SET = new Set([
   "reply_data_drop", "reply_contrarian", "reply_example",
   "reply_quick_tip", "reply_agree_amplify", "reply_resource_drop",
-  "quote_data_drop", "quote_contrarian", "quote_example",
-  "quote_quick_tip", "quote_agree_amplify", "quote_resource_drop",
+  "quote_counter_insight", "quote_proof_of_concept",
+  "quote_playbook_addon", "quote_builders_perspective",
   "smart_reply", "follow_up_reply",
 ]);
 
@@ -244,12 +259,17 @@ export default function AdminTweetsPage() {
   const [activeTab, setActiveTab] = useState<"tweets" | "replies">("tweets");
 
   // Reply Hub state
-  const [replyMode, setReplyMode] = useState<"reply" | "quote">("quote"); // default to quote for distribution
+  const [replyMode, setReplyModeRaw] = useState<"reply" | "quote">("quote"); // default to quote for distribution
+  const setReplyMode = (mode: "reply" | "quote") => {
+    setReplyModeRaw(mode);
+    // Reset style to first option of the new mode
+    setReplyStyle(mode === "quote" ? "counter_insight" : "data_drop");
+  };
   const [replyTargets, setReplyTargets] = useState<ReplyTarget[]>([]);
   const [selectedTarget, setSelectedTarget] = useState("");
   const [replyTweetText, setReplyTweetText] = useState("");
   const [replyTweetUrl, setReplyTweetUrl] = useState("");
-  const [replyStyle, setReplyStyle] = useState("data_drop"); // base style name (without reply_/quote_ prefix)
+  const [replyStyle, setReplyStyle] = useState("counter_insight"); // base style name (without reply_/quote_ prefix)
   const [replyGenerating, setReplyGenerating] = useState(false);
   const [replyTweets, setReplyTweets] = useState<Tweet[]>([]);
   const [replyLoading, setReplyLoading] = useState(false);
@@ -861,7 +881,7 @@ export default function AdminTweetsPage() {
 
             {replyMode === "quote" && (
               <div style={{ background: "#f5f3ff", border: "1px solid #e9d5ff", borderRadius: 8, padding: "10px 14px", marginBottom: 14, fontSize: 12, color: "#6d28d9", lineHeight: 1.5 }}>
-                Quote tweets appear on YOUR timeline — max reach with Premium. Longer format (200-280 chars), structured with data points and line breaks.
+                v2 Quote Tweets: appear on YOUR timeline for max reach with Premium. Longer format (500-1200 chars) with pre-computed insights — real trends, outlier brands, topic-matched examples, and timing patterns from 600+ brands.
               </div>
             )}
 
@@ -912,13 +932,13 @@ export default function AdminTweetsPage() {
               />
             </div>
 
-            {/* Style pills */}
+            {/* Style pills — different sets for Reply vs Quote */}
             <div style={{ marginBottom: 14 }}>
               <label style={{ fontSize: 12, fontWeight: 500, color: "var(--color-secondary)", display: "block", marginBottom: 8 }}>
                 {replyMode === "quote" ? "Quote Style" : "Reply Style"}
               </label>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {ENGAGEMENT_STYLES.map((s) => (
+                {(replyMode === "quote" ? QUOTE_STYLES : REPLY_ONLY_STYLES).map((s) => (
                   <button
                     key={s.value}
                     onClick={() => setReplyStyle(s.value)}
@@ -938,7 +958,7 @@ export default function AdminTweetsPage() {
                 ))}
               </div>
               <p style={{ fontSize: 12, color: "var(--color-secondary)", marginTop: 8, lineHeight: 1.5, fontStyle: "italic" }}>
-                {ENGAGEMENT_STYLES.find((s) => s.value === replyStyle)?.[replyMode === "quote" ? "quoteDesc" : "replyDesc"]}
+                {(replyMode === "quote" ? QUOTE_STYLES : REPLY_ONLY_STYLES).find((s) => s.value === replyStyle)?.desc}
               </p>
             </div>
 
