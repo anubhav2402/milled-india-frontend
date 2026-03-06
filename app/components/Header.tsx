@@ -56,7 +56,6 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
           >
             <Logo size={32} />
             <span
-              className="hide-mobile"
               style={{
                 fontFamily: "var(--font-dm-serif)",
                 fontSize: 20,
