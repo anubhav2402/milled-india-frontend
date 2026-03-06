@@ -283,108 +283,56 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
                 {link.label}
               </Link>
             ))}
-          </nav>
 
-          <div
-            style={{
-              marginTop: 24,
-              paddingTop: 24,
-              borderTop: "1px solid var(--color-border)",
-            }}
-          >
+            {/* Auth links as regular nav items */}
             {user ? (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 12,
-                }}
-              >
-                <div
+              <>
+                <Link
+                  href="/account"
+                  onClick={() => setMobileMenuOpen(false)}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    color: activeRoute === "/account" ? "var(--color-accent)" : "var(--color-primary)",
+                    textDecoration: "none",
+                    padding: "14px 16px",
+                    borderRadius: 10,
+                    background: activeRoute === "/account" ? "var(--color-accent-light)" : "transparent",
                   }}
                 >
-                  <span
-                    style={{ fontSize: 14, color: "var(--color-secondary)" }}
-                  >
-                    {user.name || user.email}
-                  </span>
-                  {user && user.effective_plan !== "free" && (
-                    <span
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 700,
-                        color: "white",
-                        background: user.is_on_trial
-                          ? "linear-gradient(135deg, #8b5cf6, #a78bfa)"
-                          : "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                        padding: "2px 8px",
-                        borderRadius: 4,
-                        letterSpacing: "0.05em",
-                        textTransform: "uppercase" as const,
-                      }}
-                    >
-                      {user.is_on_trial ? "TRIAL" : user.effective_plan.toUpperCase()}
-                    </span>
-                  )}
-                </div>
-                <div style={{ display: "flex", gap: 12 }}>
+                  Account
+                </Link>
+                {user.effective_plan === "free" && (
                   <Link
-                    href="/account"
+                    href="/pricing"
                     onClick={() => setMobileMenuOpen(false)}
                     style={{
-                      flex: 1,
-                      textAlign: "center",
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: 500,
-                      color: "var(--color-primary)",
+                      color: "var(--color-accent)",
                       textDecoration: "none",
-                      padding: "12px 18px",
+                      padding: "14px 16px",
                       borderRadius: 10,
-                      border: "1px solid var(--color-border)",
+                      background: "transparent",
                     }}
                   >
-                    Account
+                    Upgrade
                   </Link>
-                  {user?.effective_plan === "free" && (
-                    <Link
-                      href="/pricing"
-                      onClick={() => setMobileMenuOpen(false)}
-                      style={{
-                        flex: 1,
-                        textAlign: "center",
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: "white",
-                        background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                        textDecoration: "none",
-                        padding: "12px 18px",
-                        borderRadius: 10,
-                      }}
-                    >
-                      Upgrade
-                    </Link>
-                  )}
-                </div>
-              </div>
+                )}
+              </>
             ) : (
-              <div style={{ display: "flex", gap: 12 }}>
+              <>
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
-                    flex: 1,
-                    textAlign: "center",
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: 500,
-                    color: "var(--color-primary)",
+                    color: activeRoute === "/login" ? "var(--color-accent)" : "var(--color-primary)",
                     textDecoration: "none",
-                    padding: "12px 18px",
+                    padding: "14px 16px",
                     borderRadius: 10,
-                    border: "1px solid var(--color-border)",
+                    background: activeRoute === "/login" ? "var(--color-accent-light)" : "transparent",
                   }}
                 >
                   Log in
@@ -393,22 +341,20 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
                   href="/signup"
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
-                    flex: 1,
-                    textAlign: "center",
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: 500,
-                    color: "white",
-                    background: "var(--color-accent)",
+                    color: activeRoute === "/signup" ? "var(--color-accent)" : "var(--color-primary)",
                     textDecoration: "none",
-                    padding: "12px 18px",
+                    padding: "14px 16px",
                     borderRadius: 10,
+                    background: activeRoute === "/signup" ? "var(--color-accent-light)" : "transparent",
                   }}
                 >
                   Sign up free
                 </Link>
-              </div>
+              </>
             )}
-          </div>
+          </nav>
         </div>
       )}
     </>
