@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Logo from "../components/Logo";
 import { useAuth } from "../context/AuthContext";
 
 declare global {
@@ -122,8 +121,7 @@ export default function LoginPage() {
       <header style={{ padding: "20px 24px", backgroundColor: "#fff", borderBottom: "1px solid #e2e8f0" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-            <Logo size={36} />
-            <span style={{ fontFamily: "var(--font-bricolage)", fontSize: 22, color: "var(--color-primary)" }}>Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em></span>
+            <span style={{ fontFamily: "var(--font-bricolage)", fontSize: 22, fontWeight: 700, letterSpacing: "-1px", lineHeight: 1, color: "var(--color-primary)" }}>Mail<span style={{ color: "#c4613a" }}>Muse</span></span>
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <span className="login-header-text" style={{ fontSize: 14, color: "#64748b" }}>Don't have an account?</span>

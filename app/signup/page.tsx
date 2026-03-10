@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Logo from "../components/Logo";
 import { useAuth } from "../context/AuthContext";
 
 declare global {
@@ -178,18 +177,17 @@ export default function SignupPage() {
               textDecoration: "none",
             }}
           >
-            <Logo size={32} />
             <span
               style={{
                 fontFamily: "var(--font-bricolage)",
                 fontSize: 20,
+                fontWeight: 700,
+                letterSpacing: "-1px",
+                lineHeight: 1,
                 color: "var(--color-primary)",
               }}
             >
-              Mail{" "}
-              <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>
-                Muse
-              </em>
+              Mail<span style={{ color: "#c4613a" }}>Muse</span>
             </span>
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

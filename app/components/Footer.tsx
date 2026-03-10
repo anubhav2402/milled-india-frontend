@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Logo from "./Logo";
 
 const exploreLinks = [
   { label: "Browse Emails", href: "/browse" },
@@ -54,16 +53,17 @@ export default function Footer() {
               marginBottom: 16,
             }}
           >
-            <Logo size={28} />
             <span
               style={{
                 fontFamily: "var(--font-bricolage)",
                 fontSize: 20,
-                color: "white",
+                fontWeight: 700,
+                letterSpacing: "-1px",
+                lineHeight: 1,
+                color: "#f0ede8",
               }}
             >
-              Mail{" "}
-              <em style={{ fontStyle: "italic", color: "#E8A882" }}>Muse</em>
+              Mail<span style={{ color: "#c4613a" }}>Muse</span>
             </span>
           </Link>
           <p

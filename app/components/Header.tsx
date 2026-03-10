@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Logo from "./Logo";
 import { useAuth } from "../context/AuthContext";
 import { getNavLinks } from "../lib/nav";
 
@@ -54,18 +53,17 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
               flexShrink: 0,
             }}
           >
-            <Logo size={32} />
             <span
               style={{
                 fontFamily: "var(--font-bricolage)",
                 fontSize: 20,
+                fontWeight: 700,
+                letterSpacing: "-1px",
+                lineHeight: 1,
                 color: "var(--color-primary)",
               }}
             >
-              Mail{" "}
-              <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>
-                Muse
-              </em>
+              Mail<span style={{ color: "#c4613a" }}>Muse</span>
             </span>
           </Link>
 

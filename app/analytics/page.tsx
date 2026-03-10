@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Logo from "../components/Logo";
 import Header from "../components/Header";
 import { useAuth } from "../context/AuthContext";
 import BlurredOverlay from "../components/BlurredOverlay";

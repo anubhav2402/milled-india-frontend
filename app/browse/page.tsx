@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Logo from "../components/Logo";
 import EmailCard, { EmailCardSkeleton } from "../components/EmailCard";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
@@ -142,9 +141,8 @@ function BrowseHeader({ searchQuery, setSearchQuery }: {
         }}>
           {/* Logo */}
           <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-            <Logo size={32} />
-            <span className="hide-mobile" style={{ fontFamily: "var(--font-bricolage)", fontSize: 20, color: "var(--color-primary)" }}>
-              Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em>
+            <span className="hide-mobile" style={{ fontFamily: "var(--font-bricolage)", fontSize: 20, fontWeight: 700, letterSpacing: "-1px", lineHeight: 1, color: "var(--color-primary)" }}>
+              Mail<span style={{ color: "#c4613a" }}>Muse</span>
             </span>
           </Link>
 

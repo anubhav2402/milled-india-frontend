@@ -6,7 +6,6 @@ import Link from "next/link";
 import type { Editor, Block } from "grapesjs";
 import { preprocessEmailHtml } from "./utils";
 import { API_BASE } from "../lib/constants";
-import Logo from "../components/Logo";
 import { useAuth } from "../context/AuthContext";
 
 // ---------------------------------------------------------------------------
@@ -1186,7 +1185,7 @@ ${content}
           textAlign: "center",
         }}
       >
-        <Logo size={48} />
+        <span style={{ fontFamily: "var(--font-bricolage)", fontSize: 36, fontWeight: 700, letterSpacing: "-2px", lineHeight: 1, color: "#1C1917" }}>Mail<span style={{ color: "#c4613a" }}>Muse</span></span>
         <h1
           style={{
             fontFamily: "var(--font-bricolage)",
@@ -1268,7 +1267,7 @@ ${content}
           textAlign: "center",
         }}
       >
-        <Logo size={48} />
+        <span style={{ fontFamily: "var(--font-bricolage)", fontSize: 36, fontWeight: 700, letterSpacing: "-2px", lineHeight: 1, color: "#1C1917" }}>Mail<span style={{ color: "#c4613a" }}>Muse</span></span>
         <h1
           style={{
             fontFamily: "var(--font-bricolage)",
@@ -1339,16 +1338,17 @@ ${content}
               textDecoration: "none",
             }}
           >
-            <Logo size={24} />
             <span
               style={{
                 fontFamily: "var(--font-bricolage)",
                 fontSize: 16,
+                fontWeight: 700,
+                letterSpacing: "-0.5px",
+                lineHeight: 1,
                 color: "#1C1917",
               }}
             >
-              Mail{" "}
-              <em style={{ fontStyle: "italic", color: "#C2714A" }}>Muse</em>
+              Mail<span style={{ color: "#c4613a" }}>Muse</span>
             </span>
           </Link>
           <span style={{ color: "#D6CFC7", fontSize: 14 }}>/</span>
