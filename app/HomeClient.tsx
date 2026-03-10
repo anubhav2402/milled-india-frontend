@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Header from "./components/Header";
 import Button from "./components/Button";
@@ -34,32 +34,108 @@ function logoUrlFromSender(sender: string | null | undefined): string | undefine
   return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 }
 
+// ---- Scroll animation hook ----
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setIsVisible(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+
+  return { ref, isVisible };
+}
+
 // ============================================================
-// SECTION 1: Hero — Bold Headline + CTA + Email Grid
+// SECTION 1: Hero — Floating Brand Logos + Global Copy
 // ============================================================
-function HeroSection({ defaultEmails }: { defaultEmails: EmailPreview[] }) {
+const HERO_BRANDS = [
+  { name: "Nike", domain: "nike.com", top: "8%", left: "5%", delay: 0.2, size: 48 },
+  { name: "Sephora", domain: "sephora.com", top: "18%", right: "6%", delay: 0.5, size: 44 },
+  { name: "Zara", domain: "zara.com", top: "55%", left: "3%", delay: 0.8, size: 40 },
+  { name: "Apple", domain: "apple.com", top: "12%", left: "18%", delay: 0.3, size: 42 },
+  { name: "Adidas", domain: "adidas.com", top: "65%", right: "4%", delay: 1.0, size: 46 },
+  { name: "H&M", domain: "hm.com", top: "40%", left: "2%", delay: 0.6, size: 38 },
+  { name: "Uniqlo", domain: "uniqlo.com", top: "35%", right: "3%", delay: 0.4, size: 42 },
+  { name: "Amazon", domain: "amazon.com", top: "75%", left: "10%", delay: 1.1, size: 40 },
+  { name: "Shopify", domain: "shopify.com", top: "50%", right: "8%", delay: 0.7, size: 44 },
+  { name: "Glossier", domain: "glossier.com", top: "78%", right: "12%", delay: 0.9, size: 38 },
+  { name: "Patagonia", domain: "patagonia.com", top: "25%", left: "8%", delay: 1.2, size: 36 },
+  { name: "Gymshark", domain: "gymshark.com", top: "68%", left: "18%", delay: 1.3, size: 40 },
+];
+
+function HeroSection() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
   return (
     <section
       style={{
-        background: "linear-gradient(180deg, var(--color-surface) 0%, #ffffff 70%)",
-        padding: "120px 24px 80px",
+        background: "linear-gradient(180deg, var(--color-surface) 0%, #ffffff 100%)",
+        padding: "140px 24px 100px",
+        position: "relative",
+        overflow: "hidden",
+        minHeight: 600,
       }}
     >
-      <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
+      {/* Floating brand logos */}
+      {HERO_BRANDS.map((b) => (
+        <div
+          key={b.name}
+          className="hero-brand-bubble"
+          style={{
+            position: "absolute",
+            top: b.top,
+            left: b.left,
+            right: (b as Record<string, unknown>).right as string | undefined,
+            width: b.size,
+            height: b.size,
+            borderRadius: "50%",
+            background: "white",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: mounted ? 1 : 0,
+            transform: mounted ? "scale(1)" : "scale(0)",
+            transition: `all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${b.delay}s`,
+            zIndex: 1,
+            animation: mounted ? `floatBubble ${3 + b.delay}s ease-in-out ${b.delay + 0.5}s infinite` : "none",
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${b.domain}&sz=128`}
+            alt={b.name}
+            width={b.size * 0.5}
+            height={b.size * 0.5}
+            style={{ borderRadius: 4 }}
+          />
+        </div>
+      ))}
+
+      <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
         <h1
           style={{
             fontFamily: "var(--font-dm-serif)",
             fontSize: "clamp(36px, 5.5vw, 56px)",
             fontWeight: 400,
             color: "var(--color-primary)",
-            lineHeight: 1.08,
+            lineHeight: 1.1,
             letterSpacing: "-0.02em",
             marginBottom: 20,
           }}
         >
-          India&apos;s largest email marketing
+          Email inspiration & research
           <br />
-          <span style={{ color: "var(--color-accent)" }}>inspiration library</span>
+          for <span style={{ color: "var(--color-accent)" }}>high-performing teams</span>
         </h1>
 
         <p
@@ -68,13 +144,16 @@ function HeroSection({ defaultEmails }: { defaultEmails: EmailPreview[] }) {
             color: "var(--color-secondary)",
             lineHeight: 1.5,
             marginBottom: 36,
+            maxWidth: 560,
+            margin: "0 auto 36px",
           }}
         >
-          100,000+ emails from 10,000+ brands across 17 industries
+          The all-in-one platform to find, save, and analyze the web&apos;s best emails.
+          Featuring <strong>100,000+ curated emails</strong> with new brands added daily.
         </p>
 
         <Button href="/signup" size="lg">
-          Start Free Account
+          Join for free
         </Button>
 
         <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 14 }}>
@@ -82,42 +161,143 @@ function HeroSection({ defaultEmails }: { defaultEmails: EmailPreview[] }) {
         </p>
       </div>
 
-      {/* 6-email decorative grid */}
+      <style>{`
+        @keyframes floatBubble {
+          0%, 100% { transform: scale(1) translateY(0); }
+          50% { transform: scale(1) translateY(-8px); }
+        }
+        @media (max-width: 768px) {
+          .hero-brand-bubble { display: none !important; }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+// ============================================================
+// SECTION 2: Platform Description — What MailMuse Does
+// ============================================================
+function PlatformDescription() {
+  const { ref, isVisible } = useInView(0.2);
+
+  const pillars = [
+    {
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+        </svg>
+      ),
+      title: "Find faster",
+      desc: "Search 100K+ emails by brand, industry, campaign type, or keyword. Stop wasting hours hunting for inspiration.",
+    },
+    {
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
+        </svg>
+      ),
+      title: "Save & organize",
+      desc: "Bookmark emails, create collections, and build swipe files your whole team can access.",
+    },
+    {
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 20V10" /><path d="M18 20V4" /><path d="M6 20v-4" />
+        </svg>
+      ),
+      title: "Analyze & learn",
+      desc: "AI scores every email on 5 dimensions. Understand what makes top-performing emails work.",
+    },
+  ];
+
+  return (
+    <section ref={ref} style={{ padding: "96px 24px", background: "white" }}>
       <div
-        className="hero-email-grid"
         style={{
-          maxWidth: 960,
-          margin: "60px auto 0",
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 16,
+          maxWidth: 900,
+          margin: "0 auto",
+          textAlign: "center",
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? "translateY(0)" : "translateY(40px)",
+          transition: "all 0.7s ease-out",
         }}
       >
-        {defaultEmails.length === 0
-          ? Array.from({ length: 6 }).map((_, i) => (
-              <EmailCardSkeleton key={i} />
-            ))
-          : defaultEmails.slice(0, 6).map((email) => (
-              <EmailCard
-                key={email.id}
-                id={email.id}
-                subject={email.subject}
-                brand={email.brand || undefined}
-                industry={email.industry || undefined}
-                received_at={email.received_at}
-                campaignType={email.type || undefined}
-                logoUrl={logoUrlFromSender(email.sender)}
-                compact
-                previewHeight={200}
-              />
-            ))}
+        <h2
+          style={{
+            fontFamily: "var(--font-dm-serif)",
+            fontSize: "clamp(28px, 4vw, 40px)",
+            fontWeight: 400,
+            color: "var(--color-primary)",
+            letterSpacing: "-0.02em",
+            lineHeight: 1.15,
+            marginBottom: 16,
+          }}
+        >
+          Stop tracking competitors with your inbox
+        </h2>
+        <p
+          style={{
+            fontSize: 18,
+            color: "var(--color-secondary)",
+            lineHeight: 1.6,
+            maxWidth: 640,
+            margin: "0 auto 56px",
+          }}
+        >
+          MailMuse automatically captures, organizes, and analyzes emails from 10,000+ brands
+          so you can focus on creating campaigns that convert.
+        </p>
+
+        <div
+          className="pillars-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 40,
+            textAlign: "left",
+          }}
+        >
+          {pillars.map((p, i) => (
+            <div
+              key={p.title}
+              style={{
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? "translateY(0)" : "translateY(30px)",
+                transition: `all 0.6s ease-out ${0.2 + i * 0.15}s`,
+              }}
+            >
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 12,
+                  background: "var(--color-accent-light)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 16,
+                }}
+              >
+                {p.icon}
+              </div>
+              <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-primary)", marginBottom: 8 }}>
+                {p.title}
+              </h3>
+              <p style={{ fontSize: 15, color: "var(--color-secondary)", lineHeight: 1.6, margin: 0 }}>
+                {p.desc}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <style>{`
         @media (max-width: 768px) {
-          .hero-email-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-            max-width: 480px !important;
+          .pillars-grid {
+            grid-template-columns: 1fr !important;
+            gap: 32px !important;
+            max-width: 400px !important;
+            margin: 0 auto !important;
           }
         }
       `}</style>
@@ -126,29 +306,115 @@ function HeroSection({ defaultEmails }: { defaultEmails: EmailPreview[] }) {
 }
 
 // ============================================================
-// SECTION 2: Brand Carousel
+// SECTION 3: Video / Demo Section
+// ============================================================
+function DemoSection() {
+  const { ref, isVisible } = useInView(0.1);
+
+  return (
+    <section ref={ref} style={{ padding: "96px 24px", background: "var(--color-surface)" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: 48,
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateY(0)" : "translateY(30px)",
+            transition: "all 0.6s ease-out",
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "var(--font-dm-serif)",
+              fontSize: "clamp(28px, 4vw, 36px)",
+              fontWeight: 400,
+              color: "var(--color-primary)",
+              letterSpacing: "-0.02em",
+              marginBottom: 12,
+            }}
+          >
+            See MailMuse in action
+          </h2>
+          <p style={{ fontSize: 17, color: "var(--color-secondary)" }}>
+            From research to ready-to-send in under 2 minutes
+          </p>
+        </div>
+
+        <div
+          style={{
+            borderRadius: 20,
+            overflow: "hidden",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
+            background: "#1C1917",
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "scale(1)" : "scale(0.95)",
+            transition: "all 0.7s ease-out 0.2s",
+          }}
+        >
+          {/* Browser chrome */}
+          <div style={{ padding: "10px 16px", borderBottom: "1px solid #333", display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ display: "flex", gap: 6 }}>
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f57" }} />
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e" }} />
+              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#28c840" }} />
+            </div>
+            <div style={{ flex: 1, background: "#2a2725", borderRadius: 6, padding: "5px 12px", fontSize: 12, color: "#888", marginLeft: 8 }}>
+              app.mailmuse.io
+            </div>
+          </div>
+
+          {/* Video embed area */}
+          <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(135deg, #1C1917 0%, #2a2725 100%)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 16,
+              }}
+            >
+              {/* Play button */}
+              <div
+                style={{
+                  width: 72,
+                  height: 72,
+                  borderRadius: "50%",
+                  background: "var(--color-accent)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  boxShadow: "0 8px 30px rgba(194,113,74,0.4)",
+                }}
+              >
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+                  <polygon points="6,3 20,12 6,21" />
+                </svg>
+              </div>
+              <p style={{ fontSize: 15, color: "#888", margin: 0 }}>
+                Watch a 90-second walkthrough
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// SECTION 4: Brand Carousel
 // ============================================================
 const TOP_BRANDS = [
-  "Uniqlo",
-  "Calvin Klein",
-  "Balenciaga",
-  "Givenchy",
-  "Mango",
-  "Net-A-Porter",
-  "Anthropologie",
-  "Mytheresa",
-  "AJIO",
-  "Fossil",
-  "Nykaa",
-  "Reformation",
-  "Zomato",
-  "Bobbi Brown Cosmetics",
-  "Kiehl'S Since 1851",
-  "Nyx Professional Makeup",
-  "Urban Decay",
-  "Innisfree",
-  "Caratlane, A Tanishq Partnership",
-  "Luisaviaroma",
+  "Uniqlo", "Calvin Klein", "Balenciaga", "Givenchy", "Mango",
+  "Net-A-Porter", "Anthropologie", "Mytheresa", "AJIO", "Fossil",
+  "Nykaa", "Reformation", "Zomato", "Bobbi Brown Cosmetics",
+  "Kiehl'S Since 1851", "Nyx Professional Makeup", "Urban Decay",
+  "Innisfree", "Caratlane, A Tanishq Partnership", "Luisaviaroma",
 ];
 
 function BrandCarousel({
@@ -162,7 +428,8 @@ function BrandCarousel({
     <section
       style={{
         padding: "40px 24px 48px",
-        background: "var(--color-surface)",
+        background: "white",
+        borderTop: "1px solid var(--color-border)",
         borderBottom: "1px solid var(--color-border)",
         overflow: "hidden",
       }}
@@ -178,15 +445,13 @@ function BrandCarousel({
           marginBottom: 20,
         }}
       >
-        Tracking 10,000+ brands across 17 industries
+        Trusted by teams tracking the world&apos;s best brands
       </p>
       <div
         style={{
           position: "relative",
-          maskImage:
-            "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+          maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
         }}
       >
         <div
@@ -202,27 +467,10 @@ function BrandCarousel({
           {marqueeItems.map((brand, i) => (
             <div
               key={`${brand}-${i}`}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                whiteSpace: "nowrap",
-              }}
+              style={{ display: "flex", alignItems: "center", gap: 8, whiteSpace: "nowrap" }}
             >
-              <BrandLogo
-                brandName={brand}
-                logoUrl={brandStats[brand]?.logo_url}
-                size={28}
-                borderRadius={7}
-              />
-              <span
-                style={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "var(--color-secondary)",
-                  textTransform: "capitalize",
-                }}
-              >
+              <BrandLogo brandName={brand} logoUrl={brandStats[brand]?.logo_url} size={28} borderRadius={7} />
+              <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-secondary)", textTransform: "capitalize" }}>
                 {brand}
               </span>
             </div>
@@ -235,16 +483,14 @@ function BrandCarousel({
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
-        .marquee-track:hover {
-          animation-play-state: paused;
-        }
+        .marquee-track:hover { animation-play-state: paused; }
       `}</style>
     </section>
   );
 }
 
 // ============================================================
-// SECTION 3-5: Feature Rows (Reusable)
+// SECTION 5-7: Feature Rows with Scroll Animations
 // ============================================================
 function BrowseMock() {
   return (
@@ -353,8 +599,12 @@ function FeatureRow({
   visual: React.ReactNode;
   bg: string;
 }) {
+  const { ref, isVisible } = useInView(0.15);
+  const textFrom = direction === "left" ? "-40px" : "40px";
+  const visualFrom = direction === "left" ? "40px" : "-40px";
+
   return (
-    <section style={{ padding: "96px 24px", background: bg }}>
+    <section ref={ref} style={{ padding: "96px 24px", background: bg }}>
       <div
         className="feature-row"
         style={{
@@ -367,7 +617,14 @@ function FeatureRow({
         }}
       >
         {/* Text side */}
-        <div style={{ order: direction === "left" ? 1 : 2 }}>
+        <div
+          style={{
+            order: direction === "left" ? 1 : 2,
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateX(0)" : `translateX(${textFrom})`,
+            transition: "all 0.7s ease-out",
+          }}
+        >
           <span
             style={{
               display: "inline-block",
@@ -409,12 +666,7 @@ function FeatureRow({
           </p>
           <Link
             href={ctaHref}
-            style={{
-              fontSize: 15,
-              fontWeight: 600,
-              color: "var(--color-accent)",
-              textDecoration: "none",
-            }}
+            style={{ fontSize: 15, fontWeight: 600, color: "var(--color-accent)", textDecoration: "none" }}
           >
             {ctaText} &rarr;
           </Link>
@@ -427,6 +679,9 @@ function FeatureRow({
             borderRadius: 20,
             overflow: "hidden",
             boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateX(0)" : `translateX(${visualFrom})`,
+            transition: "all 0.7s ease-out 0.15s",
           }}
         >
           {visual}
@@ -437,45 +692,109 @@ function FeatureRow({
 }
 
 // ============================================================
-// SECTION 6: Email Grid Showcase
+// SECTION 8: Horizontal Email Carousel
 // ============================================================
-function EmailGridShowcase({ emails }: { emails: EmailPreview[] }) {
-  return (
-    <section style={{ padding: "96px 24px", background: "var(--color-surface)" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <h2
-            style={{
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: "clamp(28px, 4vw, 36px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              marginBottom: 12,
-            }}
-          >
-            See what top Indian brands are sending today
-          </h2>
-          <p style={{ fontSize: 17, color: "var(--color-secondary)" }}>
-            Updated daily with 1,000+ new emails
-          </p>
-        </div>
+function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { ref: sectionRef, isVisible } = useInView(0.1);
 
+  const scroll = (dir: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const amount = 300;
+    scrollRef.current.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
+  };
+
+  return (
+    <section
+      ref={sectionRef}
+      style={{
+        padding: "96px 0",
+        background: "var(--color-surface)",
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
         <div
-          className="showcase-grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 16,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-end",
+            marginBottom: 32,
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateY(0)" : "translateY(20px)",
+            transition: "all 0.6s ease-out",
           }}
         >
-          {emails.length === 0
-            ? Array.from({ length: 8 }).map((_, i) => (
-                <EmailCardSkeleton key={i} />
-              ))
-            : emails.slice(0, 8).map((email) => (
+          <div>
+            <h2
+              style={{
+                fontFamily: "var(--font-dm-serif)",
+                fontSize: "clamp(28px, 4vw, 36px)",
+                fontWeight: 400,
+                color: "var(--color-primary)",
+                letterSpacing: "-0.02em",
+                marginBottom: 8,
+              }}
+            >
+              Browse the latest emails
+            </h2>
+            <p style={{ fontSize: 16, color: "var(--color-secondary)", margin: 0 }}>
+              Updated daily with 1,000+ new emails from top brands
+            </p>
+          </div>
+
+          {/* Scroll arrows */}
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              onClick={() => scroll("left")}
+              style={{
+                width: 40, height: 40, borderRadius: "50%",
+                border: "1px solid var(--color-border)", background: "white",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round"><path d="M15 18l-6-6 6-6" /></svg>
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              style={{
+                width: 40, height: 40, borderRadius: "50%",
+                border: "1px solid var(--color-border)", background: "white",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6" /></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Horizontal scroll track */}
+      <div
+        ref={scrollRef}
+        className="email-carousel-track"
+        style={{
+          display: "flex",
+          gap: 16,
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          paddingLeft: "max(24px, calc((100vw - 1200px) / 2 + 24px))",
+          paddingRight: 24,
+          paddingBottom: 8,
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? "translateY(0)" : "translateY(30px)",
+          transition: "all 0.7s ease-out 0.2s",
+        }}
+      >
+        {emails.length === 0
+          ? Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} style={{ minWidth: 260, scrollSnapAlign: "start" }}>
+                <EmailCardSkeleton />
+              </div>
+            ))
+          : emails.map((email) => (
+              <div key={email.id} style={{ minWidth: 260, scrollSnapAlign: "start" }}>
                 <EmailCard
-                  key={email.id}
                   id={email.id}
                   subject={email.subject}
                   brand={email.brand || undefined}
@@ -484,85 +803,75 @@ function EmailGridShowcase({ emails }: { emails: EmailPreview[] }) {
                   campaignType={email.type || undefined}
                   logoUrl={logoUrlFromSender(email.sender)}
                   compact
-                  previewHeight={220}
+                  previewHeight={240}
                 />
-              ))}
-        </div>
-
-        <div style={{ textAlign: "center", marginTop: 40 }}>
-          <Button href="/browse" variant="outline" size="lg">
-            Browse All Emails
-          </Button>
-        </div>
+              </div>
+            ))}
       </div>
+
+      <div style={{ textAlign: "center", marginTop: 40 }}>
+        <Button href="/browse" variant="outline" size="lg">
+          Browse All Emails
+        </Button>
+      </div>
+
+      <style>{`
+        .email-carousel-track::-webkit-scrollbar { display: none; }
+        .email-carousel-track { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </section>
   );
 }
 
 // ============================================================
-// SECTION 7: Pricing
+// SECTION 9: Pricing
 // ============================================================
 function PricingAnchor() {
+  const { ref, isVisible } = useInView(0.1);
   const plans = [
     {
-      name: "Free",
-      price: "0",
-      period: "/forever",
+      name: "Free", price: "0", period: "/forever",
       features: ["Last 30 days of emails", "20 email views/day", "5 brand pages/day", "Basic search"],
-      cta: "Create Free Account",
-      ctaHref: "/signup",
-      variant: "secondary" as const,
-      highlight: false,
+      cta: "Create Free Account", ctaHref: "/signup",
+      variant: "secondary" as const, highlight: false,
     },
     {
-      name: "Starter",
-      price: "9",
-      period: "/mo",
-      annual: "89/yr",
-      savings: "Save 18%",
+      name: "Starter", price: "9", period: "/mo", annual: "89/yr", savings: "Save 18%",
       features: ["6 months of emails", "75 email views/day", "Advanced filters", "Edit + 3 template exports"],
-      cta: "Start 7-Day Trial",
-      ctaHref: "/pricing",
-      variant: "secondary" as const,
-      highlight: false,
+      cta: "Start 7-Day Trial", ctaHref: "/pricing",
+      variant: "secondary" as const, highlight: false,
     },
     {
-      name: "Pro",
-      price: "19",
-      period: "/mo",
-      annual: "189/yr",
-      savings: "Save 17%",
+      name: "Pro", price: "19", period: "/mo", annual: "189/yr", savings: "Save 17%",
       features: ["Full email archive", "Unlimited views & analytics", "Campaign calendar & alerts", "Template editor & AI generator"],
-      cta: "Start 7-Day Trial",
-      ctaHref: "/pricing",
-      variant: "primary" as const,
-      highlight: true,
+      cta: "Start 7-Day Trial", ctaHref: "/pricing",
+      variant: "primary" as const, highlight: true,
     },
     {
-      name: "Agency",
-      price: "49",
-      period: "/mo",
-      annual: "489/yr",
+      name: "Agency", price: "49", period: "/mo", annual: "489/yr",
       features: ["Everything in Pro", "10 team seats", "Unlimited brand alerts", "Unlimited AI generator"],
-      cta: "Contact Sales",
-      ctaHref: "/pricing",
-      variant: "secondary" as const,
-      highlight: false,
+      cta: "Contact Sales", ctaHref: "/pricing",
+      variant: "secondary" as const, highlight: false,
     },
   ];
 
   return (
-    <section style={{ padding: "96px 24px", background: "white" }}>
-      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+    <section ref={ref} style={{ padding: "96px 24px", background: "white" }}>
+      <div
+        style={{
+          maxWidth: 1100, margin: "0 auto",
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? "translateY(0)" : "translateY(30px)",
+          transition: "all 0.7s ease-out",
+        }}
+      >
         <div style={{ textAlign: "center", marginBottom: 16 }}>
           <h2
             style={{
               fontFamily: "var(--font-dm-serif)",
               fontSize: "clamp(28px, 4vw, 36px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              marginBottom: 12,
+              fontWeight: 400, color: "var(--color-primary)",
+              letterSpacing: "-0.02em", marginBottom: 12,
             }}
           >
             Start free. Upgrade when you see the value.
@@ -574,62 +883,40 @@ function PricingAnchor() {
 
         <div
           style={{
-            background: "var(--color-accent-light)",
-            borderRadius: 10,
-            padding: "10px 20px",
-            textAlign: "center",
-            fontSize: 13,
-            fontWeight: 500,
-            color: "var(--color-accent-hover)",
-            marginBottom: 32,
-            maxWidth: 480,
-            margin: "0 auto 32px",
+            background: "var(--color-accent-light)", borderRadius: 10,
+            padding: "10px 20px", textAlign: "center", fontSize: 13,
+            fontWeight: 500, color: "var(--color-accent-hover)",
+            maxWidth: 480, margin: "0 auto 32px",
           }}
         >
           7-day Starter trial included with every new account
         </div>
 
-        <div
-          className="pricing-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 16,
-          }}
-        >
-          {plans.map((plan) => (
+        <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+          {plans.map((plan, i) => (
             <div
               key={plan.name}
               style={{
                 border: plan.highlight ? "2px solid var(--color-accent)" : "1px solid var(--color-border)",
-                borderRadius: 16,
-                padding: 28,
-                background: "white",
-                position: "relative",
+                borderRadius: 16, padding: 28, background: "white", position: "relative",
+                opacity: isVisible ? 1 : 0,
+                transform: isVisible ? "translateY(0)" : "translateY(20px)",
+                transition: `all 0.5s ease-out ${0.1 + i * 0.1}s`,
               }}
             >
               {plan.highlight && (
                 <div
                   style={{
-                    position: "absolute",
-                    top: -12,
-                    left: "50%",
-                    transform: "translateX(-50%)",
+                    position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)",
                     background: "linear-gradient(135deg, var(--color-accent), var(--color-accent-hover))",
-                    color: "white",
-                    fontSize: 11,
-                    fontWeight: 600,
-                    padding: "4px 14px",
-                    borderRadius: 20,
-                    whiteSpace: "nowrap",
+                    color: "white", fontSize: 11, fontWeight: 600,
+                    padding: "4px 14px", borderRadius: 20, whiteSpace: "nowrap",
                   }}
                 >
                   MOST POPULAR
                 </div>
               )}
-              <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--color-primary)", margin: "0 0 4px" }}>
-                {plan.name}
-              </h3>
+              <h3 style={{ fontSize: 16, fontWeight: 600, color: "var(--color-primary)", margin: "0 0 4px" }}>{plan.name}</h3>
               <div style={{ marginBottom: 4 }}>
                 <span style={{ fontSize: 32, fontWeight: 700, color: "var(--color-primary)" }}>${plan.price}</span>
                 <span style={{ fontSize: 13, color: "var(--color-secondary)" }}>{plan.period}</span>
@@ -653,9 +940,7 @@ function PricingAnchor() {
                   </li>
                 ))}
               </ul>
-              <Button href={plan.ctaHref} variant={plan.variant} fullWidth>
-                {plan.cta}
-              </Button>
+              <Button href={plan.ctaHref} variant={plan.variant} fullWidth>{plan.cta}</Button>
               {plan.highlight && (
                 <p style={{ fontSize: 11, color: "var(--color-tertiary)", textAlign: "center", marginTop: 8, marginBottom: 0 }}>7-day money-back guarantee</p>
               )}
@@ -664,30 +949,17 @@ function PricingAnchor() {
         </div>
 
         <div style={{ textAlign: "center", marginTop: 20 }}>
-          <Link
-            href="/pricing"
-            style={{ fontSize: 14, fontWeight: 500, color: "var(--color-accent)", textDecoration: "none" }}
-          >
+          <Link href="/pricing" style={{ fontSize: 14, fontWeight: 500, color: "var(--color-accent)", textDecoration: "none" }}>
             See full feature comparison &rarr;
           </Link>
         </div>
       </div>
 
       <style>{`
-        @media (max-width: 960px) {
-          .pricing-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-        }
+        @media (max-width: 960px) { .pricing-grid { grid-template-columns: repeat(2, 1fr) !important; } }
         @media (max-width: 640px) {
-          .pricing-grid {
-            grid-template-columns: 1fr !important;
-            max-width: 400px !important;
-            margin: 0 auto !important;
-          }
-          .pricing-grid > div:nth-child(3) {
-            order: -1;
-          }
+          .pricing-grid { grid-template-columns: 1fr !important; max-width: 400px !important; margin: 0 auto !important; }
+          .pricing-grid > div:nth-child(3) { order: -1; }
         }
       `}</style>
     </section>
@@ -695,32 +967,32 @@ function PricingAnchor() {
 }
 
 // ============================================================
-// SECTION 8: Final CTA
+// SECTION 10: Final CTA
 // ============================================================
 function FinalCTA() {
+  const { ref, isVisible } = useInView(0.2);
+
   return (
-    <section style={{ padding: "96px 24px", background: "var(--color-surface)", textAlign: "center" }}>
-      <div style={{ maxWidth: 600, margin: "0 auto" }}>
+    <section ref={ref} style={{ padding: "96px 24px", background: "var(--color-surface)", textAlign: "center" }}>
+      <div
+        style={{
+          maxWidth: 600, margin: "0 auto",
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? "translateY(0)" : "translateY(30px)",
+          transition: "all 0.7s ease-out",
+        }}
+      >
         <h2
           style={{
             fontFamily: "var(--font-dm-serif)",
             fontSize: "clamp(28px, 4vw, 36px)",
-            fontWeight: 400,
-            color: "var(--color-primary)",
-            letterSpacing: "-0.02em",
-            marginBottom: 16,
+            fontWeight: 400, color: "var(--color-primary)",
+            letterSpacing: "-0.02em", marginBottom: 16,
           }}
         >
           Your next email campaign starts here
         </h2>
-        <p
-          style={{
-            fontSize: 17,
-            color: "var(--color-secondary)",
-            marginBottom: 32,
-            lineHeight: 1.6,
-          }}
-        >
+        <p style={{ fontSize: 17, color: "var(--color-secondary)", marginBottom: 32, lineHeight: 1.6 }}>
           Join thousands of marketers who research smarter, create faster,
           and send better emails with MailMuse.
         </p>
@@ -728,19 +1000,14 @@ function FinalCTA() {
           Create Your Free Account
         </Button>
         <p style={{ marginTop: 20, fontSize: 13, color: "var(--color-tertiary)" }}>
-          Free forever plan &middot; No credit card required &middot; Takes 10
-          seconds to start
+          Free forever plan &middot; No credit card required &middot; Takes 10 seconds to start
         </p>
 
         <div
           className="trust-signals"
           style={{
-            display: "flex",
-            gap: 24,
-            justifyContent: "center",
-            marginTop: 32,
-            paddingTop: 32,
-            borderTop: "1px solid var(--color-border)",
+            display: "flex", gap: 24, justifyContent: "center",
+            marginTop: 32, paddingTop: 32, borderTop: "1px solid var(--color-border)",
           }}
         >
           {[
@@ -748,16 +1015,7 @@ function FinalCTA() {
             "10,000+ brands tracked",
             "7-day money-back on all paid plans",
           ].map((sig) => (
-            <div
-              key={sig}
-              style={{
-                fontSize: 12,
-                color: "var(--color-tertiary)",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-            >
+            <div key={sig} style={{ fontSize: 12, color: "var(--color-tertiary)", display: "flex", alignItems: "center", gap: 6 }}>
               <span style={{ color: "var(--color-accent)", fontSize: 12 }}>&#10003;</span>
               {sig}
             </div>
@@ -767,11 +1025,7 @@ function FinalCTA() {
 
       <style>{`
         @media (max-width: 768px) {
-          .trust-signals {
-            flex-direction: column !important;
-            gap: 12px !important;
-            align-items: center !important;
-          }
+          .trust-signals { flex-direction: column !important; gap: 12px !important; align-items: center !important; }
         }
       `}</style>
     </section>
@@ -787,9 +1041,7 @@ export function HomeClient() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_BASE}/emails?limit=20`).then((r) =>
-        r.ok ? r.json() : []
-      ),
+      fetch(`${API_BASE}/emails?limit=20`).then((r) => (r.ok ? r.json() : [])),
       fetch(`${API_BASE}/brands/stats`).then((r) => (r.ok ? r.json() : {})),
     ])
       .then(([emails, statsData]) => {
@@ -803,12 +1055,14 @@ export function HomeClient() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
-      <HeroSection defaultEmails={recentEmails.slice(0, 6)} />
+      <HeroSection />
       <BrandCarousel brandStats={brandStats} />
+      <PlatformDescription />
+      <DemoSection />
       <FeatureRow
         direction="left"
         badge="BROWSE"
-        heading="Browse 100K+ real emails from Indian brands"
+        heading="Browse 100K+ real emails from top brands"
         description="Search and filter by brand, industry, or campaign type. See full email archives with send timing, frequency data, and competitive intelligence."
         ctaText="Browse emails free"
         ctaHref="/browse"
@@ -835,7 +1089,7 @@ export function HomeClient() {
         visual={<EditorMock />}
         bg="white"
       />
-      <EmailGridShowcase emails={recentEmails.slice(6, 14)} />
+      <EmailCarousel emails={recentEmails} />
       <PricingAnchor />
       <FinalCTA />
     </div>
