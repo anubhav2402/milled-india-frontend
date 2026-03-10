@@ -190,10 +190,11 @@ function HeroSection() {
 function PlatformDescription() {
   const { ref, isVisible } = useInView(0.2);
 
-  const pillars = [
+  const steps = [
     {
+      step: 1,
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
         </svg>
       ),
@@ -201,31 +202,24 @@ function PlatformDescription() {
       desc: "Search 100K+ emails by brand, industry, or campaign type. No more subscribing to competitor lists with a junk inbox.",
     },
     {
+      step: 2,
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
         </svg>
       ),
-      title: "AI-powered analysis",
+      title: "AI-led email teardown",
       desc: "Every email is scored by AI across 5 dimensions — Subject Line, Copy, CTA, Design, and Strategy — with an overall grade and actionable insights.",
     },
     {
+      step: 3,
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
         </svg>
       ),
       title: "Edit & export templates",
       desc: "Open any email in our drag-and-drop editor. Change text, swap images, update colors — export production-ready HTML in one click.",
-    },
-    {
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
-        </svg>
-      ),
-      title: "Save & organize",
-      desc: "Bookmark emails, create collections, and build swipe files. Share inspiration boards with your entire team.",
     },
   ];
 
@@ -267,64 +261,85 @@ function PlatformDescription() {
           so you can focus on creating campaigns that convert.
         </p>
 
-        <div
-          className="pillars-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: 32,
-            textAlign: "left",
-          }}
-        >
-          {pillars.map((p, i) => (
+        {/* 3-Step Process */}
+        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "left" }}>
+          {steps.map((s, i) => (
             <div
-              key={p.title}
+              key={s.step}
               style={{
+                display: "flex",
+                gap: 24,
                 opacity: isVisible ? 1 : 0,
                 transform: isVisible ? "translateY(0)" : "translateY(30px)",
-                transition: `all 0.6s ease-out ${0.2 + i * 0.15}s`,
+                transition: `all 0.6s ease-out ${0.2 + i * 0.2}s`,
+                position: "relative",
+                paddingBottom: i < steps.length - 1 ? 48 : 0,
               }}
             >
-              <div
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 12,
-                  background: "var(--color-accent-light)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: 16,
-                }}
-              >
-                {p.icon}
+              {/* Step number + connector line */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: "50%",
+                    background: "var(--color-accent)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  {s.icon}
+                </div>
+                {i < steps.length - 1 && (
+                  <div
+                    style={{
+                      width: 2,
+                      flex: 1,
+                      background: "var(--color-border)",
+                      marginTop: 8,
+                    }}
+                  />
+                )}
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-primary)", marginBottom: 8 }}>
-                {p.title}
-              </h3>
-              <p style={{ fontSize: 15, color: "var(--color-secondary)", lineHeight: 1.6, margin: 0 }}>
-                {p.desc}
-              </p>
+
+              {/* Content */}
+              <div style={{ paddingTop: 4 }}>
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "var(--color-accent)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    marginBottom: 6,
+                    display: "block",
+                  }}
+                >
+                  Step {s.step}
+                </span>
+                <h3
+                  style={{
+                    fontFamily: "var(--font-bricolage)",
+                    fontSize: 22,
+                    fontWeight: 600,
+                    color: "var(--color-primary)",
+                    marginBottom: 8,
+                    marginTop: 0,
+                  }}
+                >
+                  {s.title}
+                </h3>
+                <p style={{ fontSize: 15, color: "var(--color-secondary)", lineHeight: 1.6, margin: 0 }}>
+                  {s.desc}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       </div>
-
-      <style>{`
-        @media (max-width: 960px) {
-          .pillars-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-        }
-        @media (max-width: 640px) {
-          .pillars-grid {
-            grid-template-columns: 1fr !important;
-            gap: 28px !important;
-            max-width: 400px !important;
-            margin: 0 auto !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }
