@@ -83,7 +83,7 @@ function HeroSection() {
   return (
     <section
       style={{
-        background: "radial-gradient(ellipse 80% 60% at 50% 0%, #F5E6DC 0%, #FAF9F7 50%, #ffffff 100%)",
+        background: "radial-gradient(ellipse 90% 70% at 50% 0%, #EDCBB5 0%, #F5E6DC 35%, #FAF9F7 65%, #ffffff 100%)",
         padding: "140px 24px 100px",
         position: "relative",
         overflow: "hidden",
@@ -573,12 +573,12 @@ function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
       >
         {displayEmails.length === 0
           ? Array.from({ length: 16 }).map((_, i) => (
-              <div key={i} style={{ width: 260, flexShrink: 0 }}>
+              <div key={i} style={{ width: 280, flexShrink: 0 }}>
                 <EmailCardSkeleton />
               </div>
             ))
           : displayEmails.map((email, i) => (
-              <div key={`${email.id}-${i}`} style={{ width: 260, flexShrink: 0 }}>
+              <div key={`${email.id}-${i}`} style={{ width: 280, flexShrink: 0 }}>
                 <EmailCard
                   id={email.id}
                   subject={email.subject}
@@ -587,8 +587,7 @@ function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
                   received_at={email.received_at}
                   campaignType={email.type || undefined}
                   logoUrl={logoUrlFromSender(email.sender)}
-                  compact
-                  previewHeight={240}
+                  compact={false}
                 />
               </div>
             ))}
