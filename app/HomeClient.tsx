@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Header from "./components/Header";
 import Button from "./components/Button";
-import Badge from "./components/Badge";
-import Card from "./components/Card";
 import EmailCard, { EmailCardSkeleton } from "./components/EmailCard";
 import BrandLogo from "./components/BrandLogo";
 
@@ -37,349 +35,89 @@ function logoUrlFromSender(sender: string | null | undefined): string | undefine
 }
 
 // ============================================================
-// SECTION 1: Hero — Interactive Search Demo
+// SECTION 1: Hero — Bold Headline + CTA + Email Grid
 // ============================================================
-const HERO_PLACEHOLDERS = [
-  "Search 'Nike sale emails'...",
-  "Search 'welcome email beauty'...",
-  "Search 'cart abandonment fashion'...",
-  "Search 'Nykaa promotional'...",
-  "Search 'newsletter SaaS'...",
-];
-
-const QUICK_FILTERS = [
-  { label: "Welcome Emails", query: "welcome" },
-  { label: "Sale Campaigns", query: "sale" },
-  { label: "Cart Abandonment", query: "cart abandonment" },
-  { label: "Newsletters", query: "newsletter" },
-  { label: "New Arrivals", query: "new arrival" },
-];
-
-function HeroSection({
-  defaultEmails,
-}: {
-  defaultEmails: EmailPreview[];
-}) {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<EmailPreview[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [placeholderIdx, setPlaceholderIdx] = useState(0);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Rotate placeholder text
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setPlaceholderIdx((i) => (i + 1) % HERO_PLACEHOLDERS.length);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Debounced search
-  const doSearch = useCallback((q: string) => {
-    if (!q.trim()) {
-      setResults([]);
-      setHasSearched(false);
-      return;
-    }
-    setSearching(true);
-    setHasSearched(true);
-    fetch(`${API_BASE}/emails?q=${encodeURIComponent(q.trim())}&limit=9`)
-      .then((r) => (r.ok ? r.json() : { emails: [] }))
-      .then((data) => {
-        const emails = data.emails || data || [];
-        setResults(emails.slice(0, 9));
-      })
-      .catch(() => setResults([]))
-      .finally(() => setSearching(false));
-  }, []);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    setQuery(val);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => doSearch(val), 400);
-  };
-
-  const handleQuickFilter = (q: string) => {
-    setQuery(q);
-    doSearch(q);
-  };
-
-  const displayEmails = hasSearched ? results : defaultEmails.slice(0, 9);
-
+function HeroSection({ defaultEmails }: { defaultEmails: EmailPreview[] }) {
   return (
     <section
       style={{
-        background:
-          "linear-gradient(180deg, var(--color-surface) 0%, #ffffff 70%)",
-        padding: "80px 24px 64px",
+        background: "linear-gradient(180deg, var(--color-surface) 0%, #ffffff 70%)",
+        padding: "120px 24px 80px",
       }}
     >
-      <div
-        style={{
-          maxWidth: 860,
-          margin: "0 auto",
-          textAlign: "center",
-          opacity: 0,
-          animation: "fadeInUp 0.6s ease forwards",
-        }}
-      >
+      <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
         <h1
           style={{
             fontFamily: "var(--font-dm-serif)",
-            fontSize: "clamp(32px, 5vw, 52px)",
+            fontSize: "clamp(36px, 5.5vw, 56px)",
             fontWeight: 400,
             color: "var(--color-primary)",
-            lineHeight: 1.1,
+            lineHeight: 1.08,
             letterSpacing: "-0.02em",
-            marginBottom: 16,
+            marginBottom: 20,
           }}
         >
-          See what your competitors are emailing{" "}
-          <span style={{ color: "var(--color-accent)" }}>&mdash; right now</span>
+          India&apos;s largest email marketing
+          <br />
+          <span style={{ color: "var(--color-accent)" }}>inspiration library</span>
         </h1>
+
         <p
           style={{
-            fontSize: "clamp(16px, 1.8vw, 18px)",
+            fontSize: "clamp(17px, 2vw, 20px)",
             color: "var(--color-secondary)",
-            lineHeight: 1.6,
-            maxWidth: 640,
-            margin: "0 auto 32px",
+            lineHeight: 1.5,
+            marginBottom: 36,
           }}
         >
-          Browse 100,000+ real emails from 10,000+ brands. Analyze their
-          strategy. Edit any email as your own template.
+          100,000+ emails from 10,000+ brands across 17 industries
         </p>
 
-        {/* Search bar */}
-        <div
-          style={{
-            maxWidth: 600,
-            margin: "0 auto 16px",
-            position: "relative",
-          }}
-        >
-          <div style={{ position: "relative" }}>
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="var(--color-tertiary)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              style={{
-                position: "absolute",
-                left: 18,
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-              }}
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="M21 21l-4.35-4.35" />
-            </svg>
-            <input
-              type="text"
-              value={query}
-              onChange={handleInputChange}
-              placeholder={HERO_PLACEHOLDERS[placeholderIdx]}
-              style={{
-                width: "100%",
-                padding: "18px 22px 18px 52px",
-                fontSize: 16,
-                border: "2px solid var(--color-border)",
-                borderRadius: 14,
-                background: "white",
-                color: "var(--color-primary)",
-                outline: "none",
-                transition: "border-color 200ms ease, box-shadow 200ms ease",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "var(--color-accent)";
-                e.currentTarget.style.boxShadow = "0 4px 20px rgba(194,113,74,0.12)";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "var(--color-border)";
-                e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
-              }}
-            />
-            {searching && (
-              <div
-                style={{
-                  position: "absolute",
-                  right: 18,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  width: 20,
-                  height: 20,
-                  border: "2px solid var(--color-border)",
-                  borderTopColor: "var(--color-accent)",
-                  borderRadius: "50%",
-                  animation: "spin 1s linear infinite",
-                }}
-              />
-            )}
-          </div>
-        </div>
+        <Button href="/signup" size="lg">
+          Start Free Account
+        </Button>
 
-        {/* Quick filter pills */}
-        <div
-          className="hero-pills horizontal-scroll"
-          style={{
-            display: "flex",
-            gap: 8,
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginBottom: 24,
-          }}
-        >
-          {QUICK_FILTERS.map((f) => (
-            <button
-              key={f.query}
-              onClick={() => handleQuickFilter(f.query)}
-              style={{
-                padding: "6px 14px",
-                fontSize: 13,
-                fontWeight: 500,
-                border: query === f.query
-                  ? "1px solid var(--color-accent)"
-                  : "1px solid var(--color-border)",
-                borderRadius: 20,
-                background: query === f.query
-                  ? "var(--color-accent-light)"
-                  : "white",
-                color: query === f.query
-                  ? "var(--color-accent)"
-                  : "var(--color-secondary)",
-                cursor: "pointer",
-                transition: "all 150ms ease",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-
-        {/* CTAs */}
-        <div
-          className="hero-cta-row"
-          style={{
-            display: "flex",
-            gap: 12,
-            justifyContent: "center",
-            marginBottom: 12,
-          }}
-        >
-          <Button href="/signup" size="lg" className="hero-btn">
-            Start Free Account
-          </Button>
-          <Button href="/browse" size="lg" variant="outline" className="hero-btn">
-            Browse All Emails
-          </Button>
-        </div>
-
-        <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginBottom: 40 }}>
-          Free forever plan &middot; No credit card &middot; 7-day Starter trial
-          included
+        <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 14 }}>
+          Free forever &middot; No credit card &middot; 7-day Starter trial included
         </p>
       </div>
 
-      {/* Results grid */}
+      {/* 6-email decorative grid */}
       <div
+        className="hero-email-grid"
         style={{
           maxWidth: 960,
-          margin: "0 auto",
-          opacity: 0,
-          animation: "fadeInUp 0.6s ease 0.3s forwards",
+          margin: "60px auto 0",
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 16,
         }}
       >
-        <div
-          className="hero-results-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 16,
-          }}
-        >
-          {displayEmails.length > 0
-            ? displayEmails.map((email) => (
-                <EmailCard
-                  key={email.id}
-                  id={email.id}
-                  subject={email.subject}
-                  brand={email.brand || undefined}
-                  industry={email.industry || undefined}
-                  received_at={email.received_at}
-                  campaignType={email.type || undefined}
-                  logoUrl={logoUrlFromSender(email.sender)}
-                  compact
-                  previewHeight={160}
-                />
-              ))
-            : searching
-              ? Array.from({ length: 9 }).map((_, i) => (
-                  <EmailCardSkeleton key={i} compact previewHeight={160} />
-                ))
-              : hasSearched
-                ? (
-                  <div style={{ gridColumn: "1 / -1", textAlign: "center", padding: "40px 0", color: "var(--color-tertiary)" }}>
-                    No emails found for &ldquo;{query}&rdquo;. Try a different search.
-                  </div>
-                )
-                : Array.from({ length: 9 }).map((_, i) => (
-                    <EmailCardSkeleton key={i} compact previewHeight={160} />
-                  ))
-          }
-        </div>
-
-        {hasSearched && results.length > 0 && (
-          <div style={{ textAlign: "center", marginTop: 16 }}>
-            <Link
-              href={`/browse?q=${encodeURIComponent(query)}`}
-              style={{
-                fontSize: 14,
-                fontWeight: 600,
-                color: "var(--color-accent)",
-                textDecoration: "none",
-              }}
-            >
-              See all results in browse &rarr;
-            </Link>
-          </div>
-        )}
+        {defaultEmails.length === 0
+          ? Array.from({ length: 6 }).map((_, i) => (
+              <EmailCardSkeleton key={i} />
+            ))
+          : defaultEmails.slice(0, 6).map((email) => (
+              <EmailCard
+                key={email.id}
+                id={email.id}
+                subject={email.subject}
+                brand={email.brand || undefined}
+                industry={email.industry || undefined}
+                received_at={email.received_at}
+                campaignType={email.type || undefined}
+                logoUrl={logoUrlFromSender(email.sender)}
+                compact
+                previewHeight={200}
+              />
+            ))}
       </div>
 
       <style>{`
-        .hero-btn { min-width: 220px; }
         @media (max-width: 768px) {
-          .hero-results-grid {
+          .hero-email-grid {
             grid-template-columns: repeat(2, 1fr) !important;
-          }
-          .hero-cta-row {
-            flex-direction: column !important;
-            align-items: stretch !important;
-            max-width: 320px !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-          }
-          .hero-btn { min-width: 0 !important; width: 100% !important; }
-          .hero-pills {
-            flex-wrap: nowrap !important;
-            justify-content: flex-start !important;
-            overflow-x: auto !important;
-            scrollbar-width: none !important;
-            -webkit-overflow-scrolling: touch !important;
-            padding: 0 16px !important;
-          }
-          .hero-pills::-webkit-scrollbar { display: none; }
-        }
-        @media (max-width: 480px) {
-          .hero-results-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
+            max-width: 480px !important;
           }
         }
       `}</style>
@@ -388,9 +126,8 @@ function HeroSection({
 }
 
 // ============================================================
-// SECTION 2: Brand Trust Bar + Metrics
+// SECTION 2: Brand Carousel
 // ============================================================
-// Top 20 brands by revenue/recognition in our database
 const TOP_BRANDS = [
   "Uniqlo",
   "Calvin Klein",
@@ -414,20 +151,12 @@ const TOP_BRANDS = [
   "Luisaviaroma",
 ];
 
-function BrandTrustBar({
+function BrandCarousel({
   brandStats,
 }: {
   brandStats: Record<string, { logo_url?: string | null }>;
 }) {
-  const displayBrands = TOP_BRANDS;
-  const marqueeItems = [...displayBrands, ...displayBrands];
-
-  const metrics = [
-    { number: "100,000+", label: "Emails Tracked" },
-    { number: "10,000+", label: "Brands Covered" },
-    { number: "17", label: "Industries" },
-    { number: "17+", label: "Campaign Types" },
-  ];
+  const marqueeItems = [...TOP_BRANDS, ...TOP_BRANDS];
 
   return (
     <section
@@ -458,7 +187,6 @@ function BrandTrustBar({
             "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
           WebkitMaskImage:
             "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-          marginBottom: 40,
         }}
       >
         <div
@@ -502,46 +230,6 @@ function BrandTrustBar({
         </div>
       </div>
 
-      {/* Metric counters */}
-      <div
-        className="metrics-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 24,
-          maxWidth: 800,
-          margin: "0 auto",
-          textAlign: "center",
-        }}
-      >
-        {metrics.map((m) => (
-          <div key={m.label}>
-            <div
-              style={{
-                fontFamily: "var(--font-dm-serif)",
-                fontSize: 32,
-                color: "var(--color-primary)",
-                lineHeight: 1.1,
-                marginBottom: 4,
-              }}
-            >
-              {m.number}
-            </div>
-            <div
-              style={{
-                fontSize: 12,
-                fontWeight: 600,
-                color: "var(--color-tertiary)",
-                letterSpacing: "0.05em",
-                textTransform: "uppercase",
-              }}
-            >
-              {m.label}
-            </div>
-          </div>
-        ))}
-      </div>
-
       <style>{`
         @keyframes marqueeScroll {
           0% { transform: translateX(0); }
@@ -550,157 +238,36 @@ function BrandTrustBar({
         .marquee-track:hover {
           animation-play-state: paused;
         }
-        @media (max-width: 640px) {
-          .metrics-grid {
-            grid-template-columns: repeat(2, 1fr) !important;
-            gap: 20px !important;
-          }
-        }
       `}</style>
     </section>
   );
 }
 
 // ============================================================
-// SECTION 3: Problem-Agitation
-// ============================================================
-function ProblemSection() {
-  const pains = [
-    {
-      icon: (
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#C2714A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="18" cy="18" r="14" />
-          <path d="M18 10v8l5 3" />
-        </svg>
-      ),
-      title: "Hours lost to manual research",
-      body: "Subscribing to competitors, screenshotting designs, pasting into spreadsheets. There has to be a better way.",
-    },
-    {
-      icon: (
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#C2714A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M5 18s5-10 13-10 13 10 13 10-5 10-13 10S5 18 5 18z" />
-          <circle cx="18" cy="18" r="4" />
-          <line x1="5" y1="5" x2="31" y2="31" />
-        </svg>
-      ),
-      title: "Flying blind on competitor strategy",
-      body: "One email at a time with no visibility into send frequency, campaign calendar, or seasonal patterns.",
-    },
-    {
-      icon: (
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="#C2714A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="6" y="6" width="10" height="10" rx="2" />
-          <rect x="20" y="6" width="10" height="10" rx="2" />
-          <rect x="6" y="20" width="10" height="10" rx="2" />
-          <path d="M24 24l4 4M28 24l-4 4" />
-        </svg>
-      ),
-      title: "Inspiration without execution",
-      body: "Great emails everywhere but no way to reuse them. Copy-pasting HTML breaks layouts and rebuilding wastes hours.",
-    },
-  ];
-
-  return (
-    <section style={{ padding: "96px 24px", background: "white" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <h2
-          style={{
-            fontFamily: "var(--font-dm-serif)",
-            fontSize: "clamp(28px, 4vw, 36px)",
-            fontWeight: 400,
-            color: "var(--color-primary)",
-            textAlign: "center",
-            marginBottom: 48,
-          }}
-        >
-          MailMuse solves all three &mdash; in one platform
-        </h2>
-
-        <div
-          className="problem-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 24,
-          }}
-        >
-          {pains.map((p) => (
-            <Card key={p.title} padding="lg">
-              <div style={{ marginBottom: 16 }}>{p.icon}</div>
-              <h3
-                style={{
-                  fontSize: 17,
-                  fontWeight: 600,
-                  color: "var(--color-primary)",
-                  marginBottom: 8,
-                }}
-              >
-                {p.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: 14,
-                  color: "var(--color-secondary)",
-                  lineHeight: 1.6,
-                  margin: 0,
-                }}
-              >
-                {p.body}
-              </p>
-            </Card>
-          ))}
-        </div>
-
-        <p
-          style={{
-            textAlign: "center",
-            fontSize: 17,
-            fontWeight: 500,
-            color: "var(--color-accent)",
-            marginTop: 40,
-          }}
-        >
-          Stop guessing. Start knowing.
-        </p>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .problem-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-// ============================================================
-// SECTION 4: Three-Step Workflow with Product Mockups
+// SECTION 3-5: Feature Rows (Reusable)
 // ============================================================
 function BrowseMock() {
   return (
-    <div style={{ background: "#1C1917", borderRadius: 12, padding: 14, width: "100%" }}>
-      <div style={{ background: "#333", borderRadius: 8, padding: "7px 10px", display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <span style={{ fontSize: 10, color: "#888" }}>Search brands...</span>
+    <div style={{ background: "#1C1917", borderRadius: 16, padding: 24, width: "100%" }}>
+      <div style={{ background: "#333", borderRadius: 10, padding: "10px 14px", display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
+        <span style={{ fontSize: 13, color: "#888" }}>Search brands...</span>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 5 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
         {[{ clr: "#2d4a3e" }, { clr: "#4a2d3e" }, { clr: "#3e3a2d" }].map((c, i) => (
-          <div key={i} style={{ background: "#2a2725", borderRadius: 5, overflow: "hidden" }}>
-            <div style={{ height: 36, background: c.clr }} />
-            <div style={{ padding: "4px 5px" }}>
-              <div style={{ height: 3, background: "#444", borderRadius: 2, width: "80%", marginBottom: 3 }} />
-              <div style={{ height: 2, background: "#333", borderRadius: 2, width: "55%" }} />
+          <div key={i} style={{ background: "#2a2725", borderRadius: 8, overflow: "hidden" }}>
+            <div style={{ height: 56, background: c.clr }} />
+            <div style={{ padding: "6px 8px" }}>
+              <div style={{ height: 4, background: "#444", borderRadius: 2, width: "80%", marginBottom: 4 }} />
+              <div style={{ height: 3, background: "#333", borderRadius: 2, width: "55%" }} />
             </div>
           </div>
         ))}
       </div>
-      <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
-        <span style={{ fontSize: 8, background: "rgba(194,113,74,0.2)", color: "#E8956E", padding: "2px 6px", borderRadius: 8 }}>Sale</span>
-        <span style={{ fontSize: 8, background: "#333", color: "#888", padding: "2px 6px", borderRadius: 8 }}>Welcome</span>
-        <span style={{ fontSize: 8, background: "#333", color: "#888", padding: "2px 6px", borderRadius: 8 }}>Newsletter</span>
+      <div style={{ display: "flex", gap: 6, marginTop: 12 }}>
+        <span style={{ fontSize: 11, background: "rgba(194,113,74,0.2)", color: "#E8956E", padding: "3px 10px", borderRadius: 10 }}>Sale</span>
+        <span style={{ fontSize: 11, background: "#333", color: "#888", padding: "3px 10px", borderRadius: 10 }}>Welcome</span>
+        <span style={{ fontSize: 11, background: "#333", color: "#888", padding: "3px 10px", borderRadius: 10 }}>Newsletter</span>
       </div>
     </div>
   );
@@ -715,24 +282,24 @@ function AnalysisMock() {
     { label: "Strategy", pct: 85 },
   ];
   return (
-    <div style={{ background: "#1C1917", borderRadius: 12, padding: 14, width: "100%" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-        <div style={{ width: 40, height: 40, borderRadius: "50%", border: "2px solid #10b981", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1 }}>87</span>
-          <span style={{ fontSize: 8, color: "#10b981", fontWeight: 600 }}>A</span>
+    <div style={{ background: "#1C1917", borderRadius: 16, padding: 24, width: "100%" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
+        <div style={{ width: 52, height: 52, borderRadius: "50%", border: "2.5px solid #10b981", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ fontSize: 18, fontWeight: 700, color: "white", lineHeight: 1 }}>87</span>
+          <span style={{ fontSize: 10, color: "#10b981", fontWeight: 600 }}>A</span>
         </div>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "white" }}>Flash Sale Email</div>
-          <div style={{ fontSize: 9, color: "#888" }}>Nykaa &middot; Sale Campaign</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "white" }}>Flash Sale Email</div>
+          <div style={{ fontSize: 11, color: "#888" }}>Nykaa &middot; Sale Campaign</div>
         </div>
       </div>
       {bars.map((d) => (
-        <div key={d.label} style={{ marginBottom: 5 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 2 }}>
-            <span style={{ fontSize: 9, color: "#888" }}>{d.label}</span>
-            <span style={{ fontSize: 9, color: "white", fontWeight: 600 }}>{d.pct}%</span>
+        <div key={d.label} style={{ marginBottom: 8 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+            <span style={{ fontSize: 11, color: "#888" }}>{d.label}</span>
+            <span style={{ fontSize: 11, color: "white", fontWeight: 600 }}>{d.pct}%</span>
           </div>
-          <div style={{ height: 3, background: "#333", borderRadius: 2 }}>
+          <div style={{ height: 4, background: "#333", borderRadius: 2 }}>
             <div style={{ height: "100%", width: `${d.pct}%`, background: d.pct >= 85 ? "#10b981" : d.pct >= 70 ? "#3b82f6" : "#f59e0b", borderRadius: 2 }} />
           </div>
         </div>
@@ -743,62 +310,140 @@ function AnalysisMock() {
 
 function EditorMock() {
   return (
-    <div style={{ background: "#1C1917", borderRadius: 12, overflow: "hidden", width: "100%" }}>
-      <div style={{ padding: "6px 10px", borderBottom: "1px solid #333", display: "flex", gap: 4 }}>
-        <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#ff5f57" }} />
-        <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#ffbd2e" }} />
-        <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#28c840" }} />
+    <div style={{ background: "#1C1917", borderRadius: 16, overflow: "hidden", width: "100%" }}>
+      <div style={{ padding: "8px 14px", borderBottom: "1px solid #333", display: "flex", gap: 6 }}>
+        <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
+        <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffbd2e" }} />
+        <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840" }} />
       </div>
-      <div style={{ padding: 10 }}>
-        <div style={{ background: "white", borderRadius: 6, padding: 10, maxWidth: 180, margin: "0 auto" }}>
-          <div style={{ background: "#C2714A", borderRadius: 4, padding: "8px 6px", textAlign: "center", marginBottom: 6 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: "white" }}>SUMMER SALE</div>
-            <div style={{ fontSize: 8, color: "rgba(255,255,255,0.8)" }}>Up to 50% off</div>
+      <div style={{ padding: 20 }}>
+        <div style={{ background: "white", borderRadius: 10, padding: 16, maxWidth: 280, margin: "0 auto" }}>
+          <div style={{ background: "#C2714A", borderRadius: 6, padding: "14px 10px", textAlign: "center", marginBottom: 10 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "white" }}>SUMMER SALE</div>
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>Up to 50% off</div>
           </div>
-          <div style={{ fontSize: 8, color: "#333", lineHeight: 1.4, marginBottom: 6 }}>Shop our biggest sale of the year...</div>
-          <div style={{ background: "#333", borderRadius: 3, padding: "5px 10px", textAlign: "center", fontSize: 8, fontWeight: 600, color: "white" }}>SHOP NOW</div>
+          <div style={{ fontSize: 11, color: "#333", lineHeight: 1.5, marginBottom: 10 }}>Shop our biggest sale of the year with exclusive deals across all categories...</div>
+          <div style={{ background: "#333", borderRadius: 5, padding: "8px 16px", textAlign: "center", fontSize: 11, fontWeight: 600, color: "white" }}>SHOP NOW</div>
         </div>
       </div>
-      <div style={{ padding: "5px 10px", borderTop: "1px solid #333", display: "flex", justifyContent: "center", gap: 5 }}>
-        <span style={{ fontSize: 8, background: "#C2714A", color: "white", padding: "2px 8px", borderRadius: 3, fontWeight: 500 }}>Use Template</span>
-        <span style={{ fontSize: 8, background: "#333", color: "#ccc", padding: "2px 6px", borderRadius: 3, fontWeight: 500 }}>Export</span>
+      <div style={{ padding: "8px 14px", borderTop: "1px solid #333", display: "flex", justifyContent: "center", gap: 8 }}>
+        <span style={{ fontSize: 11, background: "#C2714A", color: "white", padding: "4px 12px", borderRadius: 5, fontWeight: 500 }}>Use Template</span>
+        <span style={{ fontSize: 11, background: "#333", color: "#ccc", padding: "4px 10px", borderRadius: 5, fontWeight: 500 }}>Export</span>
       </div>
     </div>
   );
 }
 
-function WorkflowSection() {
-  const steps = [
-    {
-      num: "01",
-      title: "Discover what competitors send",
-      body: "Search 10,000+ brands by name, industry, or campaign type. See their full email history with send timing and frequency data.",
-      cta: "Browse emails free",
-      href: "/browse",
-      mock: <BrowseMock />,
-    },
-    {
-      num: "02",
-      title: "Decode what drives conversions",
-      body: "Every email gets AI-scored on 5 dimensions: Subject Line, Copy Quality, CTA Effectiveness, Design, and Strategy.",
-      cta: "See sample analysis",
-      href: "/browse",
-      mock: <AnalysisMock />,
-    },
-    {
-      num: "03",
-      title: "Edit any email as your template",
-      body: "One click opens any email in our drag-and-drop editor. Change text, swap images, update colors \u2014 export production-ready HTML.",
-      cta: "Try the editor",
-      href: "/editor",
-      mock: <EditorMock />,
-    },
-  ];
+function FeatureRow({
+  direction,
+  badge,
+  heading,
+  description,
+  ctaText,
+  ctaHref,
+  visual,
+  bg,
+}: {
+  direction: "left" | "right";
+  badge: string;
+  heading: string;
+  description: string;
+  ctaText: string;
+  ctaHref: string;
+  visual: React.ReactNode;
+  bg: string;
+}) {
+  return (
+    <section style={{ padding: "96px 24px", background: bg }}>
+      <div
+        className="feature-row"
+        style={{
+          maxWidth: 1100,
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 64,
+          alignItems: "center",
+        }}
+      >
+        {/* Text side */}
+        <div style={{ order: direction === "left" ? 1 : 2 }}>
+          <span
+            style={{
+              display: "inline-block",
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--color-accent)",
+              background: "var(--color-accent-light)",
+              padding: "4px 12px",
+              borderRadius: 6,
+              marginBottom: 20,
+            }}
+          >
+            {badge}
+          </span>
+          <h2
+            style={{
+              fontFamily: "var(--font-dm-serif)",
+              fontSize: "clamp(26px, 3.5vw, 36px)",
+              fontWeight: 400,
+              color: "var(--color-primary)",
+              letterSpacing: "-0.02em",
+              lineHeight: 1.15,
+              marginBottom: 16,
+            }}
+          >
+            {heading}
+          </h2>
+          <p
+            style={{
+              fontSize: 16,
+              color: "var(--color-secondary)",
+              lineHeight: 1.6,
+              marginBottom: 28,
+            }}
+          >
+            {description}
+          </p>
+          <Link
+            href={ctaHref}
+            style={{
+              fontSize: 15,
+              fontWeight: 600,
+              color: "var(--color-accent)",
+              textDecoration: "none",
+            }}
+          >
+            {ctaText} &rarr;
+          </Link>
+        </div>
 
+        {/* Visual side */}
+        <div
+          style={{
+            order: direction === "left" ? 2 : 1,
+            borderRadius: 20,
+            overflow: "hidden",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          }}
+        >
+          {visual}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// SECTION 6: Email Grid Showcase
+// ============================================================
+function EmailGridShowcase({ emails }: { emails: EmailPreview[] }) {
   return (
     <section style={{ padding: "96px 24px", background: "var(--color-surface)" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 64 }}>
+      <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 48 }}>
           <h2
             style={{
               fontFamily: "var(--font-dm-serif)",
@@ -806,646 +451,56 @@ function WorkflowSection() {
               fontWeight: 400,
               color: "var(--color-primary)",
               letterSpacing: "-0.02em",
-              marginBottom: 16,
+              marginBottom: 12,
             }}
           >
-            From research to ready-to-send in 3 steps
+            See what top Indian brands are sending today
           </h2>
-          <p style={{ fontSize: 17, color: "var(--color-secondary)", maxWidth: 540, margin: "0 auto" }}>
-            See exactly what top brands send, understand why it works, then make it your own.
+          <p style={{ fontSize: 17, color: "var(--color-secondary)" }}>
+            Updated daily with 1,000+ new emails
           </p>
         </div>
 
-        <div className="workflow-steps" style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-          {steps.map((step, idx) => (
-            <div key={step.num}>
-              <Card padding="lg" hover>
-                <div
-                  className="workflow-step-inner"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "60px 1fr 240px",
-                    gap: 24,
-                    alignItems: "center",
-                  }}
-                >
-                  {/* Step number */}
-                  <div
-                    style={{
-                      fontFamily: "var(--font-dm-serif)",
-                      fontSize: 48,
-                      color: "var(--color-accent)",
-                      opacity: 0.3,
-                      lineHeight: 1,
-                    }}
-                  >
-                    {step.num}
-                  </div>
-
-                  {/* Content */}
-                  <div>
-                    <h3
-                      style={{
-                        fontSize: 20,
-                        fontWeight: 600,
-                        color: "var(--color-primary)",
-                        marginBottom: 8,
-                      }}
-                    >
-                      {step.title}
-                    </h3>
-                    <p
-                      style={{
-                        fontSize: 15,
-                        color: "var(--color-secondary)",
-                        lineHeight: 1.6,
-                        margin: "0 0 12px",
-                      }}
-                    >
-                      {step.body}
-                    </p>
-                    <Link
-                      href={step.href}
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "var(--color-accent)",
-                        textDecoration: "none",
-                      }}
-                    >
-                      {step.cta} &rarr;
-                    </Link>
-                  </div>
-
-                  {/* Product mockup */}
-                  <div className="workflow-step-mock">{step.mock}</div>
-                </div>
-              </Card>
-
-              {/* Connector arrow */}
-              {idx < steps.length - 1 && (
-                <div style={{ textAlign: "center", padding: "8px 0" }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-border)" strokeWidth="2" strokeLinecap="round">
-                    <path d="M12 5v14M19 12l-7 7-7-7" />
-                  </svg>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .workflow-step-inner {
-            grid-template-columns: 1fr !important;
-            gap: 16px !important;
-            text-align: center;
-          }
-          .workflow-step-mock {
-            max-width: 280px;
-            margin: 0 auto;
-          }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-// ============================================================
-// SECTION 5: AI Analysis Showcase
-// ============================================================
-function AnalysisShowcase() {
-  const dimensions = [
-    { name: "Subject Line", grade: "A", pct: 92, desc: "Clarity, length, urgency, personalization triggers" },
-    { name: "Copy Quality", grade: "B+", pct: 78, desc: "Tone, readability, persuasion techniques" },
-    { name: "CTA Effectiveness", grade: "A", pct: 90, desc: "Placement, wording, visual prominence" },
-    { name: "Design & Layout", grade: "B", pct: 72, desc: "Mobile-responsiveness, hierarchy, whitespace" },
-    { name: "Strategic Fit", grade: "A-", pct: 85, desc: "Campaign type alignment, timing, audience match" },
-  ];
-
-  return (
-    <section style={{ padding: "96px 24px", background: "white" }}>
-      <div
-        className="analysis-grid"
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 64,
-          alignItems: "center",
-        }}
-      >
-        {/* Left — Copy */}
-        <div>
-          <Badge variant="accent" style={{ marginBottom: 16 }}>
-            AI-POWERED ANALYSIS
-          </Badge>
-          <h2
-            style={{
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: "clamp(28px, 4vw, 40px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              marginBottom: 16,
-            }}
-          >
-            Every email, scored and decoded
-          </h2>
-          <p
-            style={{
-              fontSize: 17,
-              color: "var(--color-secondary)",
-              lineHeight: 1.6,
-              marginBottom: 28,
-            }}
-          >
-            Our AI engine evaluates every email across 5 dimensions &mdash;
-            giving you actionable intelligence, not just pretty screenshots.
-          </p>
-
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 32px", display: "flex", flexDirection: "column", gap: 14 }}>
-            {dimensions.map((d) => (
-              <li key={d.name} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                <span
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 28,
-                    height: 28,
-                    borderRadius: 6,
-                    background: "var(--color-accent-light)",
-                    color: "var(--color-accent)",
-                    fontSize: 11,
-                    fontWeight: 700,
-                    flexShrink: 0,
-                  }}
-                >
-                  {d.grade}
-                </span>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)" }}>{d.name}</div>
-                  <div style={{ fontSize: 13, color: "var(--color-tertiary)" }}>{d.desc}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          <Button href="/browse" size="lg">
-            Analyze Your First Email
-          </Button>
-        </div>
-
-        {/* Right — Mock Analysis Card */}
         <div
-          style={{
-            background: "#1C1917",
-            borderRadius: 16,
-            overflow: "hidden",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
-            padding: 24,
-          }}
-        >
-          {/* Email header */}
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 11, color: "#9D9490", marginBottom: 4 }}>Subject Line</div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "white", marginBottom: 8 }}>
-              Flash Sale: 40% Off Everything &mdash; Today Only
-            </div>
-            <div style={{ display: "flex", gap: 6 }}>
-              <span style={{ fontSize: 10, fontWeight: 600, background: "rgba(194,113,74,0.2)", color: "#E8956E", padding: "2px 8px", borderRadius: 4 }}>Nykaa</span>
-              <span style={{ fontSize: 10, fontWeight: 600, background: "rgba(239,68,68,0.15)", color: "#f87171", padding: "2px 8px", borderRadius: 4 }}>Sale</span>
-            </div>
-          </div>
-
-          {/* Score */}
-          <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <div
-              style={{
-                width: 72,
-                height: 72,
-                borderRadius: "50%",
-                border: "3px solid #10b981",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 8px",
-              }}
-            >
-              <div style={{ fontSize: 22, fontWeight: 700, color: "white", lineHeight: 1 }}>87</div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: "#10b981" }}>A</div>
-            </div>
-            <div style={{ fontSize: 11, color: "#9D9490" }}>Overall Score</div>
-          </div>
-
-          {/* Dimension bars */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
-            {dimensions.map((d) => (
-              <div key={d.name}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontSize: 11, color: "#9D9490" }}>{d.name}</span>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: "white" }}>{d.grade}</span>
-                </div>
-                <div style={{ height: 4, background: "#333", borderRadius: 2, overflow: "hidden" }}>
-                  <div
-                    style={{
-                      height: "100%",
-                      width: `${d.pct}%`,
-                      background: d.pct >= 85 ? "#10b981" : d.pct >= 70 ? "#3b82f6" : "#f59e0b",
-                      borderRadius: 2,
-                      transition: "width 0.6s ease",
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Key insights */}
-          <div style={{ borderTop: "1px solid #333", paddingTop: 16 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "#9D9490", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>Key Insights</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {[
-                "Strong urgency in subject line with time constraint",
-                "Clear, single CTA above the fold",
-                "Consider adding alt text to hero image",
-              ].map((insight) => (
-                <div key={insight} style={{ display: "flex", gap: 6, alignItems: "flex-start" }}>
-                  <span style={{ color: "#10b981", fontSize: 10, marginTop: 3 }}>&#9679;</span>
-                  <span style={{ fontSize: 12, color: "#ccc", lineHeight: 1.4 }}>{insight}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .analysis-grid {
-            grid-template-columns: 1fr !important;
-            gap: 40px !important;
-          }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-// ============================================================
-// SECTION 6: Template Editor Showcase
-// ============================================================
-function EditorShowcase() {
-  return (
-    <section style={{ padding: "96px 24px", background: "var(--color-surface)" }}>
-      <div
-        className="editor-grid"
-        style={{
-          maxWidth: 1100,
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: 64,
-          alignItems: "center",
-        }}
-      >
-        {/* Left — Editor Mock */}
-        <div
-          style={{
-            background: "#1C1917",
-            borderRadius: 16,
-            overflow: "hidden",
-            boxShadow: "0 20px 40px rgba(0,0,0,0.15), 0 8px 16px rgba(0,0,0,0.1)",
-          }}
-        >
-          <div style={{ padding: "10px 16px", borderBottom: "1px solid #333", display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ display: "flex", gap: 6 }}>
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffbd2e" }} />
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840" }} />
-            </div>
-            <span style={{ fontSize: 12, color: "#888", marginLeft: 8 }}>Template Editor</span>
-          </div>
-          <div style={{ display: "flex" }}>
-            <div style={{ flex: 1, padding: 20 }}>
-              <div style={{ background: "white", borderRadius: 8, padding: 20, maxWidth: 320, margin: "0 auto" }}>
-                <div style={{ background: "var(--color-accent)", borderRadius: 6, padding: "16px 12px", textAlign: "center", marginBottom: 12 }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "white" }}>SUMMER SALE</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.8)" }}>Up to 50% off everything</div>
-                </div>
-                <div style={{ border: "2px solid var(--color-accent)", borderRadius: 6, padding: 12, marginBottom: 12, position: "relative" }}>
-                  <div style={{ position: "absolute", top: -10, left: 8, background: "var(--color-accent)", color: "white", fontSize: 9, fontWeight: 600, padding: "2px 6px", borderRadius: 3 }}>TEXT</div>
-                  <div style={{ fontSize: 12, color: "#333", lineHeight: 1.5 }}>
-                    Shop our biggest sale of the year.
-                    <span style={{ borderRight: "2px solid var(--color-accent)", animation: "pulse 1s infinite" }} />
-                  </div>
-                </div>
-                <div style={{ background: "#333", borderRadius: 6, padding: "10px 16px", textAlign: "center", fontSize: 12, fontWeight: 600, color: "white" }}>SHOP NOW</div>
-              </div>
-            </div>
-            <div className="editor-mock-sidebar" style={{ width: 100, borderLeft: "1px solid #333", padding: "12px 8px" }}>
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} style={{ height: 8, background: "#333", borderRadius: 4, marginBottom: 8, width: `${60 + i * 10}%` }} />
-              ))}
-            </div>
-          </div>
-          <div style={{ padding: "8px 16px", borderTop: "1px solid #333", display: "flex", justifyContent: "center", gap: 8 }}>
-            <span style={{ fontSize: 11, background: "var(--color-accent)", color: "white", padding: "4px 16px", borderRadius: 4, fontWeight: 500 }}>Use as Template</span>
-            <span style={{ fontSize: 11, background: "#333", color: "#ccc", padding: "4px 12px", borderRadius: 4, fontWeight: 500 }}>Export HTML</span>
-          </div>
-        </div>
-
-        {/* Right — Copy */}
-        <div>
-          <Badge variant="accent" style={{ marginBottom: 16 }}>
-            ONLY ON MAILMUSE
-          </Badge>
-          <h2
-            style={{
-              fontFamily: "var(--font-dm-serif)",
-              fontSize: "clamp(28px, 4vw, 40px)",
-              fontWeight: 400,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              marginBottom: 16,
-            }}
-          >
-            Don&apos;t just admire great emails.{" "}
-            <span style={{ color: "var(--color-accent)" }}>Steal them.</span>
-          </h2>
-          <p
-            style={{
-              fontSize: 17,
-              color: "var(--color-secondary)",
-              lineHeight: 1.6,
-              marginBottom: 28,
-            }}
-          >
-            Every email in our database is one click away from becoming your
-            template. Open any campaign in our drag-and-drop editor &mdash;
-            change text, swap images, update colors &mdash; and export
-            production-ready HTML.
-          </p>
-
-          <ul style={{ listStyle: "none", padding: 0, margin: "0 0 32px", display: "flex", flexDirection: "column", gap: 12 }}>
-            {[
-              "Works with any email from our 100,000+ archive",
-              "Drag-and-drop \u2014 no code required",
-              "Export as HTML or copy to clipboard",
-              "Mobile-responsive preview built in",
-              "Compatible with Klaviyo, Mailchimp, and every ESP",
-            ].map((item) => (
-              <li key={item} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: "var(--color-secondary)" }}>
-                <span style={{ color: "var(--color-accent)", fontSize: 16, fontWeight: 600 }}>&#10003;</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-
-          <Button href="/editor" size="lg">
-            Try the Template Editor
-          </Button>
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .editor-grid {
-            grid-template-columns: 1fr !important;
-            gap: 40px !important;
-          }
-        }
-        @media (max-width: 480px) {
-          .editor-mock-sidebar {
-            display: none !important;
-          }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-// ============================================================
-// SECTION 7: Use Case Tabs
-// ============================================================
-function UseCaseTabs() {
-  const [activeTab, setActiveTab] = useState<"d2c" | "agency">("d2c");
-
-  const tabs = {
-    d2c: {
-      label: "D2C / In-House Marketers",
-      benefits: [
-        { title: "See exactly what competitors send", body: "Browse competitor emails and get inspiration backed by data, not guesswork." },
-        { title: "Know when rivals run sales", body: "Campaign calendar shows competitor timing patterns so you can plan around them." },
-        { title: "Stop building emails from scratch", body: "Use any email as a template and customize in minutes, not hours." },
-        { title: "Get AI feedback before you hit send", body: "Score your emails against industry benchmarks before they go live." },
-      ],
-      features: [
-        { name: "Brand Comparison", icon: "&#8644;" },
-        { name: "Campaign Calendar", icon: "&#128197;" },
-        { name: "Swipe File", icon: "&#128203;" },
-        { name: "AI Scoring", icon: "&#9733;" },
-      ],
-    },
-    agency: {
-      label: "Email Marketing Agencies",
-      benefits: [
-        { title: "Pitch clients with competitor intelligence", body: "Show prospects exactly what their competitors send \u2014 instant credibility." },
-        { title: "10 team seats on the Agency plan", body: "Give your whole team access to the email intelligence platform." },
-        { title: "Unlimited brand alerts and AI tools", body: "Monitor competitor sends in real time and generate campaigns with AI." },
-        { title: "Build client campaigns faster", body: "Use templates from top brands as starting points for client work." },
-      ],
-      features: [
-        { name: "Brand Alerts", icon: "&#128276;" },
-        { name: "Team Seats (10)", icon: "&#128101;" },
-        { name: "AI Generator", icon: "&#9889;" },
-        { name: "Full Archive", icon: "&#128218;" },
-      ],
-    },
-  };
-
-  const current = tabs[activeTab];
-
-  return (
-    <section style={{ padding: "96px 24px", background: "white" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <h2
-          style={{
-            fontFamily: "var(--font-dm-serif)",
-            fontSize: "clamp(28px, 4vw, 36px)",
-            fontWeight: 400,
-            color: "var(--color-primary)",
-            textAlign: "center",
-            marginBottom: 40,
-          }}
-        >
-          Built for the people who actually write emails
-        </h2>
-
-        {/* Tab buttons */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 4, marginBottom: 40 }}>
-          {(["d2c", "agency"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                padding: "10px 24px",
-                fontSize: 14,
-                fontWeight: 600,
-                border: "none",
-                borderRadius: 8,
-                cursor: "pointer",
-                background: activeTab === tab ? "var(--color-accent)" : "var(--color-surface)",
-                color: activeTab === tab ? "white" : "var(--color-secondary)",
-                transition: "all 150ms ease",
-              }}
-            >
-              {tabs[tab].label}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab content */}
-        <div
-          className="usecase-content"
+          className="showcase-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 48,
-            alignItems: "start",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 16,
           }}
         >
-          {/* Benefits */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            {current.benefits.map((b) => (
-              <div key={b.title}>
-                <h4 style={{ fontSize: 16, fontWeight: 600, color: "var(--color-primary)", marginBottom: 4 }}>
-                  {b.title}
-                </h4>
-                <p style={{ fontSize: 14, color: "var(--color-secondary)", lineHeight: 1.5, margin: 0 }}>
-                  {b.body}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Feature grid */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 12,
-            }}
-          >
-            {current.features.map((f) => (
-              <Card key={f.name} padding="md" hover>
-                <div
-                  style={{ fontSize: 24, marginBottom: 8 }}
-                  dangerouslySetInnerHTML={{ __html: f.icon }}
+          {emails.length === 0
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <EmailCardSkeleton key={i} />
+              ))
+            : emails.slice(0, 8).map((email) => (
+                <EmailCard
+                  key={email.id}
+                  id={email.id}
+                  subject={email.subject}
+                  brand={email.brand || undefined}
+                  industry={email.industry || undefined}
+                  received_at={email.received_at}
+                  campaignType={email.type || undefined}
+                  logoUrl={logoUrlFromSender(email.sender)}
+                  compact
+                  previewHeight={220}
                 />
-                <div style={{ fontSize: 14, fontWeight: 600, color: "var(--color-primary)" }}>
-                  {f.name}
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 768px) {
-          .usecase-content {
-            grid-template-columns: 1fr !important;
-            gap: 32px !important;
-          }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-// ============================================================
-// SECTION 8: Competitor Comparison Table
-// ============================================================
-function ComparisonTable() {
-  const rows = [
-    { feature: "Email archive", mailmuse: "100K+", milled: "41M+", rge: "~10K", ei: "~3K" },
-    { feature: "AI email analysis & scoring", mailmuse: true, milled: false, rge: false, ei: "Basic" },
-    { feature: "Template editor (edit any email)", mailmuse: true, milled: false, rge: false, ei: false },
-    { feature: "Brand analytics (frequency, timing)", mailmuse: true, milled: false, rge: false, ei: "Limited" },
-    { feature: "Brand comparison tool", mailmuse: true, milled: false, rge: false, ei: false },
-    { feature: "Campaign calendar", mailmuse: true, milled: false, rge: false, ei: false },
-    { feature: "Subject line swipe file", mailmuse: true, milled: false, rge: false, ei: false },
-    { feature: "Campaign type filtering (17+ types)", mailmuse: true, milled: "Limited", rge: "Tags", ei: "Limited" },
-    { feature: "Industry benchmarks", mailmuse: true, milled: false, rge: false, ei: false },
-    { feature: "AI email generator", mailmuse: true, milled: false, rge: false, ei: false },
-    { feature: "Built for marketers", mailmuse: true, milled: "Consumer", rge: "Design", ei: "Partial" },
-  ];
-
-  const renderCell = (val: boolean | string) => {
-    if (val === true) return <span style={{ color: "#22c55e", fontSize: 16 }}>&#10003;</span>;
-    if (val === false) return <span style={{ color: "#d4d4d4", fontSize: 14 }}>&times;</span>;
-    return <span style={{ fontSize: 12, color: "var(--color-tertiary)" }}>{val}</span>;
-  };
-
-  return (
-    <section style={{ padding: "96px 24px", background: "var(--color-surface)" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
-        <h2
-          style={{
-            fontFamily: "var(--font-dm-serif)",
-            fontSize: "clamp(28px, 4vw, 36px)",
-            fontWeight: 400,
-            color: "var(--color-primary)",
-            textAlign: "center",
-            marginBottom: 12,
-          }}
-        >
-          The only platform that goes from research to action
-        </h2>
-        <p style={{ textAlign: "center", fontSize: 17, color: "var(--color-secondary)", marginBottom: 40 }}>
-          Other tools show you emails. MailMuse helps you actually do something with them.
-        </p>
-
-        <div style={{ overflowX: "auto", borderRadius: 14, border: "1px solid var(--color-border)", background: "white" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 640 }}>
-            <thead>
-              <tr>
-                <th style={{ padding: "14px 16px", textAlign: "left", fontSize: 12, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid var(--color-border)" }}>Feature</th>
-                <th style={{ padding: "14px 16px", textAlign: "center", fontSize: 13, fontWeight: 700, color: "var(--color-accent)", borderBottom: "1px solid var(--color-border)", background: "var(--color-accent-light)" }}>MailMuse</th>
-                <th style={{ padding: "14px 16px", textAlign: "center", fontSize: 12, fontWeight: 600, color: "var(--color-tertiary)", borderBottom: "1px solid var(--color-border)" }}>Milled</th>
-                <th style={{ padding: "14px 16px", textAlign: "center", fontSize: 12, fontWeight: 600, color: "var(--color-tertiary)", borderBottom: "1px solid var(--color-border)" }}>Really Good Emails</th>
-                <th style={{ padding: "14px 16px", textAlign: "center", fontSize: 12, fontWeight: 600, color: "var(--color-tertiary)", borderBottom: "1px solid var(--color-border)" }}>EmailInspire</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, idx) => (
-                <tr key={row.feature} style={{ background: idx % 2 === 1 ? "var(--color-surface)" : "white" }}>
-                  <td style={{ padding: "12px 16px", fontSize: 13, fontWeight: 500, color: "var(--color-primary)", borderBottom: "1px solid var(--color-border)" }}>{row.feature}</td>
-                  <td style={{ padding: "12px 16px", textAlign: "center", borderBottom: "1px solid var(--color-border)", background: idx % 2 === 1 ? "rgba(245,230,220,0.4)" : "rgba(245,230,220,0.2)" }}>{renderCell(row.mailmuse)}</td>
-                  <td style={{ padding: "12px 16px", textAlign: "center", borderBottom: "1px solid var(--color-border)" }}>{renderCell(row.milled)}</td>
-                  <td style={{ padding: "12px 16px", textAlign: "center", borderBottom: "1px solid var(--color-border)" }}>{renderCell(row.rge)}</td>
-                  <td style={{ padding: "12px 16px", textAlign: "center", borderBottom: "1px solid var(--color-border)" }}>{renderCell(row.ei)}</td>
-                </tr>
               ))}
-            </tbody>
-          </table>
         </div>
 
-        <p style={{ textAlign: "center", fontSize: 14, color: "var(--color-tertiary)", marginTop: 20, fontStyle: "italic" }}>
-          Fewer emails than Milled, but every email is actionable.
-        </p>
+        <div style={{ textAlign: "center", marginTop: 40 }}>
+          <Button href="/browse" variant="outline" size="lg">
+            Browse All Emails
+          </Button>
+        </div>
       </div>
     </section>
   );
 }
 
 // ============================================================
-// SECTION 9: Pricing Anchor
+// SECTION 7: Pricing
 // ============================================================
 function PricingAnchor() {
   const plans = [
@@ -1640,7 +695,7 @@ function PricingAnchor() {
 }
 
 // ============================================================
-// SECTION 10: Final CTA
+// SECTION 8: Final CTA
 // ============================================================
 function FinalCTA() {
   return (
@@ -1732,14 +787,14 @@ export function HomeClient() {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_BASE}/emails?limit=12`).then((r) =>
+      fetch(`${API_BASE}/emails?limit=20`).then((r) =>
         r.ok ? r.json() : []
       ),
       fetch(`${API_BASE}/brands/stats`).then((r) => (r.ok ? r.json() : {})),
     ])
       .then(([emails, statsData]) => {
         const emailList = emails.emails || emails || [];
-        setRecentEmails(emailList.slice(0, 12));
+        setRecentEmails(emailList.slice(0, 20));
         setBrandStats(statsData as Record<string, { logo_url?: string | null }>);
       })
       .catch(() => {});
@@ -1748,14 +803,39 @@ export function HomeClient() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
-      <HeroSection defaultEmails={recentEmails.slice(0, 9)} />
-      <BrandTrustBar brandStats={brandStats} />
-      <ProblemSection />
-      <WorkflowSection />
-      <AnalysisShowcase />
-      <EditorShowcase />
-      <UseCaseTabs />
-      <ComparisonTable />
+      <HeroSection defaultEmails={recentEmails.slice(0, 6)} />
+      <BrandCarousel brandStats={brandStats} />
+      <FeatureRow
+        direction="left"
+        badge="BROWSE"
+        heading="Browse 100K+ real emails from Indian brands"
+        description="Search and filter by brand, industry, or campaign type. See full email archives with send timing, frequency data, and competitive intelligence."
+        ctaText="Browse emails free"
+        ctaHref="/browse"
+        visual={<BrowseMock />}
+        bg="white"
+      />
+      <FeatureRow
+        direction="right"
+        badge="AI-POWERED"
+        heading="AI-powered email scoring & analysis"
+        description="Every email gets scored on 5 dimensions — Subject Line, Copy Quality, CTA Effectiveness, Design, and Strategy — with actionable insights."
+        ctaText="See sample analysis"
+        ctaHref="/browse"
+        visual={<AnalysisMock />}
+        bg="var(--color-surface)"
+      />
+      <FeatureRow
+        direction="left"
+        badge="TEMPLATES"
+        heading="Save to collections & export as templates"
+        description="One click opens any email in our editor. Change text, swap images, update colors — export production-ready HTML for your next campaign."
+        ctaText="Try the editor"
+        ctaHref="/browse"
+        visual={<EditorMock />}
+        bg="white"
+      />
+      <EmailGridShowcase emails={recentEmails.slice(6, 14)} />
       <PricingAnchor />
       <FinalCTA />
     </div>

@@ -527,6 +527,20 @@ h1, h2, h3, h4, h5, h6, p, span, a {
   flex-shrink: 0;
 }
 
+/* ========== HOMEPAGE FEATURE ROWS ========== */
+@media (max-width: 768px) {
+  .feature-row {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+  .feature-row > div {
+    order: unset !important;
+  }
+  .showcase-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
 /* ========== LEGACY SUPPORT ========== */
 
 /* Email content styling */
