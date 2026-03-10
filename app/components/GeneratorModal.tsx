@@ -117,6 +117,7 @@ export default function GeneratorModal({ isOpen, onClose, emailId, emailSubject,
           industry,
           tone: tone.toLowerCase(),
           instructions,
+          email_id: emailId,
         }),
       });
       if (!res.ok) {
