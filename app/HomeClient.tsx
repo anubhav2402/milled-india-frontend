@@ -5,7 +5,6 @@ import Link from "next/link";
 import Header from "./components/Header";
 import Button from "./components/Button";
 import EmailCard, { EmailCardSkeleton } from "./components/EmailCard";
-import BrandLogo from "./components/BrandLogo";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -57,18 +56,24 @@ function useInView(threshold = 0.15) {
 // SECTION 1: Hero — Floating Brand Logos + Global Copy
 // ============================================================
 const HERO_BRANDS = [
-  { name: "Nike", domain: "nike.com", top: "8%", left: "5%", delay: 0.2, size: 48 },
-  { name: "Sephora", domain: "sephora.com", top: "18%", right: "6%", delay: 0.5, size: 44 },
-  { name: "Zara", domain: "zara.com", top: "55%", left: "3%", delay: 0.8, size: 40 },
-  { name: "Apple", domain: "apple.com", top: "12%", left: "18%", delay: 0.3, size: 42 },
-  { name: "Adidas", domain: "adidas.com", top: "65%", right: "4%", delay: 1.0, size: 46 },
-  { name: "H&M", domain: "hm.com", top: "40%", left: "2%", delay: 0.6, size: 38 },
-  { name: "Uniqlo", domain: "uniqlo.com", top: "35%", right: "3%", delay: 0.4, size: 42 },
-  { name: "Amazon", domain: "amazon.com", top: "75%", left: "10%", delay: 1.1, size: 40 },
-  { name: "Shopify", domain: "shopify.com", top: "50%", right: "8%", delay: 0.7, size: 44 },
-  { name: "Glossier", domain: "glossier.com", top: "78%", right: "12%", delay: 0.9, size: 38 },
-  { name: "Patagonia", domain: "patagonia.com", top: "25%", left: "8%", delay: 1.2, size: 36 },
-  { name: "Gymshark", domain: "gymshark.com", top: "68%", left: "18%", delay: 1.3, size: 40 },
+  { name: "Nike", domain: "nike.com", top: "6%", left: "4%", delay: 0.2, size: 80 },
+  { name: "Sephora", domain: "sephora.com", top: "14%", right: "5%", delay: 0.5, size: 76 },
+  { name: "Apple", domain: "apple.com", top: "10%", left: "16%", delay: 0.3, size: 84 },
+  { name: "Adidas", domain: "adidas.com", top: "60%", right: "3%", delay: 1.0, size: 80 },
+  { name: "Zara", domain: "zara.com", top: "50%", left: "2%", delay: 0.8, size: 72 },
+  { name: "Amazon", domain: "amazon.com", top: "72%", left: "8%", delay: 1.1, size: 76 },
+  { name: "Google", domain: "google.com", top: "38%", right: "2%", delay: 0.4, size: 80 },
+  { name: "Spotify", domain: "spotify.com", top: "30%", left: "6%", delay: 0.6, size: 72 },
+  { name: "Netflix", domain: "netflix.com", top: "76%", right: "10%", delay: 0.9, size: 76 },
+  { name: "Uber", domain: "uber.com", top: "22%", right: "14%", delay: 0.7, size: 68 },
+  { name: "Airbnb", domain: "airbnb.com", top: "45%", left: "14%", delay: 1.2, size: 72 },
+  { name: "Stripe", domain: "stripe.com", top: "65%", left: "16%", delay: 1.3, size: 68 },
+  { name: "Shopify", domain: "shopify.com", top: "82%", right: "6%", delay: 1.4, size: 76 },
+  { name: "Tesla", domain: "tesla.com", top: "55%", right: "12%", delay: 1.0, size: 72 },
+  { name: "Slack", domain: "slack.com", top: "18%", left: "10%", delay: 1.5, size: 64 },
+  { name: "Notion", domain: "notion.so", top: "85%", left: "18%", delay: 1.6, size: 68 },
+  { name: "Figma", domain: "figma.com", top: "35%", right: "16%", delay: 1.1, size: 64 },
+  { name: "LinkedIn", domain: "linkedin.com", top: "70%", right: "18%", delay: 1.7, size: 72 },
 ];
 
 function HeroSection() {
@@ -114,9 +119,9 @@ function HeroSection() {
           <img
             src={`https://www.google.com/s2/favicons?domain=${b.domain}&sz=128`}
             alt={b.name}
-            width={b.size * 0.5}
-            height={b.size * 0.5}
-            style={{ borderRadius: 4 }}
+            width={b.size * 0.55}
+            height={b.size * 0.55}
+            style={{ borderRadius: 6 }}
           />
         </div>
       ))}
@@ -152,9 +157,14 @@ function HeroSection() {
           Featuring <strong>100,000+ curated emails</strong> with new brands added daily.
         </p>
 
-        <Button href="/signup" size="lg">
-          Join for free
-        </Button>
+        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <Button href="/signup" size="lg">
+            Join for free
+          </Button>
+          <Button href="/browse" size="lg" variant="outline">
+            Browse Email Templates
+          </Button>
+        </div>
 
         <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 14 }}>
           Free forever &middot; No credit card &middot; 7-day Starter trial included
@@ -310,6 +320,7 @@ function PlatformDescription() {
 // ============================================================
 function DemoSection() {
   const { ref, isVisible } = useInView(0.1);
+  const [playing, setPlaying] = useState(false);
 
   return (
     <section ref={ref} style={{ padding: "96px 24px", background: "var(--color-surface)" }}>
@@ -351,143 +362,79 @@ function DemoSection() {
             transition: "all 0.7s ease-out 0.2s",
           }}
         >
-          {/* Browser chrome */}
-          <div style={{ padding: "10px 16px", borderBottom: "1px solid #333", display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ display: "flex", gap: 6 }}>
-              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f57" }} />
-              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e" }} />
-              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#28c840" }} />
-            </div>
-            <div style={{ flex: 1, background: "#2a2725", borderRadius: 6, padding: "5px 12px", fontSize: 12, color: "#888", marginLeft: 8 }}>
-              app.mailmuse.io
-            </div>
-          </div>
-
-          {/* Video embed area */}
+          {/* Video area — 16:9 ratio */}
           <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background: "linear-gradient(135deg, #1C1917 0%, #2a2725 100%)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 16,
-              }}
-            >
-              {/* Play button */}
+            {playing ? (
+              <iframe
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0"
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }}
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+                title="MailMuse Demo"
+              />
+            ) : (
               <div
+                onClick={() => setPlaying(true)}
                 style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: "50%",
-                  background: "var(--color-accent)",
+                  position: "absolute",
+                  inset: 0,
+                  background: "linear-gradient(135deg, #1C1917 0%, #2a2725 100%)",
                   display: "flex",
+                  flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
+                  gap: 16,
                   cursor: "pointer",
-                  boxShadow: "0 8px 30px rgba(194,113,74,0.4)",
                 }}
               >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
-                  <polygon points="6,3 20,12 6,21" />
-                </svg>
+                {/* Animated play button */}
+                <div className="play-btn-ring" style={{ position: "relative" }}>
+                  <div
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      background: "var(--color-accent)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 8px 30px rgba(194,113,74,0.4)",
+                      position: "relative",
+                      zIndex: 2,
+                    }}
+                  >
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+                      <polygon points="8,4 20,12 8,20" />
+                    </svg>
+                  </div>
+                </div>
+                <p style={{ fontSize: 16, color: "#aaa", margin: 0, fontWeight: 500 }}>
+                  Watch a 90-second walkthrough
+                </p>
               </div>
-              <p style={{ fontSize: 15, color: "#888", margin: 0 }}>
-                Watch a 90-second walkthrough
-              </p>
-            </div>
+            )}
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================================================
-// SECTION 4: Brand Carousel
-// ============================================================
-const TOP_BRANDS = [
-  "Uniqlo", "Calvin Klein", "Balenciaga", "Givenchy", "Mango",
-  "Net-A-Porter", "Anthropologie", "Mytheresa", "AJIO", "Fossil",
-  "Nykaa", "Reformation", "Zomato", "Bobbi Brown Cosmetics",
-  "Kiehl'S Since 1851", "Nyx Professional Makeup", "Urban Decay",
-  "Innisfree", "Caratlane, A Tanishq Partnership", "Luisaviaroma",
-];
-
-function BrandCarousel({
-  brandStats,
-}: {
-  brandStats: Record<string, { logo_url?: string | null }>;
-}) {
-  const marqueeItems = [...TOP_BRANDS, ...TOP_BRANDS];
-
-  return (
-    <section
-      style={{
-        padding: "40px 24px 48px",
-        background: "white",
-        borderTop: "1px solid var(--color-border)",
-        borderBottom: "1px solid var(--color-border)",
-        overflow: "hidden",
-      }}
-    >
-      <p
-        style={{
-          textAlign: "center",
-          fontSize: 11,
-          fontWeight: 600,
-          color: "var(--color-tertiary)",
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          marginBottom: 20,
-        }}
-      >
-        Trusted by teams tracking the world&apos;s best brands
-      </p>
-      <div
-        style={{
-          position: "relative",
-          maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-          WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-        }}
-      >
-        <div
-          className="marquee-track"
-          style={{
-            display: "flex",
-            gap: 24,
-            alignItems: "center",
-            width: "max-content",
-            animation: "marqueeScroll 35s linear infinite",
-          }}
-        >
-          {marqueeItems.map((brand, i) => (
-            <div
-              key={`${brand}-${i}`}
-              style={{ display: "flex", alignItems: "center", gap: 8, whiteSpace: "nowrap" }}
-            >
-              <BrandLogo brandName={brand} logoUrl={brandStats[brand]?.logo_url} size={28} borderRadius={7} />
-              <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-secondary)", textTransform: "capitalize" }}>
-                {brand}
-              </span>
-            </div>
-          ))}
         </div>
       </div>
 
       <style>{`
-        @keyframes marqueeScroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        .play-btn-ring::before {
+          content: '';
+          position: absolute;
+          inset: -8px;
+          border-radius: 50%;
+          border: 2px solid rgba(194,113,74,0.3);
+          animation: pulseRing 2s ease-out infinite;
         }
-        .marquee-track:hover { animation-play-state: paused; }
+        @keyframes pulseRing {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(1.5); opacity: 0; }
+        }
       `}</style>
     </section>
   );
 }
+
 
 // ============================================================
 // SECTION 5-7: Feature Rows with Scroll Animations
@@ -695,14 +642,10 @@ function FeatureRow({
 // SECTION 8: Horizontal Email Carousel
 // ============================================================
 function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const { ref: sectionRef, isVisible } = useInView(0.1);
 
-  const scroll = (dir: "left" | "right") => {
-    if (!scrollRef.current) return;
-    const amount = 300;
-    scrollRef.current.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" });
-  };
+  // Duplicate emails for seamless loop
+  const displayEmails = emails.length > 0 ? [...emails, ...emails] : [];
 
   return (
     <section
@@ -716,97 +659,72 @@ function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px" }}>
         <div
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-            marginBottom: 32,
+            textAlign: "center",
+            marginBottom: 40,
             opacity: isVisible ? 1 : 0,
             transform: isVisible ? "translateY(0)" : "translateY(20px)",
             transition: "all 0.6s ease-out",
           }}
         >
-          <div>
-            <h2
-              style={{
-                fontFamily: "var(--font-dm-serif)",
-                fontSize: "clamp(28px, 4vw, 36px)",
-                fontWeight: 400,
-                color: "var(--color-primary)",
-                letterSpacing: "-0.02em",
-                marginBottom: 8,
-              }}
-            >
-              Browse the latest emails
-            </h2>
-            <p style={{ fontSize: 16, color: "var(--color-secondary)", margin: 0 }}>
-              Updated daily with 1,000+ new emails from top brands
-            </p>
-          </div>
-
-          {/* Scroll arrows */}
-          <div style={{ display: "flex", gap: 8 }}>
-            <button
-              onClick={() => scroll("left")}
-              style={{
-                width: 40, height: 40, borderRadius: "50%",
-                border: "1px solid var(--color-border)", background: "white",
-                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round"><path d="M15 18l-6-6 6-6" /></svg>
-            </button>
-            <button
-              onClick={() => scroll("right")}
-              style={{
-                width: 40, height: 40, borderRadius: "50%",
-                border: "1px solid var(--color-border)", background: "white",
-                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6" /></svg>
-            </button>
-          </div>
+          <h2
+            style={{
+              fontFamily: "var(--font-dm-serif)",
+              fontSize: "clamp(28px, 4vw, 36px)",
+              fontWeight: 400,
+              color: "var(--color-primary)",
+              letterSpacing: "-0.02em",
+              marginBottom: 8,
+            }}
+          >
+            Browse the latest emails
+          </h2>
+          <p style={{ fontSize: 16, color: "var(--color-secondary)", margin: 0 }}>
+            Updated daily with 1,000+ new emails from top brands
+          </p>
         </div>
       </div>
 
-      {/* Horizontal scroll track */}
+      {/* Auto-scrolling marquee track */}
       <div
-        ref={scrollRef}
-        className="email-carousel-track"
         style={{
-          display: "flex",
-          gap: 16,
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          paddingLeft: "max(24px, calc((100vw - 1200px) / 2 + 24px))",
-          paddingRight: 24,
-          paddingBottom: 8,
+          position: "relative",
+          maskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
           opacity: isVisible ? 1 : 0,
-          transform: isVisible ? "translateY(0)" : "translateY(30px)",
-          transition: "all 0.7s ease-out 0.2s",
+          transition: "opacity 0.7s ease-out 0.2s",
         }}
       >
-        {emails.length === 0
-          ? Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} style={{ minWidth: 260, scrollSnapAlign: "start" }}>
-                <EmailCardSkeleton />
-              </div>
-            ))
-          : emails.map((email) => (
-              <div key={email.id} style={{ minWidth: 260, scrollSnapAlign: "start" }}>
-                <EmailCard
-                  id={email.id}
-                  subject={email.subject}
-                  brand={email.brand || undefined}
-                  industry={email.industry || undefined}
-                  received_at={email.received_at}
-                  campaignType={email.type || undefined}
-                  logoUrl={logoUrlFromSender(email.sender)}
-                  compact
-                  previewHeight={240}
-                />
-              </div>
-            ))}
+        <div
+          className="email-marquee-track"
+          style={{
+            display: "flex",
+            gap: 16,
+            width: "max-content",
+            animation: "emailMarquee 40s linear infinite",
+          }}
+        >
+          {displayEmails.length === 0
+            ? Array.from({ length: 16 }).map((_, i) => (
+                <div key={i} style={{ width: 260, flexShrink: 0 }}>
+                  <EmailCardSkeleton />
+                </div>
+              ))
+            : displayEmails.map((email, i) => (
+                <div key={`${email.id}-${i}`} style={{ width: 260, flexShrink: 0 }}>
+                  <EmailCard
+                    id={email.id}
+                    subject={email.subject}
+                    brand={email.brand || undefined}
+                    industry={email.industry || undefined}
+                    received_at={email.received_at}
+                    campaignType={email.type || undefined}
+                    logoUrl={logoUrlFromSender(email.sender)}
+                    compact
+                    previewHeight={240}
+                  />
+                </div>
+              ))}
+        </div>
       </div>
 
       <div style={{ textAlign: "center", marginTop: 40 }}>
@@ -816,8 +734,11 @@ function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
       </div>
 
       <style>{`
-        .email-carousel-track::-webkit-scrollbar { display: none; }
-        .email-carousel-track { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes emailMarquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .email-marquee-track:hover { animation-play-state: paused; }
       `}</style>
     </section>
   );
@@ -1037,17 +958,13 @@ function FinalCTA() {
 // ============================================================
 export function HomeClient() {
   const [recentEmails, setRecentEmails] = useState<EmailPreview[]>([]);
-  const [brandStats, setBrandStats] = useState<Record<string, { logo_url?: string | null }>>({});
 
   useEffect(() => {
-    Promise.all([
-      fetch(`${API_BASE}/emails?limit=20`).then((r) => (r.ok ? r.json() : [])),
-      fetch(`${API_BASE}/brands/stats`).then((r) => (r.ok ? r.json() : {})),
-    ])
-      .then(([emails, statsData]) => {
+    fetch(`${API_BASE}/emails?limit=20`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((emails) => {
         const emailList = emails.emails || emails || [];
         setRecentEmails(emailList.slice(0, 20));
-        setBrandStats(statsData as Record<string, { logo_url?: string | null }>);
       })
       .catch(() => {});
   }, []);
@@ -1056,7 +973,6 @@ export function HomeClient() {
     <div style={{ minHeight: "100vh", background: "var(--color-surface)" }}>
       <Header transparent />
       <HeroSection />
-      <BrandCarousel brandStats={brandStats} />
       <PlatformDescription />
       <DemoSection />
       <FeatureRow
