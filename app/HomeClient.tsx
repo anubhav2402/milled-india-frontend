@@ -138,9 +138,9 @@ function HeroSection() {
             marginBottom: 20,
           }}
         >
-          Email inspiration & research
+          Every great email campaign starts
           <br />
-          for <span style={{ color: "var(--color-accent)" }}>high-performing teams</span>
+          with knowing what <span style={{ color: "var(--color-accent)" }}>great looks like</span>.
         </h1>
 
         <p
@@ -153,8 +153,8 @@ function HeroSection() {
             margin: "0 auto 36px",
           }}
         >
-          The all-in-one platform to find, save, and analyze the web&apos;s best emails.
-          Featuring <strong>100,000+ curated emails</strong> with new brands added daily.
+          100,000+ curated emails from the world&apos;s top brands — searchable, AI-analyzed,
+          and editable. From research to ready-to-send, in one place. Updated daily.
         </p>
 
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
