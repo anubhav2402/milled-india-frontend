@@ -329,15 +329,17 @@ function Checkbox({
       onClick={onChange}
       role="checkbox"
       aria-checked={checked}
+      className="filter-checkbox"
       style={{
         display: "flex",
         alignItems: "center",
         gap: 10,
-        padding: "8px 0",
+        padding: "6px 8px",
+        borderRadius: 6,
         cursor: "pointer",
         fontSize: 14,
         color: checked ? "var(--color-primary)" : "var(--color-secondary)",
-        transition: "color 150ms ease",
+        transition: "all 150ms ease",
       }}
     >
       <div
@@ -390,6 +392,7 @@ function Sidebar({
   setSelectedDate,
   clearAll,
   brandStats,
+  categoryCounts,
 }: {
   open: boolean;
   onClose: () => void;
@@ -404,12 +407,19 @@ function Sidebar({
   setSelectedDate: (d: string) => void;
   clearAll: () => void;
   brandStats: BrandStats;
+  categoryCounts: Record<string, number>;
 }) {
   const filteredBrands = brands.filter((b) =>
     b.toLowerCase().includes(brandSearch.toLowerCase())
   );
   const [categorySearch, setCategorySearch] = useState("");
-  const filteredCategories = ALL_SUBCATEGORIES.filter((c) =>
+
+  // Filter out empty subcategories and sort by popularity (most emails first)
+  const availableCategories = ALL_SUBCATEGORIES
+    .filter((c) => (categoryCounts[c] || 0) > 0)
+    .sort((a, b) => (categoryCounts[b] || 0) - (categoryCounts[a] || 0));
+
+  const filteredCategories = availableCategories.filter((c) =>
     c.toLowerCase().includes(categorySearch.toLowerCase())
   );
 
@@ -505,7 +515,7 @@ function Sidebar({
       {/* Desktop Sidebar */}
       <aside
         style={{
-          width: 280,
+          width: 300,
           flexShrink: 0,
           position: "sticky",
           top: 80,
@@ -564,10 +574,15 @@ function Sidebar({
         }}
         className="show-mobile"
       >
+        {/* Drag Handle */}
+        <div style={{ display: "flex", justifyContent: "center", paddingBottom: 16 }}>
+          <div style={{ width: 36, height: 4, borderRadius: 2, background: "var(--color-border)" }} />
+        </div>
+
         {/* Mobile Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
           <h3 style={{ fontSize: 18, fontWeight: 600, color: "var(--color-primary)", margin: 0 }}>
-            Filters
+            Filters {activeCount > 0 && <span style={{ fontSize: 13, fontWeight: 500, color: "var(--color-accent)" }}>({activeCount})</span>}
           </h3>
           <button
             onClick={onClose}
@@ -629,6 +644,7 @@ function BrowseContent() {
   const [allBrands, setAllBrands] = useState<string[]>([]);
   const [brandStats, setBrandStats] = useState<BrandStats>({});
   const [totalEmailCount, setTotalEmailCount] = useState<number | null>(null);
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -686,14 +702,16 @@ function BrowseContent() {
     const base = API_BASE;
 
     try {
-      const [brandsRes, statsRes, countRes] = await Promise.all([
+      const [brandsRes, statsRes, countRes, catCountsRes] = await Promise.all([
         fetch(`${base}/brands`),
         fetch(`${base}/brands/stats`),
         fetch(`${base}/emails/count`),
+        fetch(`${base}/emails/category-counts`),
       ]);
 
       if (brandsRes.ok) setAllBrands(await brandsRes.json());
       if (statsRes.ok) setBrandStats(await statsRes.json());
+      if (catCountsRes.ok) setCategoryCounts(await catCountsRes.json());
       if (countRes.ok) {
         const countData = await countRes.json();
         setTotalEmailCount(countData.total);
@@ -798,6 +816,7 @@ function BrowseContent() {
           setSelectedDate={setSelectedDate}
           clearAll={clearAllFilters}
           brandStats={brandStats}
+          categoryCounts={categoryCounts}
         />
 
         {/* Main Content */}
@@ -1072,21 +1091,21 @@ function BrowseContent() {
         style={{
           display: "none",
           position: "fixed",
-          bottom: 20,
+          bottom: 24,
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 90,
           alignItems: "center",
           gap: 8,
-          padding: "12px 24px",
+          padding: "14px 28px",
           background: activeFilterCount > 0 ? "var(--color-accent)" : "#1C1917",
           color: "white",
           border: "none",
           borderRadius: 50,
-          fontSize: 14,
+          fontSize: 15,
           fontWeight: 600,
           cursor: "pointer",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.15)",
         }}
       >
         <FilterIcon />

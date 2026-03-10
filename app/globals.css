@@ -527,6 +527,12 @@ h1, h2, h3, h4, h5, h6, p, span, a {
   flex-shrink: 0;
 }
 
+/* ========== FILTER CHECKBOX HOVER ========== */
+
+.filter-checkbox:hover {
+  background: var(--color-surface);
+}
+
 /* ========== HOMEPAGE FEATURE ROWS ========== */
 @media (max-width: 768px) {
   .feature-row {
