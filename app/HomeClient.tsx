@@ -83,7 +83,7 @@ function HeroSection() {
   return (
     <section
       style={{
-        background: "linear-gradient(180deg, var(--color-surface) 0%, #ffffff 100%)",
+        background: "radial-gradient(ellipse 80% 60% at 50% 0%, #F5E6DC 0%, #FAF9F7 50%, #ffffff 100%)",
         padding: "140px 24px 100px",
         position: "relative",
         overflow: "hidden",
@@ -130,7 +130,7 @@ function HeroSection() {
         <h1
           style={{
             fontFamily: "var(--font-bricolage)",
-            fontSize: "clamp(36px, 5.5vw, 56px)",
+            fontSize: "clamp(32px, 4.5vw, 44px)",
             fontWeight: 600,
             color: "var(--color-primary)",
             lineHeight: 1.1,
@@ -323,273 +323,6 @@ function PlatformDescription() {
             max-width: 400px !important;
             margin: 0 auto !important;
           }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-// ============================================================
-// SECTION 3: Video / Demo Section
-// ============================================================
-function DemoSection() {
-  const { ref, isVisible } = useInView(0.1);
-  const [step, setStep] = useState(0);
-
-  // Auto-advance demo steps
-  useEffect(() => {
-    if (!isVisible) return;
-    const timer = setInterval(() => {
-      setStep((s) => (s + 1) % 4);
-    }, 3000);
-    return () => clearInterval(timer);
-  }, [isVisible]);
-
-  const steps = [
-    { label: "Search", desc: "Search by brand, industry, or keyword" },
-    { label: "Browse", desc: "Explore thousands of real email campaigns" },
-    { label: "Analyze", desc: "AI scores every email on 5 dimensions" },
-    { label: "Export", desc: "Edit and export as production-ready HTML" },
-  ];
-
-  return (
-    <section ref={ref} style={{ padding: "96px 24px", background: "var(--color-surface)" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: 48,
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? "translateY(0)" : "translateY(30px)",
-            transition: "all 0.6s ease-out",
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: "var(--font-bricolage)",
-              fontSize: "clamp(28px, 4vw, 36px)",
-              fontWeight: 600,
-              color: "var(--color-primary)",
-              letterSpacing: "-0.02em",
-              marginBottom: 12,
-            }}
-          >
-            See MailMuse in action
-          </h2>
-          <p style={{ fontSize: 17, color: "var(--color-secondary)" }}>
-            From research to ready-to-send in under 2 minutes
-          </p>
-        </div>
-
-        {/* Step indicator pills */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 24 }}>
-          {steps.map((s, i) => (
-            <button
-              key={s.label}
-              onClick={() => setStep(i)}
-              style={{
-                padding: "8px 20px",
-                borderRadius: 20,
-                border: "none",
-                fontSize: 13,
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                background: step === i ? "var(--color-accent)" : "var(--color-border)",
-                color: step === i ? "white" : "var(--color-secondary)",
-              }}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-
-        <div
-          style={{
-            borderRadius: 20,
-            overflow: "hidden",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-            background: "#1C1917",
-            opacity: isVisible ? 1 : 0,
-            transform: isVisible ? "scale(1)" : "scale(0.95)",
-            transition: "all 0.7s ease-out 0.2s",
-          }}
-        >
-          {/* Browser chrome */}
-          <div style={{ padding: "10px 16px", borderBottom: "1px solid #333", display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ display: "flex", gap: 6 }}>
-              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f57" }} />
-              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e" }} />
-              <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#28c840" }} />
-            </div>
-            <div style={{ flex: 1, background: "#2a2725", borderRadius: 6, padding: "5px 12px", fontSize: 12, color: "#888", marginLeft: 8 }}>
-              mailmuse.in/{step === 0 ? "browse" : step === 1 ? "browse?q=nykaa" : step === 2 ? "email/4521" : "editor"}
-            </div>
-          </div>
-
-          {/* Animated demo screens */}
-          <div style={{ height: 420, position: "relative", overflow: "hidden" }}>
-            {/* Step 0: Search */}
-            <div style={{ position: "absolute", inset: 0, padding: 32, opacity: step === 0 ? 1 : 0, transition: "opacity 0.5s ease", pointerEvents: step === 0 ? "auto" : "none" }}>
-              <div style={{ background: "#2a2725", borderRadius: 10, padding: "12px 16px", display: "flex", alignItems: "center", gap: 10, marginBottom: 20, maxWidth: 500 }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
-                <span className="demo-typing" style={{ fontSize: 14, color: "#ccc" }}>nykaa sale emails...</span>
-              </div>
-              <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
-                {["All Types", "Sale", "Welcome", "Newsletter", "Cart Recovery"].map((t, i) => (
-                  <span key={t} style={{ fontSize: 11, padding: "4px 12px", borderRadius: 12, background: i === 1 ? "rgba(194,113,74,0.2)" : "#333", color: i === 1 ? "#E8956E" : "#888" }}>{t}</span>
-                ))}
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
-                {[{ c: "#2d4a3e", b: "Nykaa" }, { c: "#4a2d3e", b: "Sephora" }, { c: "#3e3a2d", b: "Fossil" }, { c: "#2d3a4a", b: "Mango" }].map((e) => (
-                  <div key={e.b} style={{ background: "#2a2725", borderRadius: 8, overflow: "hidden" }}>
-                    <div style={{ height: 120, background: e.c }} />
-                    <div style={{ padding: 8 }}>
-                      <div style={{ fontSize: 10, color: "#aaa", marginBottom: 4 }}>{e.b}</div>
-                      <div style={{ height: 3, background: "#444", borderRadius: 2, width: "80%" }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Step 1: Browse results */}
-            <div style={{ position: "absolute", inset: 0, padding: 32, opacity: step === 1 ? 1 : 0, transition: "opacity 0.5s ease", pointerEvents: step === 1 ? "auto" : "none" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                <div>
-                  <div style={{ fontSize: 16, fontWeight: 600, color: "white", marginBottom: 4 }}>Nykaa</div>
-                  <div style={{ fontSize: 11, color: "#888" }}>116 emails &middot; Beauty &middot; Last sent 2 days ago</div>
-                </div>
-                <span style={{ fontSize: 11, padding: "4px 12px", borderRadius: 12, background: "rgba(194,113,74,0.2)", color: "#E8956E" }}>Following</span>
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-                {[
-                  { t: "Flash Sale - 50% Off!", c: "#4a2d3e", type: "Sale" },
-                  { t: "New Arrivals Just Dropped", c: "#2d4a3e", type: "New Arrival" },
-                  { t: "Your Cart is Waiting", c: "#3e3a2d", type: "Cart Recovery" },
-                  { t: "Welcome to Nykaa!", c: "#2d3a4a", type: "Welcome" },
-                  { t: "Beauty Awards Winners", c: "#4a3e2d", type: "Newsletter" },
-                  { t: "Last Chance: Mega Sale", c: "#3a2d4a", type: "Sale" },
-                ].map((e) => (
-                  <div key={e.t} style={{ background: "#2a2725", borderRadius: 8, overflow: "hidden" }}>
-                    <div style={{ height: 80, background: e.c, position: "relative" }}>
-                      <span style={{ position: "absolute", top: 4, left: 4, fontSize: 9, padding: "2px 6px", borderRadius: 4, background: "rgba(0,0,0,0.5)", color: "#ccc" }}>{e.type}</span>
-                    </div>
-                    <div style={{ padding: 6 }}>
-                      <div style={{ fontSize: 10, color: "#ccc", lineHeight: 1.3 }}>{e.t}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Step 2: AI Analysis */}
-            <div style={{ position: "absolute", inset: 0, padding: 32, opacity: step === 2 ? 1 : 0, transition: "opacity 0.5s ease", pointerEvents: step === 2 ? "auto" : "none" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
-                <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "white", marginBottom: 4 }}>Flash Sale - 50% Off!</div>
-                  <div style={{ fontSize: 11, color: "#888", marginBottom: 16 }}>Nykaa &middot; Sale Campaign &middot; Sent Dec 15</div>
-                  <div style={{ background: "#2a2725", borderRadius: 10, height: 220, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <div style={{ background: "#4a2d3e", borderRadius: 6, width: "80%", height: "85%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: "#888" }}>
-                      Email Preview
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-                    <div style={{ width: 60, height: 60, borderRadius: "50%", border: "3px solid #10b981", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ fontSize: 22, fontWeight: 700, color: "white", lineHeight: 1 }}>87</span>
-                      <span style={{ fontSize: 10, color: "#10b981", fontWeight: 600 }}>A</span>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "white" }}>Overall Score</div>
-                      <div style={{ fontSize: 11, color: "#10b981" }}>High-performing email</div>
-                    </div>
-                  </div>
-                  {[
-                    { label: "Subject Line", pct: 92, grade: "A" },
-                    { label: "Copy Quality", pct: 78, grade: "B+" },
-                    { label: "CTA Effectiveness", pct: 90, grade: "A" },
-                    { label: "Design & Layout", pct: 72, grade: "B" },
-                    { label: "Strategy", pct: 85, grade: "A-" },
-                  ].map((d) => (
-                    <div key={d.label} style={{ marginBottom: 10 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                        <span style={{ fontSize: 11, color: "#aaa" }}>{d.label}</span>
-                        <span style={{ fontSize: 11, color: "white", fontWeight: 600 }}>{d.grade} &middot; {d.pct}%</span>
-                      </div>
-                      <div style={{ height: 5, background: "#333", borderRadius: 3 }}>
-                        <div
-                          className="demo-bar"
-                          style={{
-                            height: "100%",
-                            width: step === 2 ? `${d.pct}%` : "0%",
-                            background: d.pct >= 85 ? "#10b981" : d.pct >= 70 ? "#3b82f6" : "#f59e0b",
-                            borderRadius: 3,
-                            transition: "width 1s ease-out 0.3s",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Step 3: Template Editor */}
-            <div style={{ position: "absolute", inset: 0, padding: 32, opacity: step === 3 ? 1 : 0, transition: "opacity 0.5s ease", pointerEvents: step === 3 ? "auto" : "none" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: 16, height: "100%" }}>
-                {/* Sidebar */}
-                <div style={{ background: "#2a2725", borderRadius: 10, padding: 12 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#888", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 12 }}>Components</div>
-                  {["Header", "Hero Image", "Body Text", "CTA Button", "Footer"].map((c, i) => (
-                    <div key={c} style={{ padding: "8px 10px", borderRadius: 6, fontSize: 12, color: i === 3 ? "white" : "#888", background: i === 3 ? "rgba(194,113,74,0.2)" : "transparent", marginBottom: 4, cursor: "pointer" }}>
-                      {c}
-                    </div>
-                  ))}
-                  <div style={{ marginTop: 16, borderTop: "1px solid #333", paddingTop: 12 }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: "#888", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Export</div>
-                    <div style={{ padding: "8px 12px", borderRadius: 6, background: "#C2714A", color: "white", fontSize: 12, fontWeight: 600, textAlign: "center" }}>
-                      Download HTML
-                    </div>
-                  </div>
-                </div>
-                {/* Canvas */}
-                <div style={{ background: "white", borderRadius: 10, padding: 16, overflow: "hidden" }}>
-                  <div style={{ background: "#C2714A", borderRadius: 6, padding: "20px 16px", textAlign: "center", marginBottom: 12 }}>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: "white" }}>FLASH SALE</div>
-                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.8)" }}>Up to 50% off everything</div>
-                  </div>
-                  <div style={{ background: "#f0f0f0", borderRadius: 6, height: 100, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12, fontSize: 12, color: "#888" }}>
-                    Hero Image
-                  </div>
-                  <div style={{ fontSize: 12, color: "#333", lineHeight: 1.5, marginBottom: 12, padding: "0 4px" }}>
-                    Shop our biggest sale of the year. Exclusive deals across beauty, skincare, and wellness...
-                  </div>
-                  <div style={{ background: "#333", borderRadius: 5, padding: "10px 20px", textAlign: "center", fontSize: 12, fontWeight: 600, color: "white", maxWidth: 160, margin: "0 auto" }}>
-                    SHOP NOW
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Step description */}
-        <p style={{ textAlign: "center", fontSize: 15, color: "var(--color-secondary)", marginTop: 20, minHeight: 24 }}>
-          {steps[step].desc}
-        </p>
-      </div>
-
-      <style>{`
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0; }
-        }
-        .demo-typing::after {
-          content: '|';
-          animation: blink 1s step-end infinite;
-          color: var(--color-accent);
         }
       `}</style>
     </section>
@@ -1161,7 +894,6 @@ export function HomeClient() {
       <HeroSection />
       <PlatformDescription />
       <EmailCarousel emails={recentEmails} />
-      <DemoSection />
       <FeatureRow
         direction="right"
         badge="AI-POWERED"

@@ -56,7 +56,7 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
             <span
               style={{
                 fontFamily: "var(--font-bricolage)",
-                fontSize: 20,
+                fontSize: 24,
                 fontWeight: 700,
                 letterSpacing: "-1px",
                 lineHeight: 1,
