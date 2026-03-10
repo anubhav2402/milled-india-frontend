@@ -23,7 +23,7 @@ export default function ContactPage() {
       >
         <h1
           style={{
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
             fontSize: 40,
             fontWeight: 400,
             color: "var(--color-primary)",
@@ -71,7 +71,7 @@ export default function ContactPage() {
               href="mailto:anubhavgpt08@gmail.com"
               style={{
                 fontSize: 20,
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
                 color: "var(--color-accent)",
                 textDecoration: "none",
               }}
@@ -99,7 +99,7 @@ export default function ContactPage() {
               rel="noopener noreferrer"
               style={{
                 fontSize: 20,
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
                 color: "var(--color-accent)",
                 textDecoration: "none",
               }}

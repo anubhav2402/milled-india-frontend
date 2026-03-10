@@ -181,7 +181,7 @@ export default function SignupPage() {
             <Logo size={32} />
             <span
               style={{
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
                 fontSize: 20,
                 color: "var(--color-primary)",
               }}
@@ -272,7 +272,7 @@ export default function SignupPage() {
               color: "var(--color-primary)",
               lineHeight: 1.2,
               margin: "0 0 14px",
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
             }}
           >
             See what the best brands send — before they send it to you
@@ -560,7 +560,7 @@ export default function SignupPage() {
                   outline: "none",
                   backgroundColor: "white",
                   boxSizing: "border-box",
-                  fontFamily: "var(--font-inter)",
+                  fontFamily: "var(--font-family)",
                 }}
                 onFocus={(e) =>
                   (e.target.style.borderColor = "var(--color-accent)")
@@ -599,7 +599,7 @@ export default function SignupPage() {
                   outline: "none",
                   backgroundColor: "white",
                   boxSizing: "border-box",
-                  fontFamily: "var(--font-inter)",
+                  fontFamily: "var(--font-family)",
                 }}
                 onFocus={(e) =>
                   (e.target.style.borderColor = "var(--color-accent)")
@@ -639,7 +639,7 @@ export default function SignupPage() {
                   outline: "none",
                   backgroundColor: "white",
                   boxSizing: "border-box",
-                  fontFamily: "var(--font-inter)",
+                  fontFamily: "var(--font-family)",
                 }}
                 onFocus={(e) =>
                   (e.target.style.borderColor = "var(--color-accent)")
@@ -666,7 +666,7 @@ export default function SignupPage() {
                 borderRadius: 10,
                 cursor: submitting ? "not-allowed" : "pointer",
                 marginBottom: 16,
-                fontFamily: "var(--font-inter)",
+                fontFamily: "var(--font-family)",
               }}
             >
               {submitting ? "Creating account..." : "Start Free Pro Trial"}

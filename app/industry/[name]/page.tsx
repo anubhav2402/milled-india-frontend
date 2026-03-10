@@ -216,7 +216,7 @@ export default async function IndustryPage({
         >
           <h1
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: 28,
               color: "var(--color-primary)",
               margin: "0 0 12px",
@@ -293,7 +293,7 @@ export default async function IndustryPage({
                 fontWeight: 700,
                 color: "var(--color-primary)",
                 margin: "0 0 16px",
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
               }}
             >
               Latest Emails from Top {industry} Brands
@@ -407,7 +407,7 @@ export default async function IndustryPage({
               fontWeight: 700,
               color: "var(--color-primary)",
               margin: "0 0 16px",
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
             }}
           >
             {industry} Email Marketing Benchmarks
@@ -439,7 +439,7 @@ export default async function IndustryPage({
                 fontWeight: 700,
                 color: "var(--color-primary)",
                 margin: "0 0 16px",
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
               }}
             >
               Popular Email Types in {industry}
@@ -488,7 +488,7 @@ export default async function IndustryPage({
                 fontWeight: 700,
                 color: "var(--color-primary)",
                 margin: "0 0 16px",
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
               }}
             >
               Recent {industry} Emails
@@ -528,7 +528,7 @@ export default async function IndustryPage({
                   fontWeight: 700,
                   color: "var(--color-primary)",
                   margin: "0 0 16px",
-                  fontFamily: "var(--font-dm-serif)",
+                  fontFamily: "var(--font-heading)",
                 }}
               >
                 Seasonal Email Patterns
@@ -558,7 +558,7 @@ export default async function IndustryPage({
                 fontWeight: 700,
                 color: "var(--color-primary)",
                 margin: "0 0 16px",
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
               }}
             >
               Frequently Asked Questions

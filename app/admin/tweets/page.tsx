@@ -683,7 +683,7 @@ export default function AdminTweetsPage() {
             style={{
               width: "100%", padding: 12, borderRadius: 8,
               border: "1px solid var(--color-border, #e5e5e5)",
-              fontSize: 14, fontFamily: "var(--font-inter)",
+              fontSize: 14, fontFamily: "var(--font-family)",
               resize: "vertical", minHeight: 80, boxSizing: "border-box",
             }}
           />
@@ -807,7 +807,7 @@ export default function AdminTweetsPage() {
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-primary)", margin: 0, fontFamily: "var(--font-dm-serif)" }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-primary)", margin: 0, fontFamily: "var(--font-heading)" }}>
           Tweet Manager
         </h1>
         <Link href="/admin/dashboard" style={{ fontSize: 13, color: "var(--color-secondary)", textDecoration: "none" }}>
@@ -893,7 +893,7 @@ export default function AdminTweetsPage() {
               <select
                 value={selectedTarget}
                 onChange={(e) => setSelectedTarget(e.target.value)}
-                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-inter)", boxSizing: "border-box" }}
+                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-family)", boxSizing: "border-box" }}
               >
                 <option value="">-- Select or type handle below --</option>
                 {replyTargets.map((t) => (
@@ -914,7 +914,7 @@ export default function AdminTweetsPage() {
                 onChange={(e) => setReplyTweetText(e.target.value)}
                 placeholder="Paste the tweet text here..."
                 rows={4}
-                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-inter)", resize: "vertical", boxSizing: "border-box" }}
+                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-family)", resize: "vertical", boxSizing: "border-box" }}
               />
             </div>
 
@@ -928,7 +928,7 @@ export default function AdminTweetsPage() {
                 value={replyTweetUrl}
                 onChange={(e) => setReplyTweetUrl(e.target.value)}
                 placeholder="https://x.com/user/status/123... or just 123..."
-                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-inter)", boxSizing: "border-box" }}
+                style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 13, fontFamily: "var(--font-family)", boxSizing: "border-box" }}
               />
             </div>
 
@@ -1175,7 +1175,7 @@ export default function AdminTweetsPage() {
           <select
             value={genType}
             onChange={(e) => setGenType(e.target.value)}
-            style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 14, fontFamily: "var(--font-inter)", minWidth: 200 }}
+            style={{ padding: "8px 12px", borderRadius: 8, border: "1px solid var(--color-border, #e5e5e5)", fontSize: 14, fontFamily: "var(--font-family)", minWidth: 200 }}
           >
             {TYPE_GROUPS.map((group) => (
               <optgroup key={group.label} label={group.label}>
@@ -1234,7 +1234,7 @@ export default function AdminTweetsPage() {
                     style={{
                       width: "100%", padding: "8px 12px", borderRadius: 8,
                       border: "1px solid var(--color-border, #e5e5e5)",
-                      fontSize: 13, fontFamily: "var(--font-inter)",
+                      fontSize: 13, fontFamily: "var(--font-family)",
                       resize: "vertical", boxSizing: "border-box",
                     }}
                   />
@@ -1247,7 +1247,7 @@ export default function AdminTweetsPage() {
                     style={{
                       width: "100%", padding: "8px 12px", borderRadius: 8,
                       border: "1px solid var(--color-border, #e5e5e5)",
-                      fontSize: 13, fontFamily: "var(--font-inter)",
+                      fontSize: 13, fontFamily: "var(--font-family)",
                       boxSizing: "border-box",
                     }}
                   />

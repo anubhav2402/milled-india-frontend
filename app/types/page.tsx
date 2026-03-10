@@ -82,7 +82,7 @@ export default function TypesIndexPage() {
         >
           <h1
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: 28,
               color: "var(--color-primary)",
               margin: "0 0 12px",
@@ -133,7 +133,7 @@ export default function TypesIndexPage() {
               fontWeight: 700,
               color: "var(--color-primary)",
               margin: "0 0 16px",
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
             }}
           >
             Popular Email Types
@@ -223,7 +223,7 @@ export default function TypesIndexPage() {
               fontWeight: 700,
               color: "var(--color-primary)",
               margin: "0 0 16px",
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
             }}
           >
             All Email Types

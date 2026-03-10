@@ -57,7 +57,7 @@ export default function Footer() {
             <Logo size={28} />
             <span
               style={{
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
                 fontSize: 20,
                 color: "white",
               }}
@@ -84,7 +84,7 @@ export default function Footer() {
         <div>
           <h4
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: 15,
               fontWeight: 400,
               color: "white",
@@ -122,7 +122,7 @@ export default function Footer() {
         <div>
           <h4
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: 15,
               fontWeight: 400,
               color: "white",
@@ -160,7 +160,7 @@ export default function Footer() {
         <div>
           <h4
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: 15,
               fontWeight: 400,
               color: "white",

@@ -78,7 +78,7 @@ export default async function CampaignsIndex() {
         >
           <h1
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: 28,
               color: "var(--color-primary)",
               margin: "0 0 8px",
@@ -101,7 +101,7 @@ export default async function CampaignsIndex() {
 
         {sortedYears.map((year) => (
           <section key={year} style={{ marginBottom: 36 }}>
-            <h2 style={{ fontFamily: "var(--font-dm-serif)", fontSize: 22, color: "var(--color-primary)", margin: "0 0 16px" }}>
+            <h2 style={{ fontFamily: "var(--font-heading)", fontSize: 22, color: "var(--color-primary)", margin: "0 0 16px" }}>
               {year}
             </h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>

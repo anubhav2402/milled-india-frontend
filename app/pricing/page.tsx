@@ -408,7 +408,7 @@ export default function PricingPage() {
           maxWidth: 1200,
           margin: "0 auto",
           padding: "60px 20px",
-          fontFamily: "var(--font-inter)",
+          fontFamily: "var(--font-family)",
         }}
       >
         {/* ── Header ── */}
@@ -419,7 +419,7 @@ export default function PricingPage() {
               fontWeight: 700,
               color: "var(--color-primary)",
               margin: "0 0 12px",
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
             }}
           >
             Start free. Upgrade when you see the value.
@@ -771,7 +771,7 @@ export default function PricingPage() {
                 fontWeight: 600,
                 color: "var(--color-primary)",
                 margin: "0 0 8px",
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
               }}
             >
               Contact Sales
@@ -824,7 +824,7 @@ export default function PricingPage() {
                       borderRadius: 8,
                       border: "1px solid var(--color-border)",
                       fontSize: 14,
-                      fontFamily: "var(--font-inter)",
+                      fontFamily: "var(--font-family)",
                       boxSizing: "border-box",
                     }}
                   />
@@ -844,7 +844,7 @@ export default function PricingPage() {
                       borderRadius: 8,
                       border: "1px solid var(--color-border)",
                       fontSize: 14,
-                      fontFamily: "var(--font-inter)",
+                      fontFamily: "var(--font-family)",
                       boxSizing: "border-box",
                     }}
                   />
@@ -867,7 +867,7 @@ export default function PricingPage() {
                       borderRadius: 8,
                       border: "1px solid var(--color-border)",
                       fontSize: 14,
-                      fontFamily: "var(--font-inter)",
+                      fontFamily: "var(--font-family)",
                       boxSizing: "border-box",
                     }}
                   />
@@ -890,7 +890,7 @@ export default function PricingPage() {
                       borderRadius: 8,
                       border: "1px solid var(--color-border)",
                       fontSize: 14,
-                      fontFamily: "var(--font-inter)",
+                      fontFamily: "var(--font-family)",
                       resize: "vertical",
                       boxSizing: "border-box",
                     }}
@@ -926,7 +926,7 @@ export default function PricingPage() {
               color: "var(--color-primary)",
               textAlign: "center",
               marginBottom: 32,
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
             }}
           >
             Frequently asked questions

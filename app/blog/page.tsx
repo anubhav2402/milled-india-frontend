@@ -42,7 +42,7 @@ export default function BlogIndex() {
 
         <h1
           style={{
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
             fontSize: 32,
             color: "var(--color-primary)",
             margin: "0 0 6px",

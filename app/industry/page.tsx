@@ -47,7 +47,7 @@ export default function IndustryIndex() {
 
         <h1
           style={{
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
             fontSize: 28,
             color: "var(--color-primary)",
             margin: "0 0 12px",
@@ -85,7 +85,7 @@ export default function IndustryIndex() {
               fontWeight: 700,
               color: "var(--color-primary)",
               margin: "0 0 14px",
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
             }}
           >
             Key Insights

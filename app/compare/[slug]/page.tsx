@@ -167,7 +167,7 @@ export default async function ComparePage({
     fontWeight: 700,
     color: "var(--color-primary)",
     margin: "0 0 16px",
-    fontFamily: "var(--font-dm-serif)",
+    fontFamily: "var(--font-heading)",
   };
 
   const metrics = [
@@ -205,7 +205,7 @@ export default async function ComparePage({
         <div style={{ ...cardStyle, padding: "32px 36px" }}>
           <h1
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: 28,
               color: "var(--color-primary)",
               margin: "0 0 12px",

@@ -144,7 +144,7 @@ export default function DashboardPage() {
 
         {/* Welcome */}
         <h1 style={{
-          fontFamily: "var(--font-dm-serif)", fontSize: 28,
+          fontFamily: "var(--font-heading)", fontSize: 28,
           color: "var(--color-primary)", margin: "0 0 24px",
         }}>
           Welcome back{user.name ? `, ${user.name.split(" ")[0]}` : ""}

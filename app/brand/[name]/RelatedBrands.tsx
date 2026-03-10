@@ -58,7 +58,7 @@ export default async function RelatedBrands({
             fontWeight: 700,
             color: "var(--color-primary)",
             margin: "0 0 16px",
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
           }}
         >
           More {industry} Brands

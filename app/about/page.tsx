@@ -16,7 +16,7 @@ export default function AboutPage() {
       <div style={{ maxWidth: 720, margin: "0 auto", padding: "64px 24px" }}>
         <h1
           style={{
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
             fontSize: 40,
             fontWeight: 400,
             color: "var(--color-primary)",
@@ -67,7 +67,7 @@ export default function AboutPage() {
             >
               <div
                 style={{
-                  fontFamily: "var(--font-dm-serif)",
+                  fontFamily: "var(--font-heading)",
                   fontSize: 28,
                   color: "var(--color-accent)",
                   marginBottom: 4,
@@ -84,7 +84,7 @@ export default function AboutPage() {
 
         <h2
           style={{
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
             fontSize: 24,
             fontWeight: 400,
             color: "var(--color-primary)",

@@ -77,7 +77,7 @@ export default function SavedPage() {
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
         <div style={{ marginBottom: 24 }}>
           <h1 style={{
-            fontFamily: "var(--font-dm-serif)", fontSize: 28,
+            fontFamily: "var(--font-heading)", fontSize: 28,
             color: "var(--color-primary)", margin: "0 0 6px",
           }}>
             Saved Emails

@@ -143,7 +143,7 @@ function BrowseHeader({ searchQuery, setSearchQuery }: {
           {/* Logo */}
           <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
             <Logo size={32} />
-            <span className="hide-mobile" style={{ fontFamily: "var(--font-dm-serif)", fontSize: 20, color: "var(--color-primary)" }}>
+            <span className="hide-mobile" style={{ fontFamily: "var(--font-heading)", fontSize: 20, color: "var(--color-primary)" }}>
               Mail <em style={{ fontStyle: "italic", color: "var(--color-accent)" }}>Muse</em>
             </span>
           </Link>

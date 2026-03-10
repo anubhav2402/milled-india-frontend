@@ -57,7 +57,7 @@ export default function Header({ activeRoute, transparent }: { activeRoute?: str
             <Logo size={32} />
             <span
               style={{
-                fontFamily: "var(--font-dm-serif)",
+                fontFamily: "var(--font-heading)",
                 fontSize: 20,
                 color: "var(--color-primary)",
               }}

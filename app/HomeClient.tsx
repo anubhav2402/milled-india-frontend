@@ -129,9 +129,9 @@ function HeroSection() {
       <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
         <h1
           style={{
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
             fontSize: "clamp(36px, 5.5vw, 56px)",
-            fontWeight: 400,
+            fontWeight: 600,
             color: "var(--color-primary)",
             lineHeight: 1.1,
             letterSpacing: "-0.02em",
@@ -243,9 +243,9 @@ function PlatformDescription() {
       >
         <h2
           style={{
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
             fontSize: "clamp(28px, 4vw, 40px)",
-            fontWeight: 400,
+            fontWeight: 600,
             color: "var(--color-primary)",
             letterSpacing: "-0.02em",
             lineHeight: 1.15,
@@ -366,9 +366,9 @@ function DemoSection() {
         >
           <h2
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: "clamp(28px, 4vw, 36px)",
-              fontWeight: 400,
+              fontWeight: 600,
               color: "var(--color-primary)",
               letterSpacing: "-0.02em",
               marginBottom: 12,
@@ -751,9 +751,9 @@ function FeatureRow({
           </span>
           <h2
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: "clamp(26px, 3.5vw, 36px)",
-              fontWeight: 400,
+              fontWeight: 600,
               color: "var(--color-primary)",
               letterSpacing: "-0.02em",
               lineHeight: 1.15,
@@ -884,9 +884,9 @@ function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
         >
           <h2
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: "clamp(28px, 4vw, 36px)",
-              fontWeight: 400,
+              fontWeight: 600,
               color: "var(--color-primary)",
               letterSpacing: "-0.02em",
               marginBottom: 8,
@@ -975,9 +975,9 @@ function PricingAnchor() {
         <div style={{ textAlign: "center", marginBottom: 16 }}>
           <h2
             style={{
-              fontFamily: "var(--font-dm-serif)",
+              fontFamily: "var(--font-heading)",
               fontSize: "clamp(28px, 4vw, 36px)",
-              fontWeight: 400, color: "var(--color-primary)",
+              fontWeight: 600, color: "var(--color-primary)",
               letterSpacing: "-0.02em", marginBottom: 12,
             }}
           >
@@ -1091,9 +1091,9 @@ function FinalCTA() {
       >
         <h2
           style={{
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
             fontSize: "clamp(28px, 4vw, 36px)",
-            fontWeight: 400, color: "var(--color-primary)",
+            fontWeight: 600, color: "var(--color-primary)",
             letterSpacing: "-0.02em", marginBottom: 16,
           }}
         >

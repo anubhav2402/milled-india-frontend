@@ -32,7 +32,7 @@ export default function BrandRecentEmails({
             fontWeight: 700,
             color: "var(--color-primary)",
             margin: "0 0 16px",
-            fontFamily: "var(--font-dm-serif)",
+            fontFamily: "var(--font-heading)",
           }}
         >
           Recent Emails from {brandName}

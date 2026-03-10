@@ -79,7 +79,7 @@ function AccountContent() {
         maxWidth: 600,
         margin: "0 auto",
         padding: "40px 20px",
-        fontFamily: "var(--font-inter)",
+        fontFamily: "var(--font-family)",
       }}
     >
       {/* Upgrade success banner */}
@@ -114,7 +114,7 @@ function AccountContent() {
           fontWeight: 600,
           color: "var(--color-primary)",
           margin: "0 0 32px",
-          fontFamily: "var(--font-dm-serif)",
+          fontFamily: "var(--font-heading)",
         }}
       >
         Account
