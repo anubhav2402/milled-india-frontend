@@ -805,8 +805,63 @@ function FeatureRow({
 function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
   const { ref: sectionRef, isVisible } = useInView(0.1);
 
-  // Duplicate emails for seamless loop
-  const displayEmails = emails.length > 0 ? [...emails, ...emails] : [];
+  // Split emails into two rows
+  const mid = Math.ceil(emails.length / 2);
+  const row1Emails = emails.slice(0, mid);
+  const row2Emails = emails.slice(mid);
+
+  // Duplicate for seamless loop
+  const displayRow1 = row1Emails.length > 0 ? [...row1Emails, ...row1Emails] : [];
+  const displayRow2 = row2Emails.length > 0 ? [...row2Emails, ...row2Emails] : [];
+
+  const renderRow = (
+    displayEmails: EmailPreview[],
+    className: string,
+    animationName: string,
+    duration: string,
+  ) => (
+    <div
+      style={{
+        position: "relative",
+        maskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+        WebkitMaskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
+        opacity: isVisible ? 1 : 0,
+        transition: "opacity 0.7s ease-out 0.2s",
+      }}
+    >
+      <div
+        className={className}
+        style={{
+          display: "flex",
+          gap: 16,
+          width: "max-content",
+          animation: `${animationName} ${duration} linear infinite`,
+        }}
+      >
+        {displayEmails.length === 0
+          ? Array.from({ length: 16 }).map((_, i) => (
+              <div key={i} style={{ width: 260, flexShrink: 0 }}>
+                <EmailCardSkeleton />
+              </div>
+            ))
+          : displayEmails.map((email, i) => (
+              <div key={`${email.id}-${i}`} style={{ width: 260, flexShrink: 0 }}>
+                <EmailCard
+                  id={email.id}
+                  subject={email.subject}
+                  brand={email.brand || undefined}
+                  industry={email.industry || undefined}
+                  received_at={email.received_at}
+                  campaignType={email.type || undefined}
+                  logoUrl={logoUrlFromSender(email.sender)}
+                  compact
+                  previewHeight={240}
+                />
+              </div>
+            ))}
+      </div>
+    </div>
+  );
 
   return (
     <section
@@ -845,47 +900,12 @@ function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
         </div>
       </div>
 
-      {/* Auto-scrolling marquee track */}
-      <div
-        style={{
-          position: "relative",
-          maskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
-          WebkitMaskImage: "linear-gradient(to right, transparent, black 5%, black 95%, transparent)",
-          opacity: isVisible ? 1 : 0,
-          transition: "opacity 0.7s ease-out 0.2s",
-        }}
-      >
-        <div
-          className="email-marquee-track"
-          style={{
-            display: "flex",
-            gap: 16,
-            width: "max-content",
-            animation: "emailMarquee 40s linear infinite",
-          }}
-        >
-          {displayEmails.length === 0
-            ? Array.from({ length: 16 }).map((_, i) => (
-                <div key={i} style={{ width: 260, flexShrink: 0 }}>
-                  <EmailCardSkeleton />
-                </div>
-              ))
-            : displayEmails.map((email, i) => (
-                <div key={`${email.id}-${i}`} style={{ width: 260, flexShrink: 0 }}>
-                  <EmailCard
-                    id={email.id}
-                    subject={email.subject}
-                    brand={email.brand || undefined}
-                    industry={email.industry || undefined}
-                    received_at={email.received_at}
-                    campaignType={email.type || undefined}
-                    logoUrl={logoUrlFromSender(email.sender)}
-                    compact
-                    previewHeight={240}
-                  />
-                </div>
-              ))}
-        </div>
+      {/* Row 1: scrolls left */}
+      {renderRow(displayRow1, "email-marquee-row1", "emailMarqueeLeft", "45s")}
+
+      {/* Row 2: scrolls right, offset start */}
+      <div style={{ marginTop: 16 }}>
+        {renderRow(displayRow2, "email-marquee-row2", "emailMarqueeRight", "50s")}
       </div>
 
       <div style={{ textAlign: "center", marginTop: 40 }}>
@@ -895,11 +915,16 @@ function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
       </div>
 
       <style>{`
-        @keyframes emailMarquee {
+        @keyframes emailMarqueeLeft {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
         }
-        .email-marquee-track:hover { animation-play-state: paused; }
+        @keyframes emailMarqueeRight {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+        .email-marquee-row1:hover { animation-play-state: paused; }
+        .email-marquee-row2:hover { animation-play-state: paused; }
       `}</style>
     </section>
   );
@@ -1121,7 +1146,7 @@ export function HomeClient() {
   const [recentEmails, setRecentEmails] = useState<EmailPreview[]>([]);
 
   useEffect(() => {
-    fetch(`${API_BASE}/emails?limit=20`)
+    fetch(`${API_BASE}/emails?limit=30`)
       .then((r) => (r.ok ? r.json() : []))
       .then((emails) => {
         const emailList = emails.emails || emails || [];
@@ -1135,6 +1160,7 @@ export function HomeClient() {
       <Header transparent />
       <HeroSection />
       <PlatformDescription />
+      <EmailCarousel emails={recentEmails} />
       <DemoSection />
       <FeatureRow
         direction="left"
@@ -1166,7 +1192,6 @@ export function HomeClient() {
         visual={<EditorMock />}
         bg="white"
       />
-      <EmailCarousel emails={recentEmails} />
       <PricingAnchor />
       <FinalCTA />
     </div>
