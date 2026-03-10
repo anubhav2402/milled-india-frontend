@@ -1163,16 +1163,6 @@ export function HomeClient() {
       <EmailCarousel emails={recentEmails} />
       <DemoSection />
       <FeatureRow
-        direction="left"
-        badge="BROWSE"
-        heading="Browse 100K+ real emails from top brands"
-        description="Search and filter by brand, industry, or campaign type. See full email archives with send timing, frequency data, and competitive intelligence."
-        ctaText="Browse emails free"
-        ctaHref="/browse"
-        visual={<BrowseMock />}
-        bg="white"
-      />
-      <FeatureRow
         direction="right"
         badge="AI-POWERED"
         heading="AI-powered email scoring & analysis"
