@@ -807,7 +807,7 @@ export default function AdminTweetsPage() {
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "32px 20px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 0 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-primary)", margin: 0, fontFamily: "var(--font-heading)" }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, color: "var(--color-primary)", margin: 0, fontFamily: "var(--font-bricolage)" }}>
           Tweet Manager
         </h1>
         <Link href="/admin/dashboard" style={{ fontSize: 13, color: "var(--color-secondary)", textDecoration: "none" }}>

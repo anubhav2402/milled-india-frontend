@@ -336,7 +336,7 @@ img[src=""] { display: none !important; }
           {/* Subject line */}
           <h1 style={{
             margin: "0 0 16px",
-            fontFamily: "var(--font-heading)",
+            fontFamily: "var(--font-bricolage)",
             fontSize: "clamp(24px, 3.5vw, 32px)",
             fontWeight: 400,
             color: "var(--color-primary)",

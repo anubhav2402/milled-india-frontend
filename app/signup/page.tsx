@@ -181,7 +181,7 @@ export default function SignupPage() {
             <Logo size={32} />
             <span
               style={{
-                fontFamily: "var(--font-heading)",
+                fontFamily: "var(--font-bricolage)",
                 fontSize: 20,
                 color: "var(--color-primary)",
               }}
@@ -272,7 +272,7 @@ export default function SignupPage() {
               color: "var(--color-primary)",
               lineHeight: 1.2,
               margin: "0 0 14px",
-              fontFamily: "var(--font-heading)",
+              fontFamily: "var(--font-bricolage)",
             }}
           >
             See what the best brands send — before they send it to you

@@ -167,7 +167,7 @@ export default async function CampaignPage({
     fontWeight: 700,
     color: "var(--color-primary)",
     margin: "0 0 16px",
-    fontFamily: "var(--font-heading)",
+    fontFamily: "var(--font-bricolage)",
   };
 
   return (
@@ -189,7 +189,7 @@ export default async function CampaignPage({
         <div style={{ ...cardStyle, padding: "32px 36px" }}>
           <h1
             style={{
-              fontFamily: "var(--font-heading)",
+              fontFamily: "var(--font-bricolage)",
               fontSize: 28,
               color: "var(--color-primary)",
               margin: "0 0 8px",

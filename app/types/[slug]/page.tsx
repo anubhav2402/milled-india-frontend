@@ -154,7 +154,7 @@ export default async function TypePage({
     fontWeight: 700,
     color: "var(--color-primary)",
     margin: "0 0 16px",
-    fontFamily: "var(--font-heading)",
+    fontFamily: "var(--font-bricolage)",
   };
 
   const textStyle: React.CSSProperties = {
@@ -184,7 +184,7 @@ export default async function TypePage({
         <div style={{ ...cardStyle, padding: "32px 36px" }}>
           <h1
             style={{
-              fontFamily: "var(--font-heading)",
+              fontFamily: "var(--font-bricolage)",
               fontSize: 28,
               color: "var(--color-primary)",
               margin: "0 0 12px",

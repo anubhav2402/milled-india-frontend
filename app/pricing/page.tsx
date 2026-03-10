@@ -419,7 +419,7 @@ export default function PricingPage() {
               fontWeight: 700,
               color: "var(--color-primary)",
               margin: "0 0 12px",
-              fontFamily: "var(--font-heading)",
+              fontFamily: "var(--font-bricolage)",
             }}
           >
             Start free. Upgrade when you see the value.
@@ -771,7 +771,7 @@ export default function PricingPage() {
                 fontWeight: 600,
                 color: "var(--color-primary)",
                 margin: "0 0 8px",
-                fontFamily: "var(--font-heading)",
+                fontFamily: "var(--font-bricolage)",
               }}
             >
               Contact Sales
@@ -926,7 +926,7 @@ export default function PricingPage() {
               color: "var(--color-primary)",
               textAlign: "center",
               marginBottom: 32,
-              fontFamily: "var(--font-heading)",
+              fontFamily: "var(--font-bricolage)",
             }}
           >
             Frequently asked questions

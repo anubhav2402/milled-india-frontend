@@ -44,7 +44,7 @@ export default function HomePage() {
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <h2
               style={{
-                fontFamily: "var(--font-heading)",
+                fontFamily: "var(--font-bricolage)",
                 fontSize: "clamp(28px, 4vw, 36px)",
                 fontWeight: 400,
                 color: "var(--color-primary)",

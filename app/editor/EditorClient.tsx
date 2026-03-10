@@ -1189,7 +1189,7 @@ ${content}
         <Logo size={48} />
         <h1
           style={{
-            fontFamily: "var(--font-heading)",
+            fontFamily: "var(--font-bricolage)",
             fontSize: 28,
             marginTop: 24,
             color: "#1C1917",
@@ -1271,7 +1271,7 @@ ${content}
         <Logo size={48} />
         <h1
           style={{
-            fontFamily: "var(--font-heading)",
+            fontFamily: "var(--font-bricolage)",
             fontSize: 24,
             marginTop: 24,
             color: "#1C1917",
@@ -1342,7 +1342,7 @@ ${content}
             <Logo size={24} />
             <span
               style={{
-                fontFamily: "var(--font-heading)",
+                fontFamily: "var(--font-bricolage)",
                 fontSize: 16,
                 color: "#1C1917",
               }}
@@ -1965,7 +1965,7 @@ ${content}
             </svg>
             <h2
               style={{
-                fontFamily: "var(--font-heading)",
+                fontFamily: "var(--font-bricolage)",
                 fontSize: 22,
                 color: "#1C1917",
                 marginBottom: 8,
@@ -2176,7 +2176,7 @@ ${content}
               </svg>
               <h2
                 style={{
-                  fontFamily: "var(--font-heading)",
+                  fontFamily: "var(--font-bricolage)",
                   fontSize: 20,
                   color: "#1C1917",
                   fontWeight: 400,
@@ -2560,7 +2560,7 @@ ${content}
           >
             <h3
               style={{
-                fontFamily: "var(--font-heading)",
+                fontFamily: "var(--font-bricolage)",
                 fontSize: 14,
                 color: "#1C1917",
                 marginBottom: 12,

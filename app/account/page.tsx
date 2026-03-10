@@ -114,7 +114,7 @@ function AccountContent() {
           fontWeight: 600,
           color: "var(--color-primary)",
           margin: "0 0 32px",
-          fontFamily: "var(--font-heading)",
+          fontFamily: "var(--font-bricolage)",
         }}
       >
         Account

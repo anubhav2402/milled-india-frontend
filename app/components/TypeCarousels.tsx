@@ -141,7 +141,7 @@ function TypeRow({
               fontWeight: 700,
               color: "var(--color-primary)",
               margin: 0,
-              fontFamily: "var(--font-heading)",
+              fontFamily: "var(--font-bricolage)",
             }}
           >
             {typeName} Emails

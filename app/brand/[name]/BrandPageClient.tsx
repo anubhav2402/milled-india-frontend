@@ -172,7 +172,7 @@ export default function BrandPageClient({
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
                 <h1 style={{
-                  fontFamily: "var(--font-heading)", fontSize: 24,
+                  fontFamily: "var(--font-bricolage)", fontSize: 24,
                   color: "var(--color-primary)", margin: 0,
                   textTransform: "capitalize",
                 }}>

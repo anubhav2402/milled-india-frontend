@@ -133,7 +133,7 @@ export default function CalendarPage() {
         {/* Page Header */}
         <div style={{ marginBottom: 24 }}>
           <h1 style={{
-            fontFamily: "var(--font-heading)", fontSize: 28,
+            fontFamily: "var(--font-bricolage)", fontSize: 28,
             color: "var(--color-primary)", margin: "0 0 6px",
           }}>
             Campaign Calendar
