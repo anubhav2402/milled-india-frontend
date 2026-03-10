@@ -892,7 +892,7 @@ function EmailCarousel({ emails }: { emails: EmailPreview[] }) {
               marginBottom: 8,
             }}
           >
-            Browse the latest emails
+            Browse 100K+ real emails from top brands
           </h2>
           <p style={{ fontSize: 16, color: "var(--color-secondary)", margin: 0 }}>
             Updated daily with 1,000+ new emails from top brands
