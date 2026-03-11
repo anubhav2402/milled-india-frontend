@@ -76,7 +76,7 @@ export default function EmailSeoContent({ data }: { data: EmailSeoData }) {
       <div style={cardStyle}>
         <h2 style={headingStyle}>Subject Line Analysis</h2>
         <p style={{ fontSize: 15, lineHeight: 1.7, color: "var(--color-secondary)", margin: "0 0 16px" }}>
-          This {data.type.toLowerCase()} email from {data.brand} has a subject line of {a.char_count} characters
+          This {(data.type || "marketing").toLowerCase()} email from {data.brand} has a subject line of {a.char_count} characters
           ({a.word_count} words).{" "}{traitStr}{" "}
           {dateStr && `It was sent on ${dateStr}.`}
         </p>
@@ -146,7 +146,7 @@ export default function EmailSeoContent({ data }: { data: EmailSeoData }) {
       {/* Similar emails */}
       {data.similar_emails.length > 0 && (
         <div style={cardStyle}>
-          <h2 style={headingStyle}>Similar {data.type} Emails</h2>
+          <h2 style={headingStyle}>Similar {data.type || "Marketing"} Emails</h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {data.similar_emails.map((email) => (
               <SeoEmailLink
@@ -159,12 +159,14 @@ export default function EmailSeoContent({ data }: { data: EmailSeoData }) {
             ))}
           </div>
           <div style={{ marginTop: 16 }}>
-            <Link
-              href={`/types/${typeToSlug(data.type)}`}
-              style={{ fontSize: 13, fontWeight: 500, color: "var(--color-accent)", textDecoration: "none" }}
-            >
-              Browse all {data.type} emails →
-            </Link>
+            {data.type && (
+              <Link
+                href={`/types/${typeToSlug(data.type)}`}
+                style={{ fontSize: 13, fontWeight: 500, color: "var(--color-accent)", textDecoration: "none" }}
+              >
+                Browse all {data.type} emails →
+              </Link>
+            )}
           </div>
         </div>
       )}
@@ -197,7 +199,7 @@ export default function EmailSeoContent({ data }: { data: EmailSeoData }) {
               {data.industry} Emails
             </Link>
           )}
-          {data.type && (
+          {data.type ? (
             <Link
               href={`/types/${typeToSlug(data.type)}`}
               style={{
@@ -208,7 +210,7 @@ export default function EmailSeoContent({ data }: { data: EmailSeoData }) {
             >
               {data.type} Emails
             </Link>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
