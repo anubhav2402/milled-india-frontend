@@ -140,11 +140,12 @@ function HeroSection() {
           }}
         >
           Every great email campaign starts
-          <br />
+          <br className="hero-br" />{" "}
           with knowing what <span style={{ color: "var(--color-accent)" }}>great looks like</span>.
         </h1>
 
         <p
+          className="hero-subheading"
           style={{
             fontSize: "clamp(17px, 2vw, 20px)",
             color: "var(--color-secondary)",
@@ -166,29 +167,26 @@ function HeroSection() {
           </Button>
         </div>
 
-        <p style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 14 }}>
+        <p className="hero-footnote" style={{ fontSize: 13, color: "var(--color-tertiary)", marginTop: 14 }}>
           Free forever &middot; No credit card &middot; 7-day Starter trial included
         </p>
       </div>
 
       <style>{`
         .hero-btn { min-width: 180px; }
+        .hero-footnote { display: block; }
+        .hero-br { display: inline; }
         @keyframes floatBubble {
           0%, 100% { transform: scale(1) translateY(0); }
           50% { transform: scale(1) translateY(-8px); }
         }
         @media (max-width: 768px) {
-          .hero-section { padding: 100px 16px 60px !important; min-height: auto !important; }
+          .hero-section { padding: 80px 16px 48px !important; min-height: auto !important; }
           .hero-btn { min-width: 140px !important; }
-          .hero-brand-bubble {
-            width: 36px !important;
-            height: 36px !important;
-            opacity: 0.6 !important;
-          }
-          .hero-brand-bubble img {
-            width: 20px !important;
-            height: 20px !important;
-          }
+          .hero-brand-bubble { display: none !important; }
+          .hero-footnote { display: none !important; }
+          .hero-br { display: none !important; }
+          .hero-subheading { margin-bottom: 24px !important; }
         }
       `}</style>
     </section>
