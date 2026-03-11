@@ -82,6 +82,7 @@ function HeroSection() {
 
   return (
     <section
+      className="hero-section"
       style={{
         background: "radial-gradient(ellipse 90% 70% at 50% 0%, #EDCBB5 0%, #F5E6DC 35%, #FAF9F7 65%, #ffffff 100%)",
         padding: "140px 24px 100px",
@@ -153,16 +154,15 @@ function HeroSection() {
             margin: "0 auto 36px",
           }}
         >
-          100,000+ curated emails from the world&apos;s top brands — searchable, AI-analyzed,
-          and editable. From research to ready-to-send, in one place. Updated daily.
+          100,000+ emails from top brands — searchable, AI-analyzed, and ready to use.
         </p>
 
         <div className="hero-buttons" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <Button href="/signup" size="lg" className="hero-btn">
+          <Button href="/signup" size="md" className="hero-btn">
             Join for free
           </Button>
-          <Button href="/browse" size="lg" variant="outline" className="hero-btn">
-            Browse Email Templates
+          <Button href="/browse" size="md" variant="outline" className="hero-btn">
+            Browse Emails
           </Button>
         </div>
 
@@ -172,20 +172,22 @@ function HeroSection() {
       </div>
 
       <style>{`
-        .hero-btn { min-width: 220px; }
+        .hero-btn { min-width: 180px; }
         @keyframes floatBubble {
           0%, 100% { transform: scale(1) translateY(0); }
           50% { transform: scale(1) translateY(-8px); }
         }
         @media (max-width: 768px) {
+          .hero-section { padding: 100px 16px 60px !important; min-height: auto !important; }
+          .hero-btn { min-width: 140px !important; }
           .hero-brand-bubble {
-            width: 44px !important;
-            height: 44px !important;
-            opacity: 0.5 !important;
+            width: 36px !important;
+            height: 36px !important;
+            opacity: 0.6 !important;
           }
           .hero-brand-bubble img {
-            width: 24px !important;
-            height: 24px !important;
+            width: 20px !important;
+            height: 20px !important;
           }
         }
       `}</style>
