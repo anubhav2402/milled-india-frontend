@@ -177,7 +177,15 @@ function HeroSection() {
           50% { transform: scale(1) translateY(-8px); }
         }
         @media (max-width: 768px) {
-          .hero-brand-bubble { display: none !important; }
+          .hero-brand-bubble {
+            width: 44px !important;
+            height: 44px !important;
+            opacity: 0.5 !important;
+          }
+          .hero-brand-bubble img {
+            width: 24px !important;
+            height: 24px !important;
+          }
         }
       `}</style>
     </section>
