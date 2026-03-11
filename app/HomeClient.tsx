@@ -157,11 +157,11 @@ function HeroSection() {
           and editable. From research to ready-to-send, in one place. Updated daily.
         </p>
 
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <Button href="/signup" size="lg">
+        <div className="hero-buttons" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+          <Button href="/signup" size="lg" className="hero-btn">
             Join for free
           </Button>
-          <Button href="/browse" size="lg" variant="outline">
+          <Button href="/browse" size="lg" variant="outline" className="hero-btn">
             Browse Email Templates
           </Button>
         </div>
@@ -172,6 +172,7 @@ function HeroSection() {
       </div>
 
       <style>{`
+        .hero-btn { min-width: 220px; }
         @keyframes floatBubble {
           0%, 100% { transform: scale(1) translateY(0); }
           50% { transform: scale(1) translateY(-8px); }
