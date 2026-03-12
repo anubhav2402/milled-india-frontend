@@ -9,7 +9,6 @@ import Header from "../../components/Header";
 import { useAuth } from "../../context/AuthContext";
 import { useBookmarks } from "../../hooks/useBookmarks";
 import AnalysisPanel from "../../components/AnalysisPanel";
-import GenerateButton from "../../components/GenerateButton";
 
 type Email = {
   id: number;
@@ -666,43 +665,6 @@ img[src=""] { display: none !important; }
                 </div>
               )}
 
-              {/* Actions */}
-              <div style={{ padding: "16px 20px", borderBottom: "1px solid var(--color-border)" }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 12 }}>
-                  Actions
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <Link
-                    href={`/editor?id=${id}`}
-                    style={{
-                      display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                      padding: "10px 16px",
-                      fontSize: 13, fontWeight: 600,
-                      color: "white",
-                      background: "var(--color-accent)",
-                      borderRadius: 10,
-                      textDecoration: "none",
-                      transition: "all 150ms ease",
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--color-accent-hover)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = "var(--color-accent)")}
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                    Use as Template
-                  </Link>
-                  <div className="sidebar-generate-btn">
-                    <GenerateButton
-                      emailId={email.id}
-                      emailSubject={email.subject}
-                      emailBrand={email.brand}
-                    />
-                  </div>
-                </div>
-              </div>
-
               {/* Analysis */}
               <div style={{ padding: "16px 20px", borderBottom: (brandEmails.length > 0 || similarEmails.length > 0) ? "1px solid var(--color-border)" : "none" }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
@@ -769,13 +731,6 @@ img[src=""] { display: none !important; }
         .email-action-btn:hover {
           border-color: var(--color-accent) !important;
           color: var(--color-accent) !important;
-        }
-        .sidebar-generate-btn > button {
-          width: 100% !important;
-          justify-content: center !important;
-          padding: 10px 16px !important;
-          font-size: 13px !important;
-          border-radius: 10px !important;
         }
         @media (max-width: 868px) {
           .feature-action-bar {
