@@ -64,7 +64,7 @@ export default function BrandPageClient({
       try {
         const [analyticsRes, emailsRes] = await Promise.all([
           fetch(`${API_BASE}/analytics/brand/${encodeURIComponent(brandName)}`, { headers }),
-          fetch(`${API_BASE}/emails?brand=${encodeURIComponent(brandName)}&limit=50`),
+          fetch(`${API_BASE}/emails?brand=${encodeURIComponent(brandName)}&limit=50`, { headers }),
         ]);
 
         if (analyticsRes.ok) setAnalytics(await analyticsRes.json());
