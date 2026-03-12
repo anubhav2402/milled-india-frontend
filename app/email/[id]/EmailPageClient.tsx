@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Badge from "../../components/Badge";
@@ -81,8 +81,17 @@ export default function EmailPageClient() {
   const [brandEmails, setBrandEmails] = useState<RelatedEmail[]>([]);
   const [similarEmails, setSimilarEmails] = useState<RelatedEmail[]>([]);
   const [viewLimitReached, setViewLimitReached] = useState(false);
+  const [analysisScore, setAnalysisScore] = useState<number | null>(null);
+  const [analysisGrade, setAnalysisGrade] = useState<string | null>(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+  const analysisTriggerRef = useRef<(() => void) | null>(null);
   const { user } = useAuth();
   const { isBookmarked, toggleBookmark } = useBookmarks();
+
+  const handleAnalysisResult = useCallback((score: number, grade: string) => {
+    setAnalysisScore(score);
+    setAnalysisGrade(grade);
+  }, []);
 
   const base = process.env.NEXT_PUBLIC_API_BASE_URL || "https://milled-india-api.onrender.com";
 
@@ -414,6 +423,169 @@ img[src=""] { display: none !important; }
           </div>
         </div>
 
+        {/* Feature action bar */}
+        <div className="feature-action-bar" style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 12,
+          margin: "16px 0",
+        }}>
+          {/* AI Teardown Card */}
+          <div style={{
+            background: "#FEF7F3",
+            borderRadius: 12,
+            padding: 20,
+            borderLeft: "3px solid #C2714A",
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: "#F5E1D5",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C2714A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#44403C" }}>
+                  AI Email Teardown
+                </div>
+                <div style={{ fontSize: 12, color: "#78716C", lineHeight: 1.4 }}>
+                  Get AI scores across 5 dimensions — Subject, Copy, CTA, Design & Strategy
+                </div>
+              </div>
+            </div>
+            {analysisScore !== null && analysisGrade !== null ? (
+              <button
+                onClick={() => {
+                  const el = document.querySelector(".email-sidebar");
+                  el?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  padding: "8px 16px",
+                  fontSize: 13, fontWeight: 600,
+                  color: analysisScore >= 70 ? "#065f46" : "#92400e",
+                  background: analysisScore >= 70 ? "#dcfce7" : "#fef3c7",
+                  border: `1px solid ${analysisScore >= 70 ? "#86efac" : "#fde68a"}`,
+                  borderRadius: 8,
+                  cursor: "pointer",
+                  transition: "all 150ms ease",
+                  alignSelf: "flex-start",
+                }}
+              >
+                <span style={{ fontWeight: 800 }}>{analysisGrade}</span>
+                Score: {analysisScore}/100 — View Full Teardown
+              </button>
+            ) : !user ? (
+              <a
+                href="/signup"
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  padding: "8px 16px",
+                  fontSize: 13, fontWeight: 600,
+                  color: "white",
+                  background: "#C2714A",
+                  borderRadius: 8,
+                  textDecoration: "none",
+                  alignSelf: "flex-start",
+                  transition: "all 150ms ease",
+                }}
+              >
+                Sign up to unlock
+              </a>
+            ) : (
+              <button
+                onClick={() => analysisTriggerRef.current?.()}
+                disabled={analysisLoading}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  padding: "8px 16px",
+                  fontSize: 13, fontWeight: 600,
+                  color: "white",
+                  background: "#C2714A",
+                  border: "none",
+                  borderRadius: 8,
+                  cursor: analysisLoading ? "wait" : "pointer",
+                  alignSelf: "flex-start",
+                  transition: "all 150ms ease",
+                  opacity: analysisLoading ? 0.7 : 1,
+                }}
+              >
+                {analysisLoading ? (
+                  <>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spin 1s linear infinite" }}>
+                      <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                      <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
+                    </svg>
+                    Analyzing...
+                  </>
+                ) : (
+                  "Analyze This Email"
+                )}
+              </button>
+            )}
+          </div>
+
+          {/* Template Editor Card */}
+          <div style={{
+            background: "#EFF6FF",
+            borderRadius: 12,
+            padding: 20,
+            borderLeft: "3px solid #3B82F6",
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: "#DBEAFE",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                flexShrink: 0,
+              }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>
+              </div>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#1E3A5F" }}>
+                  Use as Template
+                </div>
+                <div style={{ fontSize: 12, color: "#64748B", lineHeight: 1.4 }}>
+                  Open in drag-and-drop editor — change text, images, colors and export production-ready HTML
+                </div>
+              </div>
+            </div>
+            <a
+              href={`/editor?id=${id}`}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                padding: "8px 16px",
+                fontSize: 13, fontWeight: 600,
+                color: "white",
+                background: "#3B82F6",
+                borderRadius: 8,
+                textDecoration: "none",
+                alignSelf: "flex-start",
+                transition: "all 150ms ease",
+              }}
+            >
+              Open Editor
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14" />
+                <path d="M12 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
         {/* 2-column grid: email preview + sidebar */}
         <div className="email-grid" style={{
           display: "grid",
@@ -536,7 +708,12 @@ img[src=""] { display: none !important; }
                 <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-tertiary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>
                   Email Teardown by AI
                 </div>
-                <AnalysisPanel emailId={email.id} />
+                <AnalysisPanel
+                  emailId={email.id}
+                  triggerRef={analysisTriggerRef}
+                  onResult={handleAnalysisResult}
+                  onLoading={setAnalysisLoading}
+                />
               </div>
 
               {/* More from Brand */}
@@ -601,6 +778,9 @@ img[src=""] { display: none !important; }
           border-radius: 10px !important;
         }
         @media (max-width: 868px) {
+          .feature-action-bar {
+            grid-template-columns: 1fr !important;
+          }
           .email-grid {
             grid-template-columns: 1fr !important;
           }

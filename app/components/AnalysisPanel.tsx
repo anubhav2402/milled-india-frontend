@@ -27,6 +27,9 @@ type AnalysisData = {
 
 interface AnalysisPanelProps {
   emailId: number;
+  triggerRef?: React.MutableRefObject<(() => void) | null>;
+  onResult?: (score: number, grade: string) => void;
+  onLoading?: (loading: boolean) => void;
 }
 
 const DIMENSION_META: Record<string, { label: string; icon: string }> = {
@@ -81,7 +84,7 @@ function findingColor(type: string): string {
   return "#64748b";
 }
 
-export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
+export default function AnalysisPanel({ emailId, triggerRef, onResult, onLoading }: AnalysisPanelProps) {
   const { user, token } = useAuth();
   const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -136,6 +139,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
   const fetchAnalysis = async () => {
     if (loading) return;
     setLoading(true);
+    onLoading?.(true);
     setError(null);
     try {
       const headers: Record<string, string> = {};
@@ -147,6 +151,7 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
       }
       const json = await res.json();
       setData(json);
+      onResult?.(json.overall_score, json.overall_grade);
       // Scroll to analysis results after a brief delay for render
       setTimeout(() => {
         panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -155,8 +160,16 @@ export default function AnalysisPanel({ emailId }: AnalysisPanelProps) {
       setError(err instanceof Error ? err.message : "Failed to load analysis");
     } finally {
       setLoading(false);
+      onLoading?.(false);
     }
   };
+
+  // Expose fetchAnalysis to parent via triggerRef
+  React.useEffect(() => {
+    if (triggerRef) {
+      triggerRef.current = fetchAnalysis;
+    }
+  });
 
   // Button state — not yet loaded
   if (!data && !error) {
